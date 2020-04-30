@@ -1,5 +1,5 @@
-include ':repo'
-include ':lastfm'
-include ':database'
-include ':app'
+include ":repo"
+include ":lastfm"
+include ":database"
+include ":app"
 rootProject.name = "Scrobbler"
