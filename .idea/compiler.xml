@@ -5,6 +5,7 @@
       <module name="Scrobbler.app" target="1.8" />
       <module name="Scrobbler.database" target="1.8" />
       <module name="Scrobbler.lastfm" target="1.8" />
+      <module name="Scrobbler.repo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

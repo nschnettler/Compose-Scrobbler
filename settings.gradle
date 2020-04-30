@@ -1,3 +1,4 @@
+include ':repo'
 include ':lastfm'
 include ':database'
 include ':app'

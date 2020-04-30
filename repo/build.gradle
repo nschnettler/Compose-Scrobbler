@@ -1,0 +1,11 @@
+plugins {
+    id 'kotlin'
+}
+
+dependencies {
+    api project(":database")
+    implementation project(":lastfm")
+
+    def store_version = "4.0.0-alpha06"
+    implementation "com.dropbox.mobile.store:store4:$store_version"
+}
