@@ -5,8 +5,8 @@ import com.squareup.moshi.Json
 
 data class ArtistDto(
     val name: String,
-    val playcount: String,
-    val listeners: String,
+    val playcount: Long,
+    val listeners: Long,
     val mbid: String,
     val url: String,
     val streamable: String
