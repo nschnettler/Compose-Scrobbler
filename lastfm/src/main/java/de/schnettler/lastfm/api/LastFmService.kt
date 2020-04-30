@@ -5,7 +5,7 @@ import retrofit2.http.GET
 
 interface LastFmService {
     companion object {
-        const val ENDPOINT = "http://ws.audioscrobbler.com/2.0/"
+        const val ENDPOINT = "https://ws.audioscrobbler.com/2.0/"
         const val API_KEY = "***REPLACE_WITH_LASTFM_API_KEY***"
         const val SECRET = "***REPLACE_WITH_LASTFM_SECRET***"
     }
