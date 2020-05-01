@@ -9,7 +9,13 @@ data class ArtistDto(
     val listeners: Long,
     val mbid: String,
     val url: String,
-    val streamable: String
+    val streamable: String,
+    @Json(name = "image") val images: List<ImageDto>
+)
+
+data class ImageDto(
+    @Json(name = "#text") val url: String,
+    val size: String
 )
 
 data class TopArtistsResponse(
