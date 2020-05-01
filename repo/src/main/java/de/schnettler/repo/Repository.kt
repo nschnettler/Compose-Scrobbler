@@ -12,6 +12,10 @@ class Repository {
     fun getTopArtists() = topArtistStore.stream(StoreRequest.fresh("1"))
 
     private val topArtistStore = StoreBuilder.from<String, List<Artist>>(
-        fetcher = nonFlowValueFetcher {ArtistMapper.forLists().invoke(RetrofitService.lastFmService.getTopArtists().wrapper.artists)}
+        fetcher = nonFlowValueFetcher {
+            val result = RetrofitService.lastFmService.getTopArtists()
+            //println(RetrofitService.musicBrainzService.getArtistRelations(result[0].mbid))
+            ArtistMapper.forLists().invoke(result)
+        }
     ).build()
 }

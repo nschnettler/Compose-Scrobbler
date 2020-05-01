@@ -1,6 +1,7 @@
 package de.schnettler.lastfm.api
 
-import de.schnettler.lastfm.models.TopArtistsResponse
+import com.serjltt.moshi.adapters.Wrapped
+import de.schnettler.lastfm.models.ArtistDto
 import retrofit2.http.GET
 
 interface LastFmService {
@@ -10,9 +11,7 @@ interface LastFmService {
         const val SECRET = "***REPLACE_WITH_LASTFM_SECRET***"
     }
 
-    /*
-     * Trending Shows
-     */
     @GET("?method=chart.gettopartists&format=json&api_key=$API_KEY")
-    suspend fun getTopArtists(): TopArtistsResponse
+    @Wrapped(path = ["artists" , "artist"])
+    suspend fun getTopArtists(): List<ArtistDto>
 }

@@ -17,11 +17,3 @@ data class ImageDto(
     @Json(name = "#text") val url: String,
     val size: String
 )
-
-data class TopArtistsResponse(
-    @Json(name = "artists") val wrapper: TopArtists
-)
-
-data class TopArtists(
-    @Json(name = "artist") val artists: List<ArtistDto>
-)

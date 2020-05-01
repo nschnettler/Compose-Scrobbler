@@ -1,5 +1,6 @@
 package de.schnettler.lastfm.api
 
+import com.serjltt.moshi.adapters.Wrapped
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -29,6 +30,7 @@ fun provideRetrofit(okHttpClient: OkHttpClient, endpoint: String): Retrofit = Re
     .addConverterFactory(
         MoshiConverterFactory.create(
             Moshi.Builder()
+                .add(Wrapped.ADAPTER_FACTORY)
                 .add(KotlinJsonAdapterFactory())
                 .build()
         )

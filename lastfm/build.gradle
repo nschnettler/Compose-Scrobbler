@@ -12,4 +12,5 @@ dependencies {
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$retrofit_coroutines_adapter_version"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
     implementation("com.squareup.moshi:moshi-kotlin:$moshi_version")
+    implementation "com.serjltt.moshi:moshi-lazy-adapters:2.2"
 }
