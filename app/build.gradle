@@ -69,6 +69,12 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
 
+    //Picasso
+    implementation "com.squareup.picasso:picasso:2.71828"
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     //Testing
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
