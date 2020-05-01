@@ -1,57 +1,78 @@
 package de.schnettler.scrobbler
 
-import android.icu.text.CompactDecimalFormat
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
-import androidx.ui.core.Alignment.Companion.CenterHorizontally
-import androidx.ui.core.Modifier
+import androidx.compose.Providers
+import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.wrapContentWidth
-import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AccountCircle
-import androidx.ui.material.icons.outlined.Favorite
-import androidx.ui.material.icons.outlined.Home
+import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
+import com.github.zsoltk.compose.backpress.BackPressHandler
+import com.github.zsoltk.compose.router.BackStack
+import com.github.zsoltk.compose.router.Router
 import de.schnettler.scrobbler.components.BottomNavigationBar
-import de.schnettler.scrobbler.model.MenuItem
 import de.schnettler.scrobbler.screens.ChartScreen
-import java.util.*
+import de.schnettler.scrobbler.screens.HistoryScreen
+import de.schnettler.scrobbler.screens.LocalScreen
 
 class MainActivity : AppCompatActivity() {
+
+    private val model: MainViewModel by viewModels()
+    private val backPressHandler = BackPressHandler()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val model: MainViewModel by viewModels()
-
         setContent {
-            MaterialTheme {
-                Scaffold(
-                    topAppBar = {
-                        TopAppBar(
-                            title = { Text(text = "Scrobbler") }
+            Providers(
+                AmbientBackPressHandler provides backPressHandler
+            ) {
+                MaterialTheme {
+                    Router(defaultRouting = Screen.Charts as Screen) {backStack ->
+                        Scaffold(
+                            topAppBar = {
+                                TopAppBar(
+                                    title = { Text(text = "Scrobbler") }
+                                )
+                            },
+                            bodyContent = {
+                                AppContent(backStack = backStack)
+                            },
+                            bottomAppBar = {
+                                BottomNavigationBar(backStack = backStack, items = listOf(
+                                    Screen.Charts,
+                                    Screen.Local,
+                                    Screen.History
+                                ))
+                            }
                         )
-                    },
-                    bodyContent = {
-                        ChartScreen(artistResponse = model.topArtists)
-                    },
-                    bottomAppBar = {
-                        BottomNavigationBar(items = listOf(
-                            MenuItem("Charts", Icons.Outlined.AccountCircle),
-                            MenuItem("History", Icons.Outlined.Home),
-                            MenuItem("Local", Icons.Outlined.Favorite)
-                        ))
                     }
-                )
+                }
             }
+        }
+    }
+
+    @Composable
+    private fun AppContent(backStack: BackStack<Screen>) {
+        val currentScreen = backStack.last()
+        
+        Crossfade(currentScreen) {screen ->
+            when(screen) {
+                is Screen.Charts -> ChartScreen(artistResponse = model.topArtists)
+                is Screen.History -> HistoryScreen()
+                is Screen.Local -> LocalScreen()
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        if (!backPressHandler.handle()) {
+            super.onBackPressed()
         }
     }
 }

@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.model
 
 import androidx.ui.graphics.vector.VectorAsset
+import de.schnettler.scrobbler.Screen
 
 data class ListItem(
     val title: String,
@@ -8,7 +9,3 @@ data class ListItem(
     val imageUrl: String
 )
 
-data class MenuItem(
-    val title: String,
-    val icon: VectorAsset
-)

@@ -8,23 +8,29 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
-import de.schnettler.scrobbler.model.MenuItem
+import com.github.zsoltk.compose.router.BackStack
+import de.schnettler.scrobbler.Screen
+import timber.log.Timber
 
 @Composable
-fun BottomNavigationBar(items: List<MenuItem>) {
-    var selectedIndex by state { 0 }
+fun BottomNavigationBar(backStack: BackStack<Screen>, items: List<Screen>) {
+    var currentScreen by state { Screen.Charts as Screen }
     BottomNavigation() {
-        items.forEachIndexed { index, item ->
+        items.forEachIndexed { index, screen ->
             BottomNavigationItem(
                 icon = {
-                    Icon(asset = item.icon)
+                    Icon(asset = screen.icon)
                 },
                 text = {
-                    Text(text = item.title)
+                    Text(text = screen.title)
                 },
-                // Update the selected index when the BottomNavigationItem is clicked
-                selected = selectedIndex == index,
-                onSelected = { selectedIndex = index }
+                selected = items.indexOf(currentScreen) == index,
+                onSelected = {
+                    //Navigate
+                    currentScreen = items[index]
+                    Timber.d("Screen: ${currentScreen.title}")
+                    backStack.push(currentScreen)
+                }
             )
         }
     }
