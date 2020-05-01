@@ -5,7 +5,9 @@ import androidx.lifecycle.asLiveData
 import de.schnettler.repo.Repository
 
 class MainViewModel: ViewModel() {
-    val repo = Repository()
+    private val repo = Repository()
 
-    val topArtists = repo.getTopArtists().asLiveData()
+    val topArtists by lazy {
+        repo.getTopArtists().asLiveData()
+    }
 }
