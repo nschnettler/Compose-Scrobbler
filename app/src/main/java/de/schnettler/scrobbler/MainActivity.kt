@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 AmbientBackPressHandler provides backPressHandler
             ) {
                 MaterialTheme {
-                    Router(defaultRouting = Screen.Charts as Screen) {backStack ->
+                    Router(defaultRouting = Screen.Local as Screen) {backStack ->
                         Scaffold(
                             topAppBar = {
                                 TopAppBar(

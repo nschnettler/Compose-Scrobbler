@@ -14,7 +14,8 @@ import timber.log.Timber
 
 @Composable
 fun BottomNavigationBar(backStack: BackStack<Screen>, items: List<Screen>) {
-    var currentScreen by state { Screen.Charts as Screen }
+    var currentScreen by state { backStack.last() }
+    currentScreen = backStack.last()
     BottomNavigation() {
         items.forEachIndexed { index, screen ->
             BottomNavigationItem(
@@ -26,10 +27,10 @@ fun BottomNavigationBar(backStack: BackStack<Screen>, items: List<Screen>) {
                 },
                 selected = items.indexOf(currentScreen) == index,
                 onSelected = {
-                    //Navigate
-                    currentScreen = items[index]
-                    Timber.d("Screen: ${currentScreen.title}")
-                    backStack.push(currentScreen)
+                    val newScreen = items[index]
+                    if (backStack.last() != newScreen) {
+                        backStack.push(items[index])
+                    } else Timber.d("Already here")
                 }
             )
         }
