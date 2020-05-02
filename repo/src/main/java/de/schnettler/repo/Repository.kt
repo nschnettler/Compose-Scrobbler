@@ -30,7 +30,7 @@ class Repository(context: Context) {
 
     suspend fun refreshSession(token: String) {
         val signature = "api_key${LastFmService.API_KEY}method${LastFmService.METHOD_SESSION}token$token${LastFmService.SECRET}".md5()
-        val session = SessionMapper.map(service.getSession(token, LastFmService.API_KEY, signature))
+        val session = SessionMapper.map(service.getSession(token, signature))
         db.authDao().insertSession(session)
     }
 

@@ -12,7 +12,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 object RetrofitService {
     val lastFmService: LastFmService by lazy {
         provideRetrofit(
-            provideOkHttpClient(), LastFmService.ENDPOINT
+            provideOkHttpClient(LastFMInterceptor()), LastFmService.ENDPOINT
         ).create(
             LastFmService::class.java)
     }

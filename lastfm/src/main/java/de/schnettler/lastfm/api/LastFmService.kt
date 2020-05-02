@@ -15,16 +15,15 @@ interface LastFmService {
         const val METHOD_SESSION = "auth.getSession"
     }
 
-    @GET("?method=chart.gettopartists&format=json&api_key=$API_KEY")
-    @Wrapped(path = ["artists" , "artist"])
+    @GET("?method=chart.gettopartists&")
+    @Wrapped(path = ["artists", "artist"])
     suspend fun getTopArtists(): List<ArtistDto>
 
 
-    @GET("?method=$METHOD_SESSION&format=json")
+    @GET("?method=$METHOD_SESSION")
     @Wrapped(path = ["session"])
     suspend fun getSession(
         @Query("token") token: String,
-        @Query("api_key") apiKey: String,
         @Query("api_sig") signature: String
     ): SessionDto
 
