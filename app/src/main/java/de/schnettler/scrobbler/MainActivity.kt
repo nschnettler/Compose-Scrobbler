@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.Providers
@@ -19,10 +19,16 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.ChartScreen
 import de.schnettler.scrobbler.screens.HistoryScreen
 import de.schnettler.scrobbler.screens.LocalScreen
+import de.schnettler.scrobbler.screens.ProfileScreen
+import de.schnettler.scrobbler.util.getViewModel
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-    private val model: MainViewModel by viewModels()
+   // private val model: MainViewModel by viewModels()
+   private val model by lazy {
+       getViewModel { MainViewModel(this) }
+    }
     private val backPressHandler = BackPressHandler()
 
 
@@ -47,7 +53,8 @@ class MainActivity : AppCompatActivity() {
                                 BottomNavigationBar(backStack = backStack, items = listOf(
                                     Screen.Charts,
                                     Screen.Local,
-                                    Screen.History
+                                    Screen.History,
+                                    Screen.Profile
                                 ))
                             }
                         )
@@ -66,6 +73,7 @@ class MainActivity : AppCompatActivity() {
                 is Screen.Charts -> ChartScreen(artistResponse = model.topArtists)
                 is Screen.History -> HistoryScreen()
                 is Screen.Local -> LocalScreen()
+                is Screen.Profile -> ProfileScreen(context = this, sessionStatus = model.sessionStatus)
             }
         }
     }
@@ -75,4 +83,19 @@ class MainActivity : AppCompatActivity() {
             super.onBackPressed()
         }
     }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if ("${intent?.data?.scheme}://${intent?.data?.host}" == REDIRECT_URL) {
+            //AuthResponse
+            intent?.data?.getQueryParameter("token")?.let {token ->
+                Timber.i("TOKEN: $token")
+                model.onTokenReceived(token)
+            }
+        }
+    }
 }
+
+const val AUTH_ENDPOINT = "https://www.last.fm/api/auth/"
+const val REDIRECT_URL = "de.schnettler.scrobble://auth"
+const val API_KEY = "***REPLACE_WITH_LASTFM_API_KEY***"

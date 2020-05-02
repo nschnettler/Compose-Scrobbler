@@ -1,7 +1,5 @@
 package de.schnettler.lastfm.models
 
-
-
 data class ArtistDto(
     val name: String,
     val playcount: Long,
@@ -9,4 +7,10 @@ data class ArtistDto(
     val mbid: String,
     val url: String,
     val streamable: String
+)
+
+data class SessionDto(
+    val name: String,
+    val key: String,
+    val subscriber: Long
 )

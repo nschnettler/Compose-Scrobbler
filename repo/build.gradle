@@ -1,5 +1,10 @@
 plugins {
-    id "kotlin"
+    id "com.android.library"
+    id "kotlin-android"
+}
+
+android {
+    compileSdkVersion buildConfig.compileSdk
 }
 
 dependencies {
