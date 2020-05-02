@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler
+package de.schnettler.scrobbler.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.*
@@ -11,9 +11,7 @@ import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class MainViewModel(context: Context): ViewModel() {
-    private val repo = Repository(context)
-
+class MainViewModel(val repo: Repository): ViewModel() {
     val topArtists by lazy {
         repo.getTopArtists().asLiveData()
     }

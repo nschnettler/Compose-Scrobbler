@@ -79,6 +79,8 @@ dependencies {
     //Router
     implementation project(":router")
 
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+
     //Testing
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

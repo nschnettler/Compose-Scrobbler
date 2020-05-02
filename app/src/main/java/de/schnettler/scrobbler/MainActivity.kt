@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.Providers
+import androidx.compose.getValue
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Text
+import androidx.ui.livedata.observeAsState
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
@@ -15,25 +17,32 @@ import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
+import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
-import de.schnettler.scrobbler.screens.ChartScreen
-import de.schnettler.scrobbler.screens.HistoryScreen
-import de.schnettler.scrobbler.screens.LocalScreen
-import de.schnettler.scrobbler.screens.ProfileScreen
+import de.schnettler.scrobbler.screens.*
+import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
+import de.schnettler.scrobbler.viewmodels.MainViewModel
+import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
-   // private val model: MainViewModel by viewModels()
+    private lateinit var repo: Repository
    private val model by lazy {
-       getViewModel { MainViewModel(this) }
+       getViewModel { MainViewModel(repo) }
     }
+
+    private var userViewModel: UserViewModel? = null
+
     private val backPressHandler = BackPressHandler()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        repo = Repository(this)
+
         setContent {
             Providers(
                 AmbientBackPressHandler provides backPressHandler
@@ -67,13 +76,29 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun AppContent(backStack: BackStack<Screen>) {
         val currentScreen = backStack.last()
+        val status by model.sessionStatus.observeAsState()
         
         Crossfade(currentScreen) {screen ->
             when(screen) {
                 is Screen.Charts -> ChartScreen(artistResponse = model.topArtists)
                 is Screen.History -> HistoryScreen()
                 is Screen.Local -> LocalScreen()
-                is Screen.Profile -> ProfileScreen(context = this, sessionStatus = model.sessionStatus)
+                is Screen.Profile -> {
+                    Timber.d(status.toString())
+                    when(status) {
+                        is SessionStatus.LoggedOut -> LoginScreen(context = this)
+                        is SessionStatus.LoggedIn -> {
+                            if (userViewModel == null) {
+                                userViewModel = getViewModel {
+                                    UserViewModel(
+                                        (status as SessionStatus.LoggedIn).session, repo
+                                    )
+                                }
+                            }
+                            ProfileScreen(getViewModel { userViewModel!! })
+                        }
+                    }
+                }
             }
         }
     }

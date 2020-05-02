@@ -2,8 +2,10 @@ package de.schnettler.repo.mapping
 
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.Session
+import de.schnettler.database.models.User
 import de.schnettler.lastfm.models.ArtistDto
 import de.schnettler.lastfm.models.SessionDto
+import de.schnettler.lastfm.models.UserDto
 
 
 object ArtistMapper : Mapper<ArtistDto, Artist> {
@@ -23,4 +25,19 @@ object SessionMapper: Mapper<SessionDto, Session> {
         from.key,
         System.currentTimeMillis()
     )
+}
+
+object UserMapper: Mapper<UserDto, User> {
+    override suspend fun map(from: UserDto): User {
+        val user = User(
+            from.name,
+            from.playcount,
+            from.url,
+            from.country,
+            from.age,
+            from.realname,
+            from.registerDate.unixtime
+        )
+        return user
+    }
 }

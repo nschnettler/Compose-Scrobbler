@@ -1,40 +1,92 @@
 package de.schnettler.scrobbler.screens
 
-import android.content.Context
-import android.net.Uri
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.Composable
 import androidx.compose.getValue
-import androidx.lifecycle.LiveData
 import androidx.ui.core.Modifier
+import androidx.ui.core.tag
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
-import androidx.ui.layout.fillMaxSize
+import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
-import androidx.ui.material.Button
-import de.schnettler.scrobbler.*
-import de.schnettler.scrobbler.util.SessionStatus
-import timber.log.Timber
+import androidx.ui.material.Card
+import androidx.ui.text.TextStyle
+import androidx.ui.text.font.FontFamily
+import androidx.ui.text.font.FontWeight
+import androidx.ui.unit.dp
+import androidx.ui.unit.sp
+import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.database.models.User
+import de.schnettler.scrobbler.viewmodels.UserViewModel
+import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 
 @Composable
-fun ProfileScreen(context: Context, sessionStatus: LiveData<SessionStatus>) {
-   val status by sessionStatus.observeAsState()
-   
-   Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
-      when(status) {
-         is SessionStatus.LoggedOut -> {
-            Button(
-               text = {Text(text = "Login")}, onClick = {
-                  val builder = CustomTabsIntent.Builder()
-                  val customTabsIntent = builder.build()
-                  customTabsIntent.launchUrl(
-                     context, Uri.parse("$AUTH_ENDPOINT?api_key=$API_KEY&cb=$REDIRECT_URL").also { Timber.i(it.toString()) }
-                  )
-               })
+fun ProfileScreen(model: UserViewModel) {
+
+   val userResponse by model.userInfo.observeAsState()
+
+   when(userResponse) {
+      is StoreResponse.Data -> {
+         Column {
+            UserInfoComponent((userResponse as StoreResponse.Data<User>).value)
          }
-         is SessionStatus.LoggedIn -> {
-            Text(text = "Hello ${(status as SessionStatus.LoggedIn).session.name}")
+      }
+      is StoreResponse.Loading ->  {
+         LiveDataLoadingComponent()
+      }
+      is StoreResponse.Error ->  {
+         Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
+            Text(text = "Error: ${(userResponse as StoreResponse.Error<User>).errorMessageOrNull()}")
+         }
+      }
+   }
+}
+
+@Composable
+fun UserInfoComponent(user: User) {
+   Card(modifier = Modifier.preferredHeight(120.dp) + Modifier.fillMaxWidth() + Modifier.padding(8.dp),
+      shape = RoundedCornerShape(8.dp)
+   ) {
+      ConstraintLayout(ConstraintSet {
+         val title = tag("title")
+         val subtitle = tag("subtitle")
+         val image = tag("image")
+
+         image.apply {
+            centerVertically()
+            left constrainTo parent.left
+            left.margin = 16.dp
+         }
+
+         title.apply {
+            left constrainTo image.right
+            left.margin = 16.dp
+            top constrainTo image.top
+         }
+
+         subtitle.apply {
+            bottom constrainTo image.bottom
+            left constrainTo image.right
+            left.margin = 16.dp
+         }
+
+      }) {
+         Text(user.name, style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
+         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("title"))
+         val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime()
+         Text("scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}", style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
+         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("subtitle"))
+         Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) +
+                 Modifier.preferredWidth(72.dp)) {
+            //Image(imageFromResource(resources, R.drawable.lenna))
          }
       }
    }
