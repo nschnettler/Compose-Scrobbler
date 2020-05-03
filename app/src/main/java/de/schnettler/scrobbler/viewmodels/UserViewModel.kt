@@ -10,4 +10,8 @@ class UserViewModel(val session: Session, repo: Repository) : ViewModel() {
     val userInfo by lazy {
         repo.getUserInfo(session.key).asLiveData(viewModelScope.coroutineContext)
     }
+
+    val userTopArtists by lazy {
+        repo.getUserTopArtists(session.key).asLiveData(viewModelScope.coroutineContext)
+    }
 }

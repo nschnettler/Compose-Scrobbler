@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                     if (chartsViewModel == null) {
                         chartsViewModel = getViewModel { ChartsViewModel(repo) }
                     }
-                    ChartScreen(artistResponse = chartsViewModel!!.topArtists)
+                    ChartScreen(artistResponse = chartsViewModel!!.test)
                 }
                 is Screen.History -> HistoryScreen()
                 is Screen.Local -> LocalScreen()

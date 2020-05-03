@@ -8,17 +8,31 @@ import androidx.ui.livedata.observeAsState
 import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.model.ListItem
+import de.schnettler.scrobbler.util.ChartState
+import de.schnettler.scrobbler.util.LoadingStatus
+import de.schnettler.scrobbler.util.State
 import timber.log.Timber
 import java.util.*
 
 val formatter: CompactDecimalFormat = CompactDecimalFormat.getInstance(Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
 
 @Composable
-fun ChartScreen(artistResponse: LiveData<List<Artist>>) {
-    val response by artistResponse.observeAsState(listOf())
+fun ChartScreen(artistResponse: LiveData<ChartState>) {
+    val response by artistResponse.observeAsState()
 
-    Timber.d("Loaded: $response")
-    ArtistsComponent(artistList = response)
+    val artistState = response?.artistState
+    Timber.d("Status ${response?.artistState?.status}")
+    
+    artistState?.let { 
+        it.data?.let { data ->
+            ArtistsComponent(artistList = data)
+        }
+    }
+
+//    response?.data?.let {
+//        ArtistsComponent(artistList = it)
+//    }
+
 //    when (response) {
 //        is StoreResponse.Loading -> LiveDataLoadingComponent()
 //        is StoreResponse.Data -> ArtistsComponent((response as StoreResponse.Data<List<Artist>>).value)
