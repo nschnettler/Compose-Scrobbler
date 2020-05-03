@@ -29,7 +29,7 @@ fun BottomNavigationBar(backStack: BackStack<Screen>, items: List<Screen>) {
                 onSelected = {
                     val newScreen = items[index]
                     if (backStack.last() != newScreen) {
-                        backStack.push(items[index])
+                        backStack.replace(items[index])
                     } else Timber.d("Already here")
                 }
             )
