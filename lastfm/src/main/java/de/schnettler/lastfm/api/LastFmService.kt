@@ -15,6 +15,7 @@ interface LastFmService {
 
         const val METHOD_AUTH_SESSION = "auth.getSession"
         const val METHOD_USER_INFO = "user.getinfo"
+        const val METHOD_USER_ARTISTS = "user.getTopArtists"
     }
 
     @GET("?method=chart.gettopartists&")

@@ -12,7 +12,7 @@ object ArtistMapper : Mapper<ArtistDto, Artist> {
     override suspend fun map(from: ArtistDto): Artist = Artist(
             from.name,
             from.playcount,
-            from.listeners,
+            from.listeners ?: 0,
             from.mbid,
             from.url,
             from.streamable
