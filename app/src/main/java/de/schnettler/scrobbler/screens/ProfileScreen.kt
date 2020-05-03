@@ -7,19 +7,19 @@ import androidx.ui.core.tag
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontFamily
-import androidx.ui.text.font.FontWeight
+import androidx.ui.material.ListItem
+import androidx.ui.material.Surface
 import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.User
-import de.schnettler.scrobbler.viewmodels.UserViewModel
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.viewmodels.UserViewModel
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
@@ -50,44 +50,37 @@ fun ProfileScreen(model: UserViewModel) {
 
 @Composable
 fun UserInfoComponent(user: User) {
-   Card(modifier = Modifier.preferredHeight(120.dp) + Modifier.fillMaxWidth() + Modifier.padding(8.dp),
+   Card(modifier = Modifier.fillMaxWidth() + Modifier.padding(8.dp),
       shape = RoundedCornerShape(8.dp)
    ) {
-      ConstraintLayout(ConstraintSet {
-         val title = tag("title")
-         val subtitle = tag("subtitle")
-         val image = tag("image")
+      val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
+         .atZone(ZoneId.systemDefault())
+         .toLocalDateTime()
+      ListItem(
+         text = {
+            Text(text = user.name)
+         },
+         secondaryText = {
+            Text(text = "scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
+         },
+         icon = {
+            Surface(color = Color.Gray, shape = CircleShape) {
+               Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) + Modifier.preferredWidth(72.dp)) {
+//            //Image(imageFromResource(resources, R.drawable.lenna))
+               }
+            }
 
-         image.apply {
-            centerVertically()
-            left constrainTo parent.left
-            left.margin = 16.dp
          }
-
-         title.apply {
-            left constrainTo image.right
-            left.margin = 16.dp
-            top constrainTo image.top
-         }
-
-         subtitle.apply {
-            bottom constrainTo image.bottom
-            left constrainTo image.right
-            left.margin = 16.dp
-         }
-
-      }) {
-         Text(user.name, style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
-         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("title"))
-         val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
-         Text("scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}", style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
-         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("subtitle"))
-         Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) +
-                 Modifier.preferredWidth(72.dp)) {
-            //Image(imageFromResource(resources, R.drawable.lenna))
-         }
-      }
+      )
+//
+//         Text(user.name, style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
+//         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("title"))
+//
+//         Text("scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}", style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
+//         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("subtitle"))
+//         Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) +
+//                 Modifier.preferredWidth(72.dp)) {
+//            //Image(imageFromResource(resources, R.drawable.lenna))
+//         }
    }
 }
