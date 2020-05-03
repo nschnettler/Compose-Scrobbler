@@ -1,7 +1,8 @@
 package de.schnettler.scrobbler.viewmodels
 
-import android.content.Context
-import androidx.lifecycle.*
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.util.SessionStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,9 +13,6 @@ import timber.log.Timber
 @ExperimentalCoroutinesApi
 @FlowPreview
 class MainViewModel(val repo: Repository): ViewModel() {
-    val topArtists by lazy {
-        repo.getTopArtists().asLiveData()
-    }
 
     private val session by lazy {
         repo.getSession()

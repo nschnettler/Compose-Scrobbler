@@ -1,24 +1,20 @@
 package de.schnettler.repo
 
 import android.content.Context
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import com.dropbox.android.external.store4.nonFlowValueFetcher
+import com.dropbox.android.external.store4.*
 import de.schnettler.database.models.Artist
+import de.schnettler.database.models.ListEntryWithArtist
 import de.schnettler.database.models.User
 import de.schnettler.database.provideDatabase
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
 import de.schnettler.lastfm.models.UserDto
-import de.schnettler.repo.mapping.ArtistMapper
-import de.schnettler.repo.mapping.SessionMapper
-import de.schnettler.repo.mapping.UserMapper
-import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.md5
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapLatest
 import java.util.*
 import kotlin.collections.List
 import kotlin.collections.MutableMap
@@ -34,12 +30,20 @@ class Repository(context: Context) {
     private val service = RetrofitService.lastFmService
     private val db = provideDatabase(context)
 
-    fun getTopArtists() = topArtistStore.stream(StoreRequest.fresh("1"))
+    fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
 
-    private val topArtistStore = StoreBuilder.from<String, List<Artist>>(
+    private val topArtistStore = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            ArtistMapper.forLists().invoke(service.getTopArtists())
-        }
+            TopListMapper.forLists().invoke(service.getTopArtists())
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {
+                db.topListDao().getTopArtists("TOP_LIST_ARTIST").mapLatest { entry -> entry?.map { it.artist } }
+            },
+            writer = { _: String, listEntry: List<ListEntryWithArtist> ->
+                db.topListDao().insertTopArtists(listEntry)
+            }
+        )
     ).build()
 
     suspend fun refreshSession(token: String) {
