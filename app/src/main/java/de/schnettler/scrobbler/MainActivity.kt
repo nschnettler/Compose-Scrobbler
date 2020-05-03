@@ -90,7 +90,6 @@ class MainActivity : AppCompatActivity() {
                 is Screen.History -> HistoryScreen()
                 is Screen.Local -> LocalScreen()
                 is Screen.Profile -> {
-                    Timber.d(status.toString())
                     when(status) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> {

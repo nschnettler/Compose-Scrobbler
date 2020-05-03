@@ -4,10 +4,7 @@ import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.ContentGravity
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
@@ -15,8 +12,11 @@ import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
+import androidx.ui.material.MaterialTheme.colors
 import androidx.ui.material.Surface
+import androidx.ui.text.TextStyle
 import androidx.ui.unit.dp
+import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.User
@@ -53,7 +53,7 @@ fun ProfileScreen(model: UserViewModel) {
       TitleComponent(title = "Top-Künstler")
       when(albumResponse) {
          is StoreResponse.Data -> {
-            UserArtistsComponent((albumResponse as StoreResponse.Data<List<Artist>>).value)
+            HorizontalScrollableComponent((albumResponse as StoreResponse.Data<List<Artist>>).value)
          }
          is StoreResponse.Error ->  {
             Timber.d("Error ${(albumResponse as StoreResponse.Error<List<Artist>>).errorMessageOrNull()}")
@@ -109,4 +109,34 @@ fun UserArtistsComponent(artistList: List<Artist>) {
       )
    }
    LiveDataListComponent(items = newList)
+}
+
+@Composable
+fun HorizontalScrollableComponent(personList: List<Artist>) {
+   HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
+      Row {
+         for((index, person) in personList.withIndex()) {
+            Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
+               modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)
+            ) {
+               Box(gravity = ContentGravity.BottomStart) {
+                  Column(Modifier.padding(12.dp)) {
+                     Text(person.name,
+                        style = TextStyle(
+                           color = Color.Black,
+                           fontSize = 16.sp
+                        )
+                     )
+                     Text("${person.playcount.toString()} Wiedergaben",
+                        style = TextStyle(
+                           color = Color.Black,
+                           fontSize = 12.sp
+                        )
+                     )
+                  }
+               }
+            }
+         }
+      }
+   }
 }
