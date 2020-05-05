@@ -30,11 +30,10 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
 
     private lateinit var repo: Repository
-   private val model by lazy {
-       getViewModel { MainViewModel(repo) }
-    }
+    private val model by lazy { getViewModel { MainViewModel(repo) } }
+    private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
+
     private var userViewModel: UserViewModel? = null
-    private var chartsViewModel: ChartsViewModel? = null
 
     private val backPressHandler = BackPressHandler()
 
@@ -81,12 +80,7 @@ class MainActivity : AppCompatActivity() {
         
         Crossfade(currentScreen) {screen ->
             when(screen) {
-                is Screen.Charts -> {
-                    if (chartsViewModel == null) {
-                        chartsViewModel = getViewModel { ChartsViewModel(repo) }
-                    }
-                    ChartScreen(artistResponse = chartsViewModel!!.test)
-                }
+                is Screen.Charts -> ChartScreen(model = chartsModel)
                 is Screen.History -> HistoryScreen()
                 is Screen.Local -> LocalScreen()
                 is Screen.Profile -> {
