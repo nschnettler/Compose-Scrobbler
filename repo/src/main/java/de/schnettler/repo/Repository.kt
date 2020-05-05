@@ -4,10 +4,12 @@ import android.content.Context
 import com.dropbox.android.external.store4.*
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListEntryWithArtist
+import de.schnettler.database.models.Track
 import de.schnettler.database.models.User
 import de.schnettler.database.provideDatabase
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
+import de.schnettler.lastfm.models.TrackDto
 import de.schnettler.lastfm.models.UserDto
 import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.createSignature
@@ -69,6 +71,15 @@ class Repository(context: Context) {
         val userInfoStore = StoreBuilder.from<String, List<Artist>>(
             fetcher = nonFlowValueFetcher {
                 ArtistMapper.forLists().invoke(service.getUserTopArtists(sessionKey))
+            }
+        ).build()
+        return userInfoStore.stream(StoreRequest.fresh(""))
+    }
+
+    fun getUserRecentTrack(sessionKey: String): Flow<StoreResponse<List<Track>>> {
+        val userInfoStore = StoreBuilder.from<String, List<Track>>(
+            fetcher = nonFlowValueFetcher {
+                TrackMapper.forLists().invoke(service.getUserRecentTrack(sessionKey))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))

@@ -14,4 +14,8 @@ class UserViewModel(val session: Session, repo: Repository) : ViewModel() {
     val userTopArtists by lazy {
         repo.getUserTopArtists(session.key).asLiveData(viewModelScope.coroutineContext)
     }
+
+    val getUserRecentTracks by lazy {
+        repo.getUserRecentTrack(session.key).asLiveData(viewModelScope.coroutineContext)
+    }
 }

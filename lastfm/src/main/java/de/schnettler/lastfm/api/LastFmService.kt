@@ -3,6 +3,7 @@ package de.schnettler.lastfm.api
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.lastfm.models.ArtistDto
 import de.schnettler.lastfm.models.SessionDto
+import de.schnettler.lastfm.models.TrackDto
 import de.schnettler.lastfm.models.UserDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -16,6 +17,7 @@ interface LastFmService {
         const val METHOD_AUTH_SESSION = "auth.getSession"
         const val METHOD_USER_INFO = "user.getinfo"
         const val METHOD_USER_ARTISTS = "user.getTopArtists"
+        const val METHOD_USER_RECENT = "user.getRecentTracks"
     }
 
     @GET("?method=chart.gettopartists&")

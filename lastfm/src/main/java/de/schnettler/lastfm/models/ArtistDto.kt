@@ -1,6 +1,7 @@
 package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
+import com.sun.org.apache.xpath.internal.operations.Bool
 
 data class ArtistDto(
     val name: String,
@@ -29,4 +30,17 @@ data class UserDto(
 
 data class DateDto(
     @Json(name = "#text") val unixtime: Long
+)
+
+data class TrackDto(
+    val artist: TrackRelationDto,
+    val album: TrackRelationDto,
+    val mbid: String,
+    val url: String,
+    val name: String
+)
+
+data class TrackRelationDto(
+    @Json(name = "#text") val name: String,
+    val mbid: String
 )
