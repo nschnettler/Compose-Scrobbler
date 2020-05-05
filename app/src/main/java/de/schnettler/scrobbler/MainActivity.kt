@@ -23,6 +23,7 @@ import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
+import de.schnettler.scrobbler.viewmodels.HistoryViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
@@ -34,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
 
     private var userViewModel: UserViewModel? = null
+    private var historyViewModel: HistoryViewModel? = null
+
 
     private val backPressHandler = BackPressHandler()
 
@@ -81,7 +84,21 @@ class MainActivity : AppCompatActivity() {
         Crossfade(currentScreen) {screen ->
             when(screen) {
                 is Screen.Charts -> ChartScreen(model = chartsModel)
-                is Screen.History -> HistoryScreen()
+                is Screen.History ->  {
+                    when(status) {
+                        is SessionStatus.LoggedOut -> LoginScreen(context = this)
+                        is SessionStatus.LoggedIn -> {
+                            if (historyViewModel == null) {
+                                historyViewModel = getViewModel {
+                                    HistoryViewModel(
+                                        (status as SessionStatus.LoggedIn).session, repo
+                                    )
+                                }
+                            }
+                            HistoryScreen(getViewModel { historyViewModel!! })
+                        }
+                    }
+                }
                 is Screen.Local -> LocalScreen()
                 is Screen.Profile -> {
                     when(status) {

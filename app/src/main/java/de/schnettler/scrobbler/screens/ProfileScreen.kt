@@ -37,7 +37,6 @@ fun ProfileScreen(model: UserViewModel) {
 
    val userResponse by model.userInfo.observeAsState()
    val albumResponse by model.userTopArtists.observeAsState()
-   val recentsResponse by model.getUserRecentTracks.observeAsState()
 
    Column {
       when(userResponse) {
@@ -59,16 +58,6 @@ fun ProfileScreen(model: UserViewModel) {
          }
          is StoreResponse.Error ->  {
             Timber.d("Error ${(albumResponse as StoreResponse.Error<List<Artist>>).errorMessageOrNull()}")
-         }
-      }
-
-      TitleComponent(title = "Letzte Wiedergaben")
-      when(recentsResponse) {
-         is StoreResponse.Data -> {
-            LiveDataListComponent(items = (recentsResponse as StoreResponse.Data<List<Track>>).value.map { de.schnettler.scrobbler.model.ListItem(it.name, "${it.artist} ⦁ ${it.album}", "") })
-         }
-         is StoreResponse.Error ->  {
-            Timber.d("Error ${(recentsResponse as StoreResponse.Error<List<Track>>).errorMessageOrNull()}")
          }
       }
    }
