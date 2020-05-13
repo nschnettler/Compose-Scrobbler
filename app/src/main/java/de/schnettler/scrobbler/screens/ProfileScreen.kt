@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
 import androidx.compose.getValue
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
 import androidx.ui.foundation.*
@@ -20,6 +21,7 @@ import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.*
 import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.NetworkImageComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import org.threeten.bp.Instant
@@ -119,17 +121,22 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>) {
             Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
                modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)
             ) {
-               Box(gravity = ContentGravity.BottomStart) {
-                  Column(Modifier.padding(12.dp)) {
+               Stack() {
+                  Box(Modifier.gravity(Alignment.Center))  {
+                     entry.imageUrl?.let {
+                        NetworkImageComponent(url = it)
+                     }
+                  }
+                  Column(Modifier.padding(12.dp) + Modifier.gravity(Alignment.BottomStart)) {
                      Text(entry.title,
                         style = TextStyle(
-                           color = Color.Black,
+                           color = if (entry.imageUrl == null) Color.Black else Color.White,
                            fontSize = 16.sp
                         )
                      )
                      Text("${entry.plays} Wiedergaben",
                         style = TextStyle(
-                           color = Color.Black,
+                           color = if (entry.imageUrl == null) Color.Black else Color.White,
                            fontSize = 12.sp
                         )
                      )

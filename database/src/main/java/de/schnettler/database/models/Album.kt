@@ -10,10 +10,12 @@ data class Album(
     val playcount: Long,
     val mbid: String,
     val url: String,
-    val artist: String
-): TopListEntry(name, playcount)
+    val artist: String,
+    override val imageUrl: String? = null
+): TopListEntry(name, playcount, imageUrl)
 
 open class TopListEntry(
     @Ignore val title: String,
-    @Ignore val plays: Long
+    @Ignore val plays: Long,
+    @Ignore open val imageUrl: String? = null
 )

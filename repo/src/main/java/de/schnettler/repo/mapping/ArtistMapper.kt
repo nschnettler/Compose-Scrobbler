@@ -21,7 +21,8 @@ object AlbumMapper : Mapper<AlbumDto, Album> {
         artist = from.artist.name,
         mbid = from.mbid,
         playcount = from.playcount,
-        url = from.url
+        url = from.url,
+        imageUrl = from.images[3].url
     )
 }
 

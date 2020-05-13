@@ -22,3 +22,8 @@ data class TrackRelationDto(
     @Json(name = "#text") val name: String,
     val mbid: String
 )
+
+data class ImageDto(
+    val size: String,
+    @Json(name = "#text") val url: String
+)
