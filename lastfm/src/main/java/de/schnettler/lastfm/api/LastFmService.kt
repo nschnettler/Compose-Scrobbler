@@ -1,10 +1,7 @@
 package de.schnettler.lastfm.api
 
 import com.serjltt.moshi.adapters.Wrapped
-import de.schnettler.lastfm.models.ArtistDto
-import de.schnettler.lastfm.models.SessionDto
-import de.schnettler.lastfm.models.TrackDto
-import de.schnettler.lastfm.models.UserDto
+import de.schnettler.lastfm.models.*
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -17,6 +14,8 @@ interface LastFmService {
         const val METHOD_AUTH_SESSION = "auth.getSession"
         const val METHOD_USER_INFO = "user.getinfo"
         const val METHOD_USER_ARTISTS = "user.getTopArtists"
+        const val METHOD_USER_ALBUMS = "user.getTopAlbums"
+        const val METHOD_USER_TRACKS = "user.getTopTracks"
         const val METHOD_USER_RECENT = "user.getRecentTracks"
     }
 
@@ -32,4 +31,33 @@ interface LastFmService {
         @Query("api_sig") signature: String
     ): SessionDto
 
+    @GET("?method=$METHOD_USER_INFO")
+    @Wrapped(path = ["user"])
+    suspend fun getUserInfo(
+        @Query("sk") sessionKey: String
+    ): UserDto
+
+    @GET("?method=$METHOD_USER_ALBUMS&limit=5")
+    @Wrapped(path = ["topalbums", "album"])
+    suspend fun getUserTopAlbums(
+        @Query("sk") sessionKey: String
+    ): List<AlbumDto>
+
+    @GET("?method=$METHOD_USER_ARTISTS&limit=5")
+    @Wrapped(path = ["topartists", "artist"])
+    suspend fun getUserTopArtists(
+        @Query("sk") sessionKey: String
+    ): List<ArtistDto>
+
+    @GET("?method=$METHOD_USER_TRACKS&limit=5")
+    @Wrapped(path = ["toptracks", "track"])
+    suspend fun getUserTopTracks(
+        @Query("sk") sessionKey: String
+    ): List<TrackDto>
+
+    @GET("?method=$METHOD_USER_RECENT")
+    @Wrapped(path = ["recenttracks", "track"])
+    suspend fun getUserRecentTrack(
+        @Query("sk") sessionKey: String
+    ): List<TrackWithAlbumDto>
 }

@@ -2,29 +2,16 @@ package de.schnettler.repo
 
 import android.content.Context
 import com.dropbox.android.external.store4.*
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.ListEntryWithArtist
-import de.schnettler.database.models.Track
-import de.schnettler.database.models.User
+import de.schnettler.database.models.*
 import de.schnettler.database.provideDatabase
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
-import de.schnettler.lastfm.models.TrackDto
-import de.schnettler.lastfm.models.UserDto
 import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.createSignature
-import de.schnettler.repo.util.md5
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
-import java.util.*
-import kotlin.collections.List
-import kotlin.collections.MutableMap
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.iterator
-import kotlin.collections.set
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -76,10 +63,28 @@ class Repository(context: Context) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
+    fun getUserTopAlbums(sessionKey: String): Flow<StoreResponse<List<Album>>> {
+        val userInfoStore = StoreBuilder.from<String, List<Album>>(
+            fetcher = nonFlowValueFetcher {
+                AlbumMapper.forLists().invoke(service.getUserTopAlbums(sessionKey))
+            }
+        ).build()
+        return userInfoStore.stream(StoreRequest.fresh(""))
+    }
+
+    fun getUserTopTracks(sessionKey: String): Flow<StoreResponse<List<Track>>> {
+        val userInfoStore = StoreBuilder.from<String, List<Track>>(
+            fetcher = nonFlowValueFetcher {
+                TrackMapper.forLists().invoke(service.getUserTopTracks(sessionKey))
+            }
+        ).build()
+        return userInfoStore.stream(StoreRequest.fresh(""))
+    }
+
     fun getUserRecentTrack(sessionKey: String): Flow<StoreResponse<List<Track>>> {
         val userInfoStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
-                TrackMapper.forLists().invoke(service.getUserRecentTrack(sessionKey))
+                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(sessionKey))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))

@@ -12,15 +12,12 @@ import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
-import androidx.ui.material.MaterialTheme.colors
 import androidx.ui.material.Surface
 import androidx.ui.text.TextStyle
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.Track
-import de.schnettler.database.models.User
+import de.schnettler.database.models.*
 import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
@@ -36,28 +33,52 @@ import timber.log.Timber
 fun ProfileScreen(model: UserViewModel) {
 
    val userResponse by model.userInfo.observeAsState()
-   val albumResponse by model.userTopArtists.observeAsState()
+   val artistResponse by model.userTopArtists.observeAsState()
+   val albumResponse  by model.userTopAlbums.observeAsState()
+   val topTracks by model.topTracks.observeAsState()
 
-   Column {
-      when(userResponse) {
-         is StoreResponse.Data -> {
-            Column { UserInfoComponent((userResponse as StoreResponse.Data<User>).value) }
-         }
-         is StoreResponse.Loading ->  { LiveDataLoadingComponent() }
-         is StoreResponse.Error ->  {
-            Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
-               Text(text = "Error: ${(userResponse as StoreResponse.Error<User>).errorMessageOrNull()}")
+   VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
+      Column {
+         when(userResponse) {
+            is StoreResponse.Data -> {
+               Column { UserInfoComponent((userResponse as StoreResponse.Data<User>).value) }
+            }
+            is StoreResponse.Loading ->  { LiveDataLoadingComponent() }
+            is StoreResponse.Error ->  {
+               Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
+                  Text(text = "Error: ${(userResponse as StoreResponse.Error<User>).errorMessageOrNull()}")
+               }
             }
          }
-      }
 
-      TitleComponent(title = "Top-Künstler")
-      when(albumResponse) {
-         is StoreResponse.Data -> {
-            HorizontalScrollableComponent((albumResponse as StoreResponse.Data<List<Artist>>).value)
+         TitleComponent(title = "Top-Künstler")
+         when(artistResponse) {
+            is StoreResponse.Data -> {
+               HorizontalScrollableComponent((artistResponse as StoreResponse.Data<List<Artist>>).value.map { artist -> TopListEntry(artist.name, artist.playcount) })
+            }
+            is StoreResponse.Error ->  {
+               Timber.d("Error ${(artistResponse as StoreResponse.Error<List<Artist>>).errorMessageOrNull()}")
+            }
          }
-         is StoreResponse.Error ->  {
-            Timber.d("Error ${(albumResponse as StoreResponse.Error<List<Artist>>).errorMessageOrNull()}")
+
+         TitleComponent(title = "Top-Alben")
+         when(albumResponse) {
+            is StoreResponse.Data -> {
+               HorizontalScrollableComponent((albumResponse as StoreResponse.Data<List<Album>>).value.map { album -> TopListEntry(album.name, album.playcount) })
+            }
+            is StoreResponse.Error ->  {
+               Timber.d("Error ${(albumResponse as StoreResponse.Error<List<Album>>).errorMessageOrNull()}")
+            }
+         }
+
+         TitleComponent(title = "Top-Titel")
+         when(topTracks) {
+            is StoreResponse.Data -> {
+               HorizontalScrollableComponent((topTracks as StoreResponse.Data<List<Track>>).value.map { track -> TopListEntry(track.name, track.playcount) })
+            }
+            is StoreResponse.Error ->  {
+               Timber.d("Error ${(topTracks as StoreResponse.Error<List<Track>>).errorMessageOrNull()}")
+            }
          }
       }
    }
@@ -113,7 +134,7 @@ fun UserArtistsComponent(artistList: List<Artist>) {
 }
 
 @Composable
-fun HorizontalScrollableComponent(personList: List<Artist>) {
+fun HorizontalScrollableComponent(personList: List<TopListEntry>) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
          for((index, person) in personList.withIndex()) {

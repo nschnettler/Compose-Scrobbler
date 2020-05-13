@@ -4,11 +4,15 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Artist(
+data class Album(
     @PrimaryKey val name: String,
     val playcount: Long,
-    val listeners: Long,
     val mbid: String,
     val url: String,
-    val streamable: String
+    val artist: String
+)
+
+data class TopListEntry(
+    val name: String,
+    val playcount: Long
 )

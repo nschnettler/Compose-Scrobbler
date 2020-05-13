@@ -1,10 +1,9 @@
 package de.schnettler.lastfm.models
 
-data class ArtistDto(
+data class AlbumDto(
     override val name: String,
     override val mbid: String,
     override val url: String,
     val playcount: Long,
-    val listeners: Long?,
-    val streamable: String
+    val artist: ListingDto
 ): ListingDto(name, mbid, url)

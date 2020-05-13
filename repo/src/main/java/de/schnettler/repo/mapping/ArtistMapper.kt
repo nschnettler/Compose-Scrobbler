@@ -1,13 +1,7 @@
 package de.schnettler.repo.mapping
 
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.Session
-import de.schnettler.database.models.Track
-import de.schnettler.database.models.User
-import de.schnettler.lastfm.models.ArtistDto
-import de.schnettler.lastfm.models.SessionDto
-import de.schnettler.lastfm.models.TrackDto
-import de.schnettler.lastfm.models.UserDto
+import de.schnettler.database.models.*
+import de.schnettler.lastfm.models.*
 
 
 object ArtistMapper : Mapper<ArtistDto, Artist> {
@@ -18,6 +12,16 @@ object ArtistMapper : Mapper<ArtistDto, Artist> {
             from.mbid,
             from.url,
             from.streamable
+    )
+}
+
+object AlbumMapper : Mapper<AlbumDto, Album> {
+    override suspend fun map(from: AlbumDto): Album = Album(
+        name = from.name,
+        artist = from.artist.name,
+        mbid = from.mbid,
+        playcount = from.playcount,
+        url = from.url
     )
 }
 
@@ -46,6 +50,15 @@ object UserMapper: Mapper<UserDto, User> {
 
 object TrackMapper: Mapper<TrackDto, Track> {
     override suspend fun map(from: TrackDto) = Track(
+        name = from.name,
+        id = from.mbid,
+        artist = from.artist.name,
+        playcount = from.playcount
+    )
+}
+
+object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {
+    override suspend fun map(from: TrackWithAlbumDto) = Track(
         name = from.name,
         id = from.mbid,
         album = from.album.name,
