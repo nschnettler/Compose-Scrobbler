@@ -11,4 +11,4 @@ data class Artist(
     val mbid: String,
     val url: String,
     val streamable: String
-)
+): TopListEntry(name, playcount)

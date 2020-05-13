@@ -35,10 +35,10 @@ fun ProfileScreen(model: UserViewModel) {
    val userResponse by model.userInfo.observeAsState()
    val artistResponse by model.userTopArtists.observeAsState()
    val albumResponse  by model.userTopAlbums.observeAsState()
-   val topTracks by model.topTracks.observeAsState()
+   val tracksResponse by model.topTracks.observeAsState()
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
-      Column {
+      Column(modifier = Modifier.padding(bottom = 16.dp)) {
          when(userResponse) {
             is StoreResponse.Data -> {
                Column { UserInfoComponent((userResponse as StoreResponse.Data<User>).value) }
@@ -51,35 +51,23 @@ fun ProfileScreen(model: UserViewModel) {
             }
          }
 
-         TitleComponent(title = "Top-Künstler")
-         when(artistResponse) {
-            is StoreResponse.Data -> {
-               HorizontalScrollableComponent((artistResponse as StoreResponse.Data<List<Artist>>).value.map { artist -> TopListEntry(artist.name, artist.playcount) })
-            }
-            is StoreResponse.Error ->  {
-               Timber.d("Error ${(artistResponse as StoreResponse.Error<List<Artist>>).errorMessageOrNull()}")
-            }
-         }
+         TopEntry(title = "Top-Künstler", content = artistResponse)
+         TopEntry(title = "Top-Alben", content = albumResponse)
+         TopEntry(title = "Top-Titel", content = tracksResponse)
+      }
+   }
+}
 
-         TitleComponent(title = "Top-Alben")
-         when(albumResponse) {
-            is StoreResponse.Data -> {
-               HorizontalScrollableComponent((albumResponse as StoreResponse.Data<List<Album>>).value.map { album -> TopListEntry(album.name, album.playcount) })
-            }
-            is StoreResponse.Error ->  {
-               Timber.d("Error ${(albumResponse as StoreResponse.Error<List<Album>>).errorMessageOrNull()}")
-            }
-         }
-
-         TitleComponent(title = "Top-Titel")
-         when(topTracks) {
-            is StoreResponse.Data -> {
-               HorizontalScrollableComponent((topTracks as StoreResponse.Data<List<Track>>).value.map { track -> TopListEntry(track.name, track.playcount) })
-            }
-            is StoreResponse.Error ->  {
-               Timber.d("Error ${(topTracks as StoreResponse.Error<List<Track>>).errorMessageOrNull()}")
-            }
-         }
+@Composable
+fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?) {
+   TitleComponent(title = title)
+   
+   when(content) {
+      is StoreResponse.Data -> {
+         HorizontalScrollableComponent(content = content.value)
+      }
+      is StoreResponse.Error -> {
+         Timber.d("Error ${(content as StoreResponse.Error<*>).errorMessageOrNull()}")
       }
    }
 }
@@ -108,16 +96,6 @@ fun UserInfoComponent(user: User) {
 
          }
       )
-//
-//         Text(user.name, style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
-//         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("title"))
-//
-//         Text("scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}", style = TextStyle(fontFamily = FontFamily.Serif, fontWeight =
-//         FontWeight.W900, fontSize = 14.sp), modifier = Modifier.tag("subtitle"))
-//         Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) +
-//                 Modifier.preferredWidth(72.dp)) {
-//            //Image(imageFromResource(resources, R.drawable.lenna))
-//         }
    }
 }
 
@@ -134,22 +112,22 @@ fun UserArtistsComponent(artistList: List<Artist>) {
 }
 
 @Composable
-fun HorizontalScrollableComponent(personList: List<TopListEntry>) {
+fun HorizontalScrollableComponent(content: List<TopListEntry>) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
-         for((index, person) in personList.withIndex()) {
+         for(entry in content) {
             Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
                modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)
             ) {
                Box(gravity = ContentGravity.BottomStart) {
                   Column(Modifier.padding(12.dp)) {
-                     Text(person.name,
+                     Text(entry.title,
                         style = TextStyle(
                            color = Color.Black,
                            fontSize = 16.sp
                         )
                      )
-                     Text("${person.playcount.toString()} Wiedergaben",
+                     Text("${entry.plays} Wiedergaben",
                         style = TextStyle(
                            color = Color.Black,
                            fontSize = 12.sp
