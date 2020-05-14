@@ -15,6 +15,7 @@ import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
 import androidx.ui.text.TextStyle
+import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
@@ -118,29 +119,33 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
          for(entry in content) {
-            Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
-               modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)
-            ) {
-               Stack() {
-                  Box(Modifier.gravity(Alignment.Center))  {
-                     entry.imageUrl?.let {
-                        NetworkImageComponent(url = it)
+            Column(modifier = Modifier.preferredWidth(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)) {
+               Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
+                  modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
+               ) {
+                  Stack() {
+                     Box(Modifier.gravity(Alignment.Center))  {
+                        entry.imageUrl?.let {
+                           NetworkImageComponent(url = it)
+                        }
                      }
                   }
-                  Column(Modifier.padding(12.dp) + Modifier.gravity(Alignment.BottomStart)) {
-                     Text(entry.title,
-                        style = TextStyle(
-                           color = if (entry.imageUrl == null) Color.Black else Color.White,
-                           fontSize = 16.sp
-                        )
+               }
+               Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+                  Text(entry.title,
+                     style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 14.sp
+                     ),
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis
+                  )
+                  Text("${entry.plays} Wiedergaben",
+                     style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 12.sp
                      )
-                     Text("${entry.plays} Wiedergaben",
-                        style = TextStyle(
-                           color = if (entry.imageUrl == null) Color.Black else Color.White,
-                           fontSize = 12.sp
-                        )
-                     )
-                  }
+                  )
                }
             }
          }
