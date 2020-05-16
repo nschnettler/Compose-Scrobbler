@@ -75,6 +75,9 @@ fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?, onEntry
       is StoreResponse.Error -> {
          Text(text = content.errorMessageOrNull() ?: "")
       }
+      is StoreResponse.Loading -> {
+         LiveDataLoadingComponent(modifier = Modifier.height(32.dp) + Modifier.width(32.dp))
+      }
    }
 }
 

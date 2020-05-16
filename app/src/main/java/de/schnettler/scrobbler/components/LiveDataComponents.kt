@@ -23,9 +23,11 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.model.ListItem
 
 @Composable
-fun LiveDataLoadingComponent() {
-    Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
-        CircularProgressIndicator(modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally))
+fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier, gravity = ContentGravity.Center) {
+        CircularProgressIndicator(
+            color = colorResource(id = R.color.colorAccent),
+            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally))
     }
 }
 
