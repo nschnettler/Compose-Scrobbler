@@ -70,6 +70,9 @@ object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {
 object ArtistInfoMapper: Mapper<ArtistInfoDto, ArtistInfo> {
     override suspend fun map(from: ArtistInfoDto) = ArtistInfo(
         name = from.name,
-        bio = from.bio.content
+        bio = from.bio.content,
+        similar = from.similar.artist.map { dto ->
+            ArtistMin(name = dto.name, url = dto.url)
+        }
     )
 }

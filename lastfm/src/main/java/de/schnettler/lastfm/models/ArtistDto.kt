@@ -13,11 +13,16 @@ data class ArtistInfoDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
-    val bio: BioDto
+    val bio: BioDto,
+    val similar: ArtistListDto
 ): ListingDto(name, mbid, url)
 
 data class BioDto(
     val published: String,
     val summary: String,
     val content: String
+)
+
+data class ArtistListDto(
+    val artist: List<ListingDto>
 )

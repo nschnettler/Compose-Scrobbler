@@ -8,27 +8,35 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.padding
 import androidx.ui.livedata.observeAsState
 import androidx.ui.unit.dp
+import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.ArtistInfo
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
+import timber.log.Timber
 
 @Composable
 fun DetailScreen(model: DetailViewModel) {
     val info by model.details.observeAsState()
 
-    when(info) {
+    when(val _info = info) {
         is StoreResponse.Data -> {
             VerticalScroller() {
-                ExpandingSummary(text = (info as StoreResponse.Data<ArtistInfo>).value.bio, modifier = Modifier.padding(16.dp))
+                ExpandingSummary(_info.value.bio, modifier = Modifier.padding(16.dp))
+
+                TitleComponent(title = "Ähnliche Künstler")
+                
+                HorizontalScrollableComponent(content = _info.value.similar, onEntrySelected = {
+                    Timber.d("Selected")
+                }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
             }
         }
         is StoreResponse.Loading -> {
             LiveDataLoadingComponent()
         }
         is StoreResponse.Error -> {
-            Text(text = (info as StoreResponse.Error).errorMessageOrNull() ?: "")
+            Text(text = _info.errorMessageOrNull() ?: "")
         }
     }
 }

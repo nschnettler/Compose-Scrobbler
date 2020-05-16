@@ -4,7 +4,6 @@ import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
-import androidx.ui.core.clipToBounds
 import androidx.ui.core.tag
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -13,16 +12,17 @@ import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
+import androidx.ui.unit.Dp
+import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.TopListEntry
+import de.schnettler.database.models.Listing
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
@@ -34,10 +34,9 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import timber.log.Timber
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onEntrySelected: (TopListEntry) -> Unit) {
+fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
    val artistResponse by model.userTopArtists.observeAsState()
@@ -66,12 +65,18 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (TopListEntry) -> Unit)
 }
 
 @Composable
-fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?, onEntrySelected: (TopListEntry) -> Unit) {
+fun TopEntry(title: String, content: StoreResponse<List<Listing>>?, onEntrySelected: (Listing) -> Unit) {
    TitleComponent(title = title)
    
    when(content) {
       is StoreResponse.Data -> {
-         HorizontalScrollableComponent(content = content.value, onEntrySelected = onEntrySelected)
+         HorizontalScrollableComponent(
+            content = content.value,
+            onEntrySelected = onEntrySelected,
+            width = 172.dp,
+            height = 172.dp,
+            subtitleSuffix = "Wiedergaben"
+         )
       }
       is StoreResponse.Error -> {
          Text(text = content.errorMessageOrNull() ?: "")
@@ -110,21 +115,28 @@ fun UserInfoComponent(user: User) {
 }
 
 @Composable
-fun HorizontalScrollableComponent(content: List<TopListEntry>, onEntrySelected: (TopListEntry) -> Unit) {
+fun HorizontalScrollableComponent(
+   content: List<Listing>,
+   onEntrySelected: (Listing) -> Unit,
+   width: Dp,
+   height: Dp,
+   subtitleSuffix: String = "",
+   hintTextSize: TextUnit = 62.sp
+) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
          for(entry in content) {
             Clickable(onClick = {
                onEntrySelected.invoke(entry)
             }, modifier = Modifier.ripple()) {
-               Column(modifier = Modifier.preferredWidth(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)) {
+               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(end = 8.dp, start = 8.dp)) {
                   Card(shape = RoundedCornerShape(16.dp),
-                     modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
+                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height)
                   ) {
                      when (val imageUrl = entry.imageUrl) {
                         null -> {
                            Box(gravity = ContentGravity.Center) {
-                              Text(text = entry.title.first().toString(), style = TextStyle(fontSize = 62.sp))
+                              Text(text = entry.title.first().toString(), style = TextStyle(fontSize = hintTextSize))
                            }
                         }
                         else -> {
@@ -140,11 +152,13 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>, onEntrySelected: 
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                      )
-                     Text("${entry.plays} Wiedergaben",
-                        style = TextStyle(
-                           fontSize = 12.sp
+                     entry.subtitle?.let {subTitle ->
+                        Text("$subTitle $subtitleSuffix",
+                           style = TextStyle(
+                              fontSize = 12.sp
+                           )
                         )
-                     )
+                     }
                   }
                }
             }

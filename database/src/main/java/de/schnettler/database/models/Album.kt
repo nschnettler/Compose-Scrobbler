@@ -12,10 +12,10 @@ data class Album(
     val url: String,
     val artist: String,
     override val imageUrl: String? = null
-): TopListEntry(name, playcount, imageUrl)
+): Listing(name, playcount.toString(), imageUrl)
 
-open class TopListEntry(
+open class Listing(
     @Ignore val title: String,
-    @Ignore val plays: Long,
+    @Ignore val subtitle: String? = null,
     @Ignore open val imageUrl: String? = null
 )

@@ -8,4 +8,4 @@ data class Track(
     val artist: String,
     val album: String? = null,
     val playcount: Long = 0
-): TopListEntry(name, playcount)
+): Listing(name, playcount.toString())

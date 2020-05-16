@@ -11,9 +11,15 @@ data class Artist(
     val mbid: String,
     val url: String,
     val streamable: String
-): TopListEntry(name, playcount)
+): Listing(name, playcount.toString())
+
+data class ArtistMin(
+    val name: String,
+    val url: String
+): Listing(name)
 
 data class ArtistInfo(
     @PrimaryKey val name: String,
-    val bio: String
+    val bio: String,
+    val similar: List<ArtistMin>
 )
