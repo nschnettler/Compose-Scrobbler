@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.Providers
+import androidx.compose.ambientOf
 import androidx.compose.getValue
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
@@ -28,6 +29,7 @@ import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
 
+val BackStack = ambientOf<BackStack<Screen>> { error("No backstack available") }
 class MainActivity : AppCompatActivity() {
 
     private lateinit var repo: Repository
@@ -40,7 +42,6 @@ class MainActivity : AppCompatActivity() {
 
     private val backPressHandler = BackPressHandler()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -52,24 +53,26 @@ class MainActivity : AppCompatActivity() {
             ) {
                 MaterialTheme {
                     Router(defaultRouting = Screen.Local as Screen) {backStack ->
-                        Scaffold(
-                            topAppBar = {
-                                TopAppBar(
-                                    title = { Text(text = "Scrobbler") }
-                                )
-                            },
-                            bodyContent = {
-                                AppContent(backStack = backStack)
-                            },
-                            bottomAppBar = {
-                                BottomNavigationBar(backStack = backStack, items = listOf(
-                                    Screen.Charts,
-                                    Screen.Local,
-                                    Screen.History,
-                                    Screen.Profile
-                                ))
-                            }
-                        )
+                        Providers(BackStack provides backStack) {
+                            Scaffold(
+                                topAppBar = {
+                                    TopAppBar(
+                                        title = { Text(text = "Scrobbler") }
+                                    )
+                                },
+                                bodyContent = {
+                                    AppContent()
+                                },
+                                bottomAppBar = {
+                                    BottomNavigationBar(items = listOf(
+                                        Screen.Charts,
+                                        Screen.Local,
+                                        Screen.History,
+                                        Screen.Profile
+                                    ))
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -77,11 +80,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun AppContent(backStack: BackStack<Screen>) {
-        val currentScreen = backStack.last()
+    private fun AppContent() {
         val status by model.sessionStatus.observeAsState()
         
-        Crossfade(currentScreen) {screen ->
+        Crossfade(BackStack.current.last()) { screen ->
             when(screen) {
                 is Screen.Charts -> ChartScreen(model = chartsModel)
                 is Screen.History ->  {

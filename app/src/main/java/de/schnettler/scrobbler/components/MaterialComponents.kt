@@ -8,12 +8,13 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
-import com.github.zsoltk.compose.router.BackStack
+import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.Screen
 import timber.log.Timber
 
 @Composable
-fun BottomNavigationBar(backStack: BackStack<Screen>, items: List<Screen>) {
+fun BottomNavigationBar(items: List<Screen>) {
+    val backStack = BackStack.current
     var currentScreen by state { backStack.last() }
     currentScreen = backStack.last()
     BottomNavigation() {
