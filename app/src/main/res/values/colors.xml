@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple200">#BB86FC</color>
-    <color name="purple500">#6200EE</color>
-    <color name="purple700">#3700B3</color>
-    <color name="teal200">#03DAC5</color>
+    <color name="colorPrimary">#FFF</color>
+    <color name="colorPrimaryDark">#b2b2b3</color>
+    <color name="colorAccent">#7E8ACD</color>
+    <color name="colorBackground">#FFF</color>
+    <color name="colorBackgroundElevated">#F3F3F3</color>
+    <color name="colorBackgroundTransparent">#CCFFFFFF</color>
+    <color name="colorBackgroundTransparent40">#66FFFFFF</color>
+    <color name="colorStroke">#0d000000</color>
+    <color name="navigationBar">@color/colorBackground</color>
 </resources>

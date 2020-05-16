@@ -27,6 +27,7 @@ import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.HistoryViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
+import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
 
 val BackStack = ambientOf<BackStack<Screen>> { error("No backstack available") }
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             Providers(
                 AmbientBackPressHandler provides backPressHandler
             ) {
-                MaterialTheme {
+                MaterialThemeFromMdcTheme  {
                     Router(defaultRouting = Screen.Local as Screen) {backStack ->
                         Providers(BackStack provides backStack) {
                             Scaffold(

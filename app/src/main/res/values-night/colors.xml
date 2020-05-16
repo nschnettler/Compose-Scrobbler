@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/colorBackgroundElevated</color>
+    <color name="colorPrimaryDark">#353543</color>
+    <color name="colorAccent">#A4B0D9</color>
+    <color name="colorBackground">#202030</color>
+    <color name="colorBackgroundElevated">#2B2B3B</color>
+    <color name="colorBackgroundTransparent">#CC202030</color>
+    <color name="colorBackgroundTransparent40">#66202030</color>
+    <color name="colorStroke">#0dFFFFFF</color>
+    <color name="navigationBar">#3A3A48</color>
+</resources>

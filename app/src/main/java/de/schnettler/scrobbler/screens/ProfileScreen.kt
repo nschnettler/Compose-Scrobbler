@@ -2,30 +2,31 @@ package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
 import androidx.compose.getValue
-import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
+import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.*
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.TopListEntry
+import de.schnettler.database.models.User
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.UserViewModel
-import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -93,7 +94,7 @@ fun UserInfoComponent(user: User) {
             Text(text = "scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
          },
          icon = {
-            Surface(color = Color.Gray, shape = CircleShape) {
+            Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
                Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) + Modifier.preferredWidth(72.dp)) {
 //            //Image(imageFromResource(resources, R.drawable.lenna))
                }
@@ -122,7 +123,7 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>) {
       Row {
          for(entry in content) {
             Column(modifier = Modifier.preferredWidth(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)) {
-               Card(shape = RoundedCornerShape(16.dp), color = Color.LightGray,
+               Card(shape = RoundedCornerShape(16.dp),
                   modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
                ) {
                   entry.imageUrl?.let {
@@ -132,7 +133,6 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>) {
                Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
                   Text(entry.title,
                      style = TextStyle(
-                        color = Color.Black,
                         fontSize = 14.sp
                      ),
                      maxLines = 1,
@@ -140,7 +140,6 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>) {
                   )
                   Text("${entry.plays} Wiedergaben",
                      style = TextStyle(
-                        color = Color.Black,
                         fontSize = 12.sp
                      )
                   )
