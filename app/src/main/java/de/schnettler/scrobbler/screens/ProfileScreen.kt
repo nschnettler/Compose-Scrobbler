@@ -4,6 +4,7 @@ import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
+import androidx.ui.core.clipToBounds
 import androidx.ui.core.tag
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -13,17 +14,16 @@ import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
+import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.Artist
 import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.UserViewModel
@@ -36,7 +36,7 @@ import org.threeten.bp.format.FormatStyle
 import timber.log.Timber
 
 @Composable
-fun ProfileScreen(model: UserViewModel) {
+fun ProfileScreen(model: UserViewModel, onEntrySelected: (TopListEntry) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
    val artistResponse by model.userTopArtists.observeAsState()
@@ -57,20 +57,20 @@ fun ProfileScreen(model: UserViewModel) {
             }
          }
 
-         TopEntry(title = "Top-Künstler", content = artistResponse)
-         TopEntry(title = "Top-Alben", content = albumResponse)
-         TopEntry(title = "Top-Titel", content = tracksResponse)
+         TopEntry(title = "Top-Künstler", content = artistResponse, onEntrySelected = onEntrySelected)
+         TopEntry(title = "Top-Alben", content = albumResponse, onEntrySelected = onEntrySelected)
+         TopEntry(title = "Top-Titel", content = tracksResponse, onEntrySelected = onEntrySelected)
       }
    }
 }
 
 @Composable
-fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?) {
+fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?, onEntrySelected: (TopListEntry) -> Unit) {
    TitleComponent(title = title)
    
    when(content) {
       is StoreResponse.Data -> {
-         HorizontalScrollableComponent(content = content.value)
+         HorizontalScrollableComponent(content = content.value, onEntrySelected = onEntrySelected)
       }
       is StoreResponse.Error -> {
          Timber.d("Error ${(content as StoreResponse.Error<*>).errorMessageOrNull()}")
@@ -106,43 +106,35 @@ fun UserInfoComponent(user: User) {
 }
 
 @Composable
-fun UserArtistsComponent(artistList: List<Artist>) {
-   val newList = artistList.map {
-      de.schnettler.scrobbler.model.ListItem(
-         title = it.name,
-         subtitle = "${formatter.format(it.playcount)} Plays",
-         imageUrl = ""
-      )
-   }
-   LiveDataListComponent(items = newList)
-}
-
-@Composable
-fun HorizontalScrollableComponent(content: List<TopListEntry>) {
+fun HorizontalScrollableComponent(content: List<TopListEntry>, onEntrySelected: (TopListEntry) -> Unit) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
          for(entry in content) {
-            Column(modifier = Modifier.preferredWidth(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)) {
-               Card(shape = RoundedCornerShape(16.dp),
-                  modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
-               ) {
-                  entry.imageUrl?.let {
-                     CoilImageWithCrossfade(data = it, contentScale = ContentScale.Crop)
+            Clickable(onClick = {
+               onEntrySelected.invoke(entry)
+            }, modifier = Modifier.ripple()) {
+               Column(modifier = Modifier.preferredWidth(172.dp) + Modifier.padding(end = 8.dp, start = 8.dp)) {
+                  Card(shape = RoundedCornerShape(16.dp),
+                     modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
+                  ) {
+                     entry.imageUrl?.let {
+                        CoilImageWithCrossfade(data = it, contentScale = ContentScale.Crop)
+                     }
                   }
-               }
-               Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-                  Text(entry.title,
-                     style = TextStyle(
-                        fontSize = 14.sp
-                     ),
-                     maxLines = 1,
-                     overflow = TextOverflow.Ellipsis
-                  )
-                  Text("${entry.plays} Wiedergaben",
-                     style = TextStyle(
-                        fontSize = 12.sp
+                  Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+                     Text(entry.title,
+                        style = TextStyle(
+                           fontSize = 14.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                      )
-                  )
+                     Text("${entry.plays} Wiedergaben",
+                        style = TextStyle(
+                           fontSize = 12.sp
+                        )
+                     )
+                  }
                }
             }
          }

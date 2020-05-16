@@ -114,10 +114,14 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                            ProfileScreen(getViewModel { userViewModel!! })
+                            val backstack = BackStack.current
+                            ProfileScreen(getViewModel { userViewModel!! }, onEntrySelected = {
+                                backstack.push(Screen.Detail(it))
+                            })
                         }
                     }
                 }
+                is Screen.Detail -> DetailScreen(item = screen.item)
             }
         }
     }
