@@ -21,5 +21,6 @@ data class ArtistMin(
 data class ArtistInfo(
     @PrimaryKey val name: String,
     val bio: String,
-    val similar: List<ArtistMin>
+    val similar: List<ArtistMin>,
+    val tags: List<String>
 )

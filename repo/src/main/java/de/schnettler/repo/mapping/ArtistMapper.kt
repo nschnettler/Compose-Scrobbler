@@ -72,8 +72,9 @@ object ArtistInfoMapper: Mapper<ArtistInfoDto, ArtistInfo> {
     override suspend fun map(from: ArtistInfoDto) = ArtistInfo(
         name = from.name,
         bio = from.bio.content,
-        similar = from.similar.artist.map { dto ->
-            ArtistMin(name = dto.name, url = dto.url)
-        }
+        similar = from.similar.artist.map { artist ->
+            ArtistMin(name = artist.name, url = artist.url)
+        },
+        tags = from.tags.tag.map { tag -> tag.name }
     )
 }
