@@ -9,7 +9,8 @@ data class UserDto(
     val country: String,
     val age: Long,
     val realname: String,
-    @Json(name = "registered") val registerDate: DateDto
+    @Json(name = "registered") val registerDate: DateDto,
+    val image: List<ImageDto>
 ): ListingDto(name, null, url)
 
 

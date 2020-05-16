@@ -8,8 +8,9 @@ data class User(
     @PrimaryKey val name: String,
     val playcount: Long,
     val url: String,
-    val country: String,
     val age: Long,
     val realname: String,
-    val registerDate: Long
+    val registerDate: Long,
+    val countryCode: String,
+    val imageUrl: String
 )

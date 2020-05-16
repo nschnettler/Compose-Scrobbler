@@ -27,7 +27,10 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.util.toCountryCode
+import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
+import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -97,18 +100,19 @@ fun UserInfoComponent(user: User) {
          .toLocalDateTime()
       ListItem(
          text = {
-            Text(text = user.name)
+            Text(text = "${user.name} ${user.countryCode.toCountryCode()?.toFlagEmoji()}")
          },
          secondaryText = {
-            Text(text = "scrobbling since ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
+            Text(text = "${user.realname}\nscrobbelt seit ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
          },
          icon = {
             Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
-               Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(72.dp) + Modifier.preferredWidth(72.dp)) {
-//            //Image(imageFromResource(resources, R.drawable.lenna))
+               Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(56.dp) + Modifier.preferredWidth(56.dp)) {
+                  if (user.imageUrl.isNotEmpty()) {
+                     CoilImage(data = user.imageUrl)
+                  }
                }
             }
-
          }
       )
    }
