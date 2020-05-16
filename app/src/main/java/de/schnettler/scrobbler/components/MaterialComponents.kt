@@ -17,23 +17,26 @@ fun BottomNavigationBar(items: List<Screen>) {
     val backStack = BackStack.current
     var currentScreen by state { backStack.last() }
     currentScreen = backStack.last()
-    BottomNavigation() {
-        items.forEachIndexed { index, screen ->
-            BottomNavigationItem(
-                icon = {
-                    Icon(asset = screen.icon)
-                },
-                text = {
-                    Text(text = screen.title)
-                },
-                selected = items.indexOf(currentScreen) == index,
-                onSelected = {
-                    val newScreen = items[index]
-                    if (backStack.last() != newScreen) {
-                        backStack.replace(items[index])
-                    } else Timber.d("Already here")
-                }
-            )
+
+    if (currentScreen !is Screen.Detail) {
+        BottomNavigation() {
+            items.forEachIndexed { index, screen ->
+                BottomNavigationItem(
+                    icon = {
+                        Icon(asset = screen.icon)
+                    },
+                    text = {
+                        Text(text = screen.title)
+                    },
+                    selected = items.indexOf(currentScreen) == index,
+                    onSelected = {
+                        val newScreen = items[index]
+                        if (backStack.last() != newScreen) {
+                            backStack.replace(items[index])
+                        } else Timber.d("Already here")
+                    }
+                )
+            }
         }
     }
 }
