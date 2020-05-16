@@ -66,3 +66,10 @@ object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {
         artist = from.artist.name
     )
 }
+
+object ArtistInfoMapper: Mapper<ArtistInfoDto, ArtistInfo> {
+    override suspend fun map(from: ArtistInfoDto) = ArtistInfo(
+        name = from.name,
+        bio = from.bio.content
+    )
+}

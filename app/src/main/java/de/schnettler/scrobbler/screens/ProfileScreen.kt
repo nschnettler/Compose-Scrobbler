@@ -73,7 +73,7 @@ fun TopEntry(title: String, content: StoreResponse<List<TopListEntry>>?, onEntry
          HorizontalScrollableComponent(content = content.value, onEntrySelected = onEntrySelected)
       }
       is StoreResponse.Error -> {
-         Timber.d("Error ${(content as StoreResponse.Error<*>).errorMessageOrNull()}")
+         Text(text = content.errorMessageOrNull() ?: "")
       }
    }
 }

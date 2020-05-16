@@ -23,10 +23,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
-import de.schnettler.scrobbler.viewmodels.ChartsViewModel
-import de.schnettler.scrobbler.viewmodels.HistoryViewModel
-import de.schnettler.scrobbler.viewmodels.MainViewModel
-import de.schnettler.scrobbler.viewmodels.UserViewModel
+import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
 
@@ -36,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var repo: Repository
     private val model by lazy { getViewModel { MainViewModel(repo) } }
     private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
+    private val detailsViewModel by lazy { getViewModel { DetailViewModel(repo) } }
 
     private var userViewModel: UserViewModel? = null
     private var historyViewModel: HistoryViewModel? = null
@@ -121,7 +119,10 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                is Screen.Detail -> DetailScreen(item = screen.item)
+                is Screen.Detail -> {
+                    detailsViewModel.updateEntry(screen.item)
+                    DetailScreen(model = detailsViewModel)
+                }
             }
         }
     }

@@ -12,3 +12,8 @@ data class Artist(
     val url: String,
     val streamable: String
 ): TopListEntry(name, playcount)
+
+data class ArtistInfo(
+    @PrimaryKey val name: String,
+    val bio: String
+)

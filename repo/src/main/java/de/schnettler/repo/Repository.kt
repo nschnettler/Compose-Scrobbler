@@ -89,4 +89,10 @@ class Repository(context: Context) {
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
+
+    fun getArtistInfo(name: String) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher {key: String ->
+            ArtistInfoMapper.map(service.getArtistInfo(key))
+        }
+    ).build().stream(StoreRequest.fresh(name))
 }
