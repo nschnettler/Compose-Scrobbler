@@ -55,3 +55,5 @@ fun String.toFlagEmoji(): String {
 fun String.toCountryCode() = Locale.getISOCountries().find {
     Locale("", it).getDisplayCountry(Locale.ENGLISH) == this
 }
+
+fun String.firstLetter() = this.first { it.isLetter() }.toString()

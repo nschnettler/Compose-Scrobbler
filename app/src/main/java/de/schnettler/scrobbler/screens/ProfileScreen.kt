@@ -27,6 +27,7 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.toCountryCode
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
@@ -140,7 +141,7 @@ fun HorizontalScrollableComponent(
                      when (val imageUrl = entry.imageUrl) {
                         null -> {
                            Box(gravity = ContentGravity.Center) {
-                              Text(text = entry.title.first().toString(), style = TextStyle(fontSize = hintTextSize))
+                              Text(text = entry.title.firstLetter(), style = TextStyle(fontSize = hintTextSize))
                            }
                         }
                         else -> {

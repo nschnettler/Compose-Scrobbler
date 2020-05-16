@@ -21,6 +21,7 @@ import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.model.ListItem
+import de.schnettler.scrobbler.util.firstLetter
 
 @Composable
 fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
@@ -47,7 +48,7 @@ fun LiveDataListComponent(items: List<ListItem>) {
                     shape = CircleShape,
                     modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
                     Box(gravity = ContentGravity.Center) {
-                        Text(text = item.title[0].toString())
+                        Text(text = item.title.firstLetter())
                     }
                 }
             }
