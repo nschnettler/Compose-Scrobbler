@@ -13,5 +13,5 @@ sealed class Screen(val title: String, val icon: VectorAsset) {
     object History : Screen("History", Icons.Outlined.Home)
     object Local: Screen("Local", Icons.Outlined.Favorite)
     object Profile : Screen("Profile", Icons.Outlined.AccountCircle)
-    class Detail(val item: Listing) : Screen("Details", Icons.Outlined.AccountCircle)
+    class Detail(val item: Listing) : Screen(item.title, Icons.Outlined.AccountCircle)
 }

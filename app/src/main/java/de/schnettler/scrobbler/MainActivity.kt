@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
                             Scaffold(
                                 topAppBar = {
                                     TopAppBar(
-                                        title = { Text(text = "Scrobbler") }
+                                        title = { Text(text = backStack.last().title) }
                                     )
                                 },
                                 bodyContent = {
