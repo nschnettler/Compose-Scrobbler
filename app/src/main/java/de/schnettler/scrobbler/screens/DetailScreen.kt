@@ -10,6 +10,8 @@ import androidx.ui.livedata.observeAsState
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.scrobbler.BackStack
+import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
@@ -26,9 +28,10 @@ fun DetailScreen(model: DetailViewModel) {
                 ExpandingSummary(_info.value.bio, modifier = Modifier.padding(16.dp))
 
                 TitleComponent(title = "Ähnliche Künstler")
-                
+
+                val backstack = BackStack.current
                 HorizontalScrollableComponent(content = _info.value.similar, onEntrySelected = {
-                    Timber.d("Selected")
+                    backstack.push(Screen.Detail(it))
                 }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
             }
         }
