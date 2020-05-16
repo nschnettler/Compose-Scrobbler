@@ -13,6 +13,7 @@ import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
@@ -120,8 +121,15 @@ fun HorizontalScrollableComponent(content: List<TopListEntry>, onEntrySelected: 
                   Card(shape = RoundedCornerShape(16.dp),
                      modifier = Modifier.preferredWidth(172.dp) + Modifier.preferredHeight(172.dp)
                   ) {
-                     entry.imageUrl?.let {
-                        CoilImageWithCrossfade(data = it, contentScale = ContentScale.Crop)
+                     when (val imageUrl = entry.imageUrl) {
+                        null -> {
+                           Box(gravity = ContentGravity.Center) {
+                              Text(text = entry.title.first().toString(), style = TextStyle(fontSize = 62.sp))
+                           }
+                        }
+                        else -> {
+                           CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                        }
                      }
                   }
                   Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
