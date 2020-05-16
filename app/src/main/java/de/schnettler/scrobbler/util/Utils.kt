@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.ui.unit.dp
 import timber.log.Timber
 import java.util.*
+
+val defaultSpacerSize = 16.dp
+val cardCornerRadius = 12.dp
 
 class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {

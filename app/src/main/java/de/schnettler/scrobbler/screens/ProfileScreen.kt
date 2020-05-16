@@ -27,9 +27,7 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
-import de.schnettler.scrobbler.util.firstLetter
-import de.schnettler.scrobbler.util.toCountryCode
-import de.schnettler.scrobbler.util.toFlagEmoji
+import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -48,10 +46,10 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
    val tracksResponse by model.topTracks.observeAsState()
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
-      Column(modifier = Modifier.padding(bottom = 16.dp)) {
+      Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
          when(userResponse) {
             is StoreResponse.Data -> {
-               Column { UserInfoComponent((userResponse as StoreResponse.Data<User>).value) }
+               UserInfoComponent((userResponse as StoreResponse.Data<User>).value)
             }
             is StoreResponse.Loading ->  { LiveDataLoadingComponent() }
             is StoreResponse.Error ->  {
@@ -93,8 +91,11 @@ fun TopEntry(title: String, content: StoreResponse<List<Listing>>?, onEntrySelec
 
 @Composable
 fun UserInfoComponent(user: User) {
-   Card(modifier = Modifier.fillMaxWidth() + Modifier.padding(8.dp),
-      shape = RoundedCornerShape(8.dp)
+   Card(modifier = Modifier.fillMaxWidth() + Modifier.padding(
+      start = defaultSpacerSize,
+      end = defaultSpacerSize,
+      top = defaultSpacerSize
+   ), shape = RoundedCornerShape(cardCornerRadius)
    ) {
       val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
          .atZone(ZoneId.systemDefault())
@@ -134,9 +135,9 @@ fun HorizontalScrollableComponent(
             Clickable(onClick = {
                onEntrySelected.invoke(entry)
             }, modifier = Modifier.ripple()) {
-               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(end = 8.dp, start = 8.dp)) {
-                  Card(shape = RoundedCornerShape(16.dp),
-                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height)
+               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
+                  Card(shape = RoundedCornerShape(cardCornerRadius),
+                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
                   ) {
                      when (val imageUrl = entry.imageUrl) {
                         null -> {
