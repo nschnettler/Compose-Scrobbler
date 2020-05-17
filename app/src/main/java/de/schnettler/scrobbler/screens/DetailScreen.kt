@@ -4,10 +4,8 @@ import androidx.compose.Composable
 import androidx.compose.getValue
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
-import androidx.ui.core.clipToBounds
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
@@ -55,8 +53,12 @@ fun DetailScreen(model: DetailViewModel) {
                 TitleComponent(title = "Tags")
                 ChipRow(items = _info.value.tags)
 
-                TitleComponent(title = "Ähnliche Künstler")
+                TitleComponent(title = "Top Albums")
+                HorizontalScrollableComponent(content = _info.value.topAlbums.sortedByDescending { it.playcount }, onEntrySelected = {
+                    Timber.d("Selected")
+                }, width = 136.dp, height = 136.dp, hintTextSize = 32.sp, subtitleSuffix = "Wiedergaben")
 
+                TitleComponent(title = "Ähnliche Künstler")
                 val backstack = BackStack.current
                 HorizontalScrollableComponent(content = _info.value.similar, onEntrySelected = {
                     backstack.push(Screen.Detail(it))

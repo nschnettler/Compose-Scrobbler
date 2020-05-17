@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class Album(
     @PrimaryKey val name: String,
     val playcount: Long,
-    val mbid: String,
+    val mbid: String?,
     val url: String,
     val artist: String,
     override val imageUrl: String? = null
