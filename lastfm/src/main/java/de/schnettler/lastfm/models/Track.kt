@@ -4,9 +4,10 @@ import com.squareup.moshi.Json
 
 data class TrackDto(
     override val name: String,
-    override val mbid: String,
+    override val mbid: String?,
     override val url: String,
     val playcount: Long,
+    val listeners: Long?,
     val artist: ListingDto
 ): ListingDto(name, mbid, url)
 

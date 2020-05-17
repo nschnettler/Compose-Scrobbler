@@ -55,7 +55,8 @@ object TrackMapper: Mapper<TrackDto, Track> {
         name = from.name,
         id = from.mbid,
         artist = from.artist.name,
-        playcount = from.playcount
+        playcount = from.playcount,
+        listener = from.listeners ?: 0
     )
 }
 

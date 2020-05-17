@@ -3,9 +3,10 @@ package de.schnettler.database.models
 import androidx.room.PrimaryKey
 
 data class Track(
-    @PrimaryKey val id: String,
-    val name: String,
+    val id: String?,
+    @PrimaryKey val name: String,
     val artist: String,
     val album: String? = null,
-    val playcount: Long = 0
+    val playcount: Long = 0,
+    val listener: Long = 0
 ): Listing(name, playcount.toString())

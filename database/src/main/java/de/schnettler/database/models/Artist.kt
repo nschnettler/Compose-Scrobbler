@@ -25,5 +25,6 @@ data class ArtistInfo(
     val tags: List<String>,
     val listeners: Long,
     val playcount: Long,
-    var topAlbums: List<Album> = listOf()
+    var topAlbums: List<Album> = listOf(),
+    var topTracks: List<Track> = listOf()
 )

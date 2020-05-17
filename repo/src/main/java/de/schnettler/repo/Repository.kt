@@ -94,7 +94,9 @@ class Repository(context: Context) {
         fetcher = nonFlowValueFetcher {key: String ->
             val info = ArtistInfoMapper.map(service.getArtistInfo(key))
             val albums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
+            val tracks = TrackMapper.forLists().invoke(service.getArtistTracks(key))
             info.topAlbums = albums
+            info.topTracks = tracks
             return@nonFlowValueFetcher info
         }
     ).build().stream(StoreRequest.fresh(name))

@@ -5,11 +5,14 @@ import androidx.compose.getValue
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
+import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
+import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Surface
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
@@ -24,6 +27,7 @@ import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.defaultSpacerSize
+import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import timber.log.Timber
 
@@ -52,6 +56,28 @@ fun DetailScreen(model: DetailViewModel) {
 
                 TitleComponent(title = "Tags")
                 ChipRow(items = _info.value.tags)
+
+                TitleComponent(title = "Top Tracks")
+                _info.value.topTracks.forEachIndexed { index, track ->
+                    ListItem(
+                        text = {
+                            Text(track.name)
+                        },
+                        secondaryText = {
+                            Text(formatter.format(track.listener).toString() + " Hörer")
+                        },
+                        icon = {
+                            Surface(
+                                color = colorResource(id = R.color.colorBackgroundElevated),
+                                shape = CircleShape,
+                                modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                                Box(gravity = ContentGravity.Center) {
+                                    Text(text = "${index +1}")
+                                }
+                            }
+                        }
+                    )
+                }
 
                 TitleComponent(title = "Top Albums")
                 HorizontalScrollableComponent(content = _info.value.topAlbums.sortedByDescending { it.playcount }, onEntrySelected = {
