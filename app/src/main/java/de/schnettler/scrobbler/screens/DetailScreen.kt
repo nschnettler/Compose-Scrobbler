@@ -2,15 +2,19 @@ package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
 import androidx.compose.getValue
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.clipToBounds
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.livedata.observeAsState
+import androidx.ui.material.Card
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
+import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
@@ -32,7 +36,21 @@ fun DetailScreen(model: DetailViewModel) {
     when(val _info = info) {
         is StoreResponse.Data -> {
             VerticalScroller() {
-                ExpandingSummary(_info.value.bio, modifier = Modifier.padding(defaultSpacerSize))
+                Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize)) {
+                    ExpandingSummary(_info.value.bio, modifier = Modifier.padding(defaultSpacerSize))
+                }
+
+                Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
+                    Column(horizontalGravity = Alignment.CenterHorizontally) {
+                        Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
+                        Text(text = formatter.format(_info.value.playcount))
+                    }
+                    Spacer(modifier = Modifier.width(148.dp))
+                    Column(horizontalGravity = Alignment.CenterHorizontally) {
+                        Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
+                        Text(text = formatter.format(_info.value.listeners))
+                    }
+                }
 
                 TitleComponent(title = "Tags")
                 ChipRow(items = _info.value.tags)

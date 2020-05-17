@@ -22,5 +22,7 @@ data class ArtistInfo(
     @PrimaryKey val name: String,
     val bio: String,
     val similar: List<ArtistMin>,
-    val tags: List<String>
+    val tags: List<String>,
+    val listeners: Long,
+    val playcount: Long
 )

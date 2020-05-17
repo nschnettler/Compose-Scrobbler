@@ -15,7 +15,8 @@ data class ArtistInfoDto(
     override val url: String,
     val bio: BioDto,
     val similar: ArtistListDto,
-    val tags: TagsDto
+    val tags: TagsDto,
+    val stats: StatsDto
 ): ListingDto(name, mbid, url)
 
 data class BioDto(
@@ -30,4 +31,9 @@ data class ArtistListDto(
 
 data class TagsDto(
     val tag: List<ListingDto>
+)
+
+data class StatsDto(
+    val listeners: Long,
+    val playcount: Long
 )

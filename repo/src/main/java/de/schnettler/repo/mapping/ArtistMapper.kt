@@ -75,6 +75,8 @@ object ArtistInfoMapper: Mapper<ArtistInfoDto, ArtistInfo> {
         similar = from.similar.artist.map { artist ->
             ArtistMin(name = artist.name, url = artist.url)
         },
-        tags = from.tags.tag.map { tag -> tag.name }
+        tags = from.tags.tag.map { tag -> tag.name },
+        playcount = from.stats.playcount,
+        listeners = from.stats.listeners
     )
 }
