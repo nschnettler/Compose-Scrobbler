@@ -81,3 +81,12 @@ object ArtistInfoMapper: Mapper<ArtistInfoDto, ArtistInfo> {
         listeners = from.stats.listeners
     )
 }
+
+object SpotifyAuthMapper: Mapper<SpotifyAccessTokenDto, AuthToken> {
+    override suspend fun map(from: SpotifyAccessTokenDto) = AuthToken(
+        type = from.token_type,
+        token = from.access_token,
+        tokenType = AuthTokenType.Spotify.value,
+        validTill = System.currentTimeMillis() + 3600000
+    )
+}

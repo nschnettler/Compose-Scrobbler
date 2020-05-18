@@ -26,6 +26,7 @@ import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -38,7 +39,9 @@ fun DetailScreen(model: DetailViewModel) {
     when(val _info = info) {
         is StoreResponse.Data -> {
             VerticalScroller() {
-                Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize)) {
+                Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize), shape = RoundedCornerShape(
+                    cardCornerRadius
+                )) {
                     ExpandingSummary(_info.value.bio, modifier = Modifier.padding(defaultSpacerSize))
                 }
 

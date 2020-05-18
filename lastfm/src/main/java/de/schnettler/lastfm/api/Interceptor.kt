@@ -25,3 +25,23 @@ class LastFMInterceptor: Interceptor {
         return chain.proceed(original.newBuilder().url(url).build())
     }
 }
+
+class SpotifyAuthInterceptor: Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val req = chain.request()
+        val newRequest = req.newBuilder()
+            .header("Authorization", "Basic ${SpotifyService.AUTH_BASE64}")
+            .build()
+        return chain.proceed(newRequest)
+    }
+}
+
+class SpotifyBearerInterceptor(val authToken: String): Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val req = chain.request()
+        val newRequest = req.newBuilder()
+            .header("Authorization", "Bearer $authToken")
+            .build()
+        return chain.proceed(newRequest)
+    }
+}

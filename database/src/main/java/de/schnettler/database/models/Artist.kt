@@ -10,8 +10,9 @@ data class Artist(
     val listeners: Long,
     val mbid: String,
     val url: String,
-    val streamable: String
-): Listing(name, playcount.toString())
+    val streamable: String,
+    override var imageUrl: String? = null
+): Listing(name, playcount.toString(), imageUrl)
 
 data class ArtistMin(
     val name: String,

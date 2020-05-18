@@ -6,6 +6,8 @@ import de.schnettler.database.models.*
 import de.schnettler.database.provideDatabase
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
+import de.schnettler.lastfm.api.SpotifyService
+import de.schnettler.lastfm.models.SpotifyArtist
 import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +20,9 @@ import kotlinx.coroutines.flow.mapLatest
 class Repository(context: Context) {
 
     private val service = RetrofitService.lastFmService
+    private val sAuthService = RetrofitService.spotifyAuthService
+    private val sService = RetrofitService.spotifyService
+
     private val db = provideDatabase(context)
 
     fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
@@ -54,10 +59,20 @@ class Repository(context: Context) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserTopArtists(sessionKey: String): Flow<StoreResponse<List<Artist>>> {
+    fun getUserTopArtists(sessionKey: String, spotifyToken: AuthToken): Flow<StoreResponse<List<Artist>>> {
         val userInfoStore = StoreBuilder.from<String, List<Artist>>(
             fetcher = nonFlowValueFetcher {
-                ArtistMapper.forLists().invoke(service.getUserTopArtists(sessionKey))
+                var token = spotifyToken
+                val artists = ArtistMapper.forLists().invoke(service.getUserTopArtists(sessionKey))
+                if (!spotifyToken.isValid()) {
+                    token = spotifyAuthStore.fresh(AuthTokenType.Spotify.value)
+                }
+                val localService = RetrofitService.provideAuthenticatedSpotifyService(token.token)
+                artists.forEach { artist ->
+                    val imageUrl = localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url
+                    artist.imageUrl = imageUrl
+                }
+                return@nonFlowValueFetcher artists
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
@@ -101,9 +116,22 @@ class Repository(context: Context) {
         }
     ).build().stream(StoreRequest.fresh(name))
 
-    fun getArtistTopAlbums(name: String) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {key: String ->
-            AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-        }
-    ).build().stream(StoreRequest.fresh(name))
+    val spotifyAuthStore = StoreBuilder.from (
+        fetcher = nonFlowValueFetcher {_: String ->
+            SpotifyAuthMapper.map(sAuthService.login(SpotifyService.TYPE_CLIENT))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = { _: String ->
+                db.authDao().getAuthToken(AuthTokenType.Spotify.value)
+            },
+            writer = { _: String, token ->
+                db.authDao().insertAuthToken(token)
+            },
+            delete = {_: String ->
+                db.authDao().deleteAuthToken(AuthTokenType.Spotify.value)
+            }
+        )
+    ).build()
+
+    val getSpotifyAuthToken = spotifyAuthStore.stream(StoreRequest.cached("null", false))
 }

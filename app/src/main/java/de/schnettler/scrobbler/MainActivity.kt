@@ -37,10 +37,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var repo: Repository
     private val model by lazy { getViewModel { MainViewModel(repo) } }
+    private val authModel by lazy { getViewModel { AuthViewModel(repo) } }
     private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
     private val detailsViewModel by lazy { getViewModel { DetailViewModel(repo) } }
+    private val userViewModel by lazy { getViewModel { UserViewModel(repo) } }
 
-    private var userViewModel: UserViewModel? = null
     private var historyViewModel: HistoryViewModel? = null
 
 
@@ -85,19 +86,24 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun AppContent() {
-        val status by model.sessionStatus.observeAsState()
+        val sessionStatus by model.sessionStatus.observeAsState(SessionStatus.LoggedOut)
+        val authStatus by authModel.authStatus.observeAsState(AuthStatus.LoggedOut)
+
+        if (sessionStatus is SessionStatus.LoggedIn && authStatus is AuthStatus.Authenticated) {
+            userViewModel.updateAuthState(AuthState(session = (sessionStatus as SessionStatus.LoggedIn).session, spotifyAuthToken = (authStatus as AuthStatus.Authenticated).token))
+        }
         
         Crossfade(BackStack.current.last()) { screen ->
             when(screen) {
                 is Screen.Charts -> ChartScreen(model = chartsModel)
                 is Screen.History ->  {
-                    when(status) {
+                    when(sessionStatus) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> {
                             if (historyViewModel == null) {
                                 historyViewModel = getViewModel {
                                     HistoryViewModel(
-                                        (status as SessionStatus.LoggedIn).session, repo
+                                        (sessionStatus as SessionStatus.LoggedIn).session, repo
                                     )
                                 }
                             }
@@ -107,18 +113,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 is Screen.Local -> LocalScreen()
                 is Screen.Profile -> {
-                    when(status) {
+                    when(sessionStatus) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> {
-                            if (userViewModel == null) {
-                                userViewModel = getViewModel {
-                                    UserViewModel(
-                                        (status as SessionStatus.LoggedIn).session, repo
-                                    )
-                                }
-                            }
                             val backstack = BackStack.current
-                            ProfileScreen(getViewModel { userViewModel!! }, onEntrySelected = {
+                            ProfileScreen(getViewModel { userViewModel }, onEntrySelected = {
                                 backstack.push(Screen.Detail(it))
                             })
                         }

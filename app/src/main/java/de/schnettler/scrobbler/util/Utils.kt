@@ -2,6 +2,8 @@ package de.schnettler.scrobbler.util
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.ui.unit.dp
@@ -61,3 +63,11 @@ fun String.toCountryCode() = Locale.getISOCountries().find {
 }
 
 fun String.firstLetter() = this.first { it.isLetter() }.toString()
+
+
+class DoubleTrigger<A, B>(a: LiveData<A>, b: LiveData<B>) : MediatorLiveData<Pair<A?, B?>>() {
+    init {
+        addSource(a) { value = it to b.value }
+        addSource(b) { value = a.value to it }
+    }
+}

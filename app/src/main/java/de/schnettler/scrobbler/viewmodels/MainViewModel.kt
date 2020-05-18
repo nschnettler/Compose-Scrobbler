@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,7 @@ class MainViewModel(val repo: Repository): ViewModel() {
         repo.getSession()
     }
 
-    val sessionStatus= Transformations.map(session) {session ->
+    val sessionStatus: LiveData<SessionStatus> = Transformations.map(session) {session ->
         if (session == null) SessionStatus.LoggedOut else SessionStatus.LoggedIn(session)
     }
 

@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
+import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
@@ -22,12 +23,14 @@ import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.Listing
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.*
+import de.schnettler.scrobbler.viewmodels.AuthStatus
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -36,14 +39,17 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
+import timber.log.Timber
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
-   val artistResponse by model.userTopArtists.observeAsState()
+   val artistResponse by model.artists.observeAsState()
    val albumResponse  by model.userTopAlbums.observeAsState()
    val tracksResponse by model.topTracks.observeAsState()
+   
+   //val spotifyStatus by model.spotifyAuthStatus.observeAsState(AuthStatus.LoggedOut)
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
@@ -59,6 +65,11 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
             }
          }
 
+//         when(spotifyStatus) {
+//            is AuthStatus.LoggedOut -> Text(text = "Logged Out")
+//            is AuthStatus.Authenticated -> Text(text = "Logged in for ${(spotifyStatus as AuthStatus.Authenticated).token.remainingMinutes()} minutes")
+//         }
+         
          TopEntry(title = "Top-Künstler", content = artistResponse, onEntrySelected = onEntrySelected)
          TopEntry(title = "Top-Alben", content = albumResponse, onEntrySelected = onEntrySelected)
          TopEntry(title = "Top-Titel", content = tracksResponse, onEntrySelected = onEntrySelected)

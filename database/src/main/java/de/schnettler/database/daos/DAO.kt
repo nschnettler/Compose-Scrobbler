@@ -15,6 +15,19 @@ interface AuthDao {
 
     @Delete
     suspend fun deleteSession(session: Session)
+
+
+    /*
+    Spotify
+     */
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAuthToken(authTokenDB: AuthToken)
+
+    @Query("DELETE FROM table_auth WHERE tokenType = :type")
+    suspend fun deleteAuthToken(type: String)
+
+    @Query("SELECT * FROM table_auth WHERE tokenType = :type")
+    fun getAuthToken(type: String): Flow<AuthToken?>
 }
 
 
