@@ -36,12 +36,16 @@ class SpotifyAuthInterceptor: Interceptor {
     }
 }
 
-class SpotifyBearerInterceptor(val authToken: String): Interceptor {
+class AccessTokenInterceptor(private val token: String?): Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val req = chain.request()
-        val newRequest = req.newBuilder()
-            .header("Authorization", "Bearer $authToken")
-            .build()
-        return chain.proceed(newRequest)
+        return if (token == null) {
+            chain.proceed(chain.request())
+        } else {
+            val authenticatedRequest = chain.request()
+                .newBuilder()
+                .addHeader("Authorization", "Bearer $token")
+                .build()
+            chain.proceed(authenticatedRequest)
+        }
     }
 }

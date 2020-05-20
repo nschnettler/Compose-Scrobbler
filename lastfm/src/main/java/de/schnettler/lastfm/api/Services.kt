@@ -3,6 +3,7 @@ package de.schnettler.lastfm.api
 import com.serjltt.moshi.adapters.Wrapped
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -18,9 +19,9 @@ object RetrofitService {
     }
 }
 
-fun provideOkHttpClient(vararg interceptor: Interceptor): OkHttpClient = OkHttpClient().newBuilder()
+fun provideOkHttpClient(vararg interceptor: Interceptor, auth: Authenticator? = null): OkHttpClient = OkHttpClient().newBuilder()
     .apply { interceptor.forEach { addInterceptor(it) } }
-    //.addNetworkInterceptor(StethoInterceptor())
+    .apply { auth?.let { authenticator(auth) } }
     .build()
 
 fun provideRetrofit(okHttpClient: OkHttpClient, endpoint: String): Retrofit = Retrofit.Builder()

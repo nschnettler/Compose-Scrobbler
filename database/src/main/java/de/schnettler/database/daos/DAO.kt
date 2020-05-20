@@ -27,12 +27,31 @@ interface AuthDao {
     suspend fun deleteAuthToken(type: String)
 
     @Query("SELECT * FROM table_auth WHERE tokenType = :type")
-    fun getAuthToken(type: String): Flow<AuthToken?>
+    fun getAuthToken(type: String): AuthToken?
 }
 
 
 @Dao
-interface TopListDao {
+interface ChartDao {
+    @Transaction
+    @Query("SELECT * FROM table_charts WHERE type = :type ORDER BY `index` ASC")
+    fun getTopArtists(type: String): Flow<List<ListEntryWithArtist>?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTopList(entries: List<ListEntry>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertArtists(artist: List<Artist>)
+
+    @Transaction
+    suspend fun insertTopArtists(artistEntry: List<ListEntryWithArtist>) {
+        insertTopList(artistEntry.map { it.listing })
+        insertArtists(artistEntry.map { it.artist })
+    }
+}
+
+@Dao
+interface UserDao {
     @Transaction
     @Query("SELECT * FROM table_charts WHERE type = :type ORDER BY `index` ASC")
     fun getTopArtists(type: String): Flow<List<ListEntryWithArtist>?>

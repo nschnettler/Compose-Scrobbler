@@ -4,10 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.ui.unit.dp
-import timber.log.Timber
 import java.util.*
 
 val defaultSpacerSize = 16.dp
@@ -70,4 +70,18 @@ class DoubleTrigger<A, B>(a: LiveData<A>, b: LiveData<B>) : MediatorLiveData<Pai
         addSource(a) { value = it to b.value }
         addSource(b) { value = a.value to it }
     }
+}
+
+fun <T, K, R> LiveData<T>.combineWith(
+    liveData: LiveData<K>,
+    block: (T?, K?) -> R
+): LiveData<R> {
+    val result = MediatorLiveData<R>()
+    result.addSource(this) {
+        result.value = block.invoke(this.value, liveData.value)
+    }
+    result.addSource(liveData) {
+        result.value = block.invoke(this.value, liveData.value)
+    }
+    return result
 }

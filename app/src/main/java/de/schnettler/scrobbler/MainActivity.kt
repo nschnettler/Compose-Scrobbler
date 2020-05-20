@@ -7,22 +7,19 @@ import androidx.compose.Composable
 import androidx.compose.Providers
 import androidx.compose.ambientOf
 import androidx.compose.getValue
+import androidx.lifecycle.lifecycleScope
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Text
 import androidx.ui.livedata.observeAsState
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.filled.ArrowBack
-import androidx.ui.res.imageResource
-import androidx.ui.res.vectorResource
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
+import de.schnettler.database.AppDatabase
+import de.schnettler.database.provideDatabase
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
@@ -35,22 +32,24 @@ import timber.log.Timber
 val BackStack = ambientOf<BackStack<Screen>> { error("No backstack available") }
 class MainActivity : AppCompatActivity() {
 
+    //Database
+    private lateinit var database: AppDatabase
     private lateinit var repo: Repository
+
+    //ViewModels
     private val model by lazy { getViewModel { MainViewModel(repo) } }
-    private val authModel by lazy { getViewModel { AuthViewModel(repo) } }
     private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
     private val detailsViewModel by lazy { getViewModel { DetailViewModel(repo) } }
     private val userViewModel by lazy { getViewModel { UserViewModel(repo) } }
-
     private var historyViewModel: HistoryViewModel? = null
-
 
     private val backPressHandler = BackPressHandler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        repo = Repository(this)
+        database =  provideDatabase(this)
+        repo  = Repository(database, lifecycleScope)
 
         setContent {
             Providers(
@@ -87,10 +86,9 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun AppContent() {
         val sessionStatus by model.sessionStatus.observeAsState(SessionStatus.LoggedOut)
-        val authStatus by authModel.authStatus.observeAsState(AuthStatus.LoggedOut)
 
-        if (sessionStatus is SessionStatus.LoggedIn && authStatus is AuthStatus.Authenticated) {
-            userViewModel.updateAuthState(AuthState(session = (sessionStatus as SessionStatus.LoggedIn).session, spotifyAuthToken = (authStatus as AuthStatus.Authenticated).token))
+        if (sessionStatus is SessionStatus.LoggedIn) {
+            userViewModel.updateAuthState((sessionStatus as SessionStatus.LoggedIn).session)
         }
         
         Crossfade(BackStack.current.last()) { screen ->
