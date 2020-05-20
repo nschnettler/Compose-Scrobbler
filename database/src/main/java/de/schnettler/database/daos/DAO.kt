@@ -1,6 +1,5 @@
 package de.schnettler.database.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import de.schnettler.database.models.*
 import kotlinx.coroutines.flow.Flow
@@ -8,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AuthDao {
     @Query("SELECT * FROM session LIMIT 1")
-    fun getSession(): LiveData<Session?>
+    fun getSession(): Flow<Session?>
 
     @Insert
     suspend fun insertSession(session: Session)

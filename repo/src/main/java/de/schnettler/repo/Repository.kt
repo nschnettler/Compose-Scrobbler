@@ -3,10 +3,11 @@ package de.schnettler.repo
 import com.dropbox.android.external.store4.*
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.models.*
-import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
+import de.schnettler.repo.authentication.AccessTokenAuthenticator
+import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.*
-import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -15,14 +16,30 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Repository(val db: AppDatabase, context: CoroutineContext) {
-
+class Repository(private val db: AppDatabase, context: CoroutineContext) {
+    //Services
     private val service = RetrofitService.lastFmService
-    private val tokenProvider = AccessTokenProvider(RetrofitService.spotifyAuthService, db.authDao())
-    private val spotifyAuthenticator = AccessTokenAuthenticator(tokenProvider, context)
+
+    //Authentication Providers
+    private val spotifyAuthProvider =
+        SpotifyAuthProvider(
+            RetrofitService.spotifyAuthService,
+            db.authDao()
+        )
+    val lastFmAuthProvider =
+        LastFmAuthProvider(
+            RetrofitService.lastFmService,
+            db.authDao()
+        )
+
+    //Authenticators
+    private val spotifyAuthenticator =
+        AccessTokenAuthenticator(
+            spotifyAuthProvider,
+            context
+        )
 
     fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
-    fun getSession() = db.authDao().getSession()
 
     private val topArtistStore = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
@@ -38,28 +55,20 @@ class Repository(val db: AppDatabase, context: CoroutineContext) {
         )
     ).build()
 
-    suspend fun refreshSession(token: String) {
-        val params= mutableMapOf("token" to token)
-        val signature = createSignature(LastFmService.METHOD_AUTH_SESSION, params, LastFmService.SECRET)
-        val session = SessionMapper.map(service.getSession(token, signature))
-        db.authDao().insertSession(session)
-    }
-
-
-    fun getUserInfo(sessionKey: String): Flow<StoreResponse<User>> {
+    fun getUserInfo(): Flow<StoreResponse<User>> {
         val userInfoStore = StoreBuilder.from<String, User>(
             fetcher = nonFlowValueFetcher {
-                UserMapper.map(service.getUserInfo(sessionKey))
+                UserMapper.map(service.getUserInfo(lastFmAuthProvider.getSession().key))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserTopArtists(sessionKey: String): Flow<StoreResponse<List<Artist>>> {
+    fun getUserTopArtists(): Flow<StoreResponse<List<Artist>>> {
         val userInfoStore = StoreBuilder.from<String, List<Artist>>(
             fetcher = nonFlowValueFetcher {
-                val artists = ArtistMapper.forLists().invoke(service.getUserTopArtists(sessionKey))
-                val localService = RetrofitService.provideAuthenticatedSpotifyService(tokenProvider.getToken().token, authenticator = spotifyAuthenticator)
+                val artists = ArtistMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
+                val localService = RetrofitService.provideAuthenticatedSpotifyService(spotifyAuthProvider.getToken().token, authenticator = spotifyAuthenticator)
                 artists.forEach { artist ->
                     val imageUrl = localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url
                     artist.imageUrl = imageUrl
@@ -70,28 +79,28 @@ class Repository(val db: AppDatabase, context: CoroutineContext) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserTopAlbums(sessionKey: String): Flow<StoreResponse<List<Album>>> {
+    fun getUserTopAlbums(): Flow<StoreResponse<List<Album>>> {
         val userInfoStore = StoreBuilder.from<String, List<Album>>(
             fetcher = nonFlowValueFetcher {
-                AlbumMapper.forLists().invoke(service.getUserTopAlbums(sessionKey))
+                AlbumMapper.forLists().invoke(service.getUserTopAlbums(lastFmAuthProvider.getSession().key))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserTopTracks(sessionKey: String): Flow<StoreResponse<List<Track>>> {
+    fun getUserTopTracks(): Flow<StoreResponse<List<Track>>> {
         val userInfoStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
-                TrackMapper.forLists().invoke(service.getUserTopTracks(sessionKey))
+                TrackMapper.forLists().invoke(service.getUserTopTracks(lastFmAuthProvider.getSession().key))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserRecentTrack(sessionKey: String): Flow<StoreResponse<List<Track>>> {
+    fun getUserRecentTrack(): Flow<StoreResponse<List<Track>>> {
         val userInfoStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
-                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(sessionKey))
+                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(lastFmAuthProvider.getSession().key))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))

@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
     private val detailsViewModel by lazy { getViewModel { DetailViewModel(repo) } }
     private val userViewModel by lazy { getViewModel { UserViewModel(repo) } }
-    private var historyViewModel: HistoryViewModel? = null
+    private val historyViewModel by lazy { getViewModel { HistoryViewModel(repo) } }
 
     private val backPressHandler = BackPressHandler()
 
@@ -86,10 +86,6 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun AppContent() {
         val sessionStatus by model.sessionStatus.observeAsState(SessionStatus.LoggedOut)
-
-        if (sessionStatus is SessionStatus.LoggedIn) {
-            userViewModel.updateAuthState((sessionStatus as SessionStatus.LoggedIn).session)
-        }
         
         Crossfade(BackStack.current.last()) { screen ->
             when(screen) {
@@ -97,16 +93,7 @@ class MainActivity : AppCompatActivity() {
                 is Screen.History ->  {
                     when(sessionStatus) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
-                        is SessionStatus.LoggedIn -> {
-                            if (historyViewModel == null) {
-                                historyViewModel = getViewModel {
-                                    HistoryViewModel(
-                                        (sessionStatus as SessionStatus.LoggedIn).session, repo
-                                    )
-                                }
-                            }
-                            HistoryScreen(getViewModel { historyViewModel!! })
-                        }
+                        is SessionStatus.LoggedIn -> HistoryScreen(historyViewModel)
                     }
                 }
                 is Screen.Local -> LocalScreen()
@@ -115,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> {
                             val backstack = BackStack.current
-                            ProfileScreen(getViewModel { userViewModel }, onEntrySelected = {
+                            ProfileScreen(userViewModel, onEntrySelected = {
                                 backstack.push(Screen.Detail(it))
                             })
                         }

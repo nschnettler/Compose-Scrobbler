@@ -1,4 +1,4 @@
-package de.schnettler.repo
+package de.schnettler.repo.authentication.provider
 
 import com.dropbox.android.external.store4.*
 import de.schnettler.database.daos.AuthDao
@@ -6,7 +6,7 @@ import de.schnettler.database.models.AuthTokenType
 import de.schnettler.lastfm.api.SpotifyService
 import de.schnettler.repo.mapping.SpotifyAuthMapper
 
-class AccessTokenProvider(private val spotifyAuthService: SpotifyService, private val authDao: AuthDao) {
+class SpotifyAuthProvider(private val spotifyAuthService: SpotifyService, private val authDao: AuthDao) {
     suspend fun getToken() = spotifyTokenStore.get("")
     suspend fun refreshToken() =  spotifyTokenStore.fresh("")
 

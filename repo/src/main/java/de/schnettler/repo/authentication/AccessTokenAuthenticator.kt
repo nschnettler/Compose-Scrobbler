@@ -1,5 +1,6 @@
-package de.schnettler.repo
+package de.schnettler.repo.authentication
 
+import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -7,13 +8,15 @@ import okhttp3.Response
 import okhttp3.Route
 import kotlin.coroutines.CoroutineContext
 
-class AccessTokenAuthenticator(private val provider: AccessTokenProvider, private val context: CoroutineContext): Authenticator {
+class AccessTokenAuthenticator(private val provider: SpotifyAuthProvider, private val context: CoroutineContext): Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
 
         println("Detected authentication error ${response.code} on ${response.request.url}")
 
-        when (hasBearerAuthorizationToken(response)) {
+        when (hasBearerAuthorizationToken(
+            response
+        )) {
             false -> println("No Token to refresh")
             true -> {
                 var currentToken = runBlocking(context) { provider.getToken() }
