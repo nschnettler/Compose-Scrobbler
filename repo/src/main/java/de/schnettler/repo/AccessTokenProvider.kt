@@ -1,22 +1,26 @@
 package de.schnettler.repo
 
+import com.dropbox.android.external.store4.*
 import de.schnettler.database.daos.AuthDao
-import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.AuthTokenType
+import de.schnettler.lastfm.api.SpotifyService
+import de.schnettler.repo.mapping.SpotifyAuthMapper
 
-class AccessTokenProvider(private val repo: Repository, private val authDao: AuthDao) {
-    fun getToken() = authDao.getAuthToken(AuthTokenType.Spotify.value)
+class AccessTokenProvider(private val spotifyAuthService: SpotifyService, private val authDao: AuthDao) {
+    suspend fun getToken() = spotifyTokenStore.get("")
+    suspend fun refreshToken() =  spotifyTokenStore.fresh("")
 
-    suspend fun getNonNullToken(): AuthToken {
-        val token = getToken()
-        println("Requested Token. Result: $token")
-        return token ?: refreshToken()
-    }
-
-    suspend fun refreshToken(): AuthToken {
-        println("Refreshing Token")
-        val newToken = repo.refreshSpotifyAuthToken()
-        repo.insertAuthToken(newToken)
-        return newToken
-    }
+    private val spotifyTokenStore = StoreBuilder.from (
+        fetcher = nonFlowValueFetcher {_: String ->
+            SpotifyAuthMapper.map(spotifyAuthService.login(SpotifyService.TYPE_CLIENT))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = { _: String ->
+                authDao.getAuthToken(AuthTokenType.Spotify.value)
+            },
+            writer = { _: String, token ->
+                authDao.insertAuthToken(token)
+            }
+        )
+    ).build()
 }

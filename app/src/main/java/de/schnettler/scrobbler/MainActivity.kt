@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         database =  provideDatabase(this)
-        repo  = Repository(database, lifecycleScope)
+        repo  = Repository(database, lifecycleScope.coroutineContext)
 
         setContent {
             Providers(

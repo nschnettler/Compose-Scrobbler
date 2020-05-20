@@ -27,7 +27,7 @@ interface AuthDao {
     suspend fun deleteAuthToken(type: String)
 
     @Query("SELECT * FROM table_auth WHERE tokenType = :type")
-    fun getAuthToken(type: String): AuthToken?
+    fun getAuthToken(type: String): Flow<AuthToken?>
 }
 
 

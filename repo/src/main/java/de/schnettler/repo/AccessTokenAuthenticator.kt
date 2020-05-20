@@ -1,47 +1,40 @@
 package de.schnettler.repo
 
-import de.schnettler.database.models.AuthToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import kotlin.coroutines.CoroutineContext
 
-class AccessTokenAuthenticator(val provider: AccessTokenProvider, val scope: CoroutineScope): Authenticator {
+class AccessTokenAuthenticator(private val provider: AccessTokenProvider, private val context: CoroutineContext): Authenticator {
+
     override fun authenticate(route: Route?, response: Response): Request? {
-        println("Started OkHttp Authentication")
-        val token = provider.getToken()
 
-        synchronized(this) {
-            val newToken = provider.getToken()
+        println("Detected authentication error ${response.code} on ${response.request.url}")
 
-            // Check if the request made was previously made as an authenticated request.
-            if (response.request.header("Authorization") != null) {
-                // If the token has changed since the request was made, use the new token.
-                if (newToken != token) {
-                    return response.request
-                        .newBuilder()
-                        .removeHeader("Authorization")
-                        .addHeader("Authorization", "Bearer $newToken")
-                        .build()
+        when (hasBearerAuthorizationToken(response)) {
+            false -> println("No Token to refresh")
+            true -> {
+                var currentToken = runBlocking(context) { provider.getToken() }
+
+                if (currentToken.token == response.request.headers["Authorization"]?.removePrefix("Bearer ")) {
+                    println("Request new Token")
+                    currentToken = runBlocking(context) { provider.refreshToken() }
                 }
 
-                //Request new Token
-                var updatedToken: AuthToken? = null
-                scope.launch {
-                    updatedToken = provider.refreshToken()
-                }
-
-                updatedToken?.let {
-                    return response.request
-                        .newBuilder()
-                        .removeHeader("Authorization")
-                        .addHeader("Authorization", "Bearer $updatedToken")
-                        .build()
-                }
+                val request = response.request
+                    .newBuilder()
+                    .removeHeader("Authorization")
+                    .addHeader("Authorization", "Bearer ${currentToken.token}")
+                    .build()
+                println("Retrying with ${request.headers}")
+                return request
             }
         }
         return null
     }
 }
+
+private fun hasBearerAuthorizationToken(response: Response?): Boolean =
+    response?.request?.header("Authorization")?.startsWith("Bearer ") ?: false

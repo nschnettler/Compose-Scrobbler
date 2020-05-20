@@ -1,30 +1,25 @@
 package de.schnettler.repo
 
-import android.content.Context
-import androidx.room.Database
 import com.dropbox.android.external.store4.*
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.models.*
-import de.schnettler.database.provideDatabase
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.lastfm.api.RetrofitService
-import de.schnettler.lastfm.api.RetrofitService.spotifyService
-import de.schnettler.lastfm.api.SpotifyService
 import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.createSignature
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
+import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Repository(val db: AppDatabase, scope: CoroutineScope) {
+class Repository(val db: AppDatabase, context: CoroutineContext) {
 
     private val service = RetrofitService.lastFmService
-    private val tokenProvider = AccessTokenProvider(this, db.authDao())
-    private val spotifyAuthenticator = AccessTokenAuthenticator(tokenProvider, scope)
+    private val tokenProvider = AccessTokenProvider(RetrofitService.spotifyAuthService, db.authDao())
+    private val spotifyAuthenticator = AccessTokenAuthenticator(tokenProvider, context)
 
     fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
     fun getSession() = db.authDao().getSession()
@@ -64,7 +59,7 @@ class Repository(val db: AppDatabase, scope: CoroutineScope) {
         val userInfoStore = StoreBuilder.from<String, List<Artist>>(
             fetcher = nonFlowValueFetcher {
                 val artists = ArtistMapper.forLists().invoke(service.getUserTopArtists(sessionKey))
-                val localService = RetrofitService.provideAuthenticatedSpotifyService(tokenProvider.getNonNullToken().token, authenticator = spotifyAuthenticator)
+                val localService = RetrofitService.provideAuthenticatedSpotifyService(tokenProvider.getToken().token, authenticator = spotifyAuthenticator)
                 artists.forEach { artist ->
                     val imageUrl = localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url
                     artist.imageUrl = imageUrl
@@ -112,14 +107,6 @@ class Repository(val db: AppDatabase, scope: CoroutineScope) {
             return@nonFlowValueFetcher info
         }
     ).build().stream(StoreRequest.fresh(name))
-
-    suspend fun refreshSpotifyAuthToken() = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {item: String ->
-            SpotifyAuthMapper.map(RetrofitService.spotifyAuthService.login(SpotifyService.TYPE_CLIENT))
-        }
-    ).build().fresh("")
-
-    suspend fun insertAuthToken(token: AuthToken) = db.authDao().insertAuthToken(token)
 
 
 //    fun getArtistImages(artists: List<Artist>?, token: AuthToken?) = StoreBuilder.from(
