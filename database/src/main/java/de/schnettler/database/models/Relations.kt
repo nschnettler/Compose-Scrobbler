@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
 
-@Entity(tableName = "table_relations", primaryKeys = ["sourceName", "sourceType", "index"])
+@Entity(tableName = "relations", primaryKeys = ["sourceName", "sourceType", "targetType", "index"])
 data class RelationEntity(
     val sourceName: String,
     val sourceType: ListingType,
@@ -36,4 +36,13 @@ data class RelatedTrack(
         entityColumn = "name"
     )
     val track: Track
+)
+
+data class RelatedArtist(
+    @Embedded val relation: RelationEntity,
+    @Relation(
+        parentColumn = "targetName",
+        entityColumn = "name"
+    )
+    val artist: Artist
 )

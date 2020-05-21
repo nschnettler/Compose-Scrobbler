@@ -3,7 +3,7 @@ package de.schnettler.database.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "users")
 data class User(
     @PrimaryKey val name: String,
     val playcount: Long,

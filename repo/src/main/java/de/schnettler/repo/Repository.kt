@@ -10,8 +10,7 @@ import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
@@ -108,46 +107,73 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
 
     fun getArtistInfo(name: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            ArtistMapper.map(service.getArtistInfo(key))
+            println("FETCHER")
+            val response = service.getArtistInfo(key)
+            val artist = ArtistMapper.map(response)
+            val albums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
+            val titles = TrackMapper.forLists().invoke(service.getArtistTracks(key))
+            artist.topAlbums = albums
+            artist.topTracks = titles
+            artist.similarArtists = ArtistMinMapper.forLists().invoke(response.similar.artist)
+            artist
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {key: String ->
-                db.artistDao().getArtist(key)
+                var artist = db.artistDao().getArtist(key)
+                artist = artist.combine(db.relationshipDao().getRelatedAlbums(key, ListingType.ARTIST)) {artist, albums ->
+                    artist?.topAlbums = albums.map { it.album }
+                    return@combine artist
+                }.combine(db.relationshipDao().getRelatedTracks(key, ListingType.ARTIST)) {artist, tracks ->
+                    artist?.topTracks = tracks.map { it.track }
+                    return@combine artist
+                }.combine(db.relationshipDao().getRelatedArtists(key, ListingType.ARTIST)) {artist, artists ->
+                    artist?.similarArtists = artists.map { it.artist }
+                    return@combine artist
+                }
+                artist
             },
             writer = { _: String, artist: Artist ->
                 db.artistDao().insertArtist(artist)
-                //TODO: Write similar Artists into Db
+                //Tracks
+                db.trackDao().insertTracks(artist.topTracks)
+                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) }))
+                //Albums
+                db.albumDao().insertAlbums(artist.topAlbums)
+                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) }))
+                //Artist
+                db.artistDao().insertArtists(artist.similarArtists)
+                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
             }
         )
     ).build().stream(StoreRequest.cached(name, true))
 
-    fun getArtistAlbums(name: String) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { key: String ->
-            AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-        },
-        sourceOfTruth = SourceOfTruth.from(
-            reader = {key: String ->
-                db.relationshipDao().getRelatedAlbums(key, ListingType.ARTIST)
-            },
-            writer = { _: String, albums: List<Album> ->
-                db.albumDao().insertAlbums(albums)
-            }
-        )
-    ).build().stream(StoreRequest.cached(name, true))
-
-    fun getArtistTracks(artist: ListingMin) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { key: ListingMin ->
-            TrackMapper.forLists().invoke(service.getArtistTracks(key.name))
-        },
-        sourceOfTruth = SourceOfTruth.from(
-            reader = {key: ListingMin ->
-                db.relationshipDao().getRelatedTracks(key.name, ListingType.ARTIST)
-            },
-            writer = {art: ListingMin, tracks: List<Track>->
-                val relations = RelationMapper.forLists().invoke(tracks.map { Pair(art, it) })
-                db.trackDao().insertTracks(tracks)
-                db.relationshipDao().insertRelations(relations)
-            }
-        )
-    ).build().stream(StoreRequest.cached(artist, true))
+//    fun getArtistAlbums(name: String) = StoreBuilder.from(
+//        fetcher = nonFlowValueFetcher { key: String ->
+//            AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
+//        },
+//        sourceOfTruth = SourceOfTruth.from(
+//            reader = {key: String ->
+//                db.relationshipDao().getRelatedAlbums(key, ListingType.ARTIST)
+//            },
+//            writer = { _: String, albums: List<Album> ->
+//                db.albumDao().insertAlbums(albums)
+//            }
+//        )
+//    ).build().stream(StoreRequest.cached(name, true))
+//
+//    fun getArtistTracks(artist: ListingMin) = StoreBuilder.from(
+//        fetcher = nonFlowValueFetcher { key: ListingMin ->
+//            TrackMapper.forLists().invoke(service.getArtistTracks(key.name))
+//        },
+//        sourceOfTruth = SourceOfTruth.from(
+//            reader = {key: ListingMin ->
+//                db.relationshipDao().getRelatedTracks(key.name, ListingType.ARTIST)
+//            },
+//            writer = {art: ListingMin, tracks: List<Track>->
+//                val relations = RelationMapper.forLists().invoke(tracks.map { Pair(art, it) })
+//                db.trackDao().insertTracks(tracks)
+//                db.relationshipDao().insertRelations(relations)
+//            }
+//        )
+//    ).build().stream(StoreRequest.cached(artist, true))
 }

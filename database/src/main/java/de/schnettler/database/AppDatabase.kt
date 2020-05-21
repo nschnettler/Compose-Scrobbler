@@ -16,7 +16,7 @@ import de.schnettler.database.models.*
     ListEntry::class,
     AuthToken::class,
     RelationEntity::class
-], version = 11)
+], version = 18)
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao

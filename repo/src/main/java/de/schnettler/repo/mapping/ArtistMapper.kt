@@ -7,7 +7,7 @@ import de.schnettler.lastfm.models.*
 object ArtistMinMapper : Mapper<ArtistDto, Artist> {
     override suspend fun map(from: ArtistDto): Artist = Artist(
         name = from.name,
-        plays = from.playcount,
+        plays = from.playcount ?: 0,
         listeners = from.listeners ?: 0,
         url = from.url
     )

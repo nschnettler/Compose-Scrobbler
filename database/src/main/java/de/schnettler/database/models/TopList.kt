@@ -2,7 +2,7 @@ package de.schnettler.database.models
 
 import androidx.room.Entity
 
-@Entity(tableName = "table_charts", primaryKeys = ["type", "index"])
+@Entity(tableName = "charts", primaryKeys = ["type", "index"])
 data class ListEntry(
     val type: String,
     val index: Int,

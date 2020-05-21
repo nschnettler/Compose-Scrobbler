@@ -12,11 +12,6 @@ class DetailViewModel(val repo: Repository, entry: ListingMin? = null) : ViewMod
         repo.getArtistInfo(it.name).asLiveData(viewModelScope.coroutineContext)
     }
 
-    val albums = Transformations.switchMap(entryLive) {
-        repo.getArtistAlbums(it.name).asLiveData(viewModelScope.coroutineContext)
-    }
-
-
     fun updateEntry(new: ListingMin) {
         if (entryLive.value != new) {
             Timber.d("Value changed. New value: $new")

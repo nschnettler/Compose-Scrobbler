@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 /*
  * Generic Authentication Result in Database
  */
-@Entity(tableName = "table_auth")
+@Entity(tableName = "auth")
 data class AuthToken(
     @PrimaryKey val tokenType: String,
     val token: String,

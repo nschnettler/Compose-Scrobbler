@@ -13,7 +13,7 @@ data class Track(
     override val plays: Long = 0,
     override val listeners: Long = 0,
     override val imageUrl: String? = null,
-    val artist: String,
+    val artist: String?,
     val album: String? = null
 ): ListingMin
 

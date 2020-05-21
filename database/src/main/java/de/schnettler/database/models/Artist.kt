@@ -12,9 +12,9 @@ data class Artist(
     val bio: String? = null,
     val tags: List<String> = listOf()
 ): ListingMin {
-    @Ignore var similarArtists: List<ListingMin> = listOf()
-    @Ignore var topAlbums: List<ListingMin> = listOf()
-    @Ignore var topTracks: List<ListingMin> = listOf()
+    @Ignore var similarArtists: List<Artist> = listOf()
+    @Ignore var topAlbums: List<Album> = listOf()
+    @Ignore var topTracks: List<Track> = listOf()
 }
 
 data class ListEntryWithArtist(
@@ -23,5 +23,5 @@ data class ListEntryWithArtist(
         parentColumn = "id",
         entityColumn = "name"
     )
-    val artist: Artist
+    val artist: Artist?
 )
