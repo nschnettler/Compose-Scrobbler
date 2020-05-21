@@ -67,7 +67,7 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
     fun getUserTopArtists(): Flow<StoreResponse<List<Artist>>> {
         val userInfoStore = StoreBuilder.from<String, List<Artist>>(
             fetcher = nonFlowValueFetcher {
-                val artists = ArtistMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
+                val artists = ArtistMinMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
                 val localService = RetrofitService.provideAuthenticatedSpotifyService(spotifyAuthProvider.getToken().token, authenticator = spotifyAuthenticator)
                 artists.forEach { artist ->
                     val imageUrl = localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url
@@ -107,29 +107,47 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
     }
 
     fun getArtistInfo(name: String) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {key: String ->
-            val info = ArtistInfoMapper.map(service.getArtistInfo(key))
-            val albums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-            val tracks = TrackMapper.forLists().invoke(service.getArtistTracks(key))
-            info.topAlbums = albums
-            info.topTracks = tracks
-            return@nonFlowValueFetcher info
-        }
-    ).build().stream(StoreRequest.fresh(name))
+        fetcher = nonFlowValueFetcher { key: String ->
+            ArtistMapper.map(service.getArtistInfo(key))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {key: String ->
+                db.artistDao().getArtist(key)
+            },
+            writer = { _: String, artist: Artist ->
+                db.artistDao().insertArtist(artist)
+                //TODO: Write similar Artists into Db
+            }
+        )
+    ).build().stream(StoreRequest.cached(name, true))
 
+    fun getArtistAlbums(name: String) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { key: String ->
+            AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {key: String ->
+                db.relationshipDao().getRelatedAlbums(key, ListingType.ARTIST)
+            },
+            writer = { _: String, albums: List<Album> ->
+                db.albumDao().insertAlbums(albums)
+            }
+        )
+    ).build().stream(StoreRequest.cached(name, true))
 
-//    fun getArtistImages(artists: List<Artist>?, token: AuthToken?) = StoreBuilder.from(
-//        fetcher = nonFlowValueFetcher {_: String ->
-//            val localService = RetrofitService.provideAuthenticatedSpotifyService(getValidAuthToken(token).token, spotifyAuthenticator)
-//            artists?.map { artist -> localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url } ?: listOf()
-//        }
-//    ).build().stream(StoreRequest.fresh(""))
-//
-//    private suspend fun getValidAuthToken(token: AuthToken?): AuthToken {
-//        return if (token == null || !token.isValid()) {
-//            spotifyAuthStore.fresh(AuthTokenType.Spotify.value)
-//        } else {
-//            token
-//        }
-//    }
+    fun getArtistTracks(artist: ListingMin) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { key: ListingMin ->
+            TrackMapper.forLists().invoke(service.getArtistTracks(key.name))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {key: ListingMin ->
+                db.relationshipDao().getRelatedTracks(key.name, ListingType.ARTIST)
+            },
+            writer = {art: ListingMin, tracks: List<Track>->
+                val relations = RelationMapper.forLists().invoke(tracks.map { Pair(art, it) })
+                db.trackDao().insertTracks(tracks)
+                db.relationshipDao().insertRelations(relations)
+            }
+        )
+    ).build().stream(StoreRequest.cached(artist, true))
 }

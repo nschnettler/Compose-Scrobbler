@@ -22,7 +22,7 @@ import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.Listing
+import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
@@ -38,7 +38,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
+fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
    val artistResponse by model.artists.observeAsState()
@@ -74,7 +74,7 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (Listing) -> Unit) {
 }
 
 @Composable
-fun TopEntry(title: String, content: StoreResponse<List<Listing>>?, onEntrySelected: (Listing) -> Unit) {
+fun TopEntry(title: String, content: StoreResponse<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
    TitleComponent(title = title)
    
    when(content) {
@@ -129,8 +129,8 @@ fun UserInfoComponent(user: User) {
 
 @Composable
 fun HorizontalScrollableComponent(
-   content: List<Listing>,
-   onEntrySelected: (Listing) -> Unit,
+   content: List<ListingMin>,
+   onEntrySelected: (ListingMin) -> Unit,
    width: Dp,
    height: Dp,
    subtitleSuffix: String = "",
@@ -149,7 +149,7 @@ fun HorizontalScrollableComponent(
                      when (val imageUrl = entry.imageUrl) {
                         null -> {
                            Box(gravity = ContentGravity.Center) {
-                              Text(text = entry.title.firstLetter(), style = TextStyle(fontSize = hintTextSize))
+                              Text(text = entry.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
                            }
                         }
                         else -> {
@@ -158,20 +158,18 @@ fun HorizontalScrollableComponent(
                      }
                   }
                   Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-                     Text(entry.title,
+                     Text(entry.name,
                         style = TextStyle(
                            fontSize = 14.sp
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                      )
-                     entry.subtitle?.let {subTitle ->
-                        Text("$subTitle $subtitleSuffix",
-                           style = TextStyle(
-                              fontSize = 12.sp
-                           )
+                     Text("${formatter.format(entry.plays)} $subtitleSuffix",
+                        style = TextStyle(
+                           fontSize = 12.sp
                         )
-                     }
+                     )
                   }
                }
             }

@@ -1,8 +1,6 @@
 package de.schnettler.database.models
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Relation
 
 @Entity(tableName = "table_charts", primaryKeys = ["type", "index"])
 data class ListEntry(
@@ -11,11 +9,8 @@ data class ListEntry(
     val id: String
 )
 
-data class ListEntryWithArtist(
-    @Embedded val listing: ListEntry,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "name"
-    )
-    val artist: Artist
-)
+enum class ChartType(val type: String) {
+    USER_ALBUM("usr_album"),
+    USER_ARTIST("usr_artist"),
+    USER_TRACKS("usr_tracks")
+}

@@ -1,21 +1,23 @@
 package de.schnettler.database.models
 
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity
+@Entity(tableName = "album")
 data class Album(
-    @PrimaryKey val name: String,
-    val playcount: Long,
-    val mbid: String?,
-    val url: String,
-    val artist: String,
-    override val imageUrl: String? = null
-): Listing(name, playcount.toString(), imageUrl)
+    @PrimaryKey override val name: String,
+    override val url: String,
+    override val plays: Long = 0,
+    override var imageUrl: String? = null,
+    override val listeners: Long = 0,
+    val artist: String
+): ListingMin
 
-open class Listing(
-    @Ignore val title: String,
-    @Ignore val subtitle: String? = null,
-    @Ignore open val imageUrl: String? = null
+
+data class ListEntryWithAlbum(
+    @Embedded val listing: ListEntry,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "name"
+    )
+    val album: Album
 )

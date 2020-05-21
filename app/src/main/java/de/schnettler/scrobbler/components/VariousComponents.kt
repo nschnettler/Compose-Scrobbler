@@ -28,14 +28,14 @@ fun TitleComponent(title: String) {
 
 @Composable
 fun ExpandingSummary(
-    text: String,
+    text: String?,
     textStyle: TextStyle = MaterialTheme.typography.body2,
     expandable: Boolean = true,
     collapsedMaxLines: Int = 4,
     expandedMaxLines: Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier
 ) {
-    var canTextExpand by stateFor(text) { true }
+    val canTextExpand by stateFor(text) { true }
 
     Box(modifier = Modifier.ripple(bounded = true, enabled = expandable && canTextExpand)) {
         var expanded by state { false }
@@ -43,7 +43,7 @@ fun ExpandingSummary(
         Clickable(onClick = { expanded = !expanded }, enabled = expandable && canTextExpand) {
             ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
                 Text(
-                    text = text,
+                    text = text ?: "No Bio available",
                     style = textStyle,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = if (expanded) expandedMaxLines else collapsedMaxLines,

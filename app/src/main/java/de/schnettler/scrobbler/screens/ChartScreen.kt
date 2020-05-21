@@ -32,7 +32,7 @@ fun ArtistListItem(artistList: List<Artist>) {
     val newList = artistList.map {
         ListItem(
             title = it.name,
-            subtitle = "${formatter.format(it.listeners)} Listener ⦁ ${formatter.format(it.playcount)} Plays",
+            subtitle = "${formatter.format(it.listeners)} Listener ⦁ ${formatter.format(it.plays)} Plays",
             imageUrl = ""
         )
     }

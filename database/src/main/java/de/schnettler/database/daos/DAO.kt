@@ -50,6 +50,62 @@ interface ChartDao {
 }
 
 @Dao
+interface ArtistDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertArtist(artist: Artist)
+
+    @Query("SELECT * FROM artists WHERE name = :name")
+    fun getArtist(name: String): Flow<Artist>
+
+//    @Query("SELECT name, plays, imageUrl FROM artists WHERE name = :name")
+//    suspend fun getArtistMinimal(name: String): MinimalEntity
+}
+
+@Dao
+interface AlbumDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlbum(album: Album)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAlbums(albums: List<Album>)
+
+    @Query("SELECT * FROM album WHERE name = :name")
+    fun getAlbum(name: String): Flow<Album>
+
+//    @Query("SELECT name, plays, listeners, imageUrl FROM album WHERE name = :name")
+//    suspend fun getAlbumMinimal(name: String): MinimalEntity
+}
+
+@Dao
+interface TrackDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTrack(track: Track)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTracks(albums: List<Track>)
+
+    @Query("SELECT * FROM tracks WHERE name = :name")
+    fun getTrack(name: String): Flow<Track>
+
+//    @Query("SELECT name, plays, listeners, imageUrl FROM tracks WHERE name = :name")
+//    suspend fun getTrackMinimal(name: String): MinimalEntity
+}
+
+@Dao
+interface RelationshipDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRelations(relations: List<RelationEntity>)
+
+    @Transaction
+    @Query("SELECT * FROM table_relations WHERE sourceName = :name AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
+    fun getRelatedAlbums(name: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
+
+    @Transaction
+    @Query("SELECT * FROM table_relations WHERE sourceName = :name AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
+    fun getRelatedTracks(name: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
+}
+
+@Dao
 interface UserDao {
     @Transaction
     @Query("SELECT * FROM table_charts WHERE type = :type ORDER BY `index` ASC")

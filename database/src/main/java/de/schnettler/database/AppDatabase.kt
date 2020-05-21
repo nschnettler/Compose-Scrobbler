@@ -4,19 +4,28 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import de.schnettler.database.daos.AuthDao
-import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.UserDao
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.AuthToken
-import de.schnettler.database.models.ListEntry
-import de.schnettler.database.models.Session
+import androidx.room.TypeConverters
+import de.schnettler.database.daos.*
+import de.schnettler.database.models.*
 
-@Database(entities = [Session::class, Artist::class, ListEntry::class, AuthToken::class], version = 9)
+@Database(entities = [
+    Session::class,
+    Artist::class,
+    Album::class,
+    Track::class,
+    ListEntry::class,
+    AuthToken::class,
+    RelationEntity::class
+], version = 11)
+@TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao
     abstract fun chartDao(): ChartDao
     abstract fun userDao(): UserDao
+    abstract fun artistDao(): ArtistDao
+    abstract fun relationshipDao(): RelationshipDao
+    abstract fun albumDao(): AlbumDao
+    abstract fun trackDao(): TrackDao
 }
 
 fun provideDatabase(context: Context) = Room.databaseBuilder(

@@ -1,31 +1,27 @@
 package de.schnettler.database.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity
+@Entity(tableName = "artists")
 data class Artist(
-    @PrimaryKey val name: String,
-    val playcount: Long,
-    val listeners: Long,
-    val mbid: String,
-    val url: String,
-    val streamable: String,
-    override var imageUrl: String? = null
-): Listing(name, playcount.toString(), imageUrl)
+    @PrimaryKey override val name: String,
+    override val url: String,
+    override val plays: Long = 0,
+    override val listeners: Long = 0,
+    override var imageUrl: String? = null,
+    val bio: String? = null,
+    val tags: List<String> = listOf()
+): ListingMin {
+    @Ignore var similarArtists: List<ListingMin> = listOf()
+    @Ignore var topAlbums: List<ListingMin> = listOf()
+    @Ignore var topTracks: List<ListingMin> = listOf()
+}
 
-data class ArtistMin(
-    val name: String,
-    val url: String
-): Listing(name)
-
-data class ArtistInfo(
-    @PrimaryKey val name: String,
-    val bio: String,
-    val similar: List<ArtistMin>,
-    val tags: List<String>,
-    val listeners: Long,
-    val playcount: Long,
-    var topAlbums: List<Album> = listOf(),
-    var topTracks: List<Track> = listOf()
+data class ListEntryWithArtist(
+    @Embedded val listing: ListEntry,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "name"
+    )
+    val artist: Artist
 )

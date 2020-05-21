@@ -34,40 +34,40 @@ import timber.log.Timber
 
 @Composable
 fun DetailScreen(model: DetailViewModel) {
-    val info by model.details.observeAsState()
+    val artistState by model.artistInfo.observeAsState()
 
-    when(val _info = info) {
+    when(val artist = artistState) {
         is StoreResponse.Data -> {
             VerticalScroller() {
                 Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize), shape = RoundedCornerShape(
                     cardCornerRadius
                 )) {
-                    ExpandingSummary(_info.value.bio, modifier = Modifier.padding(defaultSpacerSize))
+                    ExpandingSummary(artist.value.bio, modifier = Modifier.padding(defaultSpacerSize))
                 }
 
                 Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
                     Column(horizontalGravity = Alignment.CenterHorizontally) {
                         Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
-                        Text(text = formatter.format(_info.value.playcount))
+                        Text(text = formatter.format(artist.value.plays))
                     }
                     Spacer(modifier = Modifier.width(148.dp))
                     Column(horizontalGravity = Alignment.CenterHorizontally) {
                         Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
-                        Text(text = formatter.format(_info.value.listeners))
+                        Text(text = formatter.format(artist.value.listeners))
                     }
                 }
 
                 TitleComponent(title = "Tags")
-                ChipRow(items = _info.value.tags)
+                ChipRow(items = artist.value.tags)
 
                 TitleComponent(title = "Top Tracks")
-                _info.value.topTracks.forEachIndexed { index, track ->
+                artist.value.topTracks.forEachIndexed { index, track ->
                     ListItem(
                         text = {
                             Text(track.name)
                         },
                         secondaryText = {
-                            Text(formatter.format(track.listener).toString() + " Hörer")
+                            Text(formatter.format(track.listeners).toString() + " Hörer")
                         },
                         icon = {
                             Surface(
@@ -83,13 +83,13 @@ fun DetailScreen(model: DetailViewModel) {
                 }
 
                 TitleComponent(title = "Top Albums")
-                HorizontalScrollableComponent(content = _info.value.topAlbums.sortedByDescending { it.playcount }, onEntrySelected = {
+                HorizontalScrollableComponent(content = artist.value.topAlbums.sortedByDescending { it.plays }, onEntrySelected = {
                     Timber.d("Selected")
                 }, width = 136.dp, height = 136.dp, hintTextSize = 32.sp, subtitleSuffix = "Wiedergaben")
 
                 TitleComponent(title = "Ähnliche Künstler")
                 val backstack = BackStack.current
-                HorizontalScrollableComponent(content = _info.value.similar, onEntrySelected = {
+                HorizontalScrollableComponent(content = artist.value.similarArtists, onEntrySelected = {
                     backstack.push(Screen.Detail(it))
                 }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
             }
@@ -98,7 +98,7 @@ fun DetailScreen(model: DetailViewModel) {
             LiveDataLoadingComponent()
         }
         is StoreResponse.Error -> {
-            Text(text = _info.errorMessageOrNull() ?: "")
+            Text(text = artist.errorMessageOrNull() ?: "")
         }
     }
 }
