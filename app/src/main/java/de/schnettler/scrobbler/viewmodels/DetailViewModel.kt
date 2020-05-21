@@ -9,7 +9,7 @@ class DetailViewModel(val repo: Repository, entry: ListingMin? = null) : ViewMod
     private val entryLive = MutableLiveData<ListingMin>(entry)
 
     val artistInfo = Transformations.switchMap(entryLive) {
-        repo.getArtistInfo(it.name).asLiveData(viewModelScope.coroutineContext)
+        repo.getArtistInfo(it.id).asLiveData(viewModelScope.coroutineContext)
     }
 
     fun updateEntry(new: ListingMin) {

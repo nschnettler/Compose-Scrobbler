@@ -60,7 +60,7 @@ object UserMapper: Mapper<UserDto, User> {
 
 object TrackMapper: Mapper<TrackDto, Track> {
     override suspend fun map(from: TrackDto) = Track(
-        id = from.mbid,
+        trackId = from.mbid,
         name = from.name,
         url = from.url,
         plays = from.playcount,
@@ -72,7 +72,7 @@ object TrackMapper: Mapper<TrackDto, Track> {
 object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {
     override suspend fun map(from: TrackWithAlbumDto) = Track(
         name = from.name,
-        id = from.mbid,
+        trackId = from.mbid,
         album = from.album.name,
         artist = from.artist.name,
         url = from.url
@@ -93,9 +93,9 @@ object RelationMapper: IndexedMapper<Pair<ListingMin, ListingMin>, RelationEntit
         val source = from.first
         val target = from.second
         return RelationEntity(
-            sourceName = source.name,
+            sourceId = source.id,
             sourceType = source.type,
-            targetName = target.name,
+            targetId = target.id,
             targetType = target.type,
             index = index
         )

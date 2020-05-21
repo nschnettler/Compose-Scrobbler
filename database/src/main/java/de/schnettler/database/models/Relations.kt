@@ -4,12 +4,12 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
 
-@Entity(tableName = "relations", primaryKeys = ["sourceName", "sourceType", "targetType", "index"])
+@Entity(tableName = "relations", primaryKeys = ["sourceId", "sourceType", "targetType", "index"])
 data class RelationEntity(
-    val sourceName: String,
+    val sourceId: String,
     val sourceType: ListingType,
     val index: Int,
-    val targetName: String,
+    val targetId: String,
     val targetType: ListingType
 )
 
@@ -23,8 +23,8 @@ enum class ListingType(val id: Int){
 data class RelatedAlbum(
     @Embedded val relation: RelationEntity,
     @Relation(
-        parentColumn = "targetName",
-        entityColumn = "name"
+        parentColumn = "targetId",
+        entityColumn = "id"
     )
     val album: Album
 )
@@ -32,8 +32,8 @@ data class RelatedAlbum(
 data class RelatedTrack(
     @Embedded val relation: RelationEntity,
     @Relation(
-        parentColumn = "targetName",
-        entityColumn = "name"
+        parentColumn = "targetId",
+        entityColumn = "id"
     )
     val track: Track
 )
@@ -41,8 +41,8 @@ data class RelatedTrack(
 data class RelatedArtist(
     @Embedded val relation: RelationEntity,
     @Relation(
-        parentColumn = "targetName",
-        entityColumn = "name"
+        parentColumn = "targetId",
+        entityColumn = "id"
     )
     val artist: Artist
 )

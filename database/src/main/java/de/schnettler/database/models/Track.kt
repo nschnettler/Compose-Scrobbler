@@ -7,8 +7,9 @@ import androidx.room.Relation
 
 @Entity(tableName = "tracks")
 data class Track(
-    @PrimaryKey override val name: String,
-    val id: String?,
+    override val name: String,
+    @PrimaryKey override val id: String = name.toLowerCase(),
+    val trackId: String?,
     override val url: String,
     override val plays: Long = 0,
     override val listeners: Long = 0,

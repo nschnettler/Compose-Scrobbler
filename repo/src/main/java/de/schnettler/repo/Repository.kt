@@ -105,7 +105,7 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getArtistInfo(name: String) = StoreBuilder.from(
+    fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
             println("FETCHER")
             val response = service.getArtistInfo(key)
@@ -145,35 +145,5 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                 db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
             }
         )
-    ).build().stream(StoreRequest.cached(name, true))
-
-//    fun getArtistAlbums(name: String) = StoreBuilder.from(
-//        fetcher = nonFlowValueFetcher { key: String ->
-//            AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-//        },
-//        sourceOfTruth = SourceOfTruth.from(
-//            reader = {key: String ->
-//                db.relationshipDao().getRelatedAlbums(key, ListingType.ARTIST)
-//            },
-//            writer = { _: String, albums: List<Album> ->
-//                db.albumDao().insertAlbums(albums)
-//            }
-//        )
-//    ).build().stream(StoreRequest.cached(name, true))
-//
-//    fun getArtistTracks(artist: ListingMin) = StoreBuilder.from(
-//        fetcher = nonFlowValueFetcher { key: ListingMin ->
-//            TrackMapper.forLists().invoke(service.getArtistTracks(key.name))
-//        },
-//        sourceOfTruth = SourceOfTruth.from(
-//            reader = {key: ListingMin ->
-//                db.relationshipDao().getRelatedTracks(key.name, ListingType.ARTIST)
-//            },
-//            writer = {art: ListingMin, tracks: List<Track>->
-//                val relations = RelationMapper.forLists().invoke(tracks.map { Pair(art, it) })
-//                db.trackDao().insertTracks(tracks)
-//                db.relationshipDao().insertRelations(relations)
-//            }
-//        )
-//    ).build().stream(StoreRequest.cached(artist, true))
+    ).build().stream(StoreRequest.cached(id, true))
 }

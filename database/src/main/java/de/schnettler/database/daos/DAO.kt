@@ -57,8 +57,8 @@ interface ArtistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertArtists(albums: List<Artist>)
 
-    @Query("SELECT * FROM artists WHERE name = :name")
-    fun getArtist(name: String): Flow<Artist?>
+    @Query("SELECT * FROM artists WHERE id = :id")
+    fun getArtist(id: String): Flow<Artist?>
 
 //    @Query("SELECT name, plays, imageUrl FROM artists WHERE name = :name")
 //    suspend fun getArtistMinimal(name: String): MinimalEntity
@@ -72,8 +72,8 @@ interface AlbumDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAlbums(albums: List<Album>)
 
-    @Query("SELECT * FROM albums WHERE name = :name")
-    fun getAlbum(name: String): Flow<Album?>
+    @Query("SELECT * FROM albums WHERE id = :id")
+    fun getAlbum(id: String): Flow<Album?>
 
 //    @Query("SELECT name, plays, listeners, imageUrl FROM album WHERE name = :name")
 //    suspend fun getAlbumMinimal(name: String): MinimalEntity
@@ -87,8 +87,8 @@ interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTracks(albums: List<Track>)
 
-    @Query("SELECT * FROM tracks WHERE name = :name")
-    fun getTrack(name: String): Flow<Track?>
+    @Query("SELECT * FROM tracks WHERE id = :id")
+    fun getTrack(id: String): Flow<Track?>
 
 //    @Query("SELECT name, plays, listeners, imageUrl FROM tracks WHERE name = :name")
 //    suspend fun getTrackMinimal(name: String): MinimalEntity
@@ -100,16 +100,16 @@ interface RelationshipDao {
     suspend fun insertRelations(relations: List<RelationEntity>)
 
     @Transaction
-    @Query("SELECT * FROM relations WHERE sourceName = :name AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedAlbums(name: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
+    @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
+    fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
 
     @Transaction
-    @Query("SELECT * FROM relations WHERE sourceName = :name AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedTracks(name: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
+    @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
+    fun getRelatedTracks(id: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
 
     @Transaction
-    @Query("SELECT * FROM relations WHERE sourceName = :name AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedArtists(name: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
+    @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
+    fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
 }
 
 @Dao

@@ -19,6 +19,7 @@ import androidx.room.PrimaryKey
 //}
 
 interface ListingMin {
+    val id: String
     val name: String
     val plays: Long
     val listeners: Long
@@ -34,6 +35,7 @@ interface ListingMin {
 }
 
 data class MinimalEntity(
+    override val id: String,
     override val name: String,
     override val plays: Long,
     override val listeners: Long,

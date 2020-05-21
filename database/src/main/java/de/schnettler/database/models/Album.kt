@@ -4,7 +4,8 @@ import androidx.room.*
 
 @Entity(tableName = "albums")
 data class Album(
-    @PrimaryKey override val name: String,
+    override val name: String,
+    @PrimaryKey override val id: String = name.toLowerCase(),
     override val url: String,
     override val plays: Long = 0,
     override var imageUrl: String? = null,
