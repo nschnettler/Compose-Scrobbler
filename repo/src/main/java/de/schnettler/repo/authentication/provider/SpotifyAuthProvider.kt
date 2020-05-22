@@ -19,7 +19,7 @@ class SpotifyAuthProvider(private val spotifyAuthService: SpotifyService, privat
                 authDao.getAuthToken(AuthTokenType.Spotify.value)
             },
             writer = { _: String, token ->
-                authDao.insertAuthToken(token)
+                authDao.forceInsert(token)
             }
         )
     ).build()

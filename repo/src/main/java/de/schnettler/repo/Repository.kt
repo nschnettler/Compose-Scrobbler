@@ -133,15 +133,15 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                 artist
             },
             writer = { _: String, artist: Artist ->
-                db.artistDao().insertArtist(artist)
+                db.artistDao().forceInsert(artist)
                 //Tracks
-                db.trackDao().insertTracks(artist.topTracks)
+                db.trackDao().insertAll(artist.topTracks)
                 db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) }))
                 //Albums
-                db.albumDao().insertAlbums(artist.topAlbums)
+                db.albumDao().insertAll(artist.topAlbums)
                 db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) }))
                 //Artist
-                db.artistDao().insertArtists(artist.similarArtists)
+                db.artistDao().insertAll(artist.similarArtists)
                 db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
             }
         )

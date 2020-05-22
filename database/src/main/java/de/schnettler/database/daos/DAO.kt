@@ -5,7 +5,47 @@ import de.schnettler.database.models.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface AuthDao {
+interface BaseDao<T> {
+
+    /**
+     * Insert an object in the database.
+     *
+     * @param obj the object to be inserted.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(obj: T)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun forceInsert(obj: T)
+
+    /**
+     * Insert an array of objects in the database.
+     *
+     * @param obj the objects to be inserted.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertAll(obj: List<T>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun forceInsertAll(obj: List<T>)
+
+    /**
+     * Update an object from the database.
+     *
+     * @param obj the object to be updated
+     */
+    @Update
+    fun update(obj: T)
+
+    /**
+     * Delete an object from the database
+     *
+     * @param obj the object to be deleted
+     */
+    @Delete
+    fun delete(obj: T)
+}
+
+@Dao
+interface AuthDao: BaseDao<AuthToken> {
     @Query("SELECT * FROM sessions LIMIT 1")
     fun getSession(): Flow<Session?>
 
@@ -19,9 +59,6 @@ interface AuthDao {
     /*
     Spotify
      */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAuthToken(authTokenDB: AuthToken)
-
     @Query("DELETE FROM auth WHERE tokenType = :type")
     suspend fun deleteAuthToken(type: String)
 
@@ -50,48 +87,21 @@ interface ChartDao {
 }
 
 @Dao
-interface ArtistDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtist(artist: Artist)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertArtists(albums: List<Artist>)
-
+interface ArtistDao: BaseDao<Artist> {
     @Query("SELECT * FROM artists WHERE id = :id")
     fun getArtist(id: String): Flow<Artist?>
-
-//    @Query("SELECT name, plays, imageUrl FROM artists WHERE name = :name")
-//    suspend fun getArtistMinimal(name: String): MinimalEntity
 }
 
 @Dao
-interface AlbumDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAlbum(album: Album)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAlbums(albums: List<Album>)
-
+interface AlbumDao: BaseDao<Album> {
     @Query("SELECT * FROM albums WHERE id = :id")
     fun getAlbum(id: String): Flow<Album?>
-
-//    @Query("SELECT name, plays, listeners, imageUrl FROM album WHERE name = :name")
-//    suspend fun getAlbumMinimal(name: String): MinimalEntity
 }
 
 @Dao
-interface TrackDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrack(track: Track)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTracks(albums: List<Track>)
-
+interface TrackDao: BaseDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id")
     fun getTrack(id: String): Flow<Track?>
-
-//    @Query("SELECT name, plays, listeners, imageUrl FROM tracks WHERE name = :name")
-//    suspend fun getTrackMinimal(name: String): MinimalEntity
 }
 
 @Dao
