@@ -38,6 +38,11 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             context
         )
 
+    suspend fun getAuthenticatedSpotifyService() =
+        RetrofitService.provideAuthenticatedSpotifyService(
+            spotifyAuthProvider.getToken().token,
+            authenticator = spotifyAuthenticator)
+
     fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
 
     private val topArtistStore = StoreBuilder.from(
@@ -107,9 +112,9 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
 
     fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            println("FETCHER")
             val response = service.getArtistInfo(key)
             val artist = ArtistMapper.map(response)
+            refreshImageUrl(db.artistDao().getArtistImageUrl(key), artist)
             artist.topAlbums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
             artist.topTracks = TrackMapper.forLists().invoke(service.getArtistTracks(key))
             artist.similarArtists = ArtistMinMapper.forLists().invoke(response.similar.artist)
@@ -130,7 +135,12 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                 }
                 artist
             },
-            writer = { _: String, artist: Artist ->
+            writer = { key: String, artist: Artist ->
+                //Make sure to not overwrite the already saved ImageUrl
+                val oldImageUrl = db.artistDao().getArtistImageUrl(key)
+                oldImageUrl?.let {
+                    artist.imageUrl = oldImageUrl
+                }
                 db.artistDao().forceInsert(artist)
                 //Tracks
                 db.trackDao().insertEntitiesWithRelations(
@@ -149,4 +159,18 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             }
         )
     ).build().stream(StoreRequest.cached(id, true))
+
+    private suspend fun refreshImageUrl(localImageUrl: String?, artist: Artist) {
+        if (localImageUrl.isNullOrBlank()) {
+            println("Refreshing ImageURl for ${artist.name}")
+            val url = getAuthenticatedSpotifyService()
+                .searchArtist(artist.name).maxBy { item ->
+                    item.popularity
+                }?.images?.first()?.url
+            println("ImageUrl $url")
+            url?.let {
+                artist.imageUrl = url
+            }
+        }
+    }
 }

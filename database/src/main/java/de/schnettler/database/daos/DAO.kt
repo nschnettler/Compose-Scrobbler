@@ -102,6 +102,12 @@ interface ChartDao {
 abstract class ArtistDao: BaseRelationsDao<Artist> {
     @Query("SELECT * FROM artists WHERE id = :id")
     abstract fun getArtist(id: String): Flow<Artist?>
+
+    @Query("SELECT imageUrl FROM artists WHERE id = :id")
+    abstract fun getArtistImageUrl(id: String): String?
+
+    @Query("UPDATE artists SET imageUrl = :url WHERE id = :id")
+    abstract fun updateArtistImageUrl(url: String, id: String)
 }
 
 @Dao
