@@ -22,12 +22,13 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
+import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
-import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
 import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -42,9 +43,12 @@ import org.threeten.bp.format.FormatStyle
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
-   val artistResponse by model.artists.collectAsState()
-   val albumResponse  by model.userTopAlbums.collectAsState()
-   val tracksResponse by model.topTracks.collectAsState()
+   val artistData by model.artistData.collectAsState(listOf())
+   val artistState by model.artistState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
+   val albumData  by model.albumData.collectAsState(listOf())
+   val albumState by model.albumState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
+   val trackData  by model.trackData.collectAsState(listOf())
+   val trackState by model.trackState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
@@ -59,35 +63,36 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
                }
             }
          }
-         
-         TopEntry(title = "Top-Künstler", content = artistResponse, onEntrySelected = onEntrySelected)
-         TopEntry(title = "Top-Alben", content = albumResponse, onEntrySelected = onEntrySelected)
-         TopEntry(title = "Top-Titel", content = tracksResponse, onEntrySelected = onEntrySelected)
+         TopEntry(title = "Top-Künstler", content = artistData, onEntrySelected = onEntrySelected, loading = artistState is StoreResponse.Loading)
+         TopEntry(title = "Top-Alben", content = albumData, onEntrySelected = onEntrySelected, loading = albumState is StoreResponse.Loading)
+         TopEntry(title = "Top-Titel", content = trackData, onEntrySelected = onEntrySelected, loading = trackState is StoreResponse.Loading)
       }
    }
 }
 
 @Composable
-fun TopEntry(title: String, content: StoreResponse<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
-   TitleComponent(title = title)
+fun TopEntry(title: String, content: List<ListingMin>, onEntrySelected: (ListingMin) -> Unit, loading: Boolean = false) {
+   TitleWithLoadingIndicator(title = title, loading = loading)
 
-   when(content) {
-      is StoreResponse.Data -> {
-         HorizontalScrollableComponent(
-            content = content.value,
-            onEntrySelected = onEntrySelected,
-            width = 172.dp,
-            height = 172.dp,
-            subtitleSuffix = "Wiedergaben"
-         )
-      }
-      is StoreResponse.Error -> {
-         Text(text = content.errorMessageOrNull() ?: "")
-      }
-      is StoreResponse.Loading -> {
-         LiveDataLoadingComponent(modifier = Modifier.height(32.dp) + Modifier.width(32.dp))
-      }
-   }
+   HorizontalScrollableComponent(
+      content = content,
+      onEntrySelected = onEntrySelected,
+      width = 172.dp,
+      height = 172.dp,
+      subtitleSuffix = "Wiedergaben"
+   )
+
+//   when(content) {
+//      is StoreResponse.Data -> {
+//
+//      }
+//      is StoreResponse.Error -> {
+//         Text(text = content.errorMessageOrNull() ?: "")
+//      }
+//      is StoreResponse.Loading -> {
+//         LiveDataLoadingComponent(modifier = Modifier.height(32.dp) + Modifier.width(32.dp))
+//      }
+//   }
 }
 
 @Composable
