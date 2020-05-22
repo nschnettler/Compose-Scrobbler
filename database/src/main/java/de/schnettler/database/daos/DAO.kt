@@ -45,6 +45,18 @@ interface BaseDao<T> {
 }
 
 @Dao
+interface BaseRelationsDao<T>: BaseDao<T> {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRelations(relations: List<RelationEntity>)
+
+    @Transaction
+    suspend fun insertEntitiesWithRelations(entities: List<@JvmSuppressWildcards T>, relations: List<RelationEntity>) {
+        insertAll(entities)
+        insertRelations(relations)
+    }
+}
+
+@Dao
 interface AuthDao: BaseDao<AuthToken> {
     @Query("SELECT * FROM sessions LIMIT 1")
     fun getSession(): Flow<Session?>
@@ -87,28 +99,25 @@ interface ChartDao {
 }
 
 @Dao
-interface ArtistDao: BaseDao<Artist> {
+abstract class ArtistDao: BaseRelationsDao<Artist> {
     @Query("SELECT * FROM artists WHERE id = :id")
-    fun getArtist(id: String): Flow<Artist?>
+    abstract fun getArtist(id: String): Flow<Artist?>
 }
 
 @Dao
-interface AlbumDao: BaseDao<Album> {
+abstract class AlbumDao: BaseRelationsDao<Album> {
     @Query("SELECT * FROM albums WHERE id = :id")
-    fun getAlbum(id: String): Flow<Album?>
+    abstract fun getAlbum(id: String): Flow<Album?>
 }
 
 @Dao
-interface TrackDao: BaseDao<Track> {
+abstract class TrackDao: BaseRelationsDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id")
-    fun getTrack(id: String): Flow<Track?>
+    abstract fun getTrack(id: String): Flow<Track?>
 }
 
 @Dao
 interface RelationshipDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRelations(relations: List<RelationEntity>)
-
     @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>

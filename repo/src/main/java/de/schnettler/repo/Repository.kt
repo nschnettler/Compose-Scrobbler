@@ -110,10 +110,8 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             println("FETCHER")
             val response = service.getArtistInfo(key)
             val artist = ArtistMapper.map(response)
-            val albums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-            val titles = TrackMapper.forLists().invoke(service.getArtistTracks(key))
-            artist.topAlbums = albums
-            artist.topTracks = titles
+            artist.topAlbums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
+            artist.topTracks = TrackMapper.forLists().invoke(service.getArtistTracks(key))
             artist.similarArtists = ArtistMinMapper.forLists().invoke(response.similar.artist)
             artist
         },
@@ -135,14 +133,19 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             writer = { _: String, artist: Artist ->
                 db.artistDao().forceInsert(artist)
                 //Tracks
-                db.trackDao().insertAll(artist.topTracks)
-                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) }))
+                db.trackDao().insertEntitiesWithRelations(
+                    artist.topTracks,
+                    RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) })
+                )
                 //Albums
-                db.albumDao().insertAll(artist.topAlbums)
-                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) }))
+                db.albumDao().insertEntitiesWithRelations(
+                    artist.topAlbums,
+                    RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) })
+                )
                 //Artist
-                db.artistDao().insertAll(artist.similarArtists)
-                db.relationshipDao().insertRelations(RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
+                db.artistDao().insertEntitiesWithRelations(
+                    artist.similarArtists,
+                    RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
             }
         )
     ).build().stream(StoreRequest.cached(id, true))
