@@ -20,6 +20,7 @@ object ArtistMapper: Mapper<ArtistInfoDto, Artist> {
         plays = from.stats.playcount,
         listeners = from.stats.listeners,
         bio = from.bio.content,
+        userplays = from.stats.userplaycount?: 0,
         tags = from.tags.tag.map { tag -> tag.name }
     )
 }

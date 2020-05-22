@@ -10,6 +10,7 @@ data class Artist(
     override val plays: Long = 0,
     override val listeners: Long = 0,
     override var imageUrl: String? = null,
+    val userplays: Long = 0,
     val bio: String? = null,
     val tags: List<String> = listOf()
 ): ListingMin {

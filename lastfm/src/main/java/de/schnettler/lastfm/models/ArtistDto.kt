@@ -35,5 +35,6 @@ data class TagsDto(
 
 data class StatsDto(
     val listeners: Long,
-    val playcount: Long
+    val playcount: Long,
+    val userplaycount: Long?
 )

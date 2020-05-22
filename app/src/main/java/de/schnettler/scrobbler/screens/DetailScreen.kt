@@ -24,7 +24,6 @@ import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.components.ExpandingSummary
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
@@ -36,18 +35,14 @@ fun DetailScreen(model: DetailViewModel) {
     val artistState by model.entryState.collectAsState(initial = null)
 
     artistState?.data?.let {details ->
-        if (!details.bio.isNullOrEmpty()) {
-            ArtistDetails(artist = details)
-        } else {
-            LiveDataLoadingComponent()
-        }
+        ArtistDetails(artist = details, loading = artistState?.loading ?: true)
     }
 }
 
 @Composable
-fun ArtistDetails(artist: Artist) {
+fun ArtistDetails(artist: Artist, loading: Boolean) {
     VerticalScroller() {
-        Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize), shape = RoundedCornerShape(
+        Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize) + Modifier.fillMaxWidth(), shape = RoundedCornerShape(
             cardCornerRadius
         )) {
             ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
@@ -58,7 +53,12 @@ fun ArtistDetails(artist: Artist) {
                 Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
                 Text(text = formatter.format(artist.plays))
             }
-            Spacer(modifier = Modifier.width(148.dp))
+            Spacer(modifier = Modifier.width(64.dp))
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+                Icon(asset = vectorResource(id = R.drawable.ic_round_hearing_24))
+                Text(text = formatter.format(artist.userplays))
+            }
+            Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                 Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
                 Text(text = formatter.format(artist.listeners))

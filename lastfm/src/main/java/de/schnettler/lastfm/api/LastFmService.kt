@@ -67,7 +67,8 @@ interface LastFmService {
     @GET("?method=$METHOD_ARTIST_INFO")
     @Wrapped(path = ["artist"])
     suspend fun getArtistInfo(
-        @Query("artist") name: String
+        @Query("artist") name: String,
+        @Query("sk") sessionKey: String
     ): ArtistInfoDto
 
     @GET("?method=$METHOD_ARTIST_ALBUMS&limit=10")

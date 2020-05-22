@@ -134,7 +134,7 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
 
     fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            val response = service.getArtistInfo(key)
+            val response = service.getArtistInfo(key, lastFmAuthProvider.getSession().key)
             val artist = ArtistMapper.map(response)
             refreshImageUrl(db.artistDao().getArtistImageUrl(key), artist)
             artist.topAlbums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
