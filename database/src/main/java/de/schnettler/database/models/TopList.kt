@@ -27,3 +27,21 @@ data class TopListArtist(
     )
     val artist: Artist
 )
+
+data class TopListTrack(
+    @Embedded val topListEntry: TopListEntry,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "id"
+    )
+    val track: Track
+)
+
+data class TopListAlbum(
+    @Embedded val topListEntry: TopListEntry,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "id"
+    )
+    val album: Album
+)

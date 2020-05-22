@@ -43,22 +43,6 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             spotifyAuthProvider.getToken().token,
             authenticator = spotifyAuthenticator)
 
-    //fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
-
-//    private val topArtistStore = StoreBuilder.from(
-//        fetcher = nonFlowValueFetcher {
-//            TopListMapper.forLists().invoke(service.getTopArtists())
-//        },
-//        sourceOfTruth = SourceOfTruth.from(
-//            reader = {
-//                db.chartDao().getTopArtists("TOP_LIST_ARTIST").mapLatest { entry -> entry?.map { it.artist } }
-//            },
-//            writer = { _: String, listEntry: List<ListEntryWithArtist> ->
-//                db.chartDao().insertTopArtists(listEntry)
-//            }
-//        )
-//    ).build()
-
     fun getUserInfo(): Flow<StoreResponse<User>> {
         val userInfoStore = StoreBuilder.from<String, User>(
             fetcher = nonFlowValueFetcher {
@@ -68,7 +52,7 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getTopArtists(type: TopListEntryType): Flow<StoreResponse<List<Artist>>> {
+    fun getTopList(type: TopListEntryType): Flow<StoreResponse<List<ListingMin>>> {
         val userInfoStore = StoreBuilder.from (
             fetcher = nonFlowValueFetcher {entryType: TopListEntryType ->
                 return@nonFlowValueFetcher when(entryType) {
@@ -82,41 +66,61 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                     TopListEntryType.CHART_ARTIST -> {
                         ArtistMinMapper.forLists().invoke(service.getTopArtists())
                     }
+                    TopListEntryType.USER_TRACKS -> {
+                        TrackMapper.forLists().invoke(service.getUserTopTracks(lastFmAuthProvider.getSession().key))
+                    }
+                    TopListEntryType.USER_ALBUM -> {
+                        AlbumMapper.forLists().invoke(service.getUserTopAlbums(lastFmAuthProvider.getSession().key))
+                    }
                     else -> listOf()
                 }
 
             },
             sourceOfTruth = SourceOfTruth.from(
                 reader = {entryType: TopListEntryType ->
-                    db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
+                    when(entryType) {
+                        TopListEntryType.CHART_ARTIST -> {
+                            db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
+                        }
+                        TopListEntryType.USER_ARTIST -> {
+                            db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
+                        }
+                        TopListEntryType.USER_TRACKS -> {
+                            db.chartDao().getTopTracks(entryType).map { list -> list.map { it.track } }
+                        }
+                        TopListEntryType.USER_ALBUM -> {
+                            db.chartDao().getTopAlbums(entryType).map { list -> list.map { it.album } }
+                        }
+                        TopListEntryType.UNDEFINED -> emptyFlow()
+                    }
                 },
-                writer = {entryType: TopListEntryType, artists: List<Artist> ->
-                    db.artistDao().insertEntitiesWithTopListEntries(
-                        artists,
-                        TopListMapper.forLists().invoke(artists.map { Pair(it, entryType) })
-                    )
+                writer = {entryType: TopListEntryType, listings: List<ListingMin> ->
+                    val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, entryType) })
+                    when(listings.first()){
+                        is Artist -> {
+                            db.artistDao().insertEntitiesWithTopListEntries(
+                                listings as List<Artist>,
+                                topListEntries
+                            )
+                        }
+                        is Track -> {
+                            db.trackDao().insertEntitiesWithTopListEntries(
+                                listings as List<Track>,
+                                topListEntries
+                            )
+                        }
+                        is Album -> {
+                            db.albumDao().insertEntitiesWithTopListEntries(
+                                listings as List<Album>,
+                                topListEntries
+                            )
+                        }
+                    }
+
                 }
             )
         ).build()
         return userInfoStore.stream(StoreRequest.cached(type, true))
-    }
-
-    fun getUserTopAlbums(): Flow<StoreResponse<List<Album>>> {
-        val userInfoStore = StoreBuilder.from<String, List<Album>>(
-            fetcher = nonFlowValueFetcher {
-                AlbumMapper.forLists().invoke(service.getUserTopAlbums(lastFmAuthProvider.getSession().key))
-            }
-        ).build()
-        return userInfoStore.stream(StoreRequest.fresh(""))
-    }
-
-    fun getUserTopTracks(): Flow<StoreResponse<List<Track>>> {
-        val userInfoStore = StoreBuilder.from<String, List<Track>>(
-            fetcher = nonFlowValueFetcher {
-                TrackMapper.forLists().invoke(service.getUserTopTracks(lastFmAuthProvider.getSession().key))
-            }
-        ).build()
-        return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
     fun getUserRecentTrack(): Flow<StoreResponse<List<Track>>> {

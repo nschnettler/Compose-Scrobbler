@@ -9,7 +9,7 @@ import de.schnettler.repo.Repository
 class UserViewModel(private val repo: Repository) : ViewModel() {
 
     val artists by lazy {
-        repo.getTopArtists(TopListEntryType.USER_ARTIST)
+        repo.getTopList(TopListEntryType.USER_ARTIST)
     }
 
     val userInfo by lazy {
@@ -17,10 +17,10 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
     }
 
     val userTopAlbums by lazy {
-        repo.getUserTopAlbums().asLiveData(viewModelScope.coroutineContext)
+        repo.getTopList(TopListEntryType.USER_ALBUM)
     }
 
     val topTracks by lazy {
-        repo.getUserTopTracks().asLiveData(viewModelScope.coroutineContext)
+        repo.getTopList(TopListEntryType.USER_TRACKS)
     }
 }

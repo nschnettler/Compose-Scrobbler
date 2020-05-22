@@ -92,6 +92,12 @@ interface AuthDao: BaseDao<AuthToken> {
 interface ChartDao {
     @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
     fun getTopArtists(type: TopListEntryType): Flow<List<TopListArtist>>
+
+    @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
+    fun getTopTracks(type: TopListEntryType): Flow<List<TopListTrack>>
+
+    @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
+    fun getTopAlbums(type: TopListEntryType): Flow<List<TopListAlbum>>
 }
 
 @Dao

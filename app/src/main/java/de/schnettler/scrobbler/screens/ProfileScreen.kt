@@ -43,10 +43,8 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
    val artistResponse by model.artists.collectAsState()
-   val albumResponse  by model.userTopAlbums.observeAsState()
-   val tracksResponse by model.topTracks.observeAsState()
-   
-   //val spotifyStatus by model.spotifyAuthStatus.observeAsState(AuthStatus.LoggedOut)
+   val albumResponse  by model.userTopAlbums.collectAsState()
+   val tracksResponse by model.topTracks.collectAsState()
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
@@ -61,11 +59,6 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
                }
             }
          }
-
-//         when(spotifyStatus) {
-//            is AuthStatus.LoggedOut -> Text(text = "Logged Out")
-//            is AuthStatus.Authenticated -> Text(text = "Logged in for ${(spotifyStatus as AuthStatus.Authenticated).token.remainingMinutes()} minutes")
-//         }
          
          TopEntry(title = "Top-Künstler", content = artistResponse, onEntrySelected = onEntrySelected)
          TopEntry(title = "Top-Alben", content = albumResponse, onEntrySelected = onEntrySelected)
