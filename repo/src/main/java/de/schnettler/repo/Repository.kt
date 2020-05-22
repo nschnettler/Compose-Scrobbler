@@ -38,26 +38,26 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             context
         )
 
-    suspend fun getAuthenticatedSpotifyService() =
+    private suspend fun provideSpotify() =
         RetrofitService.provideAuthenticatedSpotifyService(
             spotifyAuthProvider.getToken().token,
             authenticator = spotifyAuthenticator)
 
-    fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
+    //fun getTopArtists() = topArtistStore.stream(StoreRequest.cached("1", true))
 
-    private val topArtistStore = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {
-            TopListMapper.forLists().invoke(service.getTopArtists())
-        },
-        sourceOfTruth = SourceOfTruth.from(
-            reader = {
-                db.chartDao().getTopArtists("TOP_LIST_ARTIST").mapLatest { entry -> entry?.map { it.artist } }
-            },
-            writer = { _: String, listEntry: List<ListEntryWithArtist> ->
-                db.chartDao().insertTopArtists(listEntry)
-            }
-        )
-    ).build()
+//    private val topArtistStore = StoreBuilder.from(
+//        fetcher = nonFlowValueFetcher {
+//            TopListMapper.forLists().invoke(service.getTopArtists())
+//        },
+//        sourceOfTruth = SourceOfTruth.from(
+//            reader = {
+//                db.chartDao().getTopArtists("TOP_LIST_ARTIST").mapLatest { entry -> entry?.map { it.artist } }
+//            },
+//            writer = { _: String, listEntry: List<ListEntryWithArtist> ->
+//                db.chartDao().insertTopArtists(listEntry)
+//            }
+//        )
+//    ).build()
 
     fun getUserInfo(): Flow<StoreResponse<User>> {
         val userInfoStore = StoreBuilder.from<String, User>(
@@ -68,19 +68,37 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
         return userInfoStore.stream(StoreRequest.fresh(""))
     }
 
-    fun getUserTopArtists(): Flow<StoreResponse<List<Artist>>> {
-        val userInfoStore = StoreBuilder.from<String, List<Artist>>(
-            fetcher = nonFlowValueFetcher {
-                val artists = ArtistMinMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
-                val localService = RetrofitService.provideAuthenticatedSpotifyService(spotifyAuthProvider.getToken().token, authenticator = spotifyAuthenticator)
-                artists.forEach { artist ->
-                    val imageUrl = localService.searchArtist(artist.name).maxBy { item -> item.popularity }?.images?.first()?.url
-                    artist.imageUrl = imageUrl
+    fun getTopArtists(type: TopListEntryType): Flow<StoreResponse<List<Artist>>> {
+        val userInfoStore = StoreBuilder.from (
+            fetcher = nonFlowValueFetcher {entryType: TopListEntryType ->
+                return@nonFlowValueFetcher when(entryType) {
+                    TopListEntryType.USER_ARTIST -> {
+                        val artists = ArtistMinMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
+                        artists.forEach { artist ->
+                            refreshImageUrl(db.artistDao().getArtistImageUrl(artist.id), artist)
+                        }
+                        artists
+                    }
+                    TopListEntryType.CHART_ARTIST -> {
+                        ArtistMinMapper.forLists().invoke(service.getTopArtists())
+                    }
+                    else -> listOf()
                 }
-                return@nonFlowValueFetcher artists
-            }
+
+            },
+            sourceOfTruth = SourceOfTruth.from(
+                reader = {entryType: TopListEntryType ->
+                    db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
+                },
+                writer = {entryType: TopListEntryType, artists: List<Artist> ->
+                    db.artistDao().insertEntitiesWithTopListEntries(
+                        artists,
+                        TopListMapper.forLists().invoke(artists.map { Pair(it, entryType) })
+                    )
+                }
+            )
         ).build()
-        return userInfoStore.stream(StoreRequest.fresh(""))
+        return userInfoStore.stream(StoreRequest.cached(type, true))
     }
 
     fun getUserTopAlbums(): Flow<StoreResponse<List<Album>>> {
@@ -143,17 +161,17 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                 }
                 db.artistDao().forceInsert(artist)
                 //Tracks
-                db.trackDao().insertEntitiesWithRelations(
+                db.trackDao().insertEntriesWithRelations(
                     artist.topTracks,
                     RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) })
                 )
                 //Albums
-                db.albumDao().insertEntitiesWithRelations(
+                db.albumDao().insertEntriesWithRelations(
                     artist.topAlbums,
                     RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) })
                 )
                 //Artist
-                db.artistDao().insertEntitiesWithRelations(
+                db.artistDao().insertEntriesWithRelations(
                     artist.similarArtists,
                     RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
             }
@@ -163,7 +181,7 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
     private suspend fun refreshImageUrl(localImageUrl: String?, artist: Artist) {
         if (localImageUrl.isNullOrBlank()) {
             println("Refreshing ImageURl for ${artist.name}")
-            val url = getAuthenticatedSpotifyService()
+            val url = provideSpotify()
                 .searchArtist(artist.name).maxBy { item ->
                     item.popularity
                 }?.images?.first()?.url

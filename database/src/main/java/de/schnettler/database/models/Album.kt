@@ -12,13 +12,3 @@ data class Album(
     override val listeners: Long = 0,
     val artist: String?
 ): ListingMin
-
-
-data class ListEntryWithAlbum(
-    @Embedded val listing: ListEntry,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "name"
-    )
-    val album: Album
-)

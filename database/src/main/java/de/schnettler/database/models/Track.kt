@@ -17,12 +17,3 @@ data class Track(
     val artist: String?,
     val album: String? = null
 ): ListingMin
-
-data class ListEntryWithTrack(
-    @Embedded val listing: ListEntry,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "name"
-    )
-    val track: Track
-)

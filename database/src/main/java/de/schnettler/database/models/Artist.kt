@@ -17,12 +17,3 @@ data class Artist(
     @Ignore var topAlbums: List<Album> = listOf()
     @Ignore var topTracks: List<Track> = listOf()
 }
-
-data class ListEntryWithArtist(
-    @Embedded val listing: ListEntry,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "name"
-    )
-    val artist: Artist?
-)

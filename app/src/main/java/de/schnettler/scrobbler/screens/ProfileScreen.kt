@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
+import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
@@ -41,7 +42,7 @@ import org.threeten.bp.format.FormatStyle
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
-   val artistResponse by model.artists.observeAsState()
+   val artistResponse by model.artists.collectAsState()
    val albumResponse  by model.userTopAlbums.observeAsState()
    val tracksResponse by model.topTracks.observeAsState()
    
@@ -76,7 +77,7 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 @Composable
 fun TopEntry(title: String, content: StoreResponse<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
    TitleComponent(title = title)
-   
+
    when(content) {
       is StoreResponse.Data -> {
          HorizontalScrollableComponent(

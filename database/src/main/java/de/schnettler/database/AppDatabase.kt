@@ -13,15 +13,14 @@ import de.schnettler.database.models.*
     Artist::class,
     Album::class,
     Track::class,
-    ListEntry::class,
+    TopListEntry::class,
     AuthToken::class,
     RelationEntity::class
-], version = 21)
+], version = 22)
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao
     abstract fun chartDao(): ChartDao
-    abstract fun userDao(): UserDao
     abstract fun artistDao(): ArtistDao
     abstract fun relationshipDao(): RelationshipDao
     abstract fun albumDao(): AlbumDao

@@ -50,9 +50,18 @@ interface BaseRelationsDao<T>: BaseDao<T> {
     suspend fun insertRelations(relations: List<RelationEntity>)
 
     @Transaction
-    suspend fun insertEntitiesWithRelations(entities: List<@JvmSuppressWildcards T>, relations: List<RelationEntity>) {
+    suspend fun insertEntriesWithRelations(entities: List<@JvmSuppressWildcards T>, relations: List<RelationEntity>) {
         insertAll(entities)
         insertRelations(relations)
+    }
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTopListEntries(topListEntries: List<TopListEntry>)
+
+    @Transaction
+    suspend fun insertEntitiesWithTopListEntries(entities: List<@JvmSuppressWildcards T>, topListEntries: List<TopListEntry>) {
+        insertAll(entities)
+        insertTopListEntries(topListEntries)
     }
 }
 
@@ -81,21 +90,8 @@ interface AuthDao: BaseDao<AuthToken> {
 
 @Dao
 interface ChartDao {
-    @Transaction
     @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
-    fun getTopArtists(type: String): Flow<List<ListEntryWithArtist>?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTopList(entries: List<ListEntry>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertArtists(artist: List<Artist?>)
-
-    @Transaction
-    suspend fun insertTopArtists(artistEntry: List<ListEntryWithArtist>) {
-        insertTopList(artistEntry.map { it.listing })
-        insertArtists(artistEntry.map { it.artist })
-    }
+    fun getTopArtists(type: TopListEntryType): Flow<List<TopListArtist>>
 }
 
 @Dao
@@ -135,23 +131,4 @@ interface RelationshipDao {
     @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
-}
-
-@Dao
-interface UserDao {
-    @Transaction
-    @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
-    fun getTopArtists(type: String): Flow<List<ListEntryWithArtist>?>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTopList(entries: List<ListEntry>)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertArtists(artist: List<Artist?>)
-
-    @Transaction
-    suspend fun insertTopArtists(artistEntry: List<ListEntryWithArtist>) {
-        insertTopList(artistEntry.map { it.listing })
-        insertArtists(artistEntry.map { it.artist })
-    }
 }
