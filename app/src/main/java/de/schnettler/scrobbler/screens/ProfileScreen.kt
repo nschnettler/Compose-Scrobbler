@@ -22,7 +22,6 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
@@ -30,6 +29,7 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
 import de.schnettler.scrobbler.util.*
+import de.schnettler.scrobbler.viewmodels.LoadingState
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -43,12 +43,10 @@ import org.threeten.bp.format.FormatStyle
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
-   val artistData by model.artistData.collectAsState(listOf())
-   val artistState by model.artistState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
-   val albumData  by model.albumData.collectAsState(listOf())
-   val albumState by model.albumState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
-   val trackData  by model.trackData.collectAsState(listOf())
-   val trackState by model.trackState.collectAsState(StoreResponse.Loading(ResponseOrigin.SourceOfTruth))
+   val artistState by model.artistState.collectAsState()
+   val albumState by model.albumState.collectAsState()
+   val trackState by model.trackState.collectAsState()
+   println("AlbumState $albumState")
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
@@ -63,36 +61,26 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
                }
             }
          }
-         TopEntry(title = "Top-Künstler", content = artistData, onEntrySelected = onEntrySelected, loading = artistState is StoreResponse.Loading)
-         TopEntry(title = "Top-Alben", content = albumData, onEntrySelected = onEntrySelected, loading = albumState is StoreResponse.Loading)
-         TopEntry(title = "Top-Titel", content = trackData, onEntrySelected = onEntrySelected, loading = trackState is StoreResponse.Loading)
+         TopEntry(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
+         TopEntry(title = "Top-Alben", content = albumState, onEntrySelected = onEntrySelected)
+         TopEntry(title = "Top-Titel", content = trackState, onEntrySelected = onEntrySelected)
       }
    }
 }
 
 @Composable
-fun TopEntry(title: String, content: List<ListingMin>, onEntrySelected: (ListingMin) -> Unit, loading: Boolean = false) {
-   TitleWithLoadingIndicator(title = title, loading = loading)
+fun TopEntry(title: String, content: LoadingState<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
+   TitleWithLoadingIndicator(title = title, loading = content?.loading ?: true)
 
-   HorizontalScrollableComponent(
-      content = content,
-      onEntrySelected = onEntrySelected,
-      width = 172.dp,
-      height = 172.dp,
-      subtitleSuffix = "Wiedergaben"
-   )
-
-//   when(content) {
-//      is StoreResponse.Data -> {
-//
-//      }
-//      is StoreResponse.Error -> {
-//         Text(text = content.errorMessageOrNull() ?: "")
-//      }
-//      is StoreResponse.Loading -> {
-//         LiveDataLoadingComponent(modifier = Modifier.height(32.dp) + Modifier.width(32.dp))
-//      }
-//   }
+   content?.let {
+      HorizontalScrollableComponent(
+         content = it.data,
+         onEntrySelected = onEntrySelected,
+         width = 172.dp,
+         height = 172.dp,
+         subtitleSuffix = "Wiedergaben"
+      )
+   }
 }
 
 @Composable

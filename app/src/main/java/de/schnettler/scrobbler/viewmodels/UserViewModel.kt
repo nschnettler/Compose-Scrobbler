@@ -7,36 +7,69 @@ import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.TopListEntryType
 import de.schnettler.repo.Repository
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class UserViewModel(private val repo: Repository) : ViewModel() {
-
-    val artistState by lazy {
-        repo.getTopList(TopListEntryType.USER_ARTIST)
-    }
+    val albumState = MutableStateFlow(LoadingState<List<ListingMin>>(listOf()))
+    val artistState = MutableStateFlow(LoadingState<List<ListingMin>>(listOf()))
+    val trackState = MutableStateFlow(LoadingState<List<ListingMin>>(listOf()))
 
     val userInfo by lazy {
         repo.getUserInfo().asLiveData(viewModelScope.coroutineContext)
     }
 
-    val albumState by lazy {
-        repo.getTopList(TopListEntryType.USER_ALBUM)
+    private val artistResponse by lazy {
+        repo.getTopList(TopListEntryType.USER_ARTIST)
     }
 
-    val trackState by lazy {
+    private val trackResponse by lazy {
         repo.getTopList(TopListEntryType.USER_TRACKS)
     }
 
-    val artistData = artistState.filter {
-        it is StoreResponse.Data
-    }.map { it.dataOrNull() ?: listOf()}
+    private val aalbumResponse by lazy {
+        repo.getTopList(TopListEntryType.USER_ALBUM)
+    }
 
-    val albumData = albumState.filter {
-        it is StoreResponse.Data
-    }.map { it.dataOrNull() ?: listOf()}
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            artistResponse.collect {
+                artistState.value.updateState(artistState, it)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            aalbumResponse.collect {
+                albumState.value.updateState(albumState, it)
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            trackResponse.collect {
+                trackState.value.updateState(trackState, it)
+            }
+        }
+    }
+}
 
-    val trackData = trackState.filter {
-        it is StoreResponse.Data
-    }.map { it.dataOrNull() ?: listOf()}
+
+
+data class LoadingState<T>(
+    val data: T,
+    val loading: Boolean = true,
+    val error: String = ""
+) {
+    fun updateState(flow: MutableStateFlow<LoadingState<T>>, response: StoreResponse<T>) {
+        when(response) {
+            is StoreResponse.Data -> {
+                flow.value = flow.value.copy(data = response.value, loading = false, error = "")
+            }
+            is StoreResponse.Loading -> {
+                flow.value = flow.value.copy(loading = true, error = "")
+            }
+            is StoreResponse.Error -> {
+                flow.value = flow.value.copy(loading = false, error = response.errorMessageOrNull() ?: "undef")
+            }
+        }
+    }
 }
