@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
+import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -8,7 +9,6 @@ import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
-import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
@@ -19,7 +19,7 @@ import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.Screen
@@ -28,78 +28,78 @@ import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
-import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import timber.log.Timber
 
 @Composable
 fun DetailScreen(model: DetailViewModel) {
-    val artistState by model.artistInfo.observeAsState()
+    val artistState by model.entryState.collectAsState(initial = null)
 
-    when(val artist = artistState) {
-        is StoreResponse.Data -> {
-            VerticalScroller() {
-                Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize), shape = RoundedCornerShape(
-                    cardCornerRadius
-                )) {
-                    ExpandingSummary(artist.value.bio, modifier = Modifier.padding(defaultSpacerSize))
-                }
-
-                Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
-                    Column(horizontalGravity = Alignment.CenterHorizontally) {
-                        Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
-                        Text(text = formatter.format(artist.value.plays))
-                    }
-                    Spacer(modifier = Modifier.width(148.dp))
-                    Column(horizontalGravity = Alignment.CenterHorizontally) {
-                        Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
-                        Text(text = formatter.format(artist.value.listeners))
-                    }
-                }
-
-                TitleComponent(title = "Tags")
-                ChipRow(items = artist.value.tags)
-
-                TitleComponent(title = "Top Tracks")
-                artist.value.topTracks.forEachIndexed { index, track ->
-                    ListItem(
-                        text = {
-                            Text(track.name)
-                        },
-                        secondaryText = {
-                            Text(formatter.format(track.listeners).toString() + " Hörer")
-                        },
-                        icon = {
-                            Surface(
-                                color = colorResource(id = R.color.colorBackgroundElevated),
-                                shape = CircleShape,
-                                modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
-                                Box(gravity = ContentGravity.Center) {
-                                    Text(text = "${index +1}")
-                                }
-                            }
-                        }
-                    )
-                }
-
-                TitleComponent(title = "Top Albums")
-                HorizontalScrollableComponent(content = artist.value.topAlbums.sortedByDescending { it.plays }, onEntrySelected = {
-                    Timber.d("Selected")
-                }, width = 136.dp, height = 136.dp, hintTextSize = 32.sp, subtitleSuffix = "Wiedergaben")
-
-                TitleComponent(title = "Ähnliche Künstler")
-                val backstack = BackStack.current
-                HorizontalScrollableComponent(content = artist.value.similarArtists, onEntrySelected = {
-                    backstack.push(Screen.Detail(it))
-                }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
-            }
-        }
-        is StoreResponse.Loading -> {
+    artistState?.data?.let {details ->
+        if (!details.bio.isNullOrEmpty()) {
+            ArtistDetails(artist = details)
+        } else {
             LiveDataLoadingComponent()
         }
-        is StoreResponse.Error -> {
-            Text(text = artist.errorMessageOrNull() ?: "")
+    }
+}
+
+@Composable
+fun ArtistDetails(artist: Artist) {
+    VerticalScroller() {
+        Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(defaultSpacerSize), shape = RoundedCornerShape(
+            cardCornerRadius
+        )) {
+            ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
         }
+
+        Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+                Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
+                Text(text = formatter.format(artist.plays))
+            }
+            Spacer(modifier = Modifier.width(148.dp))
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+                Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
+                Text(text = formatter.format(artist.listeners))
+            }
+        }
+
+        TitleComponent(title = "Tags")
+        ChipRow(items = artist.tags)
+
+        TitleComponent(title = "Top Tracks")
+        artist.topTracks.forEachIndexed { index, track ->
+            ListItem(
+                text = {
+                    Text(track.name)
+                },
+                secondaryText = {
+                    Text(formatter.format(track.listeners).toString() + " Hörer")
+                },
+                icon = {
+                    Surface(
+                        color = colorResource(id = R.color.colorBackgroundElevated),
+                        shape = CircleShape,
+                        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                        Box(gravity = ContentGravity.Center) {
+                            Text(text = "${index +1}")
+                        }
+                    }
+                }
+            )
+        }
+
+        TitleComponent(title = "Top Albums")
+        HorizontalScrollableComponent(content = artist.topAlbums.sortedByDescending { it.plays }, onEntrySelected = {
+            Timber.d("Selected")
+        }, width = 136.dp, height = 136.dp, hintTextSize = 32.sp, subtitleSuffix = "Wiedergaben")
+
+        TitleComponent(title = "Ähnliche Künstler")
+        val backstack = BackStack.current
+        HorizontalScrollableComponent(content = artist.similarArtists, onEntrySelected = {
+            backstack.push(Screen.Detail(it))
+        }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
     }
 }
 

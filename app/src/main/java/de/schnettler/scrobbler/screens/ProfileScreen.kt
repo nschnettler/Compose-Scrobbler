@@ -28,8 +28,8 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
+import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.util.*
-import de.schnettler.scrobbler.viewmodels.LoadingState
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -43,10 +43,9 @@ import org.threeten.bp.format.FormatStyle
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    val userResponse by model.userInfo.observeAsState()
-   val artistState by model.artistState.collectAsState()
-   val albumState by model.albumState.collectAsState()
-   val trackState by model.trackState.collectAsState()
-   println("AlbumState $albumState")
+   val artistState by model.artistState.collectAsState(null)
+   val albumState by model.albumState.collectAsState(null)
+   val trackState by model.trackState.collectAsState(null)
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
@@ -72,9 +71,9 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 fun TopEntry(title: String, content: LoadingState<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
    TitleWithLoadingIndicator(title = title, loading = content?.loading ?: true)
 
-   content?.let {
+   content?.data?.let {data ->
       HorizontalScrollableComponent(
-         content = it.data,
+         content = data,
          onEntrySelected = onEntrySelected,
          width = 172.dp,
          height = 172.dp,
