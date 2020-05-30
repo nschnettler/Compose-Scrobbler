@@ -138,3 +138,18 @@ interface RelationshipDao {
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
 }
+
+@Dao
+interface UserDao: BaseDao<User> {
+    @Query("SELECT * FROM users WHERE name = :name")
+    fun getUser(name: String): Flow<User?>
+
+    @Query("SELECT * FROM users WHERE name = :name")
+    fun getUserOnce(name: String): User?
+
+    @Query("UPDATE users SET artistCount = :count WHERE name = :userName")
+    fun updateArtistCount(userName: String, count: Long)
+
+    @Query("UPDATE users SET lovedTracksCount = :count WHERE name = :userName")
+    fun updateLovedTracksCount(userName: String, count: Long)
+}

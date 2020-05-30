@@ -12,5 +12,7 @@ data class User(
     val realname: String,
     val registerDate: Long,
     val countryCode: String,
-    val imageUrl: String
+    val imageUrl: String,
+    var artistCount: Long = 0,
+    var lovedTracksCount: Long = 0
 )

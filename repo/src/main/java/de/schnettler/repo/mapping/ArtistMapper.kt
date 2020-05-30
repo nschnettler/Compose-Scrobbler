@@ -64,7 +64,7 @@ object TrackMapper: Mapper<TrackDto, Track> {
         trackId = from.mbid,
         name = from.name,
         url = from.url,
-        plays = from.playcount,
+        plays = from.playcount ?: 0,
         artist = from.artist.name,
         listeners = from.listeners ?: 0
     )

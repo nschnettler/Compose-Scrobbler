@@ -8,8 +8,7 @@ import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 
@@ -44,12 +43,38 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             authenticator = spotifyAuthenticator)
 
     fun getUserInfo(): Flow<StoreResponse<User>> {
-        val userInfoStore = StoreBuilder.from<String, User>(
-            fetcher = nonFlowValueFetcher {
-                UserMapper.map(service.getUserInfo(lastFmAuthProvider.getSession().key))
+        val currentSession = runBlocking { lastFmAuthProvider.getSession() }
+
+        return StoreBuilder.from(
+            fetcher = nonFlowValueFetcher {session: Session ->
+                UserMapper.map(service.getUserInfo(session.key))
+            },
+            sourceOfTruth = SourceOfTruth.from(
+                reader = {session: Session ->
+                    db.userDao().getUser(session.name)
+                },
+                writer = { session: Session, user: User ->
+                    val oldUser = db.userDao().getUserOnce(session.name)
+                    oldUser?.let {
+                        user.artistCount = it.artistCount
+                        user.lovedTracksCount = it.lovedTracksCount
+                    }
+                    db.userDao().forceInsert(user)
+                }
+            )
+        ).build().stream(StoreRequest.cached(currentSession,true))
+    }
+
+    fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {
+        val currentSession = runBlocking { lastFmAuthProvider.getSession() }
+
+        return StoreBuilder.from(
+            fetcher = nonFlowValueFetcher {session: Session ->
+                val result = service.getUserLikedTracks(session.key)
+                db.userDao().updateLovedTracksCount(session.name, result.info.total)
+                TrackMapper.forLists().invoke(result.track)
             }
-        ).build()
-        return userInfoStore.stream(StoreRequest.fresh(""))
+        ).build().stream(StoreRequest.cached(currentSession,true))
     }
 
     fun getTopList(type: TopListEntryType): Flow<StoreResponse<List<ListingMin>>> {
@@ -57,7 +82,10 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             fetcher = nonFlowValueFetcher {entryType: TopListEntryType ->
                 return@nonFlowValueFetcher when(entryType) {
                     TopListEntryType.USER_ARTIST -> {
-                        val artists = ArtistMinMapper.forLists().invoke(service.getUserTopArtists(lastFmAuthProvider.getSession().key))
+                        val session = lastFmAuthProvider.getSession()
+                        val response = service.getUserTopArtists(session.key)
+                        val artists = ArtistMinMapper.forLists().invoke(response.artist)
+                        db.userDao().updateArtistCount(session.name, response.info.total)
                         artists.forEach { artist ->
                             refreshImageUrl(db.artistDao().getArtistImageUrl(artist.id), artist)
                         }

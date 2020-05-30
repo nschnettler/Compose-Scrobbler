@@ -17,6 +17,20 @@ object RetrofitService {
         ).create(
             LastFmService::class.java)
     }
+
+    val spotifyAuthService: SpotifyService by lazy {
+        provideRetrofit(
+            provideOkHttpClient(SpotifyAuthInterceptor()), SpotifyService.AUTH_ENDPOINT
+        ).create(
+            SpotifyService::class.java
+        )
+    }
+
+    fun provideAuthenticatedSpotifyService(token: String, authenticator: Authenticator): SpotifyService =
+        provideRetrofit(
+            provideOkHttpClient(AccessTokenInterceptor(token), auth = authenticator), SpotifyService.ENDPOINT
+        ).create(SpotifyService::class.java)
+
 }
 
 fun provideOkHttpClient(vararg interceptor: Interceptor, auth: Authenticator? = null): OkHttpClient = OkHttpClient().newBuilder()

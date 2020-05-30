@@ -1,5 +1,12 @@
 package de.schnettler.lastfm.models
 
+import com.squareup.moshi.Json
+
+data class TopArtistResponse(
+    val artist: List<ArtistDto>,
+    @Json(name = "@attr") val info: ResponseInfo
+)
+
 data class ArtistDto(
     override val name: String,
     override val mbid: String?,

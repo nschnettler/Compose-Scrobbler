@@ -2,6 +2,7 @@ package de.schnettler.repo.authentication.provider
 
 import com.dropbox.android.external.store4.*
 import de.schnettler.database.daos.AuthDao
+import de.schnettler.database.models.Session
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.repo.mapping.SessionMapper
 import de.schnettler.repo.util.createSignature

@@ -17,6 +17,7 @@ interface LastFmService {
         const val METHOD_USER_ALBUMS = "user.getTopAlbums"
         const val METHOD_USER_TRACKS = "user.getTopTracks"
         const val METHOD_USER_RECENT = "user.getRecentTracks"
+        const val METHOD_USER_LOVED_TRACKS = "user.getLovedTracks"
         const val METHOD_ARTIST_INFO = "artist.getInfo"
         const val METHOD_ARTIST_ALBUMS = "artist.getTopAlbums"
         const val METHOD_ARTIST_TRACKS = "artist.getTopTracks"
@@ -47,10 +48,16 @@ interface LastFmService {
     ): List<AlbumDto>
 
     @GET("?method=$METHOD_USER_ARTISTS&limit=5")
-    @Wrapped(path = ["topartists", "artist"])
+    @Wrapped(path = ["topartists"])
     suspend fun getUserTopArtists(
         @Query("sk") sessionKey: String
-    ): List<ArtistDto>
+    ): TopArtistResponse
+
+    @GET("?method=$METHOD_USER_LOVED_TRACKS&limit=5")
+    @Wrapped(path = ["lovedtracks"])
+    suspend fun getUserLikedTracks(
+        @Query("sk") sessionKey: String
+    ): LovedTracksResponse
 
     @GET("?method=$METHOD_USER_TRACKS&limit=5")
     @Wrapped(path = ["toptracks", "track"])

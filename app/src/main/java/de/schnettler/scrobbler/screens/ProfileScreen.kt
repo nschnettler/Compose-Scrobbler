@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.screens
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
+import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
@@ -16,6 +17,7 @@ import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
+import androidx.ui.res.vectorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.Dp
@@ -38,27 +40,21 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
+import timber.log.Timber
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
-   val userResponse by model.userInfo.observeAsState()
+   val userState by model.userState.collectAsState(null)
    val artistState by model.artistState.collectAsState(null)
    val albumState by model.albumState.collectAsState(null)
    val trackState by model.trackState.collectAsState(null)
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
-         when(userResponse) {
-            is StoreResponse.Data -> {
-               UserInfoComponent((userResponse as StoreResponse.Data<User>).value)
-            }
-            is StoreResponse.Loading ->  { LiveDataLoadingComponent() }
-            is StoreResponse.Error ->  {
-               Box(modifier = Modifier.fillMaxSize(), gravity = ContentGravity.Center) {
-                  Text(text = "Error: ${(userResponse as StoreResponse.Error<User>).errorMessageOrNull()}")
-               }
-            }
+         Timber.d("User $userState")
+         userState?.data?.let {
+            UserInfoComponent(it)
          }
          TopEntry(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
          TopEntry(title = "Top-Alben", content = albumState, onEntrySelected = onEntrySelected)
@@ -93,23 +89,42 @@ fun UserInfoComponent(user: User) {
       val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
          .atZone(ZoneId.systemDefault())
          .toLocalDateTime()
-      ListItem(
-         text = {
-            Text(text = "${user.name} ${user.countryCode.toCountryCode()?.toFlagEmoji()}")
-         },
-         secondaryText = {
-            Text(text = "${user.realname}\nscrobbelt seit ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
-         },
-         icon = {
-            Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
-               Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(56.dp) + Modifier.preferredWidth(56.dp)) {
-                  if (user.imageUrl.isNotEmpty()) {
-                     CoilImage(data = user.imageUrl)
+      Column() {
+         ListItem(
+            text = {
+               Text(text = "${user.name} ${user.countryCode.toCountryCode()?.toFlagEmoji()}")
+            },
+            secondaryText = {
+               Text(text = "${user.realname}\nscrobbelt seit ${DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(date)}")
+            },
+            icon = {
+               Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
+                  Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(56.dp) + Modifier.preferredWidth(56.dp)) {
+                     if (user.imageUrl.isNotEmpty()) {
+                        CoilImage(data = user.imageUrl)
+                     }
                   }
                }
             }
+         )
+
+         Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+               Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
+               Text(text = formatter.format(user.playcount))
+            }
+            Spacer(modifier = Modifier.width(64.dp))
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+               Icon(asset = vectorResource(id = R.drawable.account_music_outline))
+               Text(text = formatter.format(user.artistCount))
+            }
+            Spacer(modifier = Modifier.width(64.dp))
+            Column(horizontalGravity = Alignment.CenterHorizontally) {
+               Icon(asset = vectorResource(id = R.drawable.ic_round_favorite_border_24))
+               Text(text = formatter.format(user.lovedTracksCount))
+            }
          }
-      )
+      }
    }
 }
 

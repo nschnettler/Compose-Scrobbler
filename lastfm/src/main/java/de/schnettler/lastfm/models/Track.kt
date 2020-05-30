@@ -6,7 +6,7 @@ data class TrackDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
-    val playcount: Long,
+    val playcount: Long?,
     val listeners: Long?,
     val artist: ListingDto
 ): ListingDto(name, mbid, url)
@@ -27,4 +27,9 @@ data class TrackRelationDto(
 data class ImageDto(
     val size: String,
     @Json(name = "#text") val url: String
+)
+
+data class LovedTracksResponse(
+    val track: List<TrackDto>,
+    @Json(name = "@attr") val info: ResponseInfo
 )

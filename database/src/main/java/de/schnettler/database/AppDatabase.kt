@@ -15,8 +15,9 @@ import de.schnettler.database.models.*
     Track::class,
     TopListEntry::class,
     AuthToken::class,
-    RelationEntity::class
-], version = 23)
+    RelationEntity::class,
+    User::class
+], version = 24)
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao
@@ -25,6 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun relationshipDao(): RelationshipDao
     abstract fun albumDao(): AlbumDao
     abstract fun trackDao(): TrackDao
+    abstract fun userDao(): UserDao
 }
 
 fun provideDatabase(context: Context) = Room.databaseBuilder(
