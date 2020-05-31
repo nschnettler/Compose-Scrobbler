@@ -1,19 +1,22 @@
 package de.schnettler.scrobbler.viewmodels
 
-import androidx.compose.MutableState
-import androidx.lifecycle.*
-import de.schnettler.database.models.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import de.schnettler.common.TimePeriod
+import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.TopListEntryType
+import de.schnettler.database.models.Track
+import de.schnettler.database.models.User
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class UserViewModel(private val repo: Repository) : ViewModel() {
+    private val timePeriod = TimePeriod.MONTH
     val albumState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val artistState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val trackState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
@@ -23,15 +26,15 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
     val userInfo by lazy { repo.getUserInfo() }
 
     private val artistResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_ARTIST)
+        repo.getTopList(TopListEntryType.USER_ARTIST, timePeriod)
     }
 
     private val trackResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_TRACKS)
+        repo.getTopList(TopListEntryType.USER_TRACKS, timePeriod)
     }
 
     private val aalbumResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_ALBUM)
+        repo.getTopList(TopListEntryType.USER_ALBUM, timePeriod)
     }
 
     private val lovedTracksResponse by lazy {

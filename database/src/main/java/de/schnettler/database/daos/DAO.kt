@@ -148,8 +148,8 @@ interface UserDao: BaseDao<User> {
     fun getUserOnce(name: String): User?
 
     @Query("UPDATE users SET artistCount = :count WHERE name = :userName")
-    fun updateArtistCount(userName: String, count: Long)
+    suspend fun updateArtistCount(userName: String, count: Long)
 
     @Query("UPDATE users SET lovedTracksCount = :count WHERE name = :userName")
-    fun updateLovedTracksCount(userName: String, count: Long)
+    suspend fun updateLovedTracksCount(userName: String, count: Long)
 }

@@ -1,6 +1,7 @@
 package de.schnettler.lastfm.api
 
 import com.serjltt.moshi.adapters.Wrapped
+import de.schnettler.common.TimePeriod
 import de.schnettler.lastfm.models.*
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -23,7 +24,7 @@ interface LastFmService {
         const val METHOD_ARTIST_TRACKS = "artist.getTopTracks"
     }
 
-    @GET("?method=chart.gettopartists&")
+    @GET("?method=chart.gettopartists")
     @Wrapped(path = ["artists", "artist"])
     suspend fun getTopArtists(): List<ArtistDto>
 
@@ -44,12 +45,14 @@ interface LastFmService {
     @GET("?method=$METHOD_USER_ALBUMS&limit=5")
     @Wrapped(path = ["topalbums", "album"])
     suspend fun getUserTopAlbums(
+        @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
     ): List<AlbumDto>
 
     @GET("?method=$METHOD_USER_ARTISTS&limit=5")
     @Wrapped(path = ["topartists"])
     suspend fun getUserTopArtists(
+        @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
     ): TopArtistResponse
 
@@ -62,6 +65,7 @@ interface LastFmService {
     @GET("?method=$METHOD_USER_TRACKS&limit=5")
     @Wrapped(path = ["toptracks", "track"])
     suspend fun getUserTopTracks(
+        @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
     ): List<TrackDto>
 

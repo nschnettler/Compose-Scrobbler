@@ -1,6 +1,7 @@
 package de.schnettler.repo
 
 import com.dropbox.android.external.store4.*
+import de.schnettler.common.TimePeriod
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.models.*
 import de.schnettler.lastfm.api.RetrofitService
@@ -8,13 +9,17 @@ import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.*
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class Repository(private val db: AppDatabase, context: CoroutineContext) {
+class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     //Services
     private val service = RetrofitService.lastFmService
 
@@ -27,14 +32,15 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
     val lastFmAuthProvider =
         LastFmAuthProvider(
             RetrofitService.lastFmService,
-            db.authDao()
+            db.authDao(),
+            coroutineScope
         )
 
     //Authenticators
     private val spotifyAuthenticator =
         AccessTokenAuthenticator(
             spotifyAuthProvider,
-            context
+            coroutineScope.coroutineContext
         )
 
     private suspend fun provideSpotify() =
@@ -42,48 +48,47 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
             spotifyAuthProvider.getToken().token,
             authenticator = spotifyAuthenticator)
 
-    fun getUserInfo(): Flow<StoreResponse<User>> {
-        val currentSession = runBlocking { lastFmAuthProvider.getSession() }
-
-        return StoreBuilder.from(
-            fetcher = nonFlowValueFetcher {session: Session ->
-                UserMapper.map(service.getUserInfo(session.key))
+    val userStore = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher {session: Session ->
+            UserMapper.map(service.getUserInfo(session.key))
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {session: Session ->
+                db.userDao().getUser(session.name)
             },
-            sourceOfTruth = SourceOfTruth.from(
-                reader = {session: Session ->
-                    db.userDao().getUser(session.name)
-                },
-                writer = { session: Session, user: User ->
-                    val oldUser = db.userDao().getUserOnce(session.name)
-                    oldUser?.let {
-                        user.artistCount = it.artistCount
-                        user.lovedTracksCount = it.lovedTracksCount
-                    }
-                    db.userDao().forceInsert(user)
+            writer = { session: Session, user: User ->
+                val oldUser = db.userDao().getUserOnce(session.name)
+                oldUser?.let {
+                    user.artistCount = it.artistCount
+                    user.lovedTracksCount = it.lovedTracksCount
                 }
-            )
-        ).build().stream(StoreRequest.cached(currentSession,true))
+                db.userDao().forceInsert(user)
+            }
+        )
+    ).build()
+
+    fun getUserInfo(): Flow<StoreResponse<User>> {
+        return userStore.stream(StoreRequest.cached(lastFmAuthProvider.session!!,true))
     }
 
     fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {
-        val currentSession = runBlocking { lastFmAuthProvider.getSession() }
-
         return StoreBuilder.from(
-            fetcher = nonFlowValueFetcher {session: Session ->
+            fetcher = nonFlowValueFetcher {_: String ->
+                val session = lastFmAuthProvider.getSession()
                 val result = service.getUserLikedTracks(session.key)
                 db.userDao().updateLovedTracksCount(session.name, result.info.total)
                 TrackMapper.forLists().invoke(result.track)
             }
-        ).build().stream(StoreRequest.cached(currentSession,true))
+        ).build().stream(StoreRequest.cached("",true))
     }
 
-    fun getTopList(type: TopListEntryType): Flow<StoreResponse<List<ListingMin>>> {
+    fun getTopList(type: TopListEntryType, timePeriod: TimePeriod = TimePeriod.OVERALL): Flow<StoreResponse<List<ListingMin>>> {
         val userInfoStore = StoreBuilder.from (
             fetcher = nonFlowValueFetcher {entryType: TopListEntryType ->
                 return@nonFlowValueFetcher when(entryType) {
                     TopListEntryType.USER_ARTIST -> {
                         val session = lastFmAuthProvider.getSession()
-                        val response = service.getUserTopArtists(session.key)
+                        val response = service.getUserTopArtists(timePeriod, session.key)
                         val artists = ArtistMinMapper.forLists().invoke(response.artist)
                         db.userDao().updateArtistCount(session.name, response.info.total)
                         artists.forEach { artist ->
@@ -95,10 +100,10 @@ class Repository(private val db: AppDatabase, context: CoroutineContext) {
                         ArtistMinMapper.forLists().invoke(service.getTopArtists())
                     }
                     TopListEntryType.USER_TRACKS -> {
-                        TrackMapper.forLists().invoke(service.getUserTopTracks(lastFmAuthProvider.getSession().key))
+                        TrackMapper.forLists().invoke(service.getUserTopTracks(timePeriod, lastFmAuthProvider.getSession().key))
                     }
                     TopListEntryType.USER_ALBUM -> {
-                        AlbumMapper.forLists().invoke(service.getUserTopAlbums(lastFmAuthProvider.getSession().key))
+                        AlbumMapper.forLists().invoke(service.getUserTopAlbums(timePeriod, lastFmAuthProvider.getSession().key))
                     }
                     else -> listOf()
                 }

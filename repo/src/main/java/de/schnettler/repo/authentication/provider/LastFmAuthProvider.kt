@@ -6,8 +6,12 @@ import de.schnettler.database.models.Session
 import de.schnettler.lastfm.api.LastFmService
 import de.schnettler.repo.mapping.SessionMapper
 import de.schnettler.repo.util.createSignature
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class LastFmAuthProvider(private val service: LastFmService, private val dao: AuthDao) {
+class LastFmAuthProvider(private val service: LastFmService, private val dao: AuthDao, scope: CoroutineScope) {
+    var session: Session? = null
     fun getObservableSession() = lastFmSessionStore.stream(StoreRequest.cached("", false))
     suspend fun getSession() = lastFmSessionStore.get("")
     suspend fun refreshSession(token: String) =  lastFmSessionStore.fresh(token)
@@ -28,4 +32,10 @@ class LastFmAuthProvider(private val service: LastFmService, private val dao: Au
             }
         )
     ).build()
+
+    init {
+        scope.launch(Dispatchers.IO) {
+            session = getSession()
+        }
+    }
 }
