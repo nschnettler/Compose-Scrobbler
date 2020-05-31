@@ -2,11 +2,11 @@ package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
 
-data class AlbumDto(
+data class UserAlbumDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
     val playcount: Long,
-    val artist: ListingDto,
+    val artist: MinimalListing,
     @Json(name = "image") val images: List<ImageDto>
-): ListingDto(name, mbid, url)
+): ListingDto

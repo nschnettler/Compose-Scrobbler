@@ -2,6 +2,8 @@ package de.schnettler.lastfm.api
 
 import okhttp3.Interceptor
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
+import timber.log.Timber
 
 const val USER_AGENT = "JAScrobbler/0.0.1 ( service.niklasschnettler@gmail.com )"
 
@@ -49,3 +51,5 @@ class AccessTokenInterceptor(private val token: String?): Interceptor {
         }
     }
 }
+
+val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)

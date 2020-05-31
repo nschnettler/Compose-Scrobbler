@@ -3,37 +3,50 @@ package de.schnettler.repo.mapping
 import de.schnettler.database.models.*
 import de.schnettler.lastfm.models.*
 
+fun ChartArtistDto.map(): Artist = Artist(
+    name = this.name,
+    url = this.url,
+    plays = this.playcount ?: 0,
+    listeners = this.listeners ?: 0
+)
 
-object ArtistMinMapper : Mapper<ArtistDto, Artist> {
-    override suspend fun map(from: ArtistDto): Artist = Artist(
-        name = from.name,
-        plays = from.playcount ?: 0,
-        listeners = from.listeners ?: 0,
-        url = from.url
-    )
-}
+fun UserArtistDto.map()= Artist(
+    name = this.name,
+    url = this.url,
+    userPlays = this.playcount ?: 0
+)
 
-object ArtistMapper: Mapper<ArtistInfoDto, Artist> {
-    override suspend fun map(from: ArtistInfoDto) = Artist(
-        name = from.name,
-        url = from.url,
-        plays = from.stats.playcount,
-        listeners = from.stats.listeners,
-        bio = from.bio.content,
-        userplays = from.stats.userplaycount?: 0,
-        tags = from.tags.tag.map { tag -> tag.name }
-    )
-}
+fun MinimalListing.mapToArtist() = Artist(
+    name = this.name,
+    url = this.url
+)
 
-object AlbumMapper : Mapper<AlbumDto, Album> {
-    override suspend fun map(from: AlbumDto): Album = Album(
-        name = from.name,
-        artist = from.artist.name,
-        plays = from.playcount,
-        url = from.url,
-        imageUrl = from.images[3].url
-    )
-}
+fun ArtistInfoDto.map() = Artist(
+    name = this.name,
+    url = this.url,
+    plays = this.stats.playcount,
+    userPlays = this.stats.userplaycount ?: 0,
+    listeners = this.stats.listeners,
+    bio = this.bio.content,
+    tags = this.tags.tag.map { tag -> tag.name }
+)
+
+fun UserAlbumDto.map() = Album(
+    name = this.name,
+    artist = this.artist.name,
+    userPlays = this.playcount,
+    url = this.url,
+    imageUrl = this.images[3].url
+)
+
+fun UserTrackDto.map() = Track(
+    trackId = this.mbid,
+    name = this.name,
+    url = this.url,
+    userPlays = this.playcount ?: 0,
+    artist = this.artist.name,
+    listeners = this.listeners ?: 0
+)
 
 object SessionMapper: Mapper<SessionDto, Session> {
     override suspend fun map(from: SessionDto): Session = Session(
@@ -57,17 +70,6 @@ object UserMapper: Mapper<UserDto, User> {
         )
         return user
     }
-}
-
-object TrackMapper: Mapper<TrackDto, Track> {
-    override suspend fun map(from: TrackDto) = Track(
-        trackId = from.mbid,
-        name = from.name,
-        url = from.url,
-        plays = from.playcount ?: 0,
-        artist = from.artist.name,
-        listeners = from.listeners ?: 0
-    )
 }
 
 object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {

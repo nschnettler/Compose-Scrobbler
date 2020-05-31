@@ -1,5 +1,10 @@
 plugins {
-    id "kotlin"
+    id "com.android.library"
+    id "kotlin-android"
+}
+
+android {
+    compileSdkVersion buildConfig.compileSdk
 }
 
 dependencies {
@@ -17,4 +22,5 @@ dependencies {
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     implementation "com.serjltt.moshi:moshi-lazy-adapters:2.2"
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.7.2"
 }

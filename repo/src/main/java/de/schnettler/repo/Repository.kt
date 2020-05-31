@@ -68,42 +68,56 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     ).build()
 
     fun getUserInfo(): Flow<StoreResponse<User>> {
-        return userStore.stream(StoreRequest.cached(lastFmAuthProvider.session,true))
+        return userStore.stream(StoreRequest.cached(lastFmAuthProvider.session!!,true))
     }
 
     fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {
         return StoreBuilder.from(
             fetcher = nonFlowValueFetcher {_: String ->
-                val session = lastFmAuthProvider.getSession()
+                val session = lastFmAuthProvider.session!!
                 val result = service.getUserLikedTracks(session.key)
                 db.userDao().updateLovedTracksCount(session.name, result.info.total)
-                TrackMapper.forLists().invoke(result.track)
+                result.track.map { it.map() }
             }
         ).build().stream(StoreRequest.cached("",true))
     }
+
+    fun getTopArtists(timePeriod: TimePeriod) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher {
+            val session = lastFmAuthProvider.session
+            val response = service.getUserTopArtists(timePeriod, session!!.key)
+            val artists = response.artist.map { it.map() }
+            db.userDao().updateArtistCount(session.name, response.info.total)
+            artists.forEach { artist ->
+                refreshImageUrl(db.artistDao().getArtistImageUrl(artist.id), artist)
+            }
+            artists
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {
+                db.chartDao().getTopArtists(TopListEntryType.USER_ARTIST).map { list -> list.map { it.artist } }
+            },
+            writer = {_: Any, listings: List<Artist> ->
+                val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, TopListEntryType.USER_ARTIST) })
+                db.artistDao().insertEntitiesWithTopListEntries(
+                    listings, topListEntries
+                )
+            }
+        )
+    ).build().stream(StoreRequest.cached("", true))
 
     fun getTopList(type: TopListEntryType, timePeriod: TimePeriod = TimePeriod.OVERALL): Flow<StoreResponse<List<ListingMin>>> {
         val userInfoStore = StoreBuilder.from (
             fetcher = nonFlowValueFetcher {entryType: TopListEntryType ->
                 return@nonFlowValueFetcher when(entryType) {
-                    TopListEntryType.USER_ARTIST -> {
-                        val session = lastFmAuthProvider.getSession()
-                        val response = service.getUserTopArtists(timePeriod, session.key)
-                        val artists = ArtistMinMapper.forLists().invoke(response.artist)
-                        db.userDao().updateArtistCount(session.name, response.info.total)
-                        artists.forEach { artist ->
-                            refreshImageUrl(db.artistDao().getArtistImageUrl(artist.id), artist)
-                        }
-                        artists
-                    }
                     TopListEntryType.CHART_ARTIST -> {
-                        ArtistMinMapper.forLists().invoke(service.getTopArtists())
+                        service.getTopArtists().map { it.map() }
                     }
                     TopListEntryType.USER_TRACKS -> {
-                        TrackMapper.forLists().invoke(service.getUserTopTracks(timePeriod, lastFmAuthProvider.getSession().key))
+                        service.getUserTopTracks(timePeriod, lastFmAuthProvider.session!!.key).map { it.map() }
                     }
                     TopListEntryType.USER_ALBUM -> {
-                        AlbumMapper.forLists().invoke(service.getUserTopAlbums(timePeriod, lastFmAuthProvider.getSession().key))
+                        service.getUserTopAlbums(timePeriod, lastFmAuthProvider.session!!.key).map { it.map() }
                     }
                     else -> listOf()
                 }
@@ -115,9 +129,6 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
                         TopListEntryType.CHART_ARTIST -> {
                             db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
                         }
-                        TopListEntryType.USER_ARTIST -> {
-                            db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
-                        }
                         TopListEntryType.USER_TRACKS -> {
                             db.chartDao().getTopTracks(entryType).map { list -> list.map { it.track } }
                         }
@@ -125,6 +136,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
                             db.chartDao().getTopAlbums(entryType).map { list -> list.map { it.album } }
                         }
                         TopListEntryType.UNDEFINED -> emptyFlow()
+                        else -> TODO()
                     }
                 },
                 writer = {entryType: TopListEntryType, listings: List<ListingMin> ->
@@ -159,7 +171,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     fun getUserRecentTrack(): Flow<StoreResponse<List<Track>>> {
         val userInfoStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
-                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(lastFmAuthProvider.getSession().key))
+                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(lastFmAuthProvider.session!!.key))
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
@@ -167,12 +179,12 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
 
     fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            val response = service.getArtistInfo(key, lastFmAuthProvider.getSession().key)
-            val artist = ArtistMapper.map(response)
+            val response = service.getArtistInfo(key, lastFmAuthProvider.session!!.key)
+            val artist = response.map()
             refreshImageUrl(db.artistDao().getArtistImageUrl(key), artist)
-            artist.topAlbums = AlbumMapper.forLists().invoke(service.getArtistAlbums(key))
-            artist.topTracks = TrackMapper.forLists().invoke(service.getArtistTracks(key))
-            artist.similarArtists = ArtistMinMapper.forLists().invoke(response.similar.artist)
+            artist.topAlbums = service.getArtistAlbums(key).map { it.map() }
+            artist.topTracks = service.getArtistTracks(key).map { it.map() }
+            artist.similarArtists = response.similar.artist.map { it.mapToArtist() }
             artist
         },
         sourceOfTruth = SourceOfTruth.from(

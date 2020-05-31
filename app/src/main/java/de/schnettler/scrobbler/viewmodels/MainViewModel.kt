@@ -14,13 +14,13 @@ import timber.log.Timber
 class MainViewModel(private val repo: Repository): ViewModel() {
 
     private val sessionResponse by lazy {
-        repo.lastFmAuthProvider.getObservableSession().asLiveData(viewModelScope.coroutineContext)
+        repo.lastFmAuthProvider.sessionLive.asLiveData(viewModelScope.coroutineContext)
     }
 
     val sessionStatus: LiveData<SessionStatus> = Transformations.map(sessionResponse) {response ->
-        when (response) {
-            is StoreResponse.Data -> SessionStatus.LoggedIn(response.value)
-            else -> SessionStatus.LoggedOut
+        when (response == null) {
+            true -> SessionStatus.LoggedOut
+            false -> SessionStatus.LoggedIn(response)
         }
     }
 

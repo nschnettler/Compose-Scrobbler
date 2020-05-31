@@ -56,7 +56,7 @@ fun ArtistDetails(artist: Artist, loading: Boolean) {
             Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                 Icon(asset = vectorResource(id = R.drawable.ic_round_hearing_24))
-                Text(text = formatter.format(artist.userplays))
+                Text(text = formatter.format(artist.userPlays))
             }
             Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {

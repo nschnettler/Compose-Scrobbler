@@ -1,10 +1,16 @@
 package de.schnettler.lastfm.models
 
-open class ListingDto(
-    open val name: String,
-    open val mbid: String?,
-    open val url: String
-)
+interface ListingDto {
+    val name: String
+    val mbid: String?
+    val url: String
+}
+
+data class MinimalListing(
+    override val name: String,
+    override val mbid: String? = null,
+    override val url: String
+): ListingDto
 
 data class ResponseInfo(
     val page: Long,

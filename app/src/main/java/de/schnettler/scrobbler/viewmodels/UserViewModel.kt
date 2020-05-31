@@ -28,9 +28,11 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            timePeriod.flatMapLatest { repo.getTopList(TopListEntryType.USER_ARTIST, it) }.collect { artistState.update(it) }
+            Timber.d("Loading Artists")
+            timePeriod.flatMapLatest { repo.getTopArtists(it) }.collect { artistState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("Loading Albums")
             timePeriod.flatMapLatest {repo.getTopList(TopListEntryType.USER_ALBUM, it) }.collect { albumState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {

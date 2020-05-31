@@ -12,6 +12,7 @@ data class Track(
     val trackId: String?,
     override val url: String,
     override val plays: Long = 0,
+    override val userPlays: Long = 0,
     override val listeners: Long = 0,
     override val imageUrl: String? = null,
     val artist: String?,

@@ -26,7 +26,7 @@ interface LastFmService {
 
     @GET("?method=chart.gettopartists")
     @Wrapped(path = ["artists", "artist"])
-    suspend fun getTopArtists(): List<ArtistDto>
+    suspend fun getTopArtists(): List<ChartArtistDto>
 
 
     @GET("?method=$METHOD_AUTH_SESSION")
@@ -47,14 +47,14 @@ interface LastFmService {
     suspend fun getUserTopAlbums(
         @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
-    ): List<AlbumDto>
+    ): List<UserAlbumDto>
 
     @GET("?method=$METHOD_USER_ARTISTS&limit=5")
     @Wrapped(path = ["topartists"])
     suspend fun getUserTopArtists(
         @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
-    ): TopArtistResponse
+    ): UserArtistResponse
 
     @GET("?method=$METHOD_USER_LOVED_TRACKS&limit=5")
     @Wrapped(path = ["lovedtracks"])
@@ -67,7 +67,7 @@ interface LastFmService {
     suspend fun getUserTopTracks(
         @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
-    ): List<TrackDto>
+    ): List<UserTrackDto>
 
     @GET("?method=$METHOD_USER_RECENT")
     @Wrapped(path = ["recenttracks", "track"])
@@ -86,11 +86,11 @@ interface LastFmService {
     @Wrapped(path = ["topalbums", "album"])
     suspend fun getArtistAlbums(
         @Query("artist") name: String
-    ): List<AlbumDto>
+    ): List<UserAlbumDto>
 
     @GET("?method=$METHOD_ARTIST_TRACKS&limit=5")
     @Wrapped(path = ["toptracks", "track"])
     suspend fun getArtistTracks(
         @Query("artist") name: String
-    ): List<TrackDto>
+    ): List<UserTrackDto>
 }

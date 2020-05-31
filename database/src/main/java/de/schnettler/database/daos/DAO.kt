@@ -70,6 +70,9 @@ interface AuthDao: BaseDao<AuthToken> {
     @Query("SELECT * FROM sessions LIMIT 1")
     fun getSession(): Flow<Session?>
 
+    @Query("SELECT * FROM sessions LIMIT 1")
+    suspend fun getSessionOnce(): Session?
+
     @Insert
     suspend fun insertSession(session: Session)
 

@@ -22,6 +22,7 @@ interface ListingMin {
     val id: String
     val name: String
     val plays: Long
+    val userPlays: Long
     val listeners: Long
     val url: String?
     val imageUrl: String?
@@ -38,6 +39,7 @@ data class MinimalEntity(
     override val id: String,
     override val name: String,
     override val plays: Long,
+    override val userPlays: Long,
     override val listeners: Long,
     override val url: String?,
     override val imageUrl: String?

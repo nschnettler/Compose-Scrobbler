@@ -79,9 +79,6 @@ dependencies {
     implementation "dev.chrisbanes.accompanist:accompanist-mdc-theme:$accompanist_version"
     implementation "dev.chrisbanes.accompanist:accompanist-coil:$accompanist_version"
 
-    //Timber
-    implementation 'com.jakewharton.timber:timber:4.7.1'
-
     //Router
     implementation project(":router")
 

@@ -2,29 +2,43 @@ package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
 
-data class TopArtistResponse(
-    val artist: List<ArtistDto>,
-    @Json(name = "@attr") val info: ResponseInfo
-)
+interface BaseArtistDto: ListingDto {
+    override val name: String
+    override val mbid: String?
+    override val url: String
+    val playcount: Long?
+}
 
-data class ArtistDto(
+data class ChartArtistDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
-    val playcount: Long?,
-    val listeners: Long?,
-    val streamable: String?
-): ListingDto(name, mbid, url)
+    override val playcount: Long?,
+    val listeners: Long?
+): BaseArtistDto
+
+data class UserArtistDto(
+    override val name: String,
+    override val mbid: String?,
+    override val url: String,
+    override val playcount: Long?
+): BaseArtistDto
+
+
+data class UserArtistResponse(
+    val artist: List<UserArtistDto>,
+    @Json(name = "@attr") val info: ResponseInfo
+)
 
 data class ArtistInfoDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
     val bio: BioDto,
-    val similar: ArtistListDto,
+    val similar: SimilarArtistsDto,
     val tags: TagsDto,
     val stats: StatsDto
-): ListingDto(name, mbid, url)
+): ListingDto
 
 data class BioDto(
     val published: String,
@@ -32,16 +46,6 @@ data class BioDto(
     val content: String
 )
 
-data class ArtistListDto(
-    val artist: List<ArtistDto>
-)
-
-data class TagsDto(
-    val tag: List<ListingDto>
-)
-
-data class StatsDto(
-    val listeners: Long,
-    val playcount: Long,
-    val userplaycount: Long?
+data class SimilarArtistsDto(
+    val artist: List<MinimalListing>
 )

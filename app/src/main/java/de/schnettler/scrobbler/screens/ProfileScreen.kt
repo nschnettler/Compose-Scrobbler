@@ -11,7 +11,6 @@ import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
-import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
@@ -24,11 +23,9 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.util.*
@@ -40,7 +37,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import timber.log.Timber
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
@@ -52,7 +48,6 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
-         Timber.d("User $userState")
          userState?.data?.let {
             UserInfoComponent(it)
          }
@@ -73,7 +68,8 @@ fun TopEntry(title: String, content: LoadingState<List<ListingMin>>?, onEntrySel
          onEntrySelected = onEntrySelected,
          width = 172.dp,
          height = 172.dp,
-         subtitleSuffix = "Wiedergaben"
+         subtitleSuffix = "Wiedergaben",
+         useUserPlays = true
       )
    }
 }
@@ -132,6 +128,7 @@ fun HorizontalScrollableComponent(
    onEntrySelected: (ListingMin) -> Unit,
    width: Dp,
    height: Dp,
+   useUserPlays: Boolean = false,
    subtitleSuffix: String = "",
    hintTextSize: TextUnit = 62.sp
 ) {
@@ -164,7 +161,7 @@ fun HorizontalScrollableComponent(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                      )
-                     Text("${formatter.format(entry.plays)} $subtitleSuffix",
+                     Text("${formatter.format(if (useUserPlays) entry.userPlays else entry.plays)} $subtitleSuffix",
                         style = TextStyle(
                            fontSize = 12.sp
                         )

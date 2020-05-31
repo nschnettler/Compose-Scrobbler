@@ -8,6 +8,7 @@ data class Album(
     @PrimaryKey override val id: String = name.toLowerCase(),
     override val url: String,
     override val plays: Long = 0,
+    override val userPlays: Long = 0,
     override var imageUrl: String? = null,
     override val listeners: Long = 0,
     val artist: String?
