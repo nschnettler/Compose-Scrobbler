@@ -8,6 +8,8 @@ dependencies {
     def moshi_version = "1.9.2"
     def okhttp_version = '4.4.0'
 
+    api project(":common")
+
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$retrofit_coroutines_adapter_version"
