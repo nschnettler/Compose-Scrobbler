@@ -16,7 +16,10 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class UserViewModel(private val repo: Repository) : ViewModel() {
-    private var timePeriod: MutableStateFlow<TimePeriod> = MutableStateFlow(TimePeriod.OVERALL)
+    private var _timePeriod: MutableStateFlow<TimePeriod> = MutableStateFlow(TimePeriod.OVERALL)
+    val timePeriod: StateFlow<TimePeriod>
+        get() = _timePeriod
+
     val albumState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val artistState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val trackState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
@@ -41,11 +44,9 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
         }
     }
 
-    fun updatePeriod() {
-        when (timePeriod.value) {
-            TimePeriod.WEEK -> timePeriod.value = TimePeriod.OVERALL
-            TimePeriod.OVERALL -> timePeriod.value = TimePeriod.WEEK
+    fun updatePeriod(newPeriod: TimePeriod) {
+        if (newPeriod != timePeriod.value) {
+            _timePeriod.value = newPeriod
         }
-        Timber.d("Period: ${timePeriod.value}")
     }
 }

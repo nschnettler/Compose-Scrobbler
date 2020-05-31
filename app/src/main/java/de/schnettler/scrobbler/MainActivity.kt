@@ -3,30 +3,25 @@ package de.schnettler.scrobbler
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Composable
-import androidx.compose.Providers
-import androidx.compose.ambientOf
-import androidx.compose.getValue
+import androidx.compose.*
 import androidx.lifecycle.lifecycleScope
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.livedata.observeAsState
-import androidx.ui.material.IconButton
-import androidx.ui.material.Scaffold
-import androidx.ui.material.TopAppBar
+import androidx.ui.material.*
 import androidx.ui.res.vectorResource
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
+import de.schnettler.common.TimePeriod
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.provideDatabase
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
-import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
 import de.schnettler.scrobbler.viewmodels.*
@@ -62,6 +57,18 @@ class MainActivity : AppCompatActivity() {
                 MaterialThemeFromMdcTheme  {
                     Router(defaultRouting = Screen.Local as Screen) {backStack ->
                         Providers(BackStack provides backStack) {
+
+                            var showDialog by state { false }
+
+                            if (showDialog) {
+                                PeriodeSelectDialog(onSelect = {
+                                    userViewModel.updatePeriod(it)
+                                    showDialog = false
+                                }, onDismiss = {
+                                    showDialog = false
+                                })
+                            }
+
                             Scaffold(
                                 topAppBar = {
                                     TopAppBar(
@@ -84,7 +91,7 @@ class MainActivity : AppCompatActivity() {
                                         Screen.Local,
                                         Screen.History,
                                         Screen.Profile(onClick = {
-                                            userViewModel.updatePeriod()
+                                            showDialog = true
                                         })
                                     ))
                                 }
@@ -144,6 +151,30 @@ class MainActivity : AppCompatActivity() {
                 model.onTokenReceived(token)
             }
         }
+    }
+
+    @Composable
+    private fun PeriodeSelectDialog(onSelect: (selected: TimePeriod) -> Unit, onDismiss: () -> Unit) {
+        var selected by state { userViewModel.timePeriod.value }
+        val radioGroupOptions = TimePeriod.values().asList()
+        AlertDialog(
+            onCloseRequest = { onDismiss() },
+            title = { Text(text = "Zeitrahmen") },
+            text = {
+                RadioGroup {
+                    radioGroupOptions.forEach {
+                        RadioGroupTextItem(selected = selected == it, onSelect = {
+                            selected = it
+                        }, text = it.niceName)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { onSelect(selected) }, contentColor = MaterialTheme.colors.secondary) {
+                    Text(text = "Select")
+                }
+            }
+        )
     }
 }
 
