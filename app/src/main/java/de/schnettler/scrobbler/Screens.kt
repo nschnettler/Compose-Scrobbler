@@ -1,17 +1,16 @@
 package de.schnettler.scrobbler
 
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AccountCircle
-import androidx.ui.material.icons.outlined.Favorite
-import androidx.ui.material.icons.outlined.FavoriteBorder
-import androidx.ui.material.icons.outlined.Home
+import androidx.annotation.DrawableRes
 import de.schnettler.database.models.ListingMin
+import de.schnettler.scrobbler.util.MenuAction
 
-sealed class Screen(val title: String, val icon: VectorAsset) {
-    object Charts : Screen("Charts", Icons.Outlined.FavoriteBorder)
-    object History : Screen("History", Icons.Outlined.Home)
-    object Local: Screen("Local", Icons.Outlined.Favorite)
-    object Profile : Screen("Profile", Icons.Outlined.AccountCircle)
-    class Detail(val item: ListingMin) : Screen(item.name, Icons.Outlined.AccountCircle)
+
+sealed class Screen(val title: String, @DrawableRes val icon: Int, val menuActions: List<MenuAction> = listOf()) {
+    object Charts : Screen("Charts", R.drawable.ic_round_insights_24)
+    object History : Screen("History", R.drawable.ic_round_history_24)
+    object Local: Screen("Local", R.drawable.ic_round_favorite_border_24)
+    class Profile(onClick: () -> Unit) : Screen("Profile", R.drawable.ic_outline_account_circle_24, listOf(
+        MenuAction.Period(onClick)
+    ))
+    class Detail(val item: ListingMin) : Screen(item.name, R.drawable.ic_outline_account_circle_24)
 }

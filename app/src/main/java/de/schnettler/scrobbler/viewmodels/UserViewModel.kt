@@ -11,12 +11,12 @@ import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class UserViewModel(private val repo: Repository) : ViewModel() {
-    private val timePeriod = TimePeriod.MONTH
+    private var timePeriod: MutableStateFlow<TimePeriod> = MutableStateFlow(TimePeriod.OVERALL)
     val albumState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val artistState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val trackState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
@@ -25,13 +25,13 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getTopList(TopListEntryType.USER_ARTIST, timePeriod).collect { artistState.update(it) }
+            timePeriod.flatMapLatest { repo.getTopList(TopListEntryType.USER_ARTIST, it) }.collect { artistState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getTopList(TopListEntryType.USER_ALBUM, timePeriod).collect { albumState.update(it) }
+            timePeriod.flatMapLatest {repo.getTopList(TopListEntryType.USER_ALBUM, it) }.collect { albumState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getTopList(TopListEntryType.USER_TRACKS, timePeriod).collect { trackState.update(it) }
+            timePeriod.flatMapLatest {repo.getTopList(TopListEntryType.USER_TRACKS, it) }.collect { trackState.update(it) }
         }
         viewModelScope.launch {
             repo.getUserLovedTracks().collect { lovedTracksState.update(it) }
@@ -39,5 +39,13 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repo.getUserInfo().collect { userState.update(it) }
         }
+    }
+
+    fun updatePeriod() {
+        when (timePeriod.value) {
+            TimePeriod.WEEK -> timePeriod.value = TimePeriod.OVERALL
+            TimePeriod.OVERALL -> timePeriod.value = TimePeriod.WEEK
+        }
+        Timber.d("Period: ${timePeriod.value}")
     }
 }

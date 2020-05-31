@@ -118,7 +118,7 @@ fun UserInfoComponent(user: User) {
                Text(text = formatter.format(user.artistCount))
             }
             Column(horizontalGravity = Alignment.CenterHorizontally) {
-               Icon(asset = vectorResource(id = R.drawable.ic_round_favorite_border_24))
+               Icon(asset = vectorResource(id = R.drawable.ic_round_favorite_border_32))
                Text(text = formatter.format(user.lovedTracksCount))
             }
          }

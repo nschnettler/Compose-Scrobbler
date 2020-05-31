@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Scrobbler</string>
+    <string name="ic_period">Period</string>
 </resources>

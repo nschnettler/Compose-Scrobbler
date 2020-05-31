@@ -60,7 +60,7 @@ fun ArtistDetails(artist: Artist, loading: Boolean) {
             }
             Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {
-                Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_24))
+                Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_32))
                 Text(text = formatter.format(artist.listeners))
             }
         }

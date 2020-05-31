@@ -10,10 +10,13 @@ import androidx.compose.getValue
 import androidx.lifecycle.lifecycleScope
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
+import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.livedata.observeAsState
+import androidx.ui.material.IconButton
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
+import androidx.ui.res.vectorResource
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.BackStack
@@ -23,6 +26,7 @@ import de.schnettler.database.provideDatabase
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
+import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
 import de.schnettler.scrobbler.viewmodels.*
@@ -61,7 +65,14 @@ class MainActivity : AppCompatActivity() {
                             Scaffold(
                                 topAppBar = {
                                     TopAppBar(
-                                        title = { Text(text = backStack.last().title) }
+                                        title = { Text(text = backStack.last().title) },
+                                        actions = {
+                                            backStack.last().menuActions.forEach {
+                                                IconButton(onClick = it.onClick) {
+                                                    Icon(vectorResource(id = it.icon))
+                                                }
+                                            }
+                                        }
                                     )
                                 },
                                 bodyContent = {
@@ -72,7 +83,9 @@ class MainActivity : AppCompatActivity() {
                                         Screen.Charts,
                                         Screen.Local,
                                         Screen.History,
-                                        Screen.Profile
+                                        Screen.Profile(onClick = {
+                                            userViewModel.updatePeriod()
+                                        })
                                     ))
                                 }
                             )
