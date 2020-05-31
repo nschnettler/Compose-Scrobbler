@@ -20,6 +20,7 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.Artist
+import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.Screen
@@ -34,8 +35,13 @@ import timber.log.Timber
 fun DetailScreen(model: DetailViewModel) {
     val artistState by model.entryState.collectAsState(initial = null)
 
+    Timber.d("Error ${artistState?.error}")
     artistState?.data?.let {details ->
-        ArtistDetails(artist = details, loading = artistState?.loading ?: true)
+        when(details) {
+            is Artist -> ArtistDetails(artist = details, loading = artistState?.loading ?: true)
+            is Track -> Text(text = "Track: $details")
+        }
+
     }
 }
 

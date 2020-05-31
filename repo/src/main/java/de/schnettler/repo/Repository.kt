@@ -167,7 +167,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     fun getUserRecentTrack(): Flow<StoreResponse<List<Track>>> {
         val userInfoStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
-                TrackWithAlbumMapper.forLists().invoke(service.getUserRecentTrack(lastFmAuthProvider.session!!.key))
+               service.getUserRecentTrack(lastFmAuthProvider.session!!.key).map { it.map() }
             }
         ).build()
         return userInfoStore.stream(StoreRequest.fresh(""))
@@ -222,6 +222,12 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
             }
         )
     ).build().stream(StoreRequest.cached(id, true))
+
+    fun getTrackInfo(track: Track) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { track: Track ->
+            service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key).map()
+        }
+    ).build().stream(StoreRequest.fresh(track))
 
     private suspend fun refreshImageUrl(localImageUrl: String?, artist: Artist) {
         if (localImageUrl.isNullOrBlank()) {

@@ -22,6 +22,7 @@ interface LastFmService {
         const val METHOD_ARTIST_INFO = "artist.getInfo"
         const val METHOD_ARTIST_ALBUMS = "artist.getTopAlbums"
         const val METHOD_ARTIST_TRACKS = "artist.getTopTracks"
+        const val METHOD_TRACK_INFO = "track.getInfo"
     }
 
     @GET("?method=chart.gettopartists")
@@ -73,7 +74,7 @@ interface LastFmService {
     @Wrapped(path = ["recenttracks", "track"])
     suspend fun getUserRecentTrack(
         @Query("sk") sessionKey: String
-    ): List<TrackWithAlbumDto>
+    ): List<RecentTracksDto>
 
     @GET("?method=$METHOD_ARTIST_INFO")
     @Wrapped(path = ["artist"])
@@ -81,6 +82,14 @@ interface LastFmService {
         @Query("artist") name: String,
         @Query("sk") sessionKey: String
     ): ArtistInfoDto
+
+    @GET("?method=$METHOD_TRACK_INFO")
+    @Wrapped(path = ["track"])
+    suspend fun getTrackInfo(
+        @Query("artist") artistName: String,
+        @Query("track") trackName: String,
+        @Query("sk") sessionKey: String
+    ): TrackInfoDto
 
     @GET("?method=$METHOD_ARTIST_ALBUMS&limit=10")
     @Wrapped(path = ["topalbums", "album"])
@@ -92,5 +101,5 @@ interface LastFmService {
     @Wrapped(path = ["toptracks", "track"])
     suspend fun getArtistTracks(
         @Query("artist") name: String
-    ): List<UserTrackDto>
+    ): List<ArtistTracksDto>
 }

@@ -6,22 +6,49 @@ data class UserTrackDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
-    val playcount: Long?,
-    val listeners: Long?,
-    val artist: MinimalListing
+    val duration: Long,
+    val artist: MinimalListing,
+    val playcount: Long
 ): ListingDto
 
-data class TrackWithAlbumDto(
+data class RecentTracksDto(
     override val name: String,
-    override val mbid: String,
+    override val mbid: String?,
     override val url: String,
     val artist: TrackRelationDto,
     val album: TrackRelationDto
 ): ListingDto
 
+data class ArtistTracksDto(
+    override val name: String,
+    override val mbid: String?,
+    override val url: String,
+    val listeners: Long,
+    val playcount: Long,
+    val artist: MinimalListing
+): ListingDto
+
+data class TrackInfoDto(
+    override val name: String,
+    override val mbid: String?,
+    override val url: String,
+    val duration: Long,
+    val listeners: Long,
+    val playcount: Long,
+    val artist: MinimalListing,
+    val album: TrackAlbum,
+    val userplaycount: Long?,
+    val userloved: Long,
+    val toptags: TagsDto
+): ListingDto
+
 data class TrackRelationDto(
     @Json(name = "#text") val name: String,
     val mbid: String
+)
+
+data class TrackAlbum(
+    val title: String
 )
 
 data class ImageDto(

@@ -1,36 +1,40 @@
 package de.schnettler.scrobbler.viewmodels
 
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.Track
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 class DetailViewModel(val repo: Repository) : ViewModel() {
-    private val entryLive = MutableLiveData<ListingMin>()
+    private val entry: MutableStateFlow<ListingMin?> = MutableStateFlow(null)
 
-    val entryState: MutableStateFlow<LoadingState<Artist>?> = MutableStateFlow(null)
-
-    private val artistInfo = Transformations.switchMap(entryLive) {
-        repo.getArtistInfo(it.id).asLiveData(viewModelScope.coroutineContext)
-    }
+    val entryState: MutableStateFlow<LoadingState<ListingMin>?> = MutableStateFlow(null)
 
     fun updateEntry(new: ListingMin) {
-        if (entryLive.value != new) {
+        if (entry.value != new) {
             entryState.value = LoadingState()
-            entryLive.value = new
+            entry.value = new
         }
     }
 
     init {
-        viewModelScope.launch {
-            artistInfo.asFlow().collect {
-                entryState.update(it)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            entry.flatMapLatest {
+                when (it) {
+                    is Artist -> repo.getArtistInfo(it.id)
+                    is Track -> repo.getTrackInfo(it)
+                    else -> TODO()
+                }
+            }.collect { entryState.update(it) }
         }
     }
 }

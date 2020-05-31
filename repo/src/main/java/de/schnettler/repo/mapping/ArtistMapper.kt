@@ -39,14 +39,7 @@ fun UserAlbumDto.map() = Album(
     imageUrl = this.images[3].url
 )
 
-fun UserTrackDto.map() = Track(
-    trackId = this.mbid,
-    name = this.name,
-    url = this.url,
-    userPlays = this.playcount ?: 0,
-    artist = this.artist.name,
-    listeners = this.listeners ?: 0
-)
+
 
 object SessionMapper: Mapper<SessionDto, Session> {
     override suspend fun map(from: SessionDto): Session = Session(
@@ -70,16 +63,6 @@ object UserMapper: Mapper<UserDto, User> {
         )
         return user
     }
-}
-
-object TrackWithAlbumMapper: Mapper<TrackWithAlbumDto, Track> {
-    override suspend fun map(from: TrackWithAlbumDto) = Track(
-        name = from.name,
-        trackId = from.mbid,
-        album = from.album.name,
-        artist = from.artist.name,
-        url = from.url
-    )
 }
 
 object SpotifyAuthMapper: Mapper<SpotifyAccessTokenDto, AuthToken> {

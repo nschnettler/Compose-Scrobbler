@@ -21,3 +21,5 @@ fun createSignature(method: String, params: MutableMap<String, String>, secret: 
     signature.append(secret)
     return signature.toString().md5()
 }
+
+fun Long.toBoolean() = this == 1L
