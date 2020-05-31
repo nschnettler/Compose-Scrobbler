@@ -95,7 +95,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {
-                db.chartDao().getTopArtists(TopListEntryType.USER_ARTIST).map { list -> list.map { it.artist } }
+                db.chartDao().getTopArtists(TopListEntryType.USER_ARTIST).map { list -> list.map { it.data } }
             },
             writer = {_: Any, listings: List<Artist> ->
                 val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, TopListEntryType.USER_ARTIST) })
@@ -127,13 +127,13 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
                 reader = {entryType: TopListEntryType ->
                     when(entryType) {
                         TopListEntryType.CHART_ARTIST -> {
-                            db.chartDao().getTopArtists(entryType).map { list -> list.map { it.artist } }
+                            db.chartDao().getTopArtists(entryType).map { list -> list.map { it.data } }
                         }
                         TopListEntryType.USER_TRACKS -> {
-                            db.chartDao().getTopTracks(entryType).map { list -> list.map { it.track } }
+                            db.chartDao().getTopTracks(entryType).map { list -> list.map { it.data } }
                         }
                         TopListEntryType.USER_ALBUM -> {
-                            db.chartDao().getTopAlbums(entryType).map { list -> list.map { it.album } }
+                            db.chartDao().getTopAlbums(entryType).map { list -> list.map { it.data } }
                         }
                         TopListEntryType.UNDEFINED -> emptyFlow()
                         else -> TODO()

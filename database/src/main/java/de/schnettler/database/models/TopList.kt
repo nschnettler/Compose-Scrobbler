@@ -20,28 +20,33 @@ enum class TopListEntryType(val id: String) {
 }
 
 data class TopListArtist(
-    @Embedded val topListEntry: TopListEntry,
+    @Embedded override val topListEntry: TopListEntry,
     @Relation(
         parentColumn = "id",
         entityColumn = "id"
     )
-    val artist: Artist
-)
+    override val data: Artist
+): TopListEntryWithData
 
 data class TopListTrack(
-    @Embedded val topListEntry: TopListEntry,
+    @Embedded override val topListEntry: TopListEntry,
     @Relation(
         parentColumn = "id",
         entityColumn = "id"
     )
-    val track: Track
-)
+    override val data: Track
+): TopListEntryWithData
 
 data class TopListAlbum(
-    @Embedded val topListEntry: TopListEntry,
+    @Embedded override val topListEntry: TopListEntry,
     @Relation(
         parentColumn = "id",
         entityColumn = "id"
     )
-    val album: Album
-)
+    override val data: Album
+): TopListEntryWithData
+
+interface TopListEntryWithData {
+    val topListEntry: TopListEntry
+    val data: ListingMin
+}

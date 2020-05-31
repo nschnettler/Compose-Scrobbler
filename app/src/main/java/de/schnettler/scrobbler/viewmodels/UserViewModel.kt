@@ -3,10 +3,7 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.ListingMin
-import de.schnettler.database.models.TopListEntryType
-import de.schnettler.database.models.Track
-import de.schnettler.database.models.User
+import de.schnettler.database.models.*
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update
