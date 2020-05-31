@@ -48,7 +48,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
             spotifyAuthProvider.getToken().token,
             authenticator = spotifyAuthenticator)
 
-    val userStore = StoreBuilder.from(
+    private val userStore = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {session: Session ->
             UserMapper.map(service.getUserInfo(session.key))
         },
@@ -68,7 +68,7 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     ).build()
 
     fun getUserInfo(): Flow<StoreResponse<User>> {
-        return userStore.stream(StoreRequest.cached(lastFmAuthProvider.session!!,true))
+        return userStore.stream(StoreRequest.cached(lastFmAuthProvider.session,true))
     }
 
     fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {

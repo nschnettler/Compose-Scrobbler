@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LastFmAuthProvider(private val service: LastFmService, private val dao: AuthDao, scope: CoroutineScope) {
-    var session: Session? = null
+    lateinit var session: Session
     fun getObservableSession() = lastFmSessionStore.stream(StoreRequest.cached("", false))
     suspend fun getSession() = lastFmSessionStore.get("")
     suspend fun refreshSession(token: String) =  lastFmSessionStore.fresh(token)

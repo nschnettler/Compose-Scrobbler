@@ -21,41 +21,23 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
     val artistState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val trackState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
     val userState: MutableStateFlow<LoadingState<User>?> = MutableStateFlow(null)
-    val lovedTracksState: MutableStateFlow<LoadingState<List<Track>>?> = MutableStateFlow(null)
-
-    val userInfo by lazy { repo.getUserInfo() }
-
-    private val artistResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_ARTIST, timePeriod)
-    }
-
-    private val trackResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_TRACKS, timePeriod)
-    }
-
-    private val aalbumResponse by lazy {
-        repo.getTopList(TopListEntryType.USER_ALBUM, timePeriod)
-    }
-
-    private val lovedTracksResponse by lazy {
-        repo.getUserLovedTracks()
-    }
+    private val lovedTracksState: MutableStateFlow<LoadingState<List<Track>>?> = MutableStateFlow(null)
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            userInfo.collect { userState.update(it) }
+            repo.getTopList(TopListEntryType.USER_ARTIST, timePeriod).collect { artistState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            artistResponse.collect { artistState.update(it) }
+            repo.getTopList(TopListEntryType.USER_ALBUM, timePeriod).collect { albumState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            aalbumResponse.collect { albumState.update(it) }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            trackResponse.collect { trackState.update(it) }
+            repo.getTopList(TopListEntryType.USER_TRACKS, timePeriod).collect { trackState.update(it) }
         }
         viewModelScope.launch {
-            lovedTracksResponse.collect { lovedTracksState.update(it) }
+            repo.getUserLovedTracks().collect { lovedTracksState.update(it) }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.getUserInfo().collect { userState.update(it) }
         }
     }
 }
