@@ -17,9 +17,9 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
     val timePeriod: StateFlow<TimePeriod>
         get() = _timePeriod
 
-    val albumState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
-    val artistState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
-    val trackState: MutableStateFlow<LoadingState<List<ListingMin>>?> = MutableStateFlow(null)
+    val albumState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
+    val artistState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
+    val trackState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
     val userState: MutableStateFlow<LoadingState<User>?> = MutableStateFlow(null)
     private val lovedTracksState: MutableStateFlow<LoadingState<List<Track>>?> = MutableStateFlow(null)
 
@@ -30,10 +30,10 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
         }
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("Loading Albums")
-            timePeriod.flatMapLatest {repo.getTopList(TopListEntryType.USER_ALBUM, it) }.collect { albumState.update(it) }
+            timePeriod.flatMapLatest {repo.getTopAlbums(it) }.collect { albumState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            timePeriod.flatMapLatest {repo.getTopList(TopListEntryType.USER_TRACKS, it) }.collect { trackState.update(it) }
+            timePeriod.flatMapLatest {repo.getTopTracks(it) }.collect { trackState.update(it) }
         }
         viewModelScope.launch {
             repo.getUserLovedTracks().collect { lovedTracksState.update(it) }

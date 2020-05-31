@@ -24,6 +24,7 @@ import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.TopListEntryWithData
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
@@ -51,9 +52,9 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
          userState?.data?.let {
             UserInfoComponent(it)
          }
-         TopEntry(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
-         TopEntry(title = "Top-Alben", content = albumState, onEntrySelected = onEntrySelected)
-         TopEntry(title = "Top-Titel", content = trackState, onEntrySelected = onEntrySelected)
+         TopEntry2(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
+         TopEntry2(title = "Top-Alben", content = albumState, onEntrySelected = onEntrySelected)
+         TopEntry2(title = "Top-Titel", content = trackState, onEntrySelected = onEntrySelected)
       }
    }
 }
@@ -73,6 +74,26 @@ fun TopEntry(title: String, content: LoadingState<List<ListingMin>>?, onEntrySel
       )
    }
 }
+
+@Composable
+fun TopEntry2(
+   title: String,
+   content: LoadingState<List<TopListEntryWithData>>?,
+   onEntrySelected: (ListingMin) -> Unit
+) {
+   TitleWithLoadingIndicator(title = title, loading = content?.loading ?: true)
+
+   content?.data?.let {data ->
+      HorizontalScrollableComponent2(
+         content = content.data.map { Pair(it.data, it.topListEntry.count) },
+         onEntrySelected = onEntrySelected,
+         width = 172.dp,
+         height = 172.dp,
+         subtitleSuffix = "Wiedergaben"
+      )
+   }
+}
+
 
 @Composable
 fun UserInfoComponent(user: User) {
@@ -162,6 +183,59 @@ fun HorizontalScrollableComponent(
                         overflow = TextOverflow.Ellipsis
                      )
                      Text("${formatter.format(if (useUserPlays) entry.userPlays else entry.plays)} $subtitleSuffix",
+                        style = TextStyle(
+                           fontSize = 12.sp
+                        )
+                     )
+                  }
+               }
+            }
+         }
+      }
+   }
+}
+
+@Composable
+fun HorizontalScrollableComponent2(
+   content: List<Pair<ListingMin, Long>>,
+   onEntrySelected: (ListingMin) -> Unit,
+   width: Dp,
+   height: Dp,
+   subtitleSuffix: String = "",
+   hintTextSize: TextUnit = 62.sp
+) {
+   HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
+      Row {
+         for(entry in content) {
+            val data = entry.first
+            val count = entry.second
+            Clickable(onClick = {
+               onEntrySelected.invoke(data)
+            }, modifier = Modifier.ripple()) {
+               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
+                  Card(shape = RoundedCornerShape(cardCornerRadius),
+                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
+                  ) {
+                     when (val imageUrl = data.imageUrl) {
+                        null -> {
+                           Box(gravity = ContentGravity.Center) {
+                              Text(text = data.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
+                           }
+                        }
+                        else -> {
+                           CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                        }
+                     }
+                  }
+                  Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+                     Text(data.name,
+                        style = TextStyle(
+                           fontSize = 14.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                     )
+                     Text("${formatter.format(count)} $subtitleSuffix",
                         style = TextStyle(
                            fontSize = 12.sp
                         )

@@ -8,6 +8,6 @@ import de.schnettler.repo.Repository
 
 class ChartsViewModel(val repo: Repository) : ViewModel() {
     val artistResponse by lazy {
-        repo.getTopList(TopListEntryType.CHART_ARTIST).asLiveData(viewModelScope.coroutineContext)
+        repo.getArtistChart(TopListEntryType.CHART_ARTIST).asLiveData(viewModelScope.coroutineContext)
     }
 }

@@ -8,6 +8,7 @@ object TopListMapper: IndexedMapper<Pair<ListingMin, TopListEntryType>, TopListE
     override suspend fun map(index: Int, from: Pair<ListingMin, TopListEntryType>) = TopListEntry(
         id = from.first.id,
         type = from.second,
-        index = index
+        index = index,
+        count = from.first.userPlays
     )
 }

@@ -8,7 +8,8 @@ import androidx.room.Relation
 data class TopListEntry(
     val id: String,
     val type: TopListEntryType,
-    val index: Int
+    val index: Int,
+    val count: Long
 )
 
 enum class TopListEntryType(val id: String) {
