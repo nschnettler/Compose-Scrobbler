@@ -108,17 +108,15 @@ fun UserInfoComponent(user: User) {
             }
          )
 
-         Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
+         Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(bottom = 16.dp, top = 8.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
                Text(text = formatter.format(user.playcount))
             }
-            Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                Icon(asset = vectorResource(id = R.drawable.account_music_outline))
                Text(text = formatter.format(user.artistCount))
             }
-            Spacer(modifier = Modifier.width(64.dp))
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                Icon(asset = vectorResource(id = R.drawable.ic_round_favorite_border_24))
                Text(text = formatter.format(user.lovedTracksCount))
