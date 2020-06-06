@@ -22,7 +22,7 @@ class TypeConverter {
     fun stringToTopListingType(id: String): TopListEntryType = topListingTypeMap[id] ?: TopListEntryType.UNDEFINED
 
     @TypeConverter
-    fun stringToList(value: String) = value.split(",").map { it }
+    fun stringToList(value: String) = value.split(",").map { it }.filter { it.isNotBlank() }
 
     @TypeConverter
     fun listToString(list: List<String>) = list.joinToString(",")

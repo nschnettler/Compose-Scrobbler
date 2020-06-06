@@ -36,7 +36,7 @@ data class TrackInfoDto(
     val listeners: Long,
     val playcount: Long,
     val artist: MinimalListing,
-    val album: TrackAlbum,
+    val album: TrackAlbum?,
     val userplaycount: Long?,
     val userloved: Long,
     val toptags: TagsDto

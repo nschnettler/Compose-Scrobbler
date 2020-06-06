@@ -22,6 +22,7 @@ import de.schnettler.database.provideDatabase
 import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
+import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.SessionStatus
 import de.schnettler.scrobbler.util.getViewModel
 import de.schnettler.scrobbler.viewmodels.*
