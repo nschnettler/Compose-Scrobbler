@@ -75,25 +75,30 @@ fun ArtistDetails(artist: Artist, loading: Boolean) {
         ChipRow(items = artist.tags)
 
         TitleComponent(title = "Top Tracks")
+        val backstack = BackStack.current
         artist.topTracks.forEachIndexed { index, track ->
-            ListItem(
-                text = {
-                    Text(track.name)
-                },
-                secondaryText = {
-                    Text(formatter.format(track.listeners).toString() + " Hörer")
-                },
-                icon = {
-                    Surface(
-                        color = colorResource(id = R.color.colorBackgroundElevated),
-                        shape = CircleShape,
-                        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
-                        Box(gravity = ContentGravity.Center) {
-                            Text(text = "${index +1}")
+            Clickable(onClick =  {
+                backstack.push(Screen.Detail(track))
+            }, modifier = Modifier.ripple()) {
+                ListItem(
+                    text = {
+                        Text(track.name)
+                    },
+                    secondaryText = {
+                        Text(formatter.format(track.listeners).toString() + " Hörer")
+                    },
+                    icon = {
+                        Surface(
+                            color = colorResource(id = R.color.colorBackgroundElevated),
+                            shape = CircleShape,
+                            modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                            Box(gravity = ContentGravity.Center) {
+                                Text(text = "${index +1}")
+                            }
                         }
                     }
-                }
-            )
+                )
+            }
         }
 
         TitleComponent(title = "Top Albums")
@@ -102,7 +107,6 @@ fun ArtistDetails(artist: Artist, loading: Boolean) {
         }, width = 136.dp, height = 136.dp, hintTextSize = 32.sp, subtitleSuffix = "Wiedergaben")
 
         TitleComponent(title = "Ähnliche Künstler")
-        val backstack = BackStack.current
         HorizontalScrollableComponent(content = artist.similarArtists, onEntrySelected = {
             backstack.push(Screen.Detail(it))
         }, width = 104.dp, height = 104.dp, hintTextSize = 32.sp)
