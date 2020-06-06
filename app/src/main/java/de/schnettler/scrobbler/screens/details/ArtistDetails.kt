@@ -1,14 +1,12 @@
 package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.Composable
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.*
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
@@ -26,11 +24,14 @@ import de.schnettler.scrobbler.screens.HorizontalScrollableComponent
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import timber.log.Timber
 
 @Composable
-fun ArtistDetailScreen(artist: Artist, loading: Boolean) {
+fun ArtistDetailScreen(artist: Artist) {
     VerticalScroller() {
+        Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
+
         Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(
             defaultSpacerSize
         ) + Modifier.fillMaxWidth(), shape = RoundedCornerShape(
@@ -93,5 +94,23 @@ fun ArtistDetailScreen(artist: Artist, loading: Boolean) {
             height = 104.dp,
             hintTextSize = 32.sp
         )
+    }
+}
+
+@Composable
+private fun Backdrop(
+    imageUrl: String?,
+    modifier: Modifier
+) {
+    Surface(modifier = modifier) {
+        Stack(Modifier.fillMaxSize()) {
+            imageUrl?.let {
+                CoilImageWithCrossfade(
+                    data = it,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
     }
 }

@@ -33,10 +33,7 @@ fun DetailScreen(model: DetailViewModel) {
     Timber.d("Error ${artistState?.error}")
     artistState?.data?.let {details ->
         when(details) {
-            is Artist -> ArtistDetailScreen(
-                artist = details,
-                loading = artistState?.loading ?: true
-            )
+            is Artist -> ArtistDetailScreen(artist = details)
             is TrackDomain -> TrackDetailScreen(details)
         }
 
