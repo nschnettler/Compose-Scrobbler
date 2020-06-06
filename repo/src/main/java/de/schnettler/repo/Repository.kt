@@ -14,7 +14,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
@@ -225,20 +224,33 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
 
     fun getTrackInfo(track: Track) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { track: Track ->
-            service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key).map()
-        }
-    ).build().stream(StoreRequest.fresh(track))
+            val result = service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key).map()
+            refreshImageUrl(db.trackDao().getTrackImageUrl(result.id), result)
+            result
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {key ->
+                db.trackDao().getTrack(key.id, key.artist)
+            },
+            writer = { _: Track, track ->
+                db.trackDao().forceInsert(track)
+            }
+        )
+    ).build().stream(StoreRequest.cached(track, true))
 
-    private suspend fun refreshImageUrl(localImageUrl: String?, artist: Artist) {
+    private suspend fun refreshImageUrl(localImageUrl: String?, listing: ListingMin) {
         if (localImageUrl.isNullOrBlank()) {
-            println("Refreshing ImageURl for ${artist.name}")
-            val url = provideSpotify()
-                .searchArtist(artist.name).maxBy { item ->
-                    item.popularity
+            println("Refreshing ImageURl for ${listing.name}")
+            val url: String? = when (listing) {
+                is Artist -> provideSpotify().searchArtist(listing.name).maxBy {
+                        item -> item.popularity
                 }?.images?.first()?.url
+                is Track -> ""
+                else -> TODO()
+            }
             println("ImageUrl $url")
             url?.let {
-                artist.imageUrl = url
+                listing.imageUrl = url
             }
         }
     }

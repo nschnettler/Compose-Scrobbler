@@ -16,5 +16,5 @@ data class Track(
     override val userPlays: Long = 0,
     val userLoved: Boolean = false,
     val tags: List<String> = listOf(),
-    override val imageUrl: String? = null
+    override var imageUrl: String? = null
 ): ListingMin

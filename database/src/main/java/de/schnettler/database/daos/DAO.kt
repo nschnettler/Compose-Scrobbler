@@ -123,8 +123,11 @@ abstract class AlbumDao: BaseRelationsDao<Album> {
 
 @Dao
 abstract class TrackDao: BaseRelationsDao<Track> {
-    @Query("SELECT * FROM tracks WHERE id = :id")
-    abstract fun getTrack(id: String): Flow<Track?>
+    @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
+    abstract fun getTrack(id: String, artist: String): Flow<Track?>
+
+    @Query("SELECT imageUrl FROM tracks WHERE id = :id")
+    abstract fun getTrackImageUrl(id: String): String?
 }
 
 @Dao

@@ -25,7 +25,7 @@ interface ListingMin {
     val userPlays: Long
     val listeners: Long
     val url: String?
-    val imageUrl: String?
+    var imageUrl: String?
     val type: ListingType
         get() = when(this) {
             is Album -> ListingType.ALBUM
@@ -42,7 +42,7 @@ data class MinimalEntity(
     override val userPlays: Long,
     override val listeners: Long,
     override val url: String?,
-    override val imageUrl: String?
+    override var imageUrl: String?
 
 ): ListingMin
 

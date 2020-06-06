@@ -20,6 +20,7 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.Artist
+import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
@@ -39,9 +40,43 @@ fun DetailScreen(model: DetailViewModel) {
     artistState?.data?.let {details ->
         when(details) {
             is Artist -> ArtistDetails(artist = details, loading = artistState?.loading ?: true)
-            is Track -> Text(text = "Track: $details")
+            is Track -> {
+                VerticalScroller() {
+                    TitleComponent(title = "Aus dem Album")
+                    ListItem(text = details.album ?: "", secondaryText = details.artist)
+                    StatsRow(item = details)
+                    TagCategory(tags = details.tags)
+                }
+
+            }
         }
 
+    }
+}
+
+@Composable
+fun TagCategory(tags: List<String>) {
+    TitleComponent(title = "Tags")
+    ChipRow(items = tags)
+}
+
+@Composable
+fun StatsRow(item: ListingMin) {
+    Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
+        Column(horizontalGravity = Alignment.CenterHorizontally) {
+            Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
+            Text(text = formatter.format(item.plays))
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column(horizontalGravity = Alignment.CenterHorizontally) {
+            Icon(asset = vectorResource(id = R.drawable.ic_round_hearing_24))
+            Text(text = formatter.format(item.userPlays))
+        }
+        Spacer(modifier = Modifier.width(64.dp))
+        Column(horizontalGravity = Alignment.CenterHorizontally) {
+            Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_32))
+            Text(text = formatter.format(item.listeners))
+        }
     }
 }
 
@@ -54,25 +89,9 @@ fun ArtistDetails(artist: Artist, loading: Boolean) {
             ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
         }
 
-        Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
-            Column(horizontalGravity = Alignment.CenterHorizontally) {
-                Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
-                Text(text = formatter.format(artist.plays))
-            }
-            Spacer(modifier = Modifier.width(64.dp))
-            Column(horizontalGravity = Alignment.CenterHorizontally) {
-                Icon(asset = vectorResource(id = R.drawable.ic_round_hearing_24))
-                Text(text = formatter.format(artist.userPlays))
-            }
-            Spacer(modifier = Modifier.width(64.dp))
-            Column(horizontalGravity = Alignment.CenterHorizontally) {
-                Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_32))
-                Text(text = formatter.format(artist.listeners))
-            }
-        }
+        StatsRow(artist)
 
-        TitleComponent(title = "Tags")
-        ChipRow(items = artist.tags)
+        TagCategory(tags = artist.tags)
 
         TitleComponent(title = "Top Tracks")
         val backstack = BackStack.current
