@@ -15,6 +15,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 
 @ExperimentalCoroutinesApi
 @FlowPreview
@@ -225,15 +226,17 @@ class Repository(private val db: AppDatabase, coroutineScope: CoroutineScope) {
     fun getTrackInfo(track: Track) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { track: Track ->
             val result = service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key).map()
-            refreshImageUrl(db.trackDao().getTrackImageUrl(result.id), result)
             result
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {key ->
-                db.trackDao().getTrack(key.id, key.artist)
+                db.trackDao().getTrack(key.id, key.artist).mapLatest { it?.map() }
             },
             writer = { _: Track, track ->
                 db.trackDao().forceInsert(track)
+                track.album?.let {
+                    db.albumDao().insert(Album(name = it, artist = track.artist, url = "https://www.last.fm/music/${track.artist}/${it}"))
+                }
             }
         )
     ).build().stream(StoreRequest.cached(track, true))

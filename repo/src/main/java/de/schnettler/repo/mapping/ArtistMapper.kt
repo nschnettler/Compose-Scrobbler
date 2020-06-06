@@ -39,6 +39,20 @@ fun UserAlbumDto.map() = Album(
     imageUrl = this.images[3].url
 )
 
+fun TrackWithAlbum.map() = TrackDomain(
+    name = this.track.name,
+    artist = this.track.artist,
+    userLoved = this.track.userLoved,
+    userPlays = this.track.userPlays,
+    album = this.album,
+    plays = this.track.plays,
+    listeners = this.track.listeners,
+    duration = this.track.duration,
+    url = this.track.url,
+    id = this.track.url,
+    imageUrl = this.track.imageUrl,
+    tags = this.track.tags
+)
 
 
 object SessionMapper: Mapper<SessionDto, Session> {

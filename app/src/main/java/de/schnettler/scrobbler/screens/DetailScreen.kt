@@ -4,7 +4,9 @@ import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.Alignment
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
+import androidx.ui.core.tag
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -22,6 +24,7 @@ import androidx.ui.unit.sp
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
+import de.schnettler.database.models.TrackDomain
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.Screen
@@ -30,6 +33,8 @@ import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
+import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import timber.log.Timber
 
 @Composable
@@ -40,10 +45,26 @@ fun DetailScreen(model: DetailViewModel) {
     artistState?.data?.let {details ->
         when(details) {
             is Artist -> ArtistDetails(artist = details, loading = artistState?.loading ?: true)
-            is Track -> {
+            is TrackDomain -> {
                 VerticalScroller() {
                     TitleComponent(title = "Aus dem Album")
-                    ListItem(text = details.album ?: "", secondaryText = details.artist)
+                    ListItem(
+                        text = {
+                            Text(details.album?.name ?: "")
+                        },
+                        secondaryText = {
+                            Text("${details.album?.artist}")
+                        },
+                        icon = {
+                            Surface(color = colorResource(id = R.color.colorStroke), shape = RoundedCornerShape(8.dp)) {
+                                Box(modifier = Modifier.preferredHeight(60.dp) + Modifier.preferredWidth(60.dp)) {
+                                    details.album?.imageUrl?.let {
+                                        CoilImageWithCrossfade(data = it, contentScale = ContentScale.Crop)
+                                    }
+                                }
+                            }
+
+                        })
                     StatsRow(item = details)
                     TagCategory(tags = details.tags)
                 }

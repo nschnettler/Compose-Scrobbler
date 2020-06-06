@@ -119,12 +119,18 @@ abstract class ArtistDao: BaseRelationsDao<Artist> {
 abstract class AlbumDao: BaseRelationsDao<Album> {
     @Query("SELECT * FROM albums WHERE id = :id")
     abstract fun getAlbum(id: String): Flow<Album?>
+
+    @Query("SELECT imageUrl FROM albums WHERE id = :id")
+    abstract fun getImageUrl(id: String): String?
+
+    @Query("UPDATE albums SET imageUrl = :url WHERE id = :albumId and artist = :artistId")
+    abstract fun updateImageUrl(url: String, albumId: String, artistId: String)
 }
 
 @Dao
 abstract class TrackDao: BaseRelationsDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
-    abstract fun getTrack(id: String, artist: String): Flow<Track?>
+    abstract fun getTrack(id: String, artist: String): Flow<TrackWithAlbum?>
 
     @Query("SELECT imageUrl FROM tracks WHERE id = :id")
     abstract fun getTrackImageUrl(id: String): String?
