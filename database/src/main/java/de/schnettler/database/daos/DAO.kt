@@ -117,8 +117,8 @@ abstract class ArtistDao: BaseRelationsDao<Artist> {
 
 @Dao
 abstract class AlbumDao: BaseRelationsDao<Album> {
-    @Query("SELECT * FROM albums WHERE id = :id")
-    abstract fun getAlbum(id: String): Flow<Album?>
+    @Query("SELECT * FROM albums WHERE id = :id and artist = :artistId")
+    abstract fun getAlbum(id: String, artistId: String): Flow<Album?>
 
     @Query("SELECT imageUrl FROM albums WHERE id = :id")
     abstract fun getImageUrl(id: String): String?

@@ -1,4 +1,4 @@
-package de.schnettler.lastfm.api
+package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.TimePeriod

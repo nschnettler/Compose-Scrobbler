@@ -6,9 +6,12 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class AccessTokenAuthenticator(private val provider: SpotifyAuthProvider, private val context: CoroutineContext): Authenticator {
+class AccessTokenAuthenticator @Inject constructor(
+    private val provider: SpotifyAuthProvider,
+    private val context: CoroutineContext): Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
 

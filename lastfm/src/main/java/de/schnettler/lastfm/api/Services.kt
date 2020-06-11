@@ -3,29 +3,15 @@ package de.schnettler.lastfm.api
 import com.serjltt.moshi.adapters.Wrapped
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import de.schnettler.lastfm.api.spotify.SpotifyService
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitService {
-    val lastFmService: LastFmService by lazy {
-        provideRetrofit(
-            provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
-        ).create(
-            LastFmService::class.java)
-    }
-
-    val spotifyAuthService: SpotifyService by lazy {
-        provideRetrofit(
-            provideOkHttpClient(SpotifyAuthInterceptor(), loggingInterceptor), SpotifyService.AUTH_ENDPOINT
-        ).create(
-            SpotifyService::class.java
-        )
-    }
 
     fun provideAuthenticatedSpotifyService(token: String, authenticator: Authenticator): SpotifyService =
         provideRetrofit(

@@ -1,8 +1,8 @@
 package de.schnettler.scrobbler.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.repo.Repository
+import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.scrobbler.util.SessionStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -11,10 +11,12 @@ import timber.log.Timber
 
 @ExperimentalCoroutinesApi
 @FlowPreview
-class MainViewModel(private val repo: Repository): ViewModel() {
+class MainViewModel @ViewModelInject constructor(
+    private val authProvider: LastFmAuthProvider
+): ViewModel() {
 
     private val sessionResponse by lazy {
-        repo.lastFmAuthProvider.sessionLive.asLiveData(viewModelScope.coroutineContext)
+        authProvider.sessionLive.asLiveData(viewModelScope.coroutineContext)
     }
 
     val sessionStatus: LiveData<SessionStatus> = Transformations.map(sessionResponse) {response ->
@@ -27,7 +29,7 @@ class MainViewModel(private val repo: Repository): ViewModel() {
     fun onTokenReceived(token: String) {
         viewModelScope.launch {
             Timber.i("Refreshing Token")
-            repo.lastFmAuthProvider.refreshSession(token)
+            authProvider.refreshSession(token)
         }
     }
 }

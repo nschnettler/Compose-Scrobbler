@@ -1,13 +1,15 @@
 package de.schnettler.scrobbler.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import de.schnettler.database.models.TopListEntryType
-import de.schnettler.repo.Repository
+import de.schnettler.repo.ChartRepository
 
-class ChartsViewModel(val repo: Repository) : ViewModel() {
+class ChartsViewModel @ViewModelInject constructor(
+    private val repo: ChartRepository
+) : ViewModel() {
     val artistResponse by lazy {
-        repo.getArtistChart(TopListEntryType.CHART_ARTIST).asLiveData(viewModelScope.coroutineContext)
+        repo.getArtistChart().asLiveData(viewModelScope.coroutineContext)
     }
 }

@@ -2,9 +2,9 @@ package de.schnettler.scrobbler
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.*
-import androidx.lifecycle.lifecycleScope
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
@@ -16,32 +16,32 @@ import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.BackStack
 import com.github.zsoltk.compose.router.Router
+import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.provideDatabase
-import de.schnettler.repo.Repository
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.SessionStatus
-import de.schnettler.scrobbler.util.getViewModel
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
 
 val BackStack = ambientOf<BackStack<Screen>> { error("No backstack available") }
+
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     //Database
     private lateinit var database: AppDatabase
-    private lateinit var repo: Repository
 
     //ViewModels
-    private val model by lazy { getViewModel { MainViewModel(repo) } }
-    private val chartsModel by lazy { getViewModel { ChartsViewModel(repo) } }
-    private val detailsViewModel by lazy { getViewModel { DetailViewModel(repo) } }
-    private val userViewModel by lazy { getViewModel { UserViewModel(repo) } }
-    private val historyViewModel by lazy { getViewModel { HistoryViewModel(repo) } }
+    private val model: MainViewModel by viewModels()
+    private val chartsModel: ChartsViewModel by viewModels()
+    private val detailsViewModel: DetailViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
+    private val historyViewModel: HistoryViewModel by viewModels()
 
     private val backPressHandler = BackPressHandler()
 
@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         database =  provideDatabase(this)
-        repo  = Repository(database, lifecycleScope)
 
         setContent {
             Providers(

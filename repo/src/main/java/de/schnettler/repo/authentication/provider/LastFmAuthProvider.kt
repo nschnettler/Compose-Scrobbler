@@ -2,16 +2,20 @@ package de.schnettler.repo.authentication.provider
 
 import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.models.Session
-import de.schnettler.lastfm.api.LastFmService
+import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.mapping.SessionMapper
 import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import javax.inject.Inject
 
-class LastFmAuthProvider(private val service: LastFmService, private val dao: AuthDao, scope: CoroutineScope) {
+class LastFmAuthProvider @Inject constructor(
+    private val service: LastFmService,
+    private val dao: AuthDao,
+    scope: CoroutineScope
+) {
     var session: Session? = null
     val sessionLive = dao.getSession()
 

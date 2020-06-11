@@ -1,6 +1,6 @@
 package de.schnettler.repo.util
 
-import de.schnettler.lastfm.api.LastFmService
+import de.schnettler.lastfm.api.lastfm.LastFmService
 import java.math.BigInteger
 import java.security.MessageDigest
 

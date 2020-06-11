@@ -1,18 +1,28 @@
 package de.schnettler.scrobbler.viewmodels
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.*
-import de.schnettler.repo.Repository
+import de.schnettler.database.models.TopListEntryWithData
+import de.schnettler.database.models.Track
+import de.schnettler.database.models.User
+import de.schnettler.repo.TopListRepository
+import de.schnettler.repo.UserRepository
 import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class UserViewModel(private val repo: Repository) : ViewModel() {
+class UserViewModel @ViewModelInject constructor(
+    private val topListRepo: TopListRepository,
+    private val userRepo: UserRepository
+): ViewModel() {
     private var _timePeriod: MutableStateFlow<TimePeriod> = MutableStateFlow(TimePeriod.OVERALL)
     val timePeriod: StateFlow<TimePeriod>
         get() = _timePeriod
@@ -26,20 +36,20 @@ class UserViewModel(private val repo: Repository) : ViewModel() {
     init {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("Loading Artists")
-            timePeriod.flatMapLatest { repo.getTopArtists(it) }.collect { artistState.update(it) }
+            timePeriod.flatMapLatest { topListRepo.getTopArtists(it) }.collect { artistState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("Loading Albums")
-            timePeriod.flatMapLatest {repo.getTopAlbums(it) }.collect { albumState.update(it) }
+            timePeriod.flatMapLatest {topListRepo.getTopAlbums(it) }.collect { albumState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            timePeriod.flatMapLatest {repo.getTopTracks(it) }.collect { trackState.update(it) }
+            timePeriod.flatMapLatest {topListRepo.getTopTracks(it) }.collect { trackState.update(it) }
         }
         viewModelScope.launch {
-            repo.getUserLovedTracks().collect { lovedTracksState.update(it) }
+            userRepo.getUserLovedTracks().collect { lovedTracksState.update(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getUserInfo().collect { userState.update(it) }
+            userRepo.getUserInfo().collect { userState.update(it) }
         }
     }
 

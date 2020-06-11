@@ -1,9 +1,10 @@
 package de.schnettler.lastfm.api
 
+import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.spotify.SpotifyService
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import timber.log.Timber
 
 const val USER_AGENT = "JAScrobbler/0.0.1 ( service.niklasschnettler@gmail.com )"
 
