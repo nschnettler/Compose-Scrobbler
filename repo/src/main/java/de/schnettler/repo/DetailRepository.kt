@@ -18,6 +18,7 @@ import de.schnettler.repo.mapping.RelationMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.mapping.mapToArtist
+import de.schnettler.repo.util.provideSpotifyService
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
@@ -28,12 +29,13 @@ class DetailRepository @Inject constructor(
     private val trackDao: TrackDao,
     private val relationDao: RelationshipDao,
     private val service: LastFmService,
-    private val authProvider: LastFmAuthProvider,
-    private val spotifyAuthProvider: SpotifyAuthProvider
+    private val lastFmAuthProvider: LastFmAuthProvider,
+    private val spotifyAuthProvider: SpotifyAuthProvider,
+    private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
     fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            val response = service.getArtistInfo(key, authProvider.session!!.key)
+            val response = service.getArtistInfo(key, lastFmAuthProvider.session!!.key)
             val artist = response.map()
             refreshImageUrl(artistDao.getArtistImageUrl(key), artist)
             artist.topAlbums = service.getArtistAlbums(key).map { it.map() }
@@ -42,15 +44,25 @@ class DetailRepository @Inject constructor(
             artist
         },
         sourceOfTruth = SourceOfTruth.from(
-            reader = {key: String ->
+            reader = { key: String ->
                 var artist = artistDao.getArtist(key)
-                artist = artist.combine(relationDao.getRelatedAlbums(key, ListingType.ARTIST)) { artist, albums ->
+                artist = artist.combine(
+                    relationDao.getRelatedAlbums(
+                        key,
+                        ListingType.ARTIST
+                    )
+                ) { artist, albums ->
                     artist?.topAlbums = albums.map { it.album }
                     return@combine artist
                 }.combine(relationDao.getRelatedTracks(key, ListingType.ARTIST)) { artist, tracks ->
                     artist?.topTracks = tracks.map { it.track }
                     return@combine artist
-                }.combine(relationDao.getRelatedArtists(key, ListingType.ARTIST)) { artist, artists ->
+                }.combine(
+                    relationDao.getRelatedArtists(
+                        key,
+                        ListingType.ARTIST
+                    )
+                ) { artist, artists ->
                     artist?.similarArtists = artists.map { it.artist }
                     return@combine artist
                 }
@@ -76,37 +88,47 @@ class DetailRepository @Inject constructor(
                 //Artist
                 artistDao.insertEntriesWithRelations(
                     artist.similarArtists,
-                    RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) }))
+                    RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) })
+                )
             }
         )
     ).build().stream(StoreRequest.cached(id, true))
 
     fun getTrackInfo(track: Track) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { track: Track ->
-            val result = service.getTrackInfo(track.artist, track.name, authProvider.session!!.key).map()
+            val result =
+                service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key)
+                    .map()
             result
         },
         sourceOfTruth = SourceOfTruth.from(
-            reader = {key ->
+            reader = { key ->
                 trackDao.getTrack(key.id, key.artist).mapLatest { it?.map() }
             },
             writer = { _: Track, track ->
                 trackDao.forceInsert(track)
                 track.album?.let {
-                    albumDao.insert(Album(name = it, artist = track.artist, url = "https://www.last.fm/music/${track.artist}/${it}"))
+                    albumDao.insert(
+                        Album(
+                            name = it,
+                            artist = track.artist,
+                            url = "https://www.last.fm/music/${track.artist}/${it}"
+                        )
+                    )
                 }
             }
         )
     ).build().stream(StoreRequest.cached(track, true))
 
 
-
-
     private suspend fun refreshImageUrl(localImageUrl: String?, listing: ListingMin) {
         if (localImageUrl.isNullOrBlank()) {
             println("Refreshing ImageURl for ${listing.name}")
             val url: String? = when (listing) {
-                is Artist -> provideSpotify().searchArtist(listing.name).maxBy { item ->
+                is Artist -> provideSpotifyService(
+                    spotifyAuthProvider,
+                    spotifyAuthenticator
+                ).searchArtist(listing.name).maxBy { item ->
                     item.popularity
                 }?.images?.first()?.url
                 is Track -> ""
@@ -118,11 +140,4 @@ class DetailRepository @Inject constructor(
             }
         }
     }
-
-    @Inject lateinit var spotifyAuthenticator: AccessTokenAuthenticator
-    private suspend fun provideSpotify() =
-        RetrofitService.provideAuthenticatedSpotifyService(
-            spotifyAuthProvider.getToken().token,
-            authenticator = spotifyAuthenticator
-        )
 }

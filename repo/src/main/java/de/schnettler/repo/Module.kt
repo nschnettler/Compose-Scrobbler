@@ -19,15 +19,17 @@ class NetworkModule {
     fun provideLastFmService() = provideRetrofit(
         provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
     ).create(
-        LastFmService::class.java)
+        LastFmService::class.java
+    )
 
     @Provides
     @Singleton
     fun spotifyAuthService() = provideRetrofit(
-            provideOkHttpClient(SpotifyAuthInterceptor(), loggingInterceptor), SpotifyAuthService.AUTH_ENDPOINT
-        ).create(
-            SpotifyAuthService::class.java
-        )
+        provideOkHttpClient(SpotifyAuthInterceptor(), loggingInterceptor),
+        SpotifyAuthService.AUTH_ENDPOINT
+    ).create(
+        SpotifyAuthService::class.java
+    )
 }
 
 @Module
@@ -35,7 +37,8 @@ class NetworkModule {
 class DatabaseModule {
     @Provides
     @Singleton
-    fun provideDatabase(application: Application) = de.schnettler.database.provideDatabase(application)
+    fun provideDatabase(application: Application) =
+        de.schnettler.database.provideDatabase(application)
 
     @Provides
     @Singleton

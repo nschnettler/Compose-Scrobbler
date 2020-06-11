@@ -19,17 +19,19 @@ class ChartRepository @Inject constructor(
     private val service: LastFmService
 ) {
     fun getArtistChart(): Flow<StoreResponse<List<Artist>>> {
-        val userInfoStore = StoreBuilder.from (
+        val userInfoStore = StoreBuilder.from(
             fetcher = nonFlowValueFetcher { _: String ->
                 service.getTopArtists().map { it.map() }
 
             },
             sourceOfTruth = SourceOfTruth.from(
-                reader = {_: String ->
-                    chartDao.getTopArtists(TopListEntryType.CHART_ARTIST).map { list -> list.map { it.data } }
+                reader = { _: String ->
+                    chartDao.getTopArtists(TopListEntryType.CHART_ARTIST)
+                        .map { list -> list.map { it.data } }
                 },
-                writer = {_: String, listings: List<Artist> ->
-                    val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, TopListEntryType.CHART_ARTIST) })
+                writer = { _: String, listings: List<Artist> ->
+                    val topListEntries = TopListMapper.forLists()
+                        .invoke(listings.map { Pair(it, TopListEntryType.CHART_ARTIST) })
                     artistDao.insertEntitiesWithTopListEntries(
                         listings,
                         topListEntries

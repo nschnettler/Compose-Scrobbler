@@ -8,13 +8,13 @@ import de.schnettler.common.TimePeriod
 import de.schnettler.database.daos.*
 import de.schnettler.database.models.*
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.lastfm.api.RetrofitService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.TopListMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
+import de.schnettler.repo.util.provideSpotifyService
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
@@ -25,10 +25,9 @@ class TopListRepository @Inject constructor(
     private val chartDao: ChartDao,
     private val service: LastFmService,
     private val authProvider: LastFmAuthProvider,
-    private val spotifyAuthProvider: SpotifyAuthProvider
+    private val spotifyAuthProvider: SpotifyAuthProvider,
+    private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
-    @Inject lateinit var spotifyAuthenticator: AccessTokenAuthenticator
-
     fun getTopArtists(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
             val session = authProvider.session
@@ -63,8 +62,9 @@ class TopListRepository @Inject constructor(
             reader = {
                 chartDao.getTopAlbums(TopListEntryType.USER_ALBUM)
             },
-            writer = {_: Any, listings: List<Album> ->
-                val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, TopListEntryType.USER_ALBUM) })
+            writer = { _: Any, listings: List<Album> ->
+                val topListEntries = TopListMapper.forLists()
+                    .invoke(listings.map { Pair(it, TopListEntryType.USER_ALBUM) })
                 albumDao.insertEntitiesWithTopListEntries(
                     listings,
                     topListEntries
@@ -75,7 +75,8 @@ class TopListRepository @Inject constructor(
 
     fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            val tracks = service.getUserTopTracks(timePeriod, authProvider.session!!.key).map { it.map() }
+            val tracks =
+                service.getUserTopTracks(timePeriod, authProvider.session!!.key).map { it.map() }
             tracks.forEach { track ->
                 refreshImageUrl(trackDao.getTrackImageUrl(track.id), track)
             }
@@ -85,8 +86,9 @@ class TopListRepository @Inject constructor(
             reader = {
                 chartDao.getTopTracks(TopListEntryType.USER_TRACKS)
             },
-            writer = {_: Any, listings: List<Track> ->
-                val topListEntries = TopListMapper.forLists().invoke(listings.map { Pair(it, TopListEntryType.USER_TRACKS) })
+            writer = { _: Any, listings: List<Track> ->
+                val topListEntries = TopListMapper.forLists()
+                    .invoke(listings.map { Pair(it, TopListEntryType.USER_TRACKS) })
                 trackDao.insertEntitiesWithTopListEntries(
                     listings,
                     topListEntries
@@ -99,7 +101,10 @@ class TopListRepository @Inject constructor(
         if (localImageUrl.isNullOrBlank()) {
             println("Refreshing ImageURl for ${listing.name}")
             val url: String? = when (listing) {
-                is Artist -> provideSpotify().searchArtist(listing.name).maxBy { item ->
+                is Artist -> provideSpotifyService(
+                    spotifyAuthProvider,
+                    spotifyAuthenticator
+                ).searchArtist(listing.name).maxBy { item ->
                     item.popularity
                 }?.images?.first()?.url
                 is Track -> ""
@@ -111,10 +116,4 @@ class TopListRepository @Inject constructor(
             }
         }
     }
-
-    private suspend fun provideSpotify() =
-        RetrofitService.provideAuthenticatedSpotifyService(
-            spotifyAuthProvider.getToken().token,
-            authenticator = spotifyAuthenticator
-        )
 }

@@ -1,6 +1,9 @@
 package de.schnettler.repo.util
 
+import de.schnettler.lastfm.api.RetrofitService
 import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.repo.authentication.AccessTokenAuthenticator
+import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import java.math.BigInteger
 import java.security.MessageDigest
 
@@ -23,3 +26,13 @@ fun createSignature(method: String, params: MutableMap<String, String>, secret: 
 }
 
 fun Long.toBoolean() = this == 1L
+
+
+suspend fun provideSpotifyService(
+    authProvider: SpotifyAuthProvider,
+    authenticator: AccessTokenAuthenticator
+) =
+    RetrofitService.provideAuthenticatedSpotifyService(
+        authProvider.getToken().token,
+        authenticator = authenticator
+    )
