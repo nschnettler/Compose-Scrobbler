@@ -13,7 +13,7 @@ interface BaseDao<T> {
      * @param obj the object to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(obj: T)
+    fun insert(obj: T): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun forceInsert(obj: T)
 
@@ -23,7 +23,7 @@ interface BaseDao<T> {
      * @param obj the objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(obj: List<T>)
+    fun insertAll(obj: List<T>): List<Long>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun forceInsertAll(obj: List<T>)
 
@@ -35,6 +35,9 @@ interface BaseDao<T> {
     @Update
     fun update(obj: T)
 
+    @Update
+    fun updateAll(obj: List<T>)
+
     /**
      * Delete an object from the database
      *
@@ -42,6 +45,25 @@ interface BaseDao<T> {
      */
     @Delete
     fun delete(obj: T)
+
+
+    @Transaction
+    fun upsert(obj: T) {
+        val id: Long = insert(obj)
+        if (id == -1L) {
+            //Get old value
+            update(obj)
+        }
+    }
+
+   @Transaction
+   fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
+       val insertResult: List<Long> = insertAll(objList)
+       val updateList = objList.filterIndexed { index, value ->  insertResult[index] == -1L}
+       if (updateList.isNotEmpty()) {
+           updateAll(updateList)
+       }
+   }
 }
 
 @Dao
@@ -66,41 +88,41 @@ interface BaseRelationsDao<T>: BaseDao<T> {
 }
 
 @Dao
-interface AuthDao: BaseDao<AuthToken> {
+abstract class AuthDao: BaseDao<AuthToken> {
     @Query("SELECT * FROM sessions LIMIT 1")
-    fun getSession(): Flow<Session?>
+    abstract fun getSession(): Flow<Session?>
 
     @Query("SELECT * FROM sessions LIMIT 1")
-    suspend fun getSessionOnce(): Session?
+    abstract suspend fun getSessionOnce(): Session?
 
     @Insert
-    suspend fun insertSession(session: Session)
+    abstract suspend fun insertSession(session: Session)
 
     @Delete
-    suspend fun deleteSession(session: Session)
+    abstract suspend fun deleteSession(session: Session)
 
 
     /*
     Spotify
      */
     @Query("DELETE FROM auth WHERE tokenType = :type")
-    suspend fun deleteAuthToken(type: String)
+    abstract suspend fun deleteAuthToken(type: String)
 
     @Query("SELECT * FROM auth WHERE tokenType = :type")
-    fun getAuthToken(type: String): Flow<AuthToken?>
+    abstract fun getAuthToken(type: String): Flow<AuthToken?>
 }
 
 
 @Dao
-interface ChartDao {
+abstract class ChartDao {
     @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
-    fun getTopArtists(type: TopListEntryType): Flow<List<TopListArtist>>
+    abstract fun getTopArtists(type: TopListEntryType): Flow<List<TopListArtist>>
 
     @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
-    fun getTopTracks(type: TopListEntryType): Flow<List<TopListTrack>>
+    abstract fun getTopTracks(type: TopListEntryType): Flow<List<TopListTrack>>
 
     @Query("SELECT * FROM charts WHERE type = :type ORDER BY `index` ASC")
-    fun getTopAlbums(type: TopListEntryType): Flow<List<TopListAlbum>>
+    abstract fun getTopAlbums(type: TopListEntryType): Flow<List<TopListAlbum>>
 }
 
 @Dao
@@ -137,31 +159,31 @@ abstract class TrackDao: BaseRelationsDao<Track> {
 }
 
 @Dao
-interface RelationshipDao {
+abstract class RelationshipDao {
     @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
+    abstract fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
 
     @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedTracks(id: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
+    abstract fun getRelatedTracks(id: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
 
     @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
+    abstract fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
 }
 
 @Dao
-interface UserDao: BaseDao<User> {
+abstract class UserDao: BaseDao<User> {
     @Query("SELECT * FROM users WHERE name = :name")
-    fun getUser(name: String): Flow<User?>
+    abstract fun getUser(name: String): Flow<User?>
 
     @Query("SELECT * FROM users WHERE name = :name")
-    fun getUserOnce(name: String): User?
+    abstract fun getUserOnce(name: String): User?
 
     @Query("UPDATE users SET artistCount = :count WHERE name = :userName")
-    suspend fun updateArtistCount(userName: String, count: Long)
+    abstract suspend fun updateArtistCount(userName: String, count: Long)
 
     @Query("UPDATE users SET lovedTracksCount = :count WHERE name = :userName")
-    suspend fun updateLovedTracksCount(userName: String, count: Long)
+    abstract suspend fun updateLovedTracksCount(userName: String, count: Long)
 }
