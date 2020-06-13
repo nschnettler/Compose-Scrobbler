@@ -1,12 +1,12 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+apply plugin: "java-library"
+apply plugin: "kotlin"
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.72"
 
     //Timber
-    api 'com.jakewharton.timber:timber:4.7.1'
+    api "com.jakewharton.timber:timber:4.7.1"
 }
 
 sourceCompatibility = "1.7"
