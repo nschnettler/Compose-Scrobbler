@@ -82,8 +82,8 @@ fun ArtistDetailScreen(artist: Artist) {
             },
             width = 136.dp,
             height = 136.dp,
-            hintTextSize = 32.sp,
-            subtitleSuffix = "Wiedergaben"
+            showPlays = true,
+            hintTextSize = 32.sp
         )
 
         TitleComponent(title = "Ähnliche Künstler")
@@ -94,7 +94,7 @@ fun ArtistDetailScreen(artist: Artist) {
             },
             width = 104.dp,
             height = 104.dp,
-            hintTextSize = 32.sp
+            showPlays = false
         )
     }
 }

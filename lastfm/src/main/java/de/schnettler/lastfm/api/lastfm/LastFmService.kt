@@ -95,7 +95,7 @@ interface LastFmService {
     @Wrapped(path = ["topalbums", "album"])
     suspend fun getArtistAlbums(
         @Query("artist") name: String
-    ): List<UserAlbumDto>
+    ): List<AlbumDto>
 
     @GET("?method=$METHOD_ARTIST_TRACKS&limit=5")
     @Wrapped(path = ["toptracks", "track"])

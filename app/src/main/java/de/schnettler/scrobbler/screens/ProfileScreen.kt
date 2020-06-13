@@ -60,22 +60,6 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 }
 
 @Composable
-fun TopEntry(title: String, content: LoadingState<List<ListingMin>>?, onEntrySelected: (ListingMin) -> Unit) {
-   TitleWithLoadingIndicator(title = title, loading = content?.loading ?: true)
-
-   content?.data?.let {data ->
-      HorizontalScrollableComponent(
-         content = data,
-         onEntrySelected = onEntrySelected,
-         width = 172.dp,
-         height = 172.dp,
-         subtitleSuffix = "Wiedergaben",
-         useUserPlays = true
-      )
-   }
-}
-
-@Composable
 fun TopEntry2(
    title: String,
    content: LoadingState<List<TopListEntryWithData>>?,
@@ -149,46 +133,53 @@ fun HorizontalScrollableComponent(
    onEntrySelected: (ListingMin) -> Unit,
    width: Dp,
    height: Dp,
-   useUserPlays: Boolean = false,
-   subtitleSuffix: String = "",
+   showPlays: Boolean,
    hintTextSize: TextUnit = 62.sp
 ) {
    HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
       Row {
          for(entry in content) {
-            Clickable(onClick = {
-               onEntrySelected.invoke(entry)
-            }, modifier = Modifier.ripple()) {
-               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
-                  Card(shape = RoundedCornerShape(cardCornerRadius),
-                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
-                  ) {
-                     when (val imageUrl = entry.imageUrl) {
-                        null -> {
-                           Box(gravity = ContentGravity.Center) {
-                              Text(text = entry.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
-                           }
-                        }
-                        else -> {
-                           CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
-                        }
-                     }
-                  }
-                  Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-                     Text(entry.name,
-                        style = TextStyle(
-                           fontSize = 14.sp
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                     )
-                     Text("${formatter.format(if (useUserPlays) entry.userPlays else entry.plays)} $subtitleSuffix",
-                        style = TextStyle(
-                           fontSize = 12.sp
-                        )
-                     )
+            AlbumItem(onEntrySelected = onEntrySelected, entry = entry, width = width, height = height, showPlays = showPlays, hintTextSize = hintTextSize)
+         }
+      }
+   }
+}
+
+
+@Composable
+fun AlbumItem(onEntrySelected: (ListingMin) -> Unit, entry: ListingMin, width: Dp, height: Dp, showPlays: Boolean, hintTextSize: TextUnit = 62.sp) {
+   Clickable(onClick = {
+      onEntrySelected.invoke(entry)
+   }, modifier = Modifier.ripple()) {
+      Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
+         Card(shape = RoundedCornerShape(cardCornerRadius),
+            modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
+         ) {
+            when (val imageUrl = entry.imageUrl) {
+               null -> {
+                  Box(gravity = ContentGravity.Center) {
+                     Text(text = entry.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
                   }
                }
+               else -> {
+                  CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+               }
+            }
+         }
+         Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+            Text(entry.name,
+               style = TextStyle(
+                  fontSize = 14.sp
+               ),
+               maxLines = 1,
+               overflow = TextOverflow.Ellipsis
+            )
+            if (showPlays) {
+               Text("${formatter.format(entry.plays)} Wiedergaben",
+                  style = TextStyle(
+                     fontSize = 12.sp
+                  )
+               )
             }
          }
       }

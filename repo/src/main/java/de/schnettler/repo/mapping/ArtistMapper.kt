@@ -39,6 +39,14 @@ fun UserAlbumDto.map() = Album(
     imageUrl = this.images[3].url
 )
 
+fun AlbumDto.map() = Album(
+    name = this.name,
+    artist = this.artist.name,
+    plays = this.playcount,
+    url = this.url,
+    imageUrl = this.images[3].url
+)
+
 fun TrackWithAlbum.map() = TrackDomain(
     name = this.track.name,
     artist = this.track.artist,
