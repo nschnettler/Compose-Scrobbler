@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -64,8 +65,9 @@ fun LiveDataListComponent(items: List<ListItem>) {
 fun GenericAdapterList(data: List<ListingMin>) {
     AdapterList(data = data) {item ->
         val backstack = BackStack.current
+        val context = ContextAmbient.current
         Clickable(onClick = {
-            backstack.push(Screen.Detail(item))
+            backstack.push(Screen.Detail(item = item, context = context))
         }, modifier = Modifier.ripple()) {
             when(item) {
                 is Track -> TrackHistoryItem(track = item)

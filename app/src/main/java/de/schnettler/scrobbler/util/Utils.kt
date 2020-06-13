@@ -1,5 +1,7 @@
 package de.schnettler.scrobbler.util
 
+import android.content.Context
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -9,6 +11,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.ui.unit.dp
 import java.util.*
+import androidx.browser.customtabs.CustomTabsIntent
+import de.schnettler.database.models.ListingMin
+
 
 val defaultSpacerSize = 16.dp
 val cardCornerRadius = 12.dp
@@ -84,4 +89,16 @@ fun <T, K, R> LiveData<T>.combineWith(
         result.value = block.invoke(this.value, liveData.value)
     }
     return result
+}
+
+fun Context.openUrlInCustomTab(url: String) {
+    val builder = CustomTabsIntent.Builder()
+    val customTabsIntent = builder.build()
+    customTabsIntent.launchUrl(this, Uri.parse(url))
+}
+
+fun onOpenInBrowserClicked(listing: ListingMin, activity: Context) {
+    listing.url?.let {url ->
+        activity.openUrlInCustomTab(url)
+    }
 }

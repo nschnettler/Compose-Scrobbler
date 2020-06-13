@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -47,9 +48,10 @@ fun ArtistDetailScreen(artist: Artist) {
 
         TitleComponent(title = "Top Tracks")
         val backstack = BackStack.current
+        val context = ContextAmbient.current
         artist.topTracks.forEachIndexed { index, track ->
             Clickable(onClick =  {
-                backstack.push(Screen.Detail(track))
+                backstack.push(Screen.Detail(track, context))
             }, modifier = Modifier.ripple()) {
                 ListItem(
                     text = {
@@ -88,7 +90,7 @@ fun ArtistDetailScreen(artist: Artist) {
         HorizontalScrollableComponent(
             content = artist.similarArtists,
             onEntrySelected = {
-                backstack.push(Screen.Detail(it))
+                backstack.push(Screen.Detail(it, context))
             },
             width = 104.dp,
             height = 104.dp,

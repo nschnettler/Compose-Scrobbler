@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.*
 import androidx.ui.animation.Crossfade
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
@@ -24,6 +25,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.SessionStatus
+import de.schnettler.scrobbler.util.onOpenInBrowserClicked
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
@@ -75,6 +77,7 @@ class MainActivity : AppCompatActivity() {
                                         title = { Text(text = backStack.last().title) },
                                         actions = {
                                             backStack.last().menuActions.forEach {
+                                                Timber.d("MenuItem $it")
                                                 IconButton(onClick = it.onClick) {
                                                     Icon(vectorResource(id = it.icon))
                                                 }
@@ -123,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                         is SessionStatus.LoggedIn -> {
                             val backstack = BackStack.current
                             ProfileScreen(userViewModel, onEntrySelected = {
-                                backstack.push(Screen.Detail(it))
+                                backstack.push(Screen.Detail(item = it, context = this))
                             })
                         }
                     }
