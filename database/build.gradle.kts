@@ -9,8 +9,8 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.3.72")
-    api("androidx.room:room-runtime:2.2.5")
-    implementation("androidx.room:room-ktx:2.2.5")
-    kapt("androidx.room:room-compiler:2.2.5")
+    implementation(Kotlin.stdlib.jdk8)
+    implementation(AndroidX.room.ktx)
+    api(AndroidX.room.runtime)
+    kapt(AndroidX.room.compiler)
 }

@@ -19,11 +19,11 @@ dependencies {
     api(project(":lastfm"))
     implementation(project(":common"))
 
-    api("com.dropbox.mobile.store:store4:4.0.0-alpha06")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.3.72")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5")
-    implementation("com.squareup.okhttp3:okhttp:4.4.0")
+    implementation(KotlinX.coroutines.core)
+    implementation(Square.okHttp3.okHttp)
 
-    implementation("com.google.dagger:hilt-android:2.28-alpha")
-    kapt("com.google.dagger:hilt-android-compiler:2.28-alpha")
+    implementation("org.jetbrains.kotlin","kotlin-stdlib","1.3.72")
+    implementation("com.google.dagger","hilt-android","2.28-alpha")
+    kapt("com.google.dagger","hilt-android-compiler","2.28-alpha")
+    api("com.dropbox.mobile.store","store4","4.0.0-alpha06")
 }
