@@ -1,8 +1,6 @@
 package de.schnettler.scrobbler.model
 
-import androidx.ui.graphics.vector.VectorAsset
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.scrobbler.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 
 data class ListItem(

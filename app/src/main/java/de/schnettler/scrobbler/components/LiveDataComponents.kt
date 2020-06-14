@@ -23,7 +23,7 @@ import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.Screen
+import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.model.ListItem
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.firstLetter
@@ -67,7 +67,7 @@ fun GenericAdapterList(data: List<ListingMin>) {
         val backstack = BackStack.current
         val context = ContextAmbient.current
         Clickable(onClick = {
-            backstack.push(Screen.Detail(item = item, context = context))
+            backstack.push(AppRoute.DetailRoute(item = item, context = context))
         }, modifier = Modifier.ripple()) {
             when(item) {
                 is Track -> TrackHistoryItem(track = item)

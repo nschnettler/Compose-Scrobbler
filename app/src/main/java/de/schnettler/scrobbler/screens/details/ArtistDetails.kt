@@ -18,7 +18,7 @@ import androidx.ui.unit.sp
 import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.Screen
+import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.screens.HorizontalScrollableComponent
@@ -51,7 +51,7 @@ fun ArtistDetailScreen(artist: Artist) {
         val context = ContextAmbient.current
         artist.topTracks.forEachIndexed { index, track ->
             Clickable(onClick =  {
-                backstack.push(Screen.Detail(track, context))
+                backstack.push(AppRoute.DetailRoute(track, context))
             }, modifier = Modifier.ripple()) {
                 ListItem(
                     text = {
@@ -90,7 +90,7 @@ fun ArtistDetailScreen(artist: Artist) {
         HorizontalScrollableComponent(
             content = artist.similarArtists,
             onEntrySelected = {
-                backstack.push(Screen.Detail(it, context))
+                backstack.push(AppRoute.DetailRoute(it, context))
             },
             width = 104.dp,
             height = 104.dp,

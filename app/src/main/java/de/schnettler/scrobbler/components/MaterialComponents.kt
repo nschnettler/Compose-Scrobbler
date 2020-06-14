@@ -1,27 +1,23 @@
 package de.schnettler.scrobbler.components
 
 import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
 import androidx.ui.res.vectorResource
-import de.schnettler.scrobbler.BackStack
-import de.schnettler.scrobbler.Screen
+import com.koduok.compose.navigation.core.BackStack
+import de.schnettler.scrobbler.AppRoute
 import timber.log.Timber
 
 @Composable
-fun BottomNavigationBar(items: List<Screen>) {
-    val backStack = BackStack.current
-    var currentScreen by state { backStack.last() }
-    currentScreen = backStack.last()
+fun BottomNavigationBar(items: List<AppRoute>, backStack: BackStack<AppRoute>) {
+    val currentScreen = backStack.current.data
 
-    if (currentScreen !is Screen.Detail) {
+    if (currentScreen !is AppRoute.DetailRoute) {
         BottomNavigation() {
-            items.forEachIndexed { index, screen ->
+            items.forEach {screen ->
+                Timber.d("ScreenInfo: ${screen.title}, selected: ${screen === currentScreen }")
                 BottomNavigationItem(
                     icon = {
                         Icon(asset = vectorResource(id = screen.icon))
@@ -29,12 +25,9 @@ fun BottomNavigationBar(items: List<Screen>) {
                     text = {
                         Text(text = screen.title)
                     },
-                    selected = items.indexOf(currentScreen) == index,
+                    selected = currentScreen::class == screen::class,
                     onSelected = {
-                        val newScreen = items[index]
-                        if (backStack.last() != newScreen) {
-                            backStack.replace(items[index])
-                        } else Timber.d("Already here")
+                        backStack.replace(screen)
                     }
                 )
             }

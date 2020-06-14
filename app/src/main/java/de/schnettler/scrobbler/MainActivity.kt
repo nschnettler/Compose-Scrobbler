@@ -6,17 +6,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.*
 import androidx.ui.animation.Crossfade
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.*
 import androidx.ui.res.vectorResource
-import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
-import com.github.zsoltk.compose.backpress.BackPressHandler
-import com.github.zsoltk.compose.router.BackStack
-import com.github.zsoltk.compose.router.Router
+import com.koduok.compose.navigation.Router
+import com.koduok.compose.navigation.core.BackStack
+import com.koduok.compose.navigation.core.backStackController
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.AppDatabase
@@ -25,12 +23,11 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.SessionStatus
-import de.schnettler.scrobbler.util.onOpenInBrowserClicked
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
 
-val BackStack = ambientOf<BackStack<Screen>> { error("No backstack available") }
+val BackStack = ambientOf<BackStack<AppRoute>> { error("No backstack available") }
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -45,61 +42,57 @@ class MainActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val historyViewModel: HistoryViewModel by viewModels()
 
-    private val backPressHandler = BackPressHandler()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         database =  provideDatabase(this)
 
         setContent {
-            Providers(
-                AmbientBackPressHandler provides backPressHandler
-            ) {
-                MaterialThemeFromMdcTheme  {
-                    Router(defaultRouting = Screen.Local as Screen) {backStack ->
-                        Providers(BackStack provides backStack) {
+            MaterialThemeFromMdcTheme  {
+                Router<AppRoute>(start = AppRoute.LocalRoute) { currentRoute ->
+                    Providers(BackStack provides this@Router) {
 
-                            var showDialog by state { false }
+                        var showDialog by state { false }
 
-                            if (showDialog) {
-                                PeriodeSelectDialog(onSelect = {
-                                    userViewModel.updatePeriod(it)
-                                    showDialog = false
-                                }, onDismiss = {
-                                    showDialog = false
-                                })
-                            }
+                        if (showDialog) {
+                            PeriodeSelectDialog(onSelect = {
+                                userViewModel.updatePeriod(it)
+                                showDialog = false
+                            }, onDismiss = {
+                                showDialog = false
+                            })
+                        }
 
-                            Scaffold(
-                                topAppBar = {
-                                    TopAppBar(
-                                        title = { Text(text = backStack.last().title) },
-                                        actions = {
-                                            backStack.last().menuActions.forEach {
-                                                Timber.d("MenuItem $it")
-                                                IconButton(onClick = it.onClick) {
-                                                    Icon(vectorResource(id = it.icon))
-                                                }
+                        Scaffold(
+                            topAppBar = {
+                                TopAppBar(
+                                    title = { Text(text = currentRoute.data.title) },
+                                    actions = {
+                                        currentRoute.data.menuActions.forEach {
+                                            Timber.d("MenuItem $it")
+                                            IconButton(onClick = it.onClick) {
+                                                Icon(vectorResource(id = it.icon))
                                             }
                                         }
-                                    )
-                                },
-                                bodyContent = {
-                                    AppContent()
-                                },
-                                bottomAppBar = {
-                                    BottomNavigationBar(items = listOf(
-                                        Screen.Charts,
-                                        Screen.Local,
-                                        Screen.History,
-                                        Screen.Profile(onClick = {
+                                    }
+                                )
+                            },
+                            bodyContent = {
+                                AppContent(backStack = this@Router)
+                            },
+                            bottomAppBar = {
+                                BottomNavigationBar(
+                                    items = listOf(
+                                        AppRoute.ChartRoute,
+                                        AppRoute.LocalRoute,
+                                        AppRoute.HistoryRoute,
+                                        AppRoute.ProfileRoute(onClick = {
                                             showDialog = true
                                         })
-                                    ))
-                                }
-                            )
-                        }
+                                    ),
+                                backStack = this@Router)
+                            }
+                        )
                     }
                 }
             }
@@ -107,31 +100,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun AppContent() {
+    private fun AppContent(backStack: BackStack<AppRoute>) {
         val sessionStatus by model.sessionStatus.observeAsState(SessionStatus.LoggedOut)
-        
-        Crossfade(BackStack.current.last()) { screen ->
+
+        Crossfade(BackStack.current.current.data) { screen ->
             when(screen) {
-                is Screen.Charts -> ChartScreen(model = chartsModel)
-                is Screen.History ->  {
+                is AppRoute.ChartRoute -> ChartScreen(model = chartsModel)
+                is AppRoute.HistoryRoute ->  {
                     when(sessionStatus) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> HistoryScreen(historyViewModel)
                     }
                 }
-                is Screen.Local -> LocalScreen()
-                is Screen.Profile -> {
+                is AppRoute.LocalRoute -> LocalScreen()
+                is AppRoute.ProfileRoute -> {
                     when(sessionStatus) {
                         is SessionStatus.LoggedOut -> LoginScreen(context = this)
                         is SessionStatus.LoggedIn -> {
-                            val backstack = BackStack.current
                             ProfileScreen(userViewModel, onEntrySelected = {
-                                backstack.push(Screen.Detail(item = it, context = this))
+                                backStack.push(AppRoute.DetailRoute(item = it, context = this))
                             })
                         }
                     }
                 }
-                is Screen.Detail -> {
+                is AppRoute.DetailRoute -> {
                     detailsViewModel.updateEntry(screen.item)
                     DetailScreen(model = detailsViewModel)
                 }
@@ -140,9 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!backPressHandler.handle()) {
-            super.onBackPressed()
-        }
+        if (!backStackController.pop()) super.onBackPressed()
     }
 
     override fun onNewIntent(intent: Intent?) {

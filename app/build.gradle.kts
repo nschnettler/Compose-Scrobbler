@@ -30,7 +30,7 @@ android {
 
     composeOptions {
         kotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
-        kotlinCompilerExtensionVersion = "0.1.0-dev11"
+        kotlinCompilerExtensionVersion = "0.1.0-dev13"
     }
 
     compileOptions {
@@ -48,7 +48,6 @@ dependencies {
 
     implementation(project(":repo"))
     implementation(project(":common"))
-    implementation(project(":router"))
 
     //Kotlin
     implementation(Kotlin.stdlib.jdk8)
@@ -61,7 +60,7 @@ dependencies {
     implementation(AndroidX.ui.layout)
     implementation(AndroidX.ui.material)
     implementation(AndroidX.ui.tooling)
-    implementation("androidx.ui","ui-livedata","0.1.0-dev11")
+    implementation("androidx.ui","ui-livedata","0.1.0-dev13")
     implementation(AndroidX.lifecycle.extensions)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
@@ -69,10 +68,14 @@ dependencies {
 
     //Google
     implementation(Google.android.material)
+
     //Other
-    implementation("io.coil-kt", "coil", "0.11.0")
-    implementation("dev.chrisbanes.accompanist","accompanist-mdc-theme","0.1.1")
-    implementation("dev.chrisbanes.accompanist","accompanist-coil","0.1.1")
+    val versionAccompanist = "0.1.5"
+    val versionCoil = "0.11.0"
+
+    implementation("io.coil-kt", "coil", versionCoil)
+    implementation("dev.chrisbanes.accompanist","accompanist-mdc-theme", versionAccompanist)
+    implementation("dev.chrisbanes.accompanist","accompanist-coil", versionAccompanist)
     implementation("com.jakewharton.threetenabp","threetenabp","1.2.4")
     implementation("com.github.etiennelenhart","eiffel","4.1.0")
     implementation("androidx.hilt","hilt-lifecycle-viewmodel","1.0.0-alpha01")
@@ -80,4 +83,5 @@ dependencies {
     implementation("com.google.dagger","hilt-android","2.28-alpha")
     kapt("com.google.dagger","hilt-android-compiler","2.28-alpha")
     debugImplementation("com.amitshekhar.android","debug-db","1.0.6")
+    implementation("com.github.mvarnagiris.compose-navigation:navigation:0.3.2")
 }
