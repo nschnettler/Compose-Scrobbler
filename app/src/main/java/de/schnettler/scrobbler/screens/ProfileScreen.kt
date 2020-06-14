@@ -148,39 +148,37 @@ fun HorizontalScrollableComponent(
 
 @Composable
 fun AlbumItem(onEntrySelected: (ListingMin) -> Unit, entry: ListingMin, width: Dp, height: Dp, showPlays: Boolean, hintTextSize: TextUnit = 62.sp) {
-   Clickable(onClick = {
-      onEntrySelected.invoke(entry)
-   }, modifier = Modifier.ripple()) {
-      Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
-         Card(shape = RoundedCornerShape(cardCornerRadius),
-            modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
-         ) {
-            when (val imageUrl = entry.imageUrl) {
-               null -> {
-                  Box(gravity = ContentGravity.Center) {
-                     Text(text = entry.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
-                  }
+   Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp) + Modifier.clickable(
+      onClick = { onEntrySelected.invoke(entry) }
+   )) {
+      Card(shape = RoundedCornerShape(cardCornerRadius),
+         modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
+      ) {
+         when (val imageUrl = entry.imageUrl) {
+            null -> {
+               Box(gravity = ContentGravity.Center) {
+                  Text(text = entry.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
                }
-               else -> {
-                  CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
-               }
+            }
+            else -> {
+               CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
             }
          }
-         Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-            Text(entry.name,
+      }
+      Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+         Text(entry.name,
+            style = TextStyle(
+               fontSize = 14.sp
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+         )
+         if (showPlays) {
+            Text("${formatter.format(entry.plays)} Wiedergaben",
                style = TextStyle(
-                  fontSize = 14.sp
-               ),
-               maxLines = 1,
-               overflow = TextOverflow.Ellipsis
-            )
-            if (showPlays) {
-               Text("${formatter.format(entry.plays)} Wiedergaben",
-                  style = TextStyle(
-                     fontSize = 12.sp
-                  )
+                  fontSize = 12.sp
                )
-            }
+            )
          }
       }
    }
@@ -200,38 +198,35 @@ fun HorizontalScrollableComponent2(
          for(entry in content) {
             val data = entry.first
             val count = entry.second
-            Clickable(onClick = {
-               onEntrySelected.invoke(data)
-            }, modifier = Modifier.ripple()) {
-               Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
-                  Card(shape = RoundedCornerShape(cardCornerRadius),
-                     modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
-                  ) {
-                     when (val imageUrl = data.imageUrl) {
-                        null -> {
-                           Box(gravity = ContentGravity.Center) {
-                              Text(text = data.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
-                           }
-                        }
-                        else -> {
-                           CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+            Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp) + Modifier.clickable(
+               onClick = { onEntrySelected.invoke(data) })) {
+               Card(shape = RoundedCornerShape(cardCornerRadius),
+                  modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
+               ) {
+                  when (val imageUrl = data.imageUrl) {
+                     null -> {
+                        Box(gravity = ContentGravity.Center) {
+                           Text(text = data.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
                         }
                      }
+                     else -> {
+                        CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                     }
                   }
-                  Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-                     Text(data.name,
-                        style = TextStyle(
-                           fontSize = 14.sp
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+               }
+               Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
+                  Text(data.name,
+                     style = TextStyle(
+                        fontSize = 14.sp
+                     ),
+                     maxLines = 1,
+                     overflow = TextOverflow.Ellipsis
+                  )
+                  Text("${formatter.format(count)} $subtitleSuffix",
+                     style = TextStyle(
+                        fontSize = 12.sp
                      )
-                     Text("${formatter.format(count)} $subtitleSuffix",
-                        style = TextStyle(
-                           fontSize = 12.sp
-                        )
-                     )
-                  }
+                  )
                }
             }
          }

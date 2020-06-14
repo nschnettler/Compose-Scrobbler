@@ -50,28 +50,24 @@ fun ArtistDetailScreen(artist: Artist) {
         val backstack = BackStack.current
         val context = ContextAmbient.current
         artist.topTracks.forEachIndexed { index, track ->
-            Clickable(onClick =  {
-                backstack.push(AppRoute.DetailRoute(track, context))
-            }, modifier = Modifier.ripple()) {
-                ListItem(
-                    text = {
-                        Text(track.name)
-                    },
-                    secondaryText = {
-                        Text(formatter.format(track.listeners).toString() + " Hörer")
-                    },
-                    icon = {
-                        Surface(
-                            color = colorResource(id = R.color.colorBackgroundElevated),
-                            shape = CircleShape,
-                            modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
-                            Box(gravity = ContentGravity.Center) {
-                                Text(text = "${index +1}")
-                            }
+            ListItem(
+                text = { Text(track.name) },
+                secondaryText = {
+                    Text(formatter.format(track.listeners).toString() + " Hörer")
+                },
+                icon = {
+                    Surface(
+                        color = colorResource(id = R.color.colorBackgroundElevated),
+                        shape = CircleShape,
+                        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                        Box(gravity = ContentGravity.Center) {
+                            Text(text = "${index +1}")
                         }
                     }
-                )
-            }
+                }, onClick = {
+                    backstack.push(AppRoute.DetailRoute(track, context))
+                }
+            )
         }
 
         TitleComponent(title = "Top Albums")

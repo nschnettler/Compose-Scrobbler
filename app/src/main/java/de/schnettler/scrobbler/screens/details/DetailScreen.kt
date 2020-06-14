@@ -95,7 +95,7 @@ fun ChipRow(items: List<String>) {
     Box(modifier = Modifier.padding(horizontal = 16.dp)) {
         FlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 16.dp) {
             items.forEach {
-                Clickable(onClick = {}, modifier = Modifier.ripple()) {
+                Box(modifier = Modifier.clickable(onClick = {})) {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.body2,

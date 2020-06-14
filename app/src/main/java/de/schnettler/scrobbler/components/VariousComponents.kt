@@ -1,17 +1,21 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.*
+import androidx.compose.Composable
+import androidx.compose.getValue
+import androidx.compose.setValue
+import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
-import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Text
-import androidx.ui.layout.*
+import androidx.ui.foundation.clickable
+import androidx.ui.layout.Row
+import androidx.ui.layout.padding
+import androidx.ui.layout.size
 import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontFamily
@@ -50,20 +54,15 @@ fun ExpandingSummary(
     expandedMaxLines: Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier
 ) {
-    val canTextExpand by stateFor(text) { true }
-
-    Box(modifier = Modifier.ripple(bounded = true, enabled = expandable && canTextExpand)) {
-        var expanded by state { false }
-
-        Clickable(onClick = { expanded = !expanded }, enabled = expandable && canTextExpand) {
-            ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
-                Text(
-                    text = text ?: "No Bio available",
-                    style = textStyle,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = if (expanded) expandedMaxLines else collapsedMaxLines,
-                    modifier = modifier)
-            }
+    var expanded by state { false }
+    Box(modifier = Modifier.clickable(onClick = { expanded = !expanded }, enabled = expandable)) {
+        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+            Text(
+                text = text ?: "No Bio available",
+                style = textStyle,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = if (expanded) expandedMaxLines else collapsedMaxLines,
+                modifier = modifier)
         }
     }
 }

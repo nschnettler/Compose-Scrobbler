@@ -7,9 +7,7 @@ import androidx.ui.livedata.observeAsState
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.components.GenericAdapterList
-import de.schnettler.scrobbler.components.LiveDataListComponent
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
-import de.schnettler.scrobbler.model.ListItem
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import timber.log.Timber
 import java.util.*
