@@ -1,12 +1,10 @@
 package de.schnettler.scrobbler.screens
 
+import androidx.compose.Ambient
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContentScale
-import androidx.ui.core.Modifier
-import androidx.ui.core.tag
+import androidx.ui.core.*
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -14,7 +12,6 @@ import androidx.ui.layout.*
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.text.TextStyle
@@ -29,6 +26,7 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.TitleWithLoadingIndicator
 import de.schnettler.scrobbler.model.LoadingState
+import de.schnettler.scrobbler.model.LoadingState2
 import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -38,18 +36,24 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
+import timber.log.Timber
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 
-   val userState by model.userState.collectAsState(null)
-   val artistState by model.artistState.collectAsState(null)
-   val albumState by model.albumState.collectAsState(null)
-   val trackState by model.trackState.collectAsState(null)
+   val userState by model.userState.collectAsState()
+   Timber.d("UserState $userState")
+   val artistState by model.artistState.collectAsState()
+   val albumState by model.albumState.collectAsState()
+   val trackState by model.trackState.collectAsState()
+
+   when(userState) {
+      is LoadingState2.Error -> ContextAmbient.current.toast((userState as LoadingState2.Error<User>).errorMsg)
+   }
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
-         userState?.data?.let {
+         userState.data?.let {
             UserInfoComponent(it)
          }
          TopEntry2(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
@@ -62,14 +66,14 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
 @Composable
 fun TopEntry2(
    title: String,
-   content: LoadingState<List<TopListEntryWithData>>?,
+   content: LoadingState2<List<TopListEntryWithData>>,
    onEntrySelected: (ListingMin) -> Unit
 ) {
-   TitleWithLoadingIndicator(title = title, loading = content?.loading ?: true)
+   TitleWithLoadingIndicator(title = title, loading = content is LoadingState2.Loading)
 
-   content?.data?.let {data ->
+   content.data?.let {data ->
       HorizontalScrollableComponent2(
-         content = content.data.map { Pair(it.data, it.topListEntry.count) },
+         content = data.map { Pair(it.data, it.topListEntry.count) },
          onEntrySelected = onEntrySelected,
          width = 172.dp,
          height = 172.dp,
@@ -198,36 +202,43 @@ fun HorizontalScrollableComponent2(
          for(entry in content) {
             val data = entry.first
             val count = entry.second
-            Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp) + Modifier.clickable(
-               onClick = { onEntrySelected.invoke(data) })) {
+            Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
                Card(shape = RoundedCornerShape(cardCornerRadius),
-                  modifier = Modifier.preferredWidth(width) + Modifier.preferredHeight(height - 8.dp)
+                  modifier = Modifier.preferredWidth(width) + Modifier.clickable(
+                     onClick = { onEntrySelected.invoke(data) })
                ) {
-                  when (val imageUrl = data.imageUrl) {
-                     null -> {
-                        Box(gravity = ContentGravity.Center) {
-                           Text(text = data.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
+                  Column() {
+                     Box(modifier = Modifier.preferredHeight(height - 8.dp)) {
+                        when (val imageUrl = data.imageUrl) {
+                           null -> {
+                              Box(gravity = ContentGravity.Center, modifier = Modifier.fillMaxSize()) {
+                                 Text(text = data.name.firstLetter(), style = TextStyle(fontSize = hintTextSize))
+                              }
+                           }
+                           else -> {
+                              CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                           }
                         }
                      }
-                     else -> {
-                        CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                     Column(modifier = Modifier.padding(top = 4.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)) {
+                        Text(data.name,
+                           style = TextStyle(
+                              fontSize = 14.sp
+                           ),
+                           maxLines = 1,
+                           overflow = TextOverflow.Ellipsis
+                        )
+                        Text("${formatter.format(count)} $subtitleSuffix",
+                           style = TextStyle(
+                              fontSize = 12.sp
+                           )
+                        )
                      }
                   }
+
+
                }
-               Column(modifier = Modifier.padding(top = 4.dp, start = 4.dp, end = 4.dp)) {
-                  Text(data.name,
-                     style = TextStyle(
-                        fontSize = 14.sp
-                     ),
-                     maxLines = 1,
-                     overflow = TextOverflow.Ellipsis
-                  )
-                  Text("${formatter.format(count)} $subtitleSuffix",
-                     style = TextStyle(
-                        fontSize = 12.sp
-                     )
-                  )
-               }
+
             }
          }
       }

@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.util
 
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -18,30 +19,8 @@ import de.schnettler.database.models.ListingMin
 val defaultSpacerSize = 16.dp
 val cardCornerRadius = 12.dp
 
-class BaseViewModelFactory<T>(val creator: () -> T) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        @Suppress("UNCHECKED_CAST")
-        return creator() as T
-    }
-}
-
-inline fun <reified T : ViewModel> Fragment.getViewModel(noinline creator: (() -> T)? = null): T {
-    return if (creator == null)
-        ViewModelProvider(this).get(T::class.java)
-    else
-        ViewModelProvider(this,
-            BaseViewModelFactory(creator)
-        ).get(T::class.java)
-}
-
-inline fun <reified T : ViewModel> AppCompatActivity.getViewModel(noinline creator: (() -> T)? = null): T {
-    return if (creator == null)
-        ViewModelProvider(this).get(T::class.java)
-    else
-        ViewModelProvider(this,
-            BaseViewModelFactory(creator)
-        ).get(T::class.java)
-}
+fun Context.toast(message: CharSequence) =
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 //https://stackoverflow.com/a/50963795/12743428
 fun String.toFlagEmoji(): String {

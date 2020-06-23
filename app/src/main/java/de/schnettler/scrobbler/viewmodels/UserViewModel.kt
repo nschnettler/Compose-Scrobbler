@@ -9,8 +9,8 @@ import de.schnettler.database.models.Track
 import de.schnettler.database.models.User
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
-import de.schnettler.scrobbler.model.LoadingState
-import de.schnettler.scrobbler.model.update
+import de.schnettler.scrobbler.model.LoadingState2
+import de.schnettler.scrobbler.model.update2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,34 +22,54 @@ import timber.log.Timber
 class UserViewModel @ViewModelInject constructor(
     private val topListRepo: TopListRepository,
     private val userRepo: UserRepository
-): ViewModel() {
+) : ViewModel() {
     private var _timePeriod: MutableStateFlow<TimePeriod> = MutableStateFlow(TimePeriod.OVERALL)
     val timePeriod: StateFlow<TimePeriod>
         get() = _timePeriod
 
-    val albumState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
-    val artistState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
-    val trackState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>?> = MutableStateFlow(null)
-    val userState: MutableStateFlow<LoadingState<User>?> = MutableStateFlow(null)
-    private val lovedTracksState: MutableStateFlow<LoadingState<List<Track>>?> = MutableStateFlow(null)
+    private val _albumState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState2.Initial())
+    val albumState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+        get() = _albumState
+
+    private val _artistState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState2.Initial())
+    val artistState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+        get() = _artistState
+
+    private val _trackState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState2.Initial())
+    val trackState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+        get() = _trackState
+
+    private val _userState: MutableStateFlow<LoadingState2<User>> =
+        MutableStateFlow(LoadingState2.Initial())
+    val userState: StateFlow<LoadingState2<User>>
+        get() = _userState
+
+    private val _lovedTracksState: MutableStateFlow<LoadingState2<List<Track>>> =
+        MutableStateFlow(LoadingState2.Initial())
+    val lovedTracksState: StateFlow<LoadingState2<List<Track>>>
+        get() = _lovedTracksState
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("Loading Artists")
-            timePeriod.flatMapLatest { topListRepo.getTopArtists(it) }.collect { artistState.update(it) }
+            timePeriod.flatMapLatest { topListRepo.getTopArtists(it) }
+                .collect { _artistState.update2(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("Loading Albums")
-            timePeriod.flatMapLatest {topListRepo.getTopAlbums(it) }.collect { albumState.update(it) }
+            timePeriod.flatMapLatest { topListRepo.getTopAlbums(it) }
+                .collect { _albumState.update2(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            timePeriod.flatMapLatest {topListRepo.getTopTracks(it) }.collect { trackState.update(it) }
+            timePeriod.flatMapLatest { topListRepo.getTopTracks(it) }
+                .collect { _trackState.update2(it) }
         }
         viewModelScope.launch {
-            userRepo.getUserLovedTracks().collect { lovedTracksState.update(it) }
+            userRepo.getUserLovedTracks().collect { _lovedTracksState.update2(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            userRepo.getUserInfo().collect { userState.update(it) }
+            userRepo.getUserInfo().collect { _userState.update2(it) }
         }
     }
 
