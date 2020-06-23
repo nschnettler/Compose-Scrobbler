@@ -134,7 +134,7 @@ abstract class ArtistDao: BaseRelationsDao<Artist> {
     abstract fun getArtistImageUrl(id: String): String?
 
     @Query("UPDATE artists SET imageUrl = :url WHERE id = :id")
-    abstract fun updateArtistImageUrl(url: String, id: String)
+    abstract fun updateArtistImageUrl(url: String, id: String): Int
 }
 
 @Dao
@@ -160,15 +160,12 @@ abstract class TrackDao: BaseRelationsDao<Track> {
 
 @Dao
 abstract class RelationshipDao {
-    @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     abstract fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
 
-    @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     abstract fun getRelatedTracks(id: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
 
-    @Transaction
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
     abstract fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
 }
