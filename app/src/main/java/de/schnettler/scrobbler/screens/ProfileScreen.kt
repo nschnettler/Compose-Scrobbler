@@ -205,7 +205,7 @@ fun HorizontalScrollableComponent2(
             Column(modifier = Modifier.preferredWidth(width) + Modifier.padding(horizontal = 8.dp)) {
                Card(shape = RoundedCornerShape(cardCornerRadius),
                   modifier = Modifier.preferredWidth(width) + Modifier.clickable(
-                     onClick = { onEntrySelected.invoke(data) })
+                     onClick = { onEntrySelected.invoke(data) }) + Modifier.padding(bottom = 8.dp)
                ) {
                   Column() {
                      Box(modifier = Modifier.preferredHeight(height - 8.dp)) {
@@ -235,10 +235,7 @@ fun HorizontalScrollableComponent2(
                         )
                      }
                   }
-
-
                }
-
             }
          }
       }
