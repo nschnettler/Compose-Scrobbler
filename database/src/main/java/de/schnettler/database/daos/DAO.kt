@@ -25,7 +25,7 @@ interface BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAll(obj: List<T>): List<Long>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun forceInsertAll(obj: List<T>)
+    fun forceInsertAll(obj: List<T>): List<Long>
 
     /**
      * Update an object from the database.
@@ -179,7 +179,7 @@ abstract class UserDao: BaseDao<User> {
     abstract fun getUserOnce(name: String): User?
 
     @Query("UPDATE users SET artistCount = :count WHERE name = :userName")
-    abstract suspend fun updateArtistCount(userName: String, count: Long)
+    abstract suspend fun updateArtistCount(userName: String, count: Long): Int
 
     @Query("UPDATE users SET lovedTracksCount = :count WHERE name = :userName")
     abstract suspend fun updateLovedTracksCount(userName: String, count: Long)

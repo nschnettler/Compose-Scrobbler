@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.take
 
 @ExperimentalCoroutinesApi
 @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-suspend inline fun <T> Flow<T>.collectValue(crossinline action: suspend (value: T) -> Unit) {
+suspend inline fun <T> Flow<T?>.collectValue(crossinline action: suspend (value: T?) -> Unit) {
     this.take(1).collect {
         action(it)
     }

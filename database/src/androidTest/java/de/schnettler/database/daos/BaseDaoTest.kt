@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import ch.tutteli.atrium.api.fluent.en_GB.isGreaterThanOrEqual
 import ch.tutteli.atrium.api.fluent.en_GB.notToBe
 import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
@@ -91,6 +92,52 @@ class BaseDaoTest {
         // THEN - Artist was removed from db
         loadedArtist.collectValue {
             expect(it).toBe(null)
+        }
+    }
+
+    @Test
+    fun insertAllInsertsDataWithoutOverwrite() {
+        // GIVEN - Database with one Artist
+        val artist = Artist(name = "Artist1", url = "Url1")
+        database.artistDao().insert(artist)
+
+
+        // WHEN - A list of Artists is inserted and one has the same id as the database artist
+        val artists = listOf(
+            Artist(name = "Artist1", url = "Url1"),
+            Artist(name = "Artist2", url = "Url2"),
+            Artist(name = "Artist3", url = "Url3")
+        )
+        val changedRows = database.artistDao().insertAll(artists)
+
+        // THAN - Only two Artists are inserted. One is ignored.
+        expect(changedRows.size).toBe(artists.size)
+        changedRows.forEachIndexed { index, item ->
+            when (index) {
+                0 -> expect(item).toBe(-1L)
+                else -> expect(item).isGreaterThanOrEqual(0L)
+            }
+        }
+    }
+
+    fun forceInsertAllInsertsDataWithOverwrite() {
+        // GIVEN - Database with one Artist
+        val artist = Artist(name = "Artist1", url = "Url1")
+        database.artistDao().insert(artist)
+
+
+        // WHEN - A list of Artists is inserted and one has the same id as the database artist
+        val artists = listOf(
+            Artist(name = "Artist1", url = "Url1"),
+            Artist(name = "Artist2", url = "Url2"),
+            Artist(name = "Artist3", url = "Url3")
+        )
+        val changedRows = database.artistDao().forceInsertAll(artists)
+
+        // THAN - Only two Artists are inserted. One is ignored.
+        expect(changedRows.size).toBe(artists.size)
+        changedRows.forEach {item ->
+            expect(item).isGreaterThanOrEqual(0L)
         }
     }
 }
