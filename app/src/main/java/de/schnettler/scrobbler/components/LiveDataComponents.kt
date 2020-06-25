@@ -38,24 +38,25 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 }
 
 @Composable
-fun GenericAdapterList(data: List<ListingMin>) {
+fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -> Unit) {
     AdapterList(data = data) {item ->
         when(item) {
             is Track -> HistoryItem(
                 listing = item,
                 subTitle = "${item.artist} ⦁ ${item.album}",
-                backStack = BackStack.current, context = ContextAmbient.current
+                onListingSelected = onListingSelected
             )
             is Artist -> HistoryItem(listing = item,
                 subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${ formatter.format(item.plays)} Plays",
-                backStack = BackStack.current, context = ContextAmbient.current)
+                onListingSelected = onListingSelected
+            )
         }
         Divider(color = Color(0x0d000000))
     }
 }
 
 @Composable
-fun HistoryItem(listing: ListingMin, subTitle: String, backStack: BackStack<AppRoute>, context: Context) {
+fun HistoryItem(listing: ListingMin, subTitle: String, onListingSelected: (ListingMin) -> Unit) {
     ListItem(
         text = { Text(text = listing.name) },
         secondaryText = { Text(text = subTitle) },
@@ -69,6 +70,6 @@ fun HistoryItem(listing: ListingMin, subTitle: String, backStack: BackStack<AppR
                 }
             }
         },
-        onClick = { backStack.push(AppRoute.DetailRoute(item = listing, context = context)) }
+        onClick = { onListingSelected.invoke(listing) }
     )
 }

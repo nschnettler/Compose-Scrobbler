@@ -2,7 +2,6 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -14,8 +13,7 @@ import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
-import de.schnettler.scrobbler.AppRoute
-import de.schnettler.scrobbler.BackStack
+import de.schnettler.database.models.ListingMin
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.screens.formatter
@@ -25,7 +23,7 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import timber.log.Timber
 
 @Composable
-fun ArtistDetailScreen(artist: Artist) {
+fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) {
     VerticalScroller() {
         Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
 
@@ -43,8 +41,7 @@ fun ArtistDetailScreen(artist: Artist) {
         TagCategory(tags = artist.tags)
 
         TitleComponent(title = "Top Tracks")
-        val backstack = BackStack.current
-        val context = ContextAmbient.current
+
         artist.topTracks.forEachIndexed { index, track ->
             ListItem(
                 text = { Text(track.name) },
@@ -60,9 +57,7 @@ fun ArtistDetailScreen(artist: Artist) {
                             Text(text = "${index +1}")
                         }
                     }
-                }, onClick = {
-                    backstack.push(AppRoute.DetailRoute(track, context))
-                }
+                }, onClick = { onListingSelected.invoke(track) }
             )
         }
         ListingScroller(
@@ -78,8 +73,9 @@ fun ArtistDetailScreen(artist: Artist) {
             content = artist.similarArtists,
             width = 104.dp,
             height = 104.dp,
-            playsStyle = PlaysStyle.NO_PLAYS
-        ) { Timber.d("Selected $it") }
+            playsStyle = PlaysStyle.NO_PLAYS,
+            onEntrySelected = onListingSelected
+        )
     }
 }
 

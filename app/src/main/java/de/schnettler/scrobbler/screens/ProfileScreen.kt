@@ -33,7 +33,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
+fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit) {
 
    val userState by model.userState.collectAsState()
 
@@ -50,9 +50,9 @@ fun ProfileScreen(model: UserViewModel, onEntrySelected: (ListingMin) -> Unit) {
          userState.data?.let {
             UserInfoComponent(it)
          }
-         TopListScroller(title = "Top-Künstler", content = artistState, onEntrySelected = onEntrySelected)
-         TopListScroller(title = "Top-Alben", content = albumState, onEntrySelected = onEntrySelected)
-         TopListScroller(title = "Top-Titel", content = trackState, onEntrySelected = onEntrySelected)
+         TopListScroller(title = "Top-Künstler", content = artistState, onEntrySelected = onListingSelected)
+         TopListScroller(title = "Top-Alben", content = albumState, onEntrySelected = onListingSelected)
+         TopListScroller(title = "Top-Titel", content = trackState, onEntrySelected = onListingSelected)
       }
    }
 }

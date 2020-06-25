@@ -22,13 +22,13 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import timber.log.Timber
 
 @Composable
-fun DetailScreen(model: DetailViewModel) {
+fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit) {
     val artistState by model.entryState.collectAsState(initial = null)
 
     Timber.d("Error ${artistState?.error}")
     artistState?.data?.let {details ->
         when(details) {
-            is Artist -> ArtistDetailScreen(artist = details)
+            is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected)
             is TrackDomain -> TrackDetailScreen(details)
         }
 
