@@ -3,7 +3,6 @@ package de.schnettler.scrobbler.screens.details
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
-import androidx.ui.core.Alignment
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
@@ -12,16 +11,12 @@ import androidx.ui.layout.*
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
-import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import de.schnettler.database.models.*
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.TitleComponent
-import de.schnettler.scrobbler.screens.formatter
-import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import timber.log.Timber
@@ -67,28 +62,6 @@ fun AlbumCategory(album: Album) {
 
         })
 }
-
-@Composable
-fun StatsRow(item: ListingMin) {
-    Row(modifier = Modifier.fillMaxWidth() + Modifier.padding(vertical = defaultSpacerSize), horizontalArrangement = Arrangement.Center) {
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
-            Icon(asset = vectorResource(id = R.drawable.ic_round_play_circle_outline_24))
-            Text(text = formatter.format(item.plays))
-        }
-        Spacer(modifier = Modifier.width(64.dp))
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
-            Icon(asset = vectorResource(id = R.drawable.ic_round_hearing_24))
-            Text(text = formatter.format(item.userPlays))
-        }
-        Spacer(modifier = Modifier.width(64.dp))
-        Column(horizontalGravity = Alignment.CenterHorizontally) {
-            Icon(asset = vectorResource(id = R.drawable.ic_outline_account_circle_32))
-            Text(text = formatter.format(item.listeners))
-        }
-    }
-}
-
-
 
 @Composable
 fun ChipRow(items: List<String>) {

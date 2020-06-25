@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.screens.details
 import androidx.compose.Composable
 import androidx.ui.foundation.VerticalScroller
 import de.schnettler.database.models.TrackDomain
+import de.schnettler.scrobbler.components.ListeningStats
 
 @Composable
 fun TrackDetailScreen(track: TrackDomain) {
@@ -12,7 +13,7 @@ fun TrackDetailScreen(track: TrackDomain) {
                 album
             )
         }
-        StatsRow(item = track)
+        ListeningStats(item = track)
         if (track.tags.isNotEmpty()) {
             TagCategory(tags = track.tags)
         }

@@ -17,10 +17,7 @@ import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.ExpandingSummary
-import de.schnettler.scrobbler.components.ListingScroller
-import de.schnettler.scrobbler.components.PlaysStyle
-import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
@@ -41,7 +38,7 @@ fun ArtistDetailScreen(artist: Artist) {
             ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
         }
 
-        StatsRow(artist)
+        ListeningStats(item = artist)
 
         TagCategory(tags = artist.tags)
 
