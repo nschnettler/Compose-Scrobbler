@@ -36,8 +36,6 @@ dependencies {
     androidTestImplementation(Testing.mockito.core)
     androidTestImplementation(KotlinX.coroutines.test)
     androidTestImplementation(AndroidX.test.ext.junit)
-    androidTestImplementation(AndroidX.test.espresso.core)
-    androidTestImplementation(AndroidX.test.espresso.contrib)
     androidTestImplementation(AndroidX.archCore.testing)
     androidTestImplementation("com.linkedin.dexmaker:dexmaker-mockito:2.28.0")
     androidTestImplementation("ch.tutteli.atrium:atrium-fluent-en_GB:0.12.0")
