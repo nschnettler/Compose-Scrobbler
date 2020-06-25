@@ -41,6 +41,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
+
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+        }
+    }
 }
 
 dependencies {
