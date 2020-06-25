@@ -11,17 +11,16 @@ import androidx.ui.layout.*
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
-import androidx.ui.material.ripple.ripple
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
-import androidx.ui.unit.sp
 import de.schnettler.database.models.Artist
+import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.components.ExpandingSummary
+import de.schnettler.scrobbler.components.ListingScroller
+import de.schnettler.scrobbler.components.PlaysStyle
 import de.schnettler.scrobbler.components.TitleComponent
-import de.schnettler.scrobbler.screens.HorizontalScrollableComponent
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
@@ -69,29 +68,21 @@ fun ArtistDetailScreen(artist: Artist) {
                 }
             )
         }
-
-        TitleComponent(title = "Top Albums")
-        HorizontalScrollableComponent(
+        ListingScroller(
+            title = "Top Albums",
             content = artist.topAlbums.sortedByDescending { it.plays },
-            onEntrySelected = {
-                Timber.d("Selected")
-            },
             width = 136.dp,
             height = 136.dp,
-            showPlays = true,
-            hintTextSize = 32.sp
-        )
+            playsStyle = PlaysStyle.PUBLIC_PLAYS
+        ) { Timber.d("Selected $it") }
 
-        TitleComponent(title = "Ähnliche Künstler")
-        HorizontalScrollableComponent(
+        ListingScroller(
+            title = "Ähnliche Künstler",
             content = artist.similarArtists,
-            onEntrySelected = {
-                backstack.push(AppRoute.DetailRoute(it, context))
-            },
             width = 104.dp,
             height = 104.dp,
-            showPlays = false
-        )
+            playsStyle = PlaysStyle.NO_PLAYS
+        ) { Timber.d("Selected $it") }
     }
 }
 
