@@ -1,25 +1,32 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.Composable
+import androidx.ui.layout.Column
 import androidx.ui.tooling.preview.Preview
 import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.components.GenericHorizontalListingScroller
 import de.schnettler.scrobbler.components.ListingCard
-import de.schnettler.scrobbler.components.PlaysStyle
 import de.schnettler.scrobbler.util.ThemedPreview
 
 @Preview
 @Composable
 fun ListingCardPreview() {
     ThemedPreview() {
-        ListingCard(
-            onEntrySelected = {},
-            data = Artist(
+        Column() {
+            val artist = Artist(
                 name = "Dreamcatcher",
                 url = "Url",
                 userPlays = 10,
-                plays = 20),
-            playsStyle = PlaysStyle.USER_PLAYS)
+                plays = 20)
+            ListingCard(
+                onEntrySelected = {},
+                data = artist,
+                plays = 10)
+            ListingCard(
+                onEntrySelected = {},
+                data = artist)
+        }
+
     }
 }
 

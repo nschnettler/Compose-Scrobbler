@@ -28,9 +28,9 @@ enum class PlaysStyle() {
 }
 
 @Composable
-fun GenericHorizontalListingScroller(
-    items: List<ListingMin>,
-    childView: @Composable() (listing: ListingMin) -> Unit) {
+fun <T>GenericHorizontalListingScroller(
+    items: List<T>,
+    childView: @Composable() (listing: T) -> Unit) {
     HorizontalScroller(modifier = Modifier.fillMaxWidth()) {
         Row {
             items.forEach {
@@ -41,12 +41,12 @@ fun GenericHorizontalListingScroller(
 }
 
 @Composable
-fun GenericHorizontalListingScrollerWithTitle(
-    items: List<ListingMin>?,
+fun <T> GenericHorizontalListingScrollerWithTitle(
+    items: List<T>?,
     title: String,
     showIndicator: Boolean = false,
     isLoading: Boolean = false,
-    childView: @Composable() (listing: ListingMin) -> Unit
+    childView: @Composable() (listing: T) -> Unit
 ) {
     when(showIndicator) {
         true -> TitleWithLoadingIndicator(title = title, loading = isLoading)
@@ -54,7 +54,7 @@ fun GenericHorizontalListingScrollerWithTitle(
     }
 
     items?.let {
-        GenericHorizontalListingScroller(items = items, childView = childView)
+        GenericHorizontalListingScroller<T>(items = items, childView = childView)
     }
 }
 
@@ -63,7 +63,7 @@ fun ListingCard(
     data: ListingMin,
     width: Dp = 136.dp,
     height: Dp = 136.dp,
-    playsStyle: PlaysStyle = PlaysStyle.NO_PLAYS,
+    plays: Long = -1,
     hintTextSize: TextUnit = 62.sp,
     hintSuffix: String = "Wiedergaben",
     onEntrySelected: (ListingMin) -> Unit) {
@@ -93,11 +93,6 @@ fun ListingCard(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    val plays = when(playsStyle) {
-                        PlaysStyle.USER_PLAYS -> data.userPlays
-                        PlaysStyle.PUBLIC_PLAYS -> data.plays
-                        PlaysStyle.NO_PLAYS -> -1
-                    }
                     if(plays >= 0) {
                         Text(
                             "${formatter.format(plays)} $hintSuffix",
@@ -119,17 +114,17 @@ fun TopListScroller(
     onEntrySelected: (ListingMin) -> Unit) {
 
     GenericHorizontalListingScrollerWithTitle(
-        items = content.data?.map { it.data },
+        items = content.data,
         title = title,
         showIndicator = true,
         isLoading = content is LoadingState2.Loading
     ) { listing ->
         ListingCard(
-            data = listing,
+            data = listing.data,
             onEntrySelected = onEntrySelected,
             width = 172.dp,
             height = 172.dp,
-            playsStyle = PlaysStyle.USER_PLAYS
+            plays = listing.topListEntry.count
         )
     }
 }
@@ -154,7 +149,11 @@ fun ListingScroller(
             width = width,
             height = height,
             hintTextSize = hintTextSize,
-            playsStyle = playsStyle
+            plays = when(playsStyle) {
+                PlaysStyle.PUBLIC_PLAYS -> listing.plays
+                PlaysStyle.USER_PLAYS -> listing.userPlays
+                PlaysStyle.NO_PLAYS -> -1
+            }
         )
     }
 }
