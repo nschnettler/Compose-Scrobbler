@@ -1,11 +1,12 @@
 package de.schnettler.scrobbler.components
 
-import android.content.Context
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.*
+import androidx.ui.foundation.AdapterList
+import androidx.ui.foundation.Box
+import androidx.ui.foundation.ContentGravity
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.fillMaxSize
@@ -18,13 +19,10 @@ import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
-import com.koduok.compose.navigation.core.BackStack
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
-import de.schnettler.scrobbler.BackStack
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.firstLetter
 

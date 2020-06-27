@@ -3,17 +3,13 @@ package de.schnettler.scrobbler.util
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.ui.unit.dp
-import java.util.*
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.compose.Composable
+import androidx.ui.material.Surface
+import androidx.ui.unit.dp
 import de.schnettler.database.models.ListingMin
+import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
+import java.util.*
 
 
 val defaultSpacerSize = 16.dp
@@ -49,27 +45,6 @@ fun String.toCountryCode() = Locale.getISOCountries().find {
 fun String.firstLetter() = this.first { it.isLetter() }.toString()
 
 
-class DoubleTrigger<A, B>(a: LiveData<A>, b: LiveData<B>) : MediatorLiveData<Pair<A?, B?>>() {
-    init {
-        addSource(a) { value = it to b.value }
-        addSource(b) { value = a.value to it }
-    }
-}
-
-fun <T, K, R> LiveData<T>.combineWith(
-    liveData: LiveData<K>,
-    block: (T?, K?) -> R
-): LiveData<R> {
-    val result = MediatorLiveData<R>()
-    result.addSource(this) {
-        result.value = block.invoke(this.value, liveData.value)
-    }
-    result.addSource(liveData) {
-        result.value = block.invoke(this.value, liveData.value)
-    }
-    return result
-}
-
 fun Context.openUrlInCustomTab(url: String) {
     val builder = CustomTabsIntent.Builder()
     val customTabsIntent = builder.build()
@@ -79,5 +54,17 @@ fun Context.openUrlInCustomTab(url: String) {
 fun onOpenInBrowserClicked(listing: ListingMin, activity: Context) {
     listing.url?.let {url ->
         activity.openUrlInCustomTab(url)
+    }
+}
+
+@Composable
+internal fun ThemedPreview(
+    darkTheme: Boolean = false,
+    children: @Composable() () -> Unit
+) {
+    MaterialThemeFromMdcTheme {
+        Surface {
+            children()
+        }
     }
 }
