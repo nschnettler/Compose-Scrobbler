@@ -6,14 +6,15 @@ import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
 import androidx.ui.res.vectorResource
-import com.koduok.compose.navigation.core.BackStack
 import de.schnettler.scrobbler.AppRoute
 import timber.log.Timber
 
 @Composable
-fun BottomNavigationBar(items: List<AppRoute>, backStack: BackStack<AppRoute>) {
-    val currentScreen = backStack.current.data
-
+fun BottomNavigationBar(
+        items: List<AppRoute>,
+        currentScreen: AppRoute,
+        onDestinationSelected: (AppRoute) -> Unit
+) {
     if (currentScreen !is AppRoute.DetailRoute) {
         BottomNavigation() {
             items.forEach {screen ->
@@ -26,9 +27,7 @@ fun BottomNavigationBar(items: List<AppRoute>, backStack: BackStack<AppRoute>) {
                         Text(text = screen.title)
                     },
                     selected = currentScreen::class == screen::class,
-                    onSelected = {
-                        backStack.replace(screen)
-                    }
+                    onSelected = { onDestinationSelected.invoke(screen) }
                 )
             }
         }

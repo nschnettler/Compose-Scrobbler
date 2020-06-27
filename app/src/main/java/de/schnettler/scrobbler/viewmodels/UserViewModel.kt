@@ -12,13 +12,14 @@ import de.schnettler.repo.UserRepository
 import de.schnettler.scrobbler.model.LoadingState2
 import de.schnettler.scrobbler.model.update2
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
+@ExperimentalCoroutinesApi
 class UserViewModel @ViewModelInject constructor(
     private val topListRepo: TopListRepository,
     private val userRepo: UserRepository
@@ -52,6 +53,10 @@ class UserViewModel @ViewModelInject constructor(
     val lovedTracksState: StateFlow<LoadingState2<List<Track>>>
         get() = _lovedTracksState
 
+    private val _showFilterDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showFilterDialog: StateFlow<Boolean>
+        get() = _showFilterDialog
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             timePeriod.flatMapLatest { topListRepo.getTopArtists(it) }
@@ -73,9 +78,14 @@ class UserViewModel @ViewModelInject constructor(
         }
     }
 
-    fun updatePeriod(newPeriod: TimePeriod) {
-        if (newPeriod != timePeriod.value) {
-            _timePeriod.value = newPeriod
-        }
+    fun updatePeriod(period: TimePeriod) = _timePeriod.updateValue(period)
+
+    fun showDialog(show: Boolean) = _showFilterDialog.updateValue(show)
+}
+
+@ExperimentalCoroutinesApi
+fun <T> MutableStateFlow<T>.updateValue(newValue: T) {
+    if (value != newValue) {
+        value = newValue
     }
 }

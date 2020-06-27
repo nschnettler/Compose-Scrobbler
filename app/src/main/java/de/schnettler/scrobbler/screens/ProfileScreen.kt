@@ -1,8 +1,6 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.Composable
-import androidx.compose.collectAsState
-import androidx.compose.getValue
+import androidx.compose.*
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
@@ -12,11 +10,10 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
-import androidx.ui.material.Card
-import androidx.ui.material.ListItem
-import androidx.ui.material.Surface
+import androidx.ui.material.*
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
+import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
@@ -26,12 +23,14 @@ import de.schnettler.scrobbler.model.LoadingState2
 import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
+@ExperimentalCoroutinesApi
 @Composable
 fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit) {
 
@@ -40,6 +39,17 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit)
    val artistState by model.artistState.collectAsState()
    val albumState by model.albumState.collectAsState()
    val trackState by model.trackState.collectAsState()
+   val timePeriod by model.timePeriod.collectAsState()
+   val showDialog by model.showFilterDialog.collectAsState()
+
+   if (showDialog) {
+      PeriodSelectDialog(onSelect = { newTimePeriod ->
+         model.updatePeriod(newTimePeriod)
+         model.showDialog(false)
+      }, onDismiss = {
+         model.showDialog(false)
+      }, model = model)
+   }
 
    when(userState) {
       is LoadingState2.Error -> ContextAmbient.current.toast((userState as LoadingState2.Error<User>).errorMsg)
@@ -50,7 +60,8 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit)
          userState.data?.let {
             UserInfoComponent(it)
          }
-         TopListScroller(title = "Top-Künstler", content = artistState, onEntrySelected = onListingSelected)
+         TopListScroller(title = "Top-Künstler (${timePeriod.niceName})", content = artistState, onEntrySelected =
+         onListingSelected)
          TopListScroller(title = "Top-Alben", content = albumState, onEntrySelected = onListingSelected)
          TopListScroller(title = "Top-Titel", content = trackState, onEntrySelected = onListingSelected)
       }
@@ -94,4 +105,29 @@ fun UserInfoComponent(user: User) {
          ))
       }
    }
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+private fun PeriodSelectDialog(onSelect: (selected: TimePeriod) -> Unit, onDismiss: () -> Unit, model: UserViewModel) {
+   var selected by state { model.timePeriod.value }
+   val radioGroupOptions = TimePeriod.values().asList()
+   AlertDialog(
+           onCloseRequest = { onDismiss() },
+           title = { Text(text = "Zeitrahmen") },
+           text = {
+              RadioGroup {
+                 radioGroupOptions.forEach {
+                    RadioGroupTextItem(selected = selected == it, onSelect = {
+                       selected = it
+                    }, text = it.niceName)
+                 }
+              }
+           },
+           confirmButton = {
+              TextButton(onClick = { onSelect(selected) }, contentColor = MaterialTheme.colors.secondary) {
+                 Text(text = "Select")
+              }
+           }
+   )
 }
