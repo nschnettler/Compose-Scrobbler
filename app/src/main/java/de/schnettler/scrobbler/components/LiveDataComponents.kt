@@ -49,7 +49,7 @@ fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -
                 onListingSelected = onListingSelected
             )
         }
-        Divider(color = Color(0x0d000000))
+        Divider(color = colorResource(id = R.color.colorStroke))
     }
 }
 
