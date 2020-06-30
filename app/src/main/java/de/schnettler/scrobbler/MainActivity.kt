@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MaterialThemeFromMdcTheme  {
-                Router<AppRoute>(start = AppRoute.LocalRoute) { currentRoute ->
+                Router(start = bottomNavDestinations.last()) { currentRoute ->
                     onListingClicked = {
                         this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                     }
