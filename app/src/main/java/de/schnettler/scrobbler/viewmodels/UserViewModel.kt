@@ -9,7 +9,7 @@ import de.schnettler.database.models.Track
 import de.schnettler.database.models.User
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
-import de.schnettler.scrobbler.model.LoadingState2
+import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.model.update2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,29 +28,29 @@ class UserViewModel @ViewModelInject constructor(
     val timePeriod: StateFlow<TimePeriod>
         get() = _timePeriod
 
-    private val _albumState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
-        MutableStateFlow(LoadingState2.Initial())
-    val albumState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+    private val _albumState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState.Initial())
+    val albumState: StateFlow<LoadingState<List<TopListEntryWithData>>>
         get() = _albumState
 
-    private val _artistState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
-        MutableStateFlow(LoadingState2.Initial())
-    val artistState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+    private val _artistState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState.Initial())
+    val artistState: StateFlow<LoadingState<List<TopListEntryWithData>>>
         get() = _artistState
 
-    private val _trackState: MutableStateFlow<LoadingState2<List<TopListEntryWithData>>> =
-        MutableStateFlow(LoadingState2.Initial())
-    val trackState: StateFlow<LoadingState2<List<TopListEntryWithData>>>
+    private val _trackState: MutableStateFlow<LoadingState<List<TopListEntryWithData>>> =
+        MutableStateFlow(LoadingState.Initial())
+    val trackState: StateFlow<LoadingState<List<TopListEntryWithData>>>
         get() = _trackState
 
-    private val _userState: MutableStateFlow<LoadingState2<User>> =
-        MutableStateFlow(LoadingState2.Initial())
-    val userState: StateFlow<LoadingState2<User>>
+    private val _userState: MutableStateFlow<LoadingState<User>> =
+        MutableStateFlow(LoadingState.Initial())
+    val userState: StateFlow<LoadingState<User>>
         get() = _userState
 
-    private val _lovedTracksState: MutableStateFlow<LoadingState2<List<Track>>> =
-        MutableStateFlow(LoadingState2.Initial())
-    val lovedTracksState: StateFlow<LoadingState2<List<Track>>>
+    private val _lovedTracksState: MutableStateFlow<LoadingState<List<Track>>> =
+        MutableStateFlow(LoadingState.Initial())
+    val lovedTracksState: StateFlow<LoadingState<List<Track>>>
         get() = _lovedTracksState
 
     private val _showFilterDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)

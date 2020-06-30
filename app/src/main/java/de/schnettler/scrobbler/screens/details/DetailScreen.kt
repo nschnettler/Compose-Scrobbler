@@ -4,6 +4,7 @@ import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -19,14 +20,14 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
-import timber.log.Timber
 
 @Composable
 fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit) {
-    val artistState by model.entryState.collectAsState(initial = null)
+    val artistState by model.entryState.collectAsState()
 
-    Timber.d("Error ${artistState?.error}")
-    artistState?.data?.let {details ->
+    artistState.handleIfError(ContextAmbient.current)
+
+    artistState.data?.let {details ->
         when(details) {
             is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected)
             is TrackDomain -> TrackDetailScreen(details)

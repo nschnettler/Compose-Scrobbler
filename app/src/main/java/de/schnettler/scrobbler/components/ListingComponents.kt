@@ -15,7 +15,7 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.TopListEntryWithData
-import de.schnettler.scrobbler.model.LoadingState2
+import de.schnettler.scrobbler.model.LoadingState
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.firstLetter
@@ -109,15 +109,15 @@ fun ListingCard(
 
 @Composable
 fun TopListScroller(
-    title: String,
-    content: LoadingState2<List<TopListEntryWithData>>,
-    onEntrySelected: (ListingMin) -> Unit) {
+        title: String,
+        content: LoadingState<List<TopListEntryWithData>>,
+        onEntrySelected: (ListingMin) -> Unit) {
 
     GenericHorizontalListingScrollerWithTitle(
         items = content.data,
         title = title,
         showIndicator = true,
-        isLoading = content is LoadingState2.Loading
+        isLoading = content is LoadingState.Loading
     ) { listing ->
         ListingCard(
             data = listing.data,

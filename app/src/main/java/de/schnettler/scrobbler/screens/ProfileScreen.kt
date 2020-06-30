@@ -19,7 +19,6 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.TopListScroller
-import de.schnettler.scrobbler.model.LoadingState2
 import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -51,9 +50,7 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit)
       }, model = model)
    }
 
-   when(userState) {
-      is LoadingState2.Error -> ContextAmbient.current.toast((userState as LoadingState2.Error<User>).errorMsg)
-   }
+   userState.handleIfError(ContextAmbient.current)
 
    VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
       Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
