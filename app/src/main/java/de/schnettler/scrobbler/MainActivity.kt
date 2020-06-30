@@ -20,7 +20,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.MenuAction
-import de.schnettler.scrobbler.util.SessionStatus
+import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.onOpenInBrowserClicked
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
@@ -105,22 +105,22 @@ class MainActivity : AppCompatActivity() {
 
     @Composable
     private fun AppContent(currentScreen: AppRoute) {
-        val sessionStatus by model.sessionStatus.observeAsState(SessionStatus.LoggedOut)
+        val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
         Crossfade(currentScreen) { screen ->
             when(screen) {
                 is AppRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
                 is AppRoute.HistoryRoute ->  {
                     when(sessionStatus) {
-                        is SessionStatus.LoggedOut -> LoginScreen(context = this)
-                        is SessionStatus.LoggedIn -> HistoryScreen(historyViewModel, onListingSelected = onListingClicked)
+                        is SessionState.LoggedOut -> LoginScreen(context = this)
+                        is SessionState.LoggedIn -> HistoryScreen(historyViewModel, onListingSelected = onListingClicked)
                     }
                 }
                 is AppRoute.LocalRoute -> LocalScreen()
                 is AppRoute.ProfileRoute -> {
                     when(sessionStatus) {
-                        is SessionStatus.LoggedOut -> LoginScreen(context = this)
-                        is SessionStatus.LoggedIn -> {
+                        is SessionState.LoggedOut -> LoginScreen(context = this)
+                        is SessionState.LoggedIn -> {
                             ProfileScreen(userViewModel, onListingSelected = onListingClicked)
                         }
                     }

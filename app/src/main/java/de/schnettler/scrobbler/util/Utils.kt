@@ -15,8 +15,8 @@ import java.util.*
 val defaultSpacerSize = 16.dp
 val cardCornerRadius = 12.dp
 
-fun Context.toast(message: CharSequence) =
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) =
+    Toast.makeText(this, message, duration).show()
 
 //https://stackoverflow.com/a/50963795/12743428
 fun String.toFlagEmoji(): String {

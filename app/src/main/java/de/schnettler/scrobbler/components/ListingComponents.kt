@@ -15,7 +15,7 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.TopListEntryWithData
-import de.schnettler.scrobbler.model.LoadingState
+import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.firstLetter

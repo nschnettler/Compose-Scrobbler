@@ -9,8 +9,8 @@ import de.schnettler.database.models.Track
 import de.schnettler.database.models.User
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
-import de.schnettler.scrobbler.model.LoadingState
-import de.schnettler.scrobbler.model.update2
+import de.schnettler.scrobbler.util.LoadingState
+import de.schnettler.scrobbler.util.updateState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,21 +60,21 @@ class UserViewModel @ViewModelInject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             timePeriod.flatMapLatest { topListRepo.getTopArtists(it) }
-                .collect { _artistState.update2(it) }
+                .collect { _artistState.updateState(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
             timePeriod.flatMapLatest { topListRepo.getTopAlbums(it) }
-                .collect { _albumState.update2(it) }
+                .collect { _albumState.updateState(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
             timePeriod.flatMapLatest { topListRepo.getTopTracks(it) }
-                .collect { _trackState.update2(it) }
+                .collect { _trackState.updateState(it) }
         }
         viewModelScope.launch {
-            userRepo.getUserLovedTracks().collect { _lovedTracksState.update2(it) }
+            userRepo.getUserLovedTracks().collect { _lovedTracksState.updateState(it) }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            userRepo.getUserInfo().collect { _userState.update2(it) }
+            userRepo.getUserInfo().collect { _userState.updateState(it) }
         }
     }
 
@@ -84,8 +84,10 @@ class UserViewModel @ViewModelInject constructor(
 }
 
 @ExperimentalCoroutinesApi
-fun <T> MutableStateFlow<T>.updateValue(newValue: T) {
+fun <T> MutableStateFlow<T>.updateValue(newValue: T): Boolean {
     if (value != newValue) {
         value = newValue
+        return true
     }
+    return false
 }

@@ -9,8 +9,8 @@ import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
 import de.schnettler.repo.DetailRepository
-import de.schnettler.scrobbler.model.LoadingState
-import de.schnettler.scrobbler.model.update2
+import de.schnettler.scrobbler.util.LoadingState
+import de.schnettler.scrobbler.util.updateState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,9 @@ class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : Vi
     val entryState: MutableStateFlow<LoadingState<ListingMin>> = MutableStateFlow(LoadingState.Initial())
 
     fun updateEntry(new: ListingMin) {
-        entry.updateValue(new)
+        if (entry.updateValue(new)) {
+            entryState.value = LoadingState.Initial()
+        }
     }
 
     init {
@@ -37,7 +39,7 @@ class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : Vi
                     else -> flowOf(StoreResponse.Error.Message("Not implemented yet", ResponseOrigin.Cache))
                 }
             }.collect {response ->
-                entryState.update2(response)
+                entryState.updateState(response)
             }
         }
     }

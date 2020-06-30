@@ -3,7 +3,7 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.scrobbler.util.SessionStatus
+import de.schnettler.scrobbler.util.SessionState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -19,10 +19,10 @@ class MainViewModel @ViewModelInject constructor(
         authProvider.sessionLive.asLiveData(viewModelScope.coroutineContext)
     }
 
-    val sessionStatus: LiveData<SessionStatus> = Transformations.map(sessionResponse) {response ->
+    val sessionStatus: LiveData<SessionState> = Transformations.map(sessionResponse) { response ->
         when (response == null) {
-            true -> SessionStatus.LoggedOut
-            false -> SessionStatus.LoggedIn(response)
+            true -> SessionState.LoggedOut
+            false -> SessionState.LoggedIn(response)
         }
     }
 
