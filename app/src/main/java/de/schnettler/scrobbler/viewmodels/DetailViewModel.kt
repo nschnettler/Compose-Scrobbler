@@ -3,6 +3,8 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dropbox.android.external.store4.ResponseOrigin
+import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
@@ -14,6 +16,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -31,7 +34,7 @@ class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : Vi
                 when (listing) {
                     is Artist -> repo.getArtistInfo(listing.id)
                     is Track -> repo.getTrackInfo(listing)
-                    else -> TODO()
+                    else -> flowOf(StoreResponse.Error.Message("Not implemented yet", ResponseOrigin.Cache))
                 }
             }.collect {response ->
                 entryState.update2(response)
