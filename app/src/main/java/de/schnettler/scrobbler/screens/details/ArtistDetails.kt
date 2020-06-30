@@ -65,8 +65,9 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
             content = artist.topAlbums.sortedByDescending { it.plays },
             width = 136.dp,
             height = 136.dp,
-            playsStyle = PlaysStyle.PUBLIC_PLAYS
-        ) { Timber.d("Selected $it") }
+            playsStyle = PlaysStyle.PUBLIC_PLAYS,
+            onEntrySelected = onListingSelected
+        )
 
         ListingScroller(
             title = "Ähnliche Künstler",
