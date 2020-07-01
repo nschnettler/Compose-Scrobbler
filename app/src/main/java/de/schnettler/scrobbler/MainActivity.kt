@@ -151,4 +151,3 @@ class MainActivity : AppCompatActivity() {
 
 const val AUTH_ENDPOINT = "https://www.last.fm/api/auth/"
 const val REDIRECT_URL = "de.schnettler.scrobble://auth"
-const val API_KEY = "***REPLACE_WITH_LASTFM_API_KEY***"
