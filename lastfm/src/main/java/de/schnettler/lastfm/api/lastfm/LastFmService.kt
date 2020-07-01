@@ -1,6 +1,7 @@
 package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
+import de.schnettler.common.BuildConfig
 import de.schnettler.common.TimePeriod
 import de.schnettler.lastfm.models.*
 import retrofit2.http.GET
@@ -9,8 +10,8 @@ import retrofit2.http.Query
 interface LastFmService {
     companion object {
         const val ENDPOINT = "https://ws.audioscrobbler.com/2.0/"
-        const val API_KEY = "***REPLACE_WITH_LASTFM_API_KEY***"
-        const val SECRET = "***REPLACE_WITH_LASTFM_SECRET***"
+        const val API_KEY = BuildConfig.LASTFM_API_KEY
+        const val SECRET = BuildConfig.LASTFM_SECRET
 
         const val METHOD_AUTH_SESSION = "auth.getSession"
         const val METHOD_USER_INFO = "user.getinfo"

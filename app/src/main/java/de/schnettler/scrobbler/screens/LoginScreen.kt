@@ -10,6 +10,7 @@ import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.material.Button
+import de.schnettler.common.BuildConfig
 import de.schnettler.scrobbler.*
 import timber.log.Timber
 
@@ -21,7 +22,7 @@ fun LoginScreen(context: Context) {
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
             customTabsIntent.launchUrl(
-               context, Uri.parse("$AUTH_ENDPOINT?api_key=$API_KEY&cb=$REDIRECT_URL").also { Timber.i(it.toString()) }
+               context, Uri.parse("$AUTH_ENDPOINT?api_key=${BuildConfig.LASTFM_API_KEY}&cb=$REDIRECT_URL").also { Timber.i(it.toString()) }
             )
          })
    }
