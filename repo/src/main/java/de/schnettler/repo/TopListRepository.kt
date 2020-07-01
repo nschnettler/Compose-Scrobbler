@@ -107,7 +107,7 @@ class TopListRepository @Inject constructor(
                 ).searchArtist(listing.name).maxBy { item ->
                     item.popularity
                 }?.images?.first()?.url
-                is Track -> ""
+                is Track -> null
                 else -> TODO()
             }
             println("ImageUrl $url")
