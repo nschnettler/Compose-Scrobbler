@@ -87,3 +87,4 @@ lint/tmp/
 .idea/
 
 gradle-local.properties
+debug.keystore
