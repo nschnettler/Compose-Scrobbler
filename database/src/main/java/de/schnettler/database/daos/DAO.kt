@@ -147,6 +147,19 @@ abstract class AlbumDao: BaseRelationsDao<Album> {
 
     @Query("UPDATE albums SET imageUrl = :url WHERE id = :albumId and artist = :artistId")
     abstract fun updateImageUrl(url: String, albumId: String, artistId: String)
+
+    @Query("UPDATE albums SET plays = :plays WHERE id = :albumId and artist = :artistId")
+    abstract fun updatePlays(plays: Long, albumId: String, artistId: String)
+
+    fun insertOrUpdateStats(albums: List<Album>) {
+        val result = insertAll(albums)
+        result.forEachIndexed { index, value ->
+            if (value == -1L) {
+                val album = albums[index]
+                updatePlays(album.plays, album.id, album.artist!!)
+            }
+        }
+    }
 }
 
 @Dao
@@ -156,6 +169,19 @@ abstract class TrackDao: BaseRelationsDao<Track> {
 
     @Query("SELECT imageUrl FROM tracks WHERE id = :id")
     abstract fun getTrackImageUrl(id: String): String?
+
+    @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
+    abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)
+
+    fun insertOrUpdateStats(tracks: List<Track>) {
+        val result = insertAll(tracks)
+        result.forEachIndexed { index, value ->
+            if (value == -1L) {
+                val track = tracks[index]
+                updateStats(track.plays, track.listeners, track.id, track.artist)
+            }
+        }
+    }
 }
 
 @Dao

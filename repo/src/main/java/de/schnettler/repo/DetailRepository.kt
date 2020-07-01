@@ -10,7 +10,6 @@ import de.schnettler.database.daos.RelationshipDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.models.*
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.lastfm.api.RetrofitService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
@@ -76,15 +75,11 @@ class DetailRepository @Inject constructor(
                 }
                 artistDao.forceInsert(artist)
                 //Tracks
-                trackDao.insertEntriesWithRelations(
-                    artist.topTracks,
-                    RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) })
-                )
+                trackDao.insertOrUpdateStats(artist.topTracks)
+                trackDao.insertRelations(RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) }))
                 //Albums
-                albumDao.insertEntriesWithRelations(
-                    artist.topAlbums,
-                    RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) })
-                )
+                albumDao.insertOrUpdateStats(artist.topAlbums)
+                albumDao.insertRelations(RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) }))
                 //Artist
                 artistDao.insertEntriesWithRelations(
                     artist.similarArtists,
