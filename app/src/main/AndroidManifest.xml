@@ -28,6 +28,15 @@
                 <data android:host="auth" android:scheme="de.schnettler.scrobble" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".service.MediaListenerService"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
