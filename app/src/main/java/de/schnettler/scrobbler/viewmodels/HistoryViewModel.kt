@@ -1,13 +1,27 @@
 package de.schnettler.scrobbler.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.database.models.Track
 import de.schnettler.repo.UserRepository
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class HistoryViewModel @ViewModelInject constructor(repo: UserRepository) : ViewModel() {
-    val recentTracks by lazy {
-        repo.getUserRecentTrack().asLiveData(viewModelScope.coroutineContext)
+class HistoryViewModel @ViewModelInject constructor(private val repo: UserRepository) : ViewModel() {
+    val recentTracks = MutableLiveData<List<Track>>()
+    val isRefreshing = MutableLiveData<Boolean>()
+
+    fun refreshHistory() {
+        Timber.d("Refreshing History")
+        viewModelScope.launch {
+            isRefreshing.value = true
+            recentTracks.value = repo.getUserRecentTrack()
+            isRefreshing.value = false
+        }
+    }
+
+    init {
+        refreshHistory()
     }
 }

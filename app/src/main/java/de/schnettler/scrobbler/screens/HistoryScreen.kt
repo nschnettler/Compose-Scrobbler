@@ -14,14 +14,12 @@ import timber.log.Timber
 @Composable
 fun HistoryScreen(model: HistoryViewModel, onListingSelected: (ListingMin) -> Unit) {
    val recentsResponse by model.recentTracks.observeAsState()
+   val refreshing by model.isRefreshing.observeAsState()
 
-   when(recentsResponse) {
-      is StoreResponse.Data -> {
-         GenericAdapterList(data = (recentsResponse as StoreResponse.Data<List<Track>>).value, onListingSelected = onListingSelected)
+   when(refreshing) {
+      true -> LiveDataLoadingComponent()
+      false -> recentsResponse?.let {
+         GenericAdapterList(data = it, onListingSelected = onListingSelected)
       }
-      is StoreResponse.Error ->  {
-         Timber.d("Error ${(recentsResponse as StoreResponse.Error<List<Track>>).errorMessageOrNull()}")
-      }
-      is StoreResponse.Loading -> LiveDataLoadingComponent()
    }
 }
