@@ -40,3 +40,14 @@ data class TrackDomain(
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null
 ): ListingMin
+
+@Entity(tableName = "localTracks")
+data class LocalTrack(
+        @PrimaryKey(autoGenerate = true)  var id: Long? = null,
+        val title: String,
+        val artist: String,
+        val album: String,
+        val duration: Long
+) {
+    fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
+}

@@ -5,11 +5,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.components.ServiceComponent
 import de.schnettler.database.AppDatabase
 import de.schnettler.lastfm.api.*
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.spotify.SpotifyAuthService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import javax.inject.Singleton
+import kotlin.coroutines.CoroutineContext
 
 @Module
 @InstallIn(ApplicationComponent::class)
@@ -31,6 +36,12 @@ class NetworkModule {
         SpotifyAuthService::class.java
     )
 }
+
+//@Module
+//@InstallIn(ServiceComponent::class)
+//class ServiceModule {
+//
+//}
 
 @Module
 @InstallIn(ApplicationComponent::class)
@@ -67,4 +78,21 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideRelationDao(database: AppDatabase) = database.relationshipDao()
+
+    @Provides
+    @Singleton
+    fun provideLocalTrackDao(database: AppDatabase) = database.localTrackDao()
+
+    @Provides
+    @Singleton
+    fun provideServiceScope() = ServiceCoroutineScope(Job() + Dispatchers.IO)
 }
+
+interface ServiceCoroutineScope : CoroutineScope
+
+fun ServiceCoroutineScope(
+        context: CoroutineContext
+): ServiceCoroutineScope = object : ServiceCoroutineScope {
+    override val coroutineContext = context + Dispatchers.IO
+}
+

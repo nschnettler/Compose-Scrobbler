@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val historyViewModel: HistoryViewModel by viewModels()
+    private val localViewModel: LocalViewModel by viewModels()
 
     private val onOpenInBrowser: (ListingMin) -> Unit = {
         onOpenInBrowserClicked(it, this)
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                         is SessionState.LoggedIn -> HistoryScreen(historyViewModel, onListingSelected = onListingClicked)
                     }
                 }
-                is AppRoute.LocalRoute -> LocalScreen()
+                is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel)
                 is AppRoute.ProfileRoute -> {
                     when(sessionStatus) {
                         is SessionState.LoggedOut -> LoginScreen(context = this)

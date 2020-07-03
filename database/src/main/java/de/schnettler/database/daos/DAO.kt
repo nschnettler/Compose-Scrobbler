@@ -15,7 +15,7 @@ interface BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(obj: T): Long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun forceInsert(obj: T)
+    suspend fun forceInsert(obj: T)
 
     /**
      * Insert an array of objects in the database.
@@ -23,9 +23,9 @@ interface BaseDao<T> {
      * @param obj the objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(obj: List<T>): List<Long>
+    suspend fun insertAll(obj: List<T>): List<Long>
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun forceInsertAll(obj: List<T>): List<Long>
+    suspend fun forceInsertAll(obj: List<T>): List<Long>
 
     /**
      * Update an object from the database.
@@ -48,7 +48,7 @@ interface BaseDao<T> {
 
 
     @Transaction
-    fun upsert(obj: T) {
+    suspend fun upsert(obj: T) {
         val id: Long = insert(obj)
         if (id == -1L) {
             //Get old value
@@ -57,7 +57,7 @@ interface BaseDao<T> {
     }
 
    @Transaction
-   fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
+    suspend fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
        val insertResult: List<Long> = insertAll(objList)
        val updateList = objList.filterIndexed { index, value ->  insertResult[index] == -1L}
        if (updateList.isNotEmpty()) {
@@ -151,7 +151,7 @@ abstract class AlbumDao: BaseRelationsDao<Album> {
     @Query("UPDATE albums SET plays = :plays WHERE id = :albumId and artist = :artistId")
     abstract fun updatePlays(plays: Long, albumId: String, artistId: String)
 
-    fun insertOrUpdateStats(albums: List<Album>) {
+    suspend fun insertOrUpdateStats(albums: List<Album>) {
         val result = insertAll(albums)
         result.forEachIndexed { index, value ->
             if (value == -1L) {
@@ -173,7 +173,7 @@ abstract class TrackDao: BaseRelationsDao<Track> {
     @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
     abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)
 
-    fun insertOrUpdateStats(tracks: List<Track>) {
+    suspend fun insertOrUpdateStats(tracks: List<Track>) {
         val result = insertAll(tracks)
         result.forEachIndexed { index, value ->
             if (value == -1L) {
@@ -209,4 +209,13 @@ abstract class UserDao: BaseDao<User> {
 
     @Query("UPDATE users SET lovedTracksCount = :count WHERE name = :userName")
     abstract suspend fun updateLovedTracksCount(userName: String, count: Long)
+}
+
+@Dao
+abstract class LocalTrackDao:BaseDao<LocalTrack> {
+    @Query("SELECT * FROM localTracks ORDER BY `id` DESC")
+    abstract fun getLocalTracks(): Flow<List<LocalTrack>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertTrack(track: LocalTrack): Long
 }

@@ -8,6 +8,8 @@ import android.media.session.MediaSessionManager
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.AndroidEntryPoint
+import de.schnettler.repo.ServiceCoroutineScope
+import kotlinx.coroutines.cancel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,14 +18,16 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
     private var controllers: List<MediaController>? = null
     private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> = hashMapOf()
     @Inject lateinit var tracker: PlayBackTracker
+    @Inject lateinit var scope: ServiceCoroutineScope
 
-    private val allowedControllers = listOf<String>("com.google.android.apps.youtube.music")
+    private val allowedControllers = listOf("com.google.android.apps.youtube.music")
 
     companion object {
         fun isEnabled(context: Context) = NotificationManagerCompat
                 .getEnabledListenerPackages(context)
                 .contains(context.packageName)
     }
+
     override fun onCreate() {
         super.onCreate()
         val manager: MediaSessionManager = application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
@@ -31,6 +35,11 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
         manager.addOnActiveSessionsChangedListener(this, componentName)
         Timber.i("Media Listener started")
         onActiveSessionsChanged(manager.getActiveSessions(componentName))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
     }
 
     override fun onActiveSessionsChanged(activeControllers: MutableList<MediaController>?) {
