@@ -50,4 +50,5 @@ data class LocalTrack(
         val duration: Long
 ) {
     fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
+    fun canBeScrobbled() = duration > 30000
 }

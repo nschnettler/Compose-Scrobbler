@@ -1,15 +1,15 @@
 package de.schnettler.scrobbler.service
 
+import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
 import timber.log.Timber
 
-class PlaybackState(private val player: String, private val scrobbler: Scrobbler) {
+class PlaybackController(private val controller: MediaController, private val scrobbler: Scrobbler) {
     var playbackItem: PlaybackItem? = null
 
     fun updateTrack(track: LocalTrack) {
         val now = System.currentTimeMillis()
-        val wasPlaying = playbackItem?.playing ?: false
 
         when(track.isTheSameAs(playbackItem?.track)) {
             // Track is the same (title and artist match)
@@ -24,14 +24,12 @@ class PlaybackState(private val player: String, private val scrobbler: Scrobbler
                 // 1. Save old Track
                 playbackItem?.let {playbackItem ->
                     playbackItem.stopPlaying()
-                    if (playbackItem.playedEnough()) {
-                        Timber.d("[Save] $playbackItem, ${playbackItem.playPercentage()} %")
-                        scrobbler.saveTrack(playbackItem.track)
-                    }
+                    Timber.d("[Submit] $playbackItem, ${playbackItem.playPercentage()} %")
+                    scrobbler.submitPlaybackItem(playbackItem)
                 }
                 // 2. Track the new Track
                 playbackItem = PlaybackItem(track = track)
-                if (wasPlaying) playbackItem?.startPlaying(now)
+                if (controller.playbackState?.state == PlaybackState.STATE_PLAYING) playbackItem?.startPlaying(now)
                 Timber.d("[New] $playbackItem")
             }
         }
@@ -47,7 +45,7 @@ class PlaybackState(private val player: String, private val scrobbler: Scrobbler
             Timber.d("[Play] $playbackItem")
         } else {
             playbackItem?.stopPlaying()
-            Timber.d("Pause] $playbackItem, ${playbackItem?.playPercentage()} %")
+            Timber.d("[Pause] $playbackItem, ${playbackItem?.playPercentage()} %")
         }
     }
 }

@@ -14,7 +14,7 @@ data class PlaybackItem(
     fun playedEnough() = amountPlayed >= (track.duration / 2)
 
     fun stopPlaying() {
-        //TODO: Update amount played
+        updateAmountPlayed()
         playing = false
     }
 

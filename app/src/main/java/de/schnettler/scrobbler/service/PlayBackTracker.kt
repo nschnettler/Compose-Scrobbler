@@ -7,13 +7,13 @@ import de.schnettler.database.models.LocalTrack
 import javax.inject.Inject
 
 class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
-    private val playerStates = hashMapOf<String, de.schnettler.scrobbler.service.PlaybackState>()
+    private val playerStates = hashMapOf<MediaController, PlaybackController>()
 
-    private fun getPlayerState(player: String) =
-            playerStates[player] ?: PlaybackState(player, scrobbler).also { playerStates[player] = it }
+    private fun getPlaybackController(controller: MediaController) =
+            playerStates[controller] ?: PlaybackController(controller, scrobbler).also { playerStates[controller] = it }
 
     fun onMetadataChanged(controller: MediaController, metadata: MediaMetadata) {
-        getPlayerState(controller.packageName).updateTrack(track = LocalTrack(
+        getPlaybackController(controller).updateTrack(track = LocalTrack(
                 title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE).toString(),
                 artist = (metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
                         .METADATA_KEY_ALBUM_ARTIST)).toString(),
@@ -23,6 +23,6 @@ class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
     }
 
     fun onStateChanged(controller: MediaController, state: PlaybackState) {
-        getPlayerState(controller.packageName).updatePlayBackState(state)
+        getPlaybackController(controller).updatePlayBackState(state)
     }
 }
