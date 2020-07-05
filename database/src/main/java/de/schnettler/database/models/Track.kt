@@ -49,8 +49,20 @@ data class LocalTrack(
         val title: String,
         val artist: String,
         val album: String,
+        val duration: Long,
+
+        val startTime: Long,
+        val endTime: Long,
+        val amountPlayed: Long,
+        val playedBy: String
+)
+
+data class ScrobbleTrack(
+        val title: String,
+        val artist: String,
+        var album: String,
         val duration: Long
-) {
-    fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
+){
+    fun isTheSameAs(other: ScrobbleTrack?) = title == other?.title && artist == other.artist
     fun canBeScrobbled() = duration > 30000
 }

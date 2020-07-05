@@ -3,19 +3,18 @@ package de.schnettler.scrobbler.service
 import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.ScrobbleTrack
 import timber.log.Timber
 
 class PlaybackController(private val controller: MediaController, private val scrobbler: Scrobbler) {
     var playbackItem: PlaybackItem? = null
 
-    fun updateTrack(track: LocalTrack) {
-        val now = System.currentTimeMillis()
-
+    fun updateTrack(track: ScrobbleTrack) {
         when(track.isTheSameAs(playbackItem?.track)) {
             // Track is the same (title and artist match)
             true -> {
                 // Update Metadata
-                playbackItem?.track = playbackItem?.track?.copy(album = track.album) ?: track
+                playbackItem?.track?.apply { album = track.album }
                 Timber.d("[Update] $playbackItem")
             }
 
@@ -27,8 +26,8 @@ class PlaybackController(private val controller: MediaController, private val sc
                     scrobbler.submitPlaybackItem(playbackItem)
                 }
                 // 2. Track the new Track
-                playbackItem = PlaybackItem(track = track)
-                if (controller.playbackState?.state == PlaybackState.STATE_PLAYING) playbackItem?.startPlaying(now)
+                playbackItem = PlaybackItem(track = track, playedBy = controller.packageName)
+                if (controller.playbackState?.state == PlaybackState.STATE_PLAYING) playbackItem?.startPlaying()
                 Timber.d("[New] $playbackItem")
             }
         }

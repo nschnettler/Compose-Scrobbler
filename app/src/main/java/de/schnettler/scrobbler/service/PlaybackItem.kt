@@ -1,13 +1,15 @@
 package de.schnettler.scrobbler.service
 
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.ScrobbleTrack
 import kotlin.math.roundToLong
 
 data class PlaybackItem(
-        var track: LocalTrack,
+        val track: ScrobbleTrack,
         var playing: Boolean = false,
         var amountPlayed: Long = 0,
-        var playBackStartTime: Long = 0
+        var trackingStartTime: Long = 0,
+        var timestamp: Long = 0,
+        val playedBy: String
 ) {
     fun playPercentage() = (amountPlayed.toDouble() / track.duration * 100).roundToLong()
 
@@ -18,9 +20,12 @@ data class PlaybackItem(
         playing = false
     }
 
-    fun startPlaying(startTime: Long? = null) {
+    fun startPlaying() {
         if (!playing) {
-            playBackStartTime = startTime ?: System.currentTimeMillis()
+            trackingStartTime = System.currentTimeMillis()
+        }
+        if (timestamp == 0L) {
+            timestamp = System.currentTimeMillis()
         }
         playing = true
     }
@@ -29,9 +34,9 @@ data class PlaybackItem(
         if (!playing) return
 
         val now = System.currentTimeMillis()
-        val start = playBackStartTime
+        val start = trackingStartTime
         amountPlayed += now - start
-        playBackStartTime = now
+        trackingStartTime = now
     }
 
     fun resetAmountPlayed() {

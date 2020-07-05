@@ -3,7 +3,7 @@ package de.schnettler.scrobbler.service
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.ScrobbleTrack
 import javax.inject.Inject
 
 class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
@@ -13,7 +13,7 @@ class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
             playerStates[controller] ?: PlaybackController(controller, scrobbler).also { playerStates[controller] = it }
 
     fun onMetadataChanged(controller: MediaController, metadata: MediaMetadata) {
-        getPlaybackController(controller).updateTrack(track = LocalTrack(
+        getPlaybackController(controller).updateTrack(track = ScrobbleTrack(
                 title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE).toString(),
                 artist = (metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
                         .METADATA_KEY_ALBUM_ARTIST)).toString(),
