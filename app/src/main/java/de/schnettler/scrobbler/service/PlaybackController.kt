@@ -24,7 +24,6 @@ class PlaybackController(private val controller: MediaController, private val sc
                 // 1. Save old Track
                 playbackItem?.let {playbackItem ->
                     playbackItem.stopPlaying()
-                    Timber.d("[Submit] $playbackItem, ${playbackItem.playPercentage()} %")
                     scrobbler.submitPlaybackItem(playbackItem)
                 }
                 // 2. Track the new Track
@@ -46,6 +45,14 @@ class PlaybackController(private val controller: MediaController, private val sc
         } else {
             playbackItem?.stopPlaying()
             Timber.d("[Pause] $playbackItem, ${playbackItem?.playPercentage()} %")
+            playbackItem?.let {
+                //Try to submit track prematurely. If submission is successful (more than 50% played) reset
+                // amountPlayed. This makes sure that a track isn't submitted twice (amountPlayed will be < 50% when
+                // trying to submit again)
+                if (scrobbler.submitPlaybackItem(it)) {
+                    it.resetAmountPlayed()
+                }
+            }
         }
     }
 }

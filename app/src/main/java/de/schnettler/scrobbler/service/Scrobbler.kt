@@ -15,10 +15,14 @@ class Scrobbler @Inject constructor(val dao: LocalTrackDao, val scope: ServiceCo
         }
     }
 
-    fun submitPlaybackItem(playbackItem: PlaybackItem) {
-        if (playbackItem.track.canBeScrobbled() && playbackItem.playedEnough()) {
+    fun submitPlaybackItem(playbackItem: PlaybackItem): Boolean {
+        Timber.d("[Submit] $playbackItem, ${playbackItem.playPercentage()} %")
+        return if (playbackItem.track.canBeScrobbled() && playbackItem.playedEnough()) {
             saveTrack(playbackItem.track)
             Timber.d("[Save] $playbackItem, ${playbackItem.playPercentage()} %")
+            true
+        } else {
+            false
         }
     }
 }

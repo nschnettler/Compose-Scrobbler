@@ -33,4 +33,8 @@ data class PlaybackItem(
         amountPlayed += now - start
         playBackStartTime = now
     }
+
+    fun resetAmountPlayed() {
+        amountPlayed = 0
+    }
 }
