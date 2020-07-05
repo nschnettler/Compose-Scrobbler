@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.components
 
+import android.text.format.DateUtils
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -8,7 +9,6 @@ import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Color
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
@@ -18,9 +18,12 @@ import androidx.ui.material.Divider
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
+import androidx.ui.text.style.TextOverflow
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.TimestampedTrack
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.screens.formatter
@@ -48,16 +51,30 @@ fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -
                 subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${ formatter.format(item.plays)} Plays",
                 onListingSelected = onListingSelected
             )
+            is TimestampedTrack -> HistoryItem(
+                    listing = item,
+                    subTitle = "${item.artist} ⦁ ${item.album}",
+                    trailingText = test(item.timestamp).toString(),
+                    onListingSelected = onListingSelected
+            )
         }
         Divider(color = colorResource(id = R.color.colorStroke))
     }
 }
 
+fun test(time: Long) =DateUtils.getRelativeTimeSpanString(time * 1000, System.currentTimeMillis(), DateUtils
+        .MINUTE_IN_MILLIS)
+
 @Composable
-fun HistoryItem(listing: ListingMin, subTitle: String, onListingSelected: (ListingMin) -> Unit) {
+fun HistoryItem(
+        listing: ListingMin,
+        subTitle: String,
+        onListingSelected: (ListingMin) -> Unit,
+        trailingText: String
+= "") {
     ListItem(
-        text = { Text(text = listing.name) },
-        secondaryText = { Text(text = subTitle) },
+        text = { Text(text = listing.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        secondaryText = { Text(text = subTitle, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         icon = {
             Surface(
                 color = colorResource(id = R.color.colorBackgroundElevated),
@@ -68,6 +85,19 @@ fun HistoryItem(listing: ListingMin, subTitle: String, onListingSelected: (Listi
                 }
             }
         },
-        onClick = { onListingSelected.invoke(listing) }
+        onClick = { onListingSelected.invoke(listing) },
+        trailing = { Text(text = trailingText) }
     )
+}
+
+
+@Preview
+@Composable
+fun testPreview() {
+    //ThemedPreview() {
+    HistoryItem(listing = Track(name = "test", url="", artist = ""), subTitle =
+    "sfhsjvbjdsabvujoeadbouvboujebaouvboua", onListingSelected = {},
+            trailingText = "Vor 5 Minuten")
+
+    //}
 }

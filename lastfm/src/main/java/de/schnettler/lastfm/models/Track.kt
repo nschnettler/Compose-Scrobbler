@@ -16,8 +16,13 @@ data class RecentTracksDto(
     override val mbid: String?,
     override val url: String,
     val artist: TrackRelationDto,
-    val album: TrackRelationDto
+    val album: TrackRelationDto,
+    val date: TrackDateDto?
 ): ListingDto
+
+data class TrackDateDto(
+        val uts: Long
+)
 
 data class ArtistTracksDto(
     override val name: String,

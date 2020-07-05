@@ -52,3 +52,16 @@ data class LocalTrack(
     fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
     fun canBeScrobbled() = duration > 30000
 }
+
+data class TimestampedTrack(
+        override val name: String,
+        override val id: String = name.toLowerCase(),
+        override val url: String,
+        val artist: String,
+        val album: String,
+        val timestamp: Long,
+        override val listeners: Long = 0,
+        override val plays: Long = 0,
+        override val userPlays: Long = 0,
+        override var imageUrl: String? = null
+): ListingMin

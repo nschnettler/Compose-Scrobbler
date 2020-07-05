@@ -1,5 +1,6 @@
 package de.schnettler.repo.mapping
 
+import de.schnettler.database.models.TimestampedTrack
 import de.schnettler.database.models.Track
 import de.schnettler.lastfm.models.ArtistTracksDto
 import de.schnettler.lastfm.models.RecentTracksDto
@@ -23,11 +24,12 @@ fun ArtistTracksDto.map() = Track(
     artist = this.artist.name
 )
 
-fun RecentTracksDto.map() = Track(
+fun RecentTracksDto.map() = TimestampedTrack(
     name = this.name,
     url = this.url,
     artist = this.artist.name,
-    album = this.album.name
+    album = this.album.name,
+    timestamp = this.date?.uts ?: 0
 )
 
 fun TrackInfoDto.map() = Track(
