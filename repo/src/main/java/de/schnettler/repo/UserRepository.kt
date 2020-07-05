@@ -49,11 +49,11 @@ class UserRepository @Inject constructor(
         ).build().stream(StoreRequest.cached("", true))
     }
 
-    val historyStore = StoreBuilder.from<String, List<TimestampedTrack>>(
+    val historyStore = StoreBuilder.from<String, List<Track>>(
             fetcher = nonFlowValueFetcher {
                 service.getUserRecentTrack(authProvider.session!!.key).map { it.map() }
             }
     ).build()
 
-    suspend fun getUserRecentTrack():List<TimestampedTrack> = historyStore.fresh("")
+    suspend fun getUserRecentTrack():List<Track> = historyStore.fresh("")
 }

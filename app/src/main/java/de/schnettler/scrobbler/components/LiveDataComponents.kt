@@ -23,7 +23,6 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
-import de.schnettler.database.models.TimestampedTrack
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.screens.formatter
@@ -45,33 +44,30 @@ fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -
             is Track -> HistoryItem(
                 listing = item,
                 subTitle = "${item.artist} ⦁ ${item.album}",
+                trailingText = secondsToRelativeTime(item.timestamp),
                 onListingSelected = onListingSelected
             )
             is Artist -> HistoryItem(listing = item,
                 subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${ formatter.format(item.plays)} Plays",
                 onListingSelected = onListingSelected
             )
-            is TimestampedTrack -> HistoryItem(
-                    listing = item,
-                    subTitle = "${item.artist} ⦁ ${item.album}",
-                    trailingText = test(item.timestamp).toString(),
-                    onListingSelected = onListingSelected
-            )
         }
         Divider(color = colorResource(id = R.color.colorStroke))
     }
 }
 
-fun test(time: Long) =DateUtils.getRelativeTimeSpanString(time * 1000, System.currentTimeMillis(), DateUtils
-        .MINUTE_IN_MILLIS)
+fun secondsToRelativeTime(time: Long) =
+        if (time > 0) {
+            DateUtils.getRelativeTimeSpanString(time * 1000, System.currentTimeMillis(), DateUtils
+                    .MINUTE_IN_MILLIS).toString()
+        } else null
 
 @Composable
 fun HistoryItem(
         listing: ListingMin,
         subTitle: String,
         onListingSelected: (ListingMin) -> Unit,
-        trailingText: String
-= "") {
+        trailingText: String? = null) {
     ListItem(
         text = { Text(text = listing.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = { Text(text = subTitle, maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -86,7 +82,7 @@ fun HistoryItem(
             }
         },
         onClick = { onListingSelected.invoke(listing) },
-        trailing = { Text(text = trailingText) }
+        trailing = { trailingText?.let { Text(text = it)} }
     )
 }
 
