@@ -22,7 +22,9 @@ data class RecentTracksDto(
 
 data class TrackDateDto(
         val uts: Long
-)
+) {
+    fun asMs() = uts * 1000
+}
 
 data class ArtistTracksDto(
     override val name: String,

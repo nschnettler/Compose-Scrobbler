@@ -29,7 +29,7 @@ fun RecentTracksDto.map() = Track(
     artist = this.artist.name,
     album = this.album.name
 ).apply {
-    timestamp = this@map.date?.uts ?: 0
+    timestamp = this@map.date?.asMs() ?: 0
 }
 
 fun TrackInfoDto.map() = Track(

@@ -58,8 +58,8 @@ fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -
 
 fun secondsToRelativeTime(time: Long) =
         if (time > 0) {
-            DateUtils.getRelativeTimeSpanString(time * 1000, System.currentTimeMillis(), DateUtils
-                    .MINUTE_IN_MILLIS).toString()
+            DateUtils.getRelativeTimeSpanString(time, System.currentTimeMillis(), DateUtils
+                    .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
         } else null
 
 @Composable
