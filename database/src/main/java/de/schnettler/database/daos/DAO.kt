@@ -213,9 +213,21 @@ abstract class UserDao: BaseDao<User> {
 
 @Dao
 abstract class LocalTrackDao:BaseDao<LocalTrack> {
-    @Query("SELECT * FROM localTracks ORDER BY `id` DESC")
+    @Query("SELECT * FROM localTracks ORDER BY startTime DESC")
     abstract fun getLocalTracks(): Flow<List<LocalTrack>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertTrack(track: LocalTrack): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertOrUpdatTrack(track: LocalTrack): Long
+
+    @Query("UPDATE localTracks SET status = :status WHERE startTime = :startTime AND playedBy = :packageName")
+    abstract suspend fun updateTrackStatus(startTime: Long, packageName: String, status: ScrobbleStatus)
+
+    @Query("SELECT * FROM localTracks ORDER BY startTime DESC LIMIT 1")
+    abstract fun getCurrentTrack(): Flow<LocalTrack>
+
+    @Query("UPDATE localTracks SET album = :album WHERE startTime = :startTime AND playedBy = :packageName")
+    abstract suspend fun updateAlbum(album: String, startTime: Long, packageName: String)
 }

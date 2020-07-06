@@ -18,6 +18,7 @@ data class Track(
     override var imageUrl: String? = null
 ): ListingMin {
     @Ignore var timestamp: Long = 0
+    @Ignore var scrobbleStatus: ScrobbleStatus = ScrobbleStatus.VOLATILE
 }
 
 data class TrackWithAlbum(
@@ -43,26 +44,48 @@ data class TrackDomain(
     override var imageUrl: String? = null
 ): ListingMin
 
-@Entity(tableName = "localTracks")
+@Entity(tableName = "localTracks", primaryKeys = ["startTime", "playedBy"])
 data class LocalTrack(
-        @PrimaryKey(autoGenerate = true)  var id: Long? = null,
         val title: String,
         val artist: String,
         val album: String,
         val duration: Long,
 
-        val startTime: Long,
-        val endTime: Long,
-        val amountPlayed: Long,
-        val playedBy: String
-)
+        val startTime: Long = System.currentTimeMillis(),
+        val endTime: Long = System.currentTimeMillis(),
+        var amountPlayed: Long = 0,
+        val playedBy: String,
+        var status: ScrobbleStatus = ScrobbleStatus.VOLATILE
+) {
+    @Ignore var trackingStart: Long = startTime
+    fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
+    private fun canBeScrobbled() = duration > 30000
+    private fun playedEnough() = amountPlayed >= (duration / 2)
+    fun readyToScrobble() = canBeScrobbled() && playedEnough()
+    private fun isPlaying() = status == ScrobbleStatus.PLAYING
 
-data class ScrobbleTrack(
-        val title: String,
-        val artist: String,
-        var album: String,
-        val duration: Long
-){
-    fun isTheSameAs(other: ScrobbleTrack?) = title == other?.title && artist == other.artist
-    fun canBeScrobbled() = duration > 30000
+    fun pause() {
+        updateAmountPlayed()
+        status = ScrobbleStatus.PAUSED
+    }
+
+    private fun updateAmountPlayed() {
+        if (!isPlaying()) return
+        val now = System.currentTimeMillis()
+        amountPlayed =  now - trackingStart
+        trackingStart = now
+    }
+
+    fun play() {
+        if (!isPlaying()) trackingStart = System.currentTimeMillis()
+        status = ScrobbleStatus.PLAYING
+    }
+}
+
+enum class ScrobbleStatus {
+    LOCAL,
+    PLAYING,
+    PAUSED,
+    SCROBBLED,
+    VOLATILE
 }

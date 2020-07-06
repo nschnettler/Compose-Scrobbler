@@ -3,55 +3,69 @@ package de.schnettler.scrobbler.service
 import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.ScrobbleTrack
+import de.schnettler.database.models.ScrobbleStatus
 import timber.log.Timber
 
 class PlaybackController(private val controller: MediaController, private val scrobbler: Scrobbler) {
-    var playbackItem: PlaybackItem? = null
 
-    fun updateTrack(track: ScrobbleTrack) {
-        when(track.isTheSameAs(playbackItem?.track)) {
+    var lastPlaybackState: Int? = null
+
+    fun saveOldTrack(track: LocalTrack) {
+        if (track.readyToScrobble()) {
+            scrobbler.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+        } else {
+            scrobbler.removeTrack(track)
+        }
+    }
+
+    fun insertNowPlaying(track: LocalTrack) {
+        scrobbler.saveTrack(track)
+    }
+
+    fun updateTrack(track: LocalTrack) {
+        val currentTrack = scrobbler.currentTrack
+        when(track.isTheSameAs(scrobbler.currentTrack)) {
             // Track is the same (title and artist match)
             true -> {
                 // Update Metadata
-                playbackItem?.track?.apply { album = track.album }
-                Timber.d("[Update] $playbackItem")
+                scrobbler.updateTrackAlbum(currentTrack, track.album)
+                Timber.d("[Update] $currentTrack")
             }
 
             // Track changed
             false -> {
-                // 1. Save old Track
-                playbackItem?.let {playbackItem ->
-                    playbackItem.stopPlaying()
-                    scrobbler.submitPlaybackItem(playbackItem)
+                // Save old Track
+                currentTrack?.let {
+                    it.pause()
+                    saveOldTrack(it)
+                    Timber.d("[Save] $currentTrack")
                 }
-                // 2. Track the new Track
-                playbackItem = PlaybackItem(track = track, playedBy = controller.packageName)
-                if (controller.playbackState?.state == PlaybackState.STATE_PLAYING) playbackItem?.startPlaying()
-                Timber.d("[New] $playbackItem")
+                //Start new Track
+                if (controller.isPlaying()) {
+                    track.play()
+                }
+                insertNowPlaying(track)
+                Timber.d("[New] $currentTrack")
             }
         }
     }
 
-    fun updatePlayBackState(playbackState: PlaybackState?) {
-        if (playbackItem == null) return
+    fun updatePlayBackState(playbackState: PlaybackState) {
+        val currentTrack = scrobbler.currentTrack ?: return
+        if (playbackState.state == lastPlaybackState) return
+        lastPlaybackState = playbackState.state
 
-        playbackItem?.updateAmountPlayed()
-
-        if (playbackState?.state == PlaybackState.STATE_PLAYING) {
-            playbackItem?.startPlaying()
-            Timber.d("[Play] $playbackItem")
+        if (playbackState.isPlaying()) {
+            currentTrack.play()
+            Timber.d("[Play] $currentTrack")
         } else {
-            playbackItem?.stopPlaying()
-            Timber.d("[Pause] $playbackItem, ${playbackItem?.playPercentage()} %")
-            playbackItem?.let {
-                //Try to submit track prematurely. If submission is successful (more than 50% played) reset
-                // amountPlayed. This makes sure that a track isn't submitted twice (amountPlayed will be < 50% when
-                // trying to submit again)
-                if (scrobbler.submitPlaybackItem(it)) {
-                    it.resetAmountPlayed()
-                }
-            }
+            currentTrack.pause()
+            Timber.d("[Pause] $currentTrack")
         }
+
+        scrobbler.saveTrack(currentTrack)
     }
 }
+
+fun MediaController.isPlaying() = playbackState?.isPlaying() ?: false
+fun PlaybackState.isPlaying() = state == PlaybackState.STATE_PLAYING

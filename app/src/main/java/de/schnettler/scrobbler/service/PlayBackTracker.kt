@@ -3,7 +3,7 @@ package de.schnettler.scrobbler.service
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
-import de.schnettler.database.models.ScrobbleTrack
+import de.schnettler.database.models.LocalTrack
 import javax.inject.Inject
 
 class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
@@ -13,13 +13,19 @@ class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
             playerStates[controller] ?: PlaybackController(controller, scrobbler).also { playerStates[controller] = it }
 
     fun onMetadataChanged(controller: MediaController, metadata: MediaMetadata) {
-        getPlaybackController(controller).updateTrack(track = ScrobbleTrack(
-                title = metadata.getText(MediaMetadata.METADATA_KEY_TITLE).toString(),
-                artist = (metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
-                        .METADATA_KEY_ALBUM_ARTIST)).toString(),
-                album = metadata.getText(MediaMetadata.METADATA_KEY_ALBUM).toString(),
-                duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION))
+        val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()
+        val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
+                .METADATA_KEY_ALBUM_ARTIST)) ?: "").toString()
+        val album = (metadata.getText(MediaMetadata.METADATA_KEY_ALBUM) ?: "").toString()
+        val duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION)
+        val track = LocalTrack(
+                title = title,
+                artist = artist,
+                album = album,
+                duration = duration,
+                playedBy = controller.packageName
         )
+        getPlaybackController(controller).updateTrack(track)
     }
 
     fun onStateChanged(controller: MediaController, state: PlaybackState) {

@@ -2,12 +2,14 @@ package de.schnettler.database
 
 import androidx.room.TypeConverter
 import de.schnettler.database.models.ListingType
+import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.TopListEntryType
 
 class TypeConverter {
 
     private val typeMap = ListingType.values().associateBy(ListingType::id)
     private val topListingTypeMap = TopListEntryType.values().associateBy(TopListEntryType::id)
+    private val scrobbleStatusTypeMap = ScrobbleStatus.values().associateBy(ScrobbleStatus::name)
 
     @TypeConverter
     fun typeEnumToInt(type: ListingType) = type.id
@@ -26,4 +28,10 @@ class TypeConverter {
 
     @TypeConverter
     fun listToString(list: List<String>) = list.joinToString(",")
+
+    @TypeConverter
+    fun scrobbleStatusToString(status: ScrobbleStatus) = status.name
+
+    @TypeConverter
+    fun stringToScrobbleStatus(name: String) = scrobbleStatusTypeMap[name] ?: ScrobbleStatus.VOLATILE
 }
