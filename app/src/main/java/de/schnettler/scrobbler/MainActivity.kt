@@ -58,12 +58,14 @@ class MainActivity : AppCompatActivity() {
             })
     )
 
+    private val startScreen: AppRoute = AppRoute.LocalRoute
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             MaterialThemeFromMdcTheme  {
-                Router(start = bottomNavDestinations.last()) { currentRoute ->
+                Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
                         this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                     }
