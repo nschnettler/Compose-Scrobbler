@@ -17,8 +17,13 @@ data class RecentTracksDto(
     override val url: String,
     val artist: TrackRelationDto,
     val album: TrackRelationDto,
-    val date: TrackDateDto?
+    val date: TrackDateDto?,
+    @Json(name = "@attr") val attrs: AttributesDto?
 ): ListingDto
+
+data class AttributesDto(
+    val nowplaying: String
+)
 
 data class TrackDateDto(
         val uts: Long

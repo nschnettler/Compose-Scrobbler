@@ -1,5 +1,6 @@
 package de.schnettler.repo.mapping
 
+import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
 import de.schnettler.lastfm.models.ArtistTracksDto
 import de.schnettler.lastfm.models.RecentTracksDto
@@ -30,6 +31,7 @@ fun RecentTracksDto.map() = Track(
     album = this.album.name
 ).apply {
     timestamp = this@map.date?.asMs() ?: 0
+    scrobbleStatus = if (attrs?.nowplaying?.toBoolean() == true) ScrobbleStatus.PLAYING else ScrobbleStatus.SCROBBLED
 }
 
 fun TrackInfoDto.map() = Track(
