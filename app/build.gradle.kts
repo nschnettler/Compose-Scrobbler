@@ -75,6 +75,8 @@ dependencies {
     //Google
     implementation(Google.android.material)
 
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.4")
+
     //Other
     val versionAccompanist = "0.1.5"
     val versionCoil = "0.11.0"
