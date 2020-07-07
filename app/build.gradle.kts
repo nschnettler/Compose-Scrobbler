@@ -30,7 +30,7 @@ android {
 
     composeOptions {
         kotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
-        kotlinCompilerExtensionVersion = "0.1.0-dev13"
+        kotlinCompilerExtensionVersion = "0.1.0-dev14"
     }
 
     compileOptions {
@@ -67,7 +67,7 @@ dependencies {
     implementation(AndroidX.ui.layout)
     implementation(AndroidX.ui.material)
     implementation(AndroidX.ui.tooling)
-    implementation("androidx.ui","ui-livedata","0.1.0-dev13")
+    implementation("androidx.ui","ui-livedata","0.1.0-dev14")
     implementation(AndroidX.lifecycle.extensions)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
@@ -76,21 +76,25 @@ dependencies {
     //Google
     implementation(Google.android.material)
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.4")
-
     //Other
-    val versionAccompanist = "0.1.5"
+    val versionAccompanist = "0.1.6"
     val versionCoil = "0.11.0"
+    val versionNavigator = "0.3.3"
+    val versionHilt = "1.0.0-alpha01"
+    val versionDagger = "2.28-alpha"
+    val versionThreeten = "1.2.4"
+    val versionLeakCanary = "2.4"
 
     implementation("io.coil-kt", "coil", versionCoil)
     implementation("dev.chrisbanes.accompanist","accompanist-mdc-theme", versionAccompanist)
     implementation("dev.chrisbanes.accompanist","accompanist-coil", versionAccompanist)
-    implementation("com.jakewharton.threetenabp","threetenabp","1.2.4")
-    implementation("com.github.etiennelenhart","eiffel","4.1.0")
-    implementation("androidx.hilt","hilt-lifecycle-viewmodel","1.0.0-alpha01")
-    kapt("androidx.hilt","hilt-compiler","1.0.0-alpha01")
-    implementation("com.google.dagger","hilt-android","2.28-alpha")
-    kapt("com.google.dagger","hilt-android-compiler","2.28-alpha")
-    debugImplementation("com.amitshekhar.android","debug-db","1.0.6")
-    implementation("com.github.mvarnagiris.compose-navigation:navigation:0.3.2")
+    implementation("com.jakewharton.threetenabp","threetenabp", versionThreeten)
+    implementation("com.github.mvarnagiris.compose-navigation", "navigation", versionNavigator)
+    debugImplementation("com.squareup.leakcanary", "leakcanary-android", versionLeakCanary)
+
+    //Dagger
+    implementation("androidx.hilt","hilt-lifecycle-viewmodel", versionHilt)
+    implementation("com.google.dagger","hilt-android",versionDagger)
+    kapt("androidx.hilt","hilt-compiler", versionHilt)
+    kapt("com.google.dagger","hilt-android-compiler",versionDagger)
 }

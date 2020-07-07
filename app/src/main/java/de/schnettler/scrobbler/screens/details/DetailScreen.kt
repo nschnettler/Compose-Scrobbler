@@ -22,6 +22,7 @@ import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@ExperimentalLayout
 @ExperimentalCoroutinesApi
 @Composable
 fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit) {
@@ -38,6 +39,7 @@ fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit
     }
 }
 
+@ExperimentalLayout
 @Composable
 fun TagCategory(tags: List<String>) {
     TitleComponent(title = "Tags")
@@ -66,6 +68,7 @@ fun AlbumCategory(album: Album) {
         })
 }
 
+@ExperimentalLayout
 @Composable
 fun ChipRow(items: List<String>) {
     Box(modifier = Modifier.padding(horizontal = 16.dp)) {

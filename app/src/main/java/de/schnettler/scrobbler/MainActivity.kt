@@ -9,6 +9,7 @@ import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.layout.ExperimentalLayout
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.*
 import androidx.ui.res.vectorResource
@@ -28,6 +29,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
+@ExperimentalLayout
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     Scaffold(
-                        topAppBar = {
+                        topBar = {
                             TopAppBar(
                                 title = { Text(text = currentRoute.data.title) },
                                 actions = {
@@ -95,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                         bodyContent = {
                             AppContent(currentRoute.data)
                         },
-                        bottomAppBar = {
+                        bottomBar = {
                             BottomNavigationBar(
                                     items = bottomNavDestinations,
                                     currentScreen = currentRoute.data
