@@ -29,7 +29,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
-@ExperimentalLayout
 @FlowPreview
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint

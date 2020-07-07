@@ -20,9 +20,7 @@ import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
-import timber.log.Timber
 
-@ExperimentalLayout
 @Composable
 fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) {
     VerticalScroller() {

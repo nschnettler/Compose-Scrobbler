@@ -2,11 +2,9 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.Composable
 import androidx.ui.foundation.VerticalScroller
-import androidx.ui.layout.ExperimentalLayout
 import de.schnettler.database.models.TrackDomain
 import de.schnettler.scrobbler.components.ListeningStats
 
-@ExperimentalLayout
 @Composable
 fun TrackDetailScreen(track: TrackDomain) {
     VerticalScroller() {
