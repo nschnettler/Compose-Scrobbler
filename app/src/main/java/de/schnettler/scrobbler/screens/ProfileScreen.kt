@@ -22,14 +22,12 @@ import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
-@ExperimentalCoroutinesApi
 @Composable
 fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit) {
 
@@ -104,7 +102,6 @@ fun UserInfoComponent(user: User) {
    }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 private fun PeriodSelectDialog(onSelect: (selected: TimePeriod) -> Unit, onDismiss: () -> Unit, model: UserViewModel) {
    var selected by state { model.timePeriod.value }

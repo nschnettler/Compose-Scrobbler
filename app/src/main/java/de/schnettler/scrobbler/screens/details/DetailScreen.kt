@@ -20,9 +20,7 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @Composable
 fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit) {
     val artistState by model.entryState.collectAsState()

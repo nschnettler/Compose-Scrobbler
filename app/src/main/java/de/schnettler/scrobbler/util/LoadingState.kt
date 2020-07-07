@@ -3,7 +3,6 @@ package de.schnettler.scrobbler.util
 import android.content.Context
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 
@@ -31,7 +30,6 @@ sealed class LoadingState<T>(open val data: T? = null) {
     }
 }
 
-@ExperimentalCoroutinesApi
 fun <T> MutableStateFlow<LoadingState<T>>.updateState(response: StoreResponse<T>) {
     value = when(response) {
         is StoreResponse.Data -> LoadingState.Data(origin = response.origin, newData = response.value)

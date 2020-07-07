@@ -12,14 +12,12 @@ import de.schnettler.repo.DetailRepository
 import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.util.updateState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : ViewModel() {
     private val entry: MutableStateFlow<ListingMin?> = MutableStateFlow(null)
     val entryState: MutableStateFlow<LoadingState<ListingMin>> = MutableStateFlow(LoadingState.Initial())

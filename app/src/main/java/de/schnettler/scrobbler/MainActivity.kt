@@ -9,7 +9,6 @@ import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
-import androidx.ui.layout.ExperimentalLayout
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.*
 import androidx.ui.res.vectorResource
@@ -25,12 +24,8 @@ import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.onOpenInBrowserClicked
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 

@@ -12,14 +12,12 @@ import de.schnettler.repo.UserRepository
 import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.util.updateState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
-@ExperimentalCoroutinesApi
 class UserViewModel @ViewModelInject constructor(
     private val topListRepo: TopListRepository,
     private val userRepo: UserRepository
@@ -83,7 +81,6 @@ class UserViewModel @ViewModelInject constructor(
     fun showDialog(show: Boolean) = _showFilterDialog.updateValue(show)
 }
 
-@ExperimentalCoroutinesApi
 fun <T> MutableStateFlow<T>.updateValue(newValue: T): Boolean {
     if (value != newValue) {
         value = newValue

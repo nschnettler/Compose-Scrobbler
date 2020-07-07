@@ -10,7 +10,6 @@ import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.collectValue
 import de.schnettler.database.models.User
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -18,7 +17,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class UserDaoTest {
     @get:Rule

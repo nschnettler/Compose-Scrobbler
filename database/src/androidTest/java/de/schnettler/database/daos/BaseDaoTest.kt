@@ -12,7 +12,6 @@ import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.collectValue
 import de.schnettler.database.models.Artist
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -21,7 +20,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 
-@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class BaseDaoTest {
     @get:Rule
@@ -94,7 +92,7 @@ class BaseDaoTest {
     }
 
     @Test
-    fun insertAllInsertsDataWithoutOverwrite() {
+    fun insertAllInsertsDataWithoutOverwrite() = runBlockingTest{
         // GIVEN - Database with one Artist
         val artist = Artist(name = "Artist1", url = "Url1")
         database.artistDao().insert(artist)
@@ -118,7 +116,7 @@ class BaseDaoTest {
         }
     }
 
-    fun forceInsertAllInsertsDataWithOverwrite() {
+    fun forceInsertAllInsertsDataWithOverwrite() = runBlockingTest{
         // GIVEN - Database with one Artist
         val artist = Artist(name = "Artist1", url = "Url1")
         database.artistDao().insert(artist)
