@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.components
 
+import androidx.annotation.ColorRes
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
@@ -164,12 +165,20 @@ fun ListingScroller(
 
 @Composable
 fun NameListIcon(item: ListingMin) {
+    PlainListIconBackground {
+        Text(text = item.name.firstLetter())
+    }
+}
+
+@Composable
+fun PlainListIconBackground(@ColorRes color: Int = R.color.colorBackgroundElevated, content: @Composable() () -> Unit) {
     Surface(
-        color = colorResource(id = R.color.colorBackgroundElevated),
+        color = colorResource(id = color),
         shape = CircleShape,
-        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)
+    ) {
         Box(gravity = ContentGravity.Center) {
-            Text(text = item.name.firstLetter())
+            content()
         }
     }
 }
