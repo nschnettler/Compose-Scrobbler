@@ -86,7 +86,7 @@ fun ListingCard(
                             }
                         }
                         else -> {
-                            CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop)
+                            CoilImageWithCrossfade(data = imageUrl, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
                         }
                     }
                 }

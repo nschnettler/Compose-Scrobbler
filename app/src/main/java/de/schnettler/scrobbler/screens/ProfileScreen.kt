@@ -86,7 +86,7 @@ fun UserInfoComponent(user: User) {
                Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
                   Box(modifier = Modifier.tag("image") + Modifier.preferredHeight(56.dp) + Modifier.preferredWidth(56.dp)) {
                      if (user.imageUrl.isNotEmpty()) {
-                        CoilImage(data = user.imageUrl)
+                        CoilImage(data = user.imageUrl, modifier = Modifier.fillMaxSize())
                      }
                   }
                }
