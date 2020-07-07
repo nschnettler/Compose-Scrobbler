@@ -4,9 +4,12 @@ import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
+import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
 import androidx.ui.material.Card
+import androidx.ui.material.Surface
+import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.Dp
@@ -15,6 +18,7 @@ import androidx.ui.unit.dp
 import androidx.ui.unit.sp
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.TopListEntryWithData
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.screens.formatter
 import de.schnettler.scrobbler.util.cardCornerRadius
@@ -155,5 +159,17 @@ fun ListingScroller(
                 PlaysStyle.NO_PLAYS -> -1
             }
         )
+    }
+}
+
+@Composable
+fun NameListIcon(item: ListingMin) {
+    Surface(
+        color = colorResource(id = R.color.colorBackgroundElevated),
+        shape = CircleShape,
+        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+        Box(gravity = ContentGravity.Center) {
+            Text(text = item.name.firstLetter())
+        }
     }
 }

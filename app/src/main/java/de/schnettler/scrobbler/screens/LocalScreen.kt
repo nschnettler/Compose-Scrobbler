@@ -5,15 +5,28 @@ import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContextAmbient
+import androidx.ui.core.Modifier
+import androidx.ui.foundation.AdapterList
 import androidx.ui.foundation.Text
+import androidx.ui.layout.padding
 import androidx.ui.material.Button
+import androidx.ui.material.Card
+import androidx.ui.material.Divider
+import androidx.ui.material.ListItem
+import androidx.ui.res.colorResource
+import androidx.ui.text.style.TextOverflow
+import androidx.ui.tooling.preview.Preview
+import androidx.ui.tooling.preview.PreviewParameter
+import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
-import de.schnettler.scrobbler.components.GenericAdapterList
-import de.schnettler.scrobbler.service.MediaListenerService
+import de.schnettler.scrobble.MediaListenerService
+import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.NameListIcon
+import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
-import de.schnettler.scrobble.MediaListenerService
 
 @Composable
 fun LocalScreen(localViewModel: LocalViewModel) {
@@ -31,8 +44,20 @@ fun LocalScreen(localViewModel: LocalViewModel) {
 fun Content(localViewModel: LocalViewModel) {
    val data by localViewModel.data.collectAsState()
 
-   data?.let {list ->
-      GenericAdapterList(data = list.map { it.mapToLastFmTrack() }, onListingSelected = {})
+   data?.let { list ->
+      val trackList = list.map { it.mapToLastFmTrack() }.filterIndexed { index, track ->
+         if (index == 0) {
+            return@filterIndexed track.scrobbleStatus == ScrobbleStatus.PLAYING || track.scrobbleStatus ==
+                    ScrobbleStatus.LOCAL
+         } else {
+            return@filterIndexed track.scrobbleStatus == ScrobbleStatus.LOCAL
+         }
+      }
+      HistoryTrackList(
+         tracks = trackList,
+         onTrackSelected = {Timber.d("Selected $it")},
+         onNowPlayingSelected = { Timber.d("Selected Nowplaying $it")}
+      )
    }
 }
 
@@ -42,4 +67,56 @@ fun LocalTrack.mapToLastFmTrack() = Track(
         duration = duration,
         artist = artist,
         album = album
-).apply { timestamp = startTime }
+).apply {
+   timestamp = startTime
+   scrobbleStatus = status
+}
+
+@Composable
+fun NowPlayingTrack(track: Track) {
+   Card(modifier = Modifier.padding(16.dp)) {
+      ListItem(text = track.name, secondaryText = track.artist)
+   }
+}
+
+@Composable
+fun ScrobbledTrack(track: Track, onClick: (Track) -> Unit) {
+   ListItem(
+      text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+      secondaryText = { Text(text = "${track.artist} ⦁ ${track.album}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+      icon = { NameListIcon(item = track) },
+      onClick = { onClick.invoke(track) },
+      trailing = { track.timestampToRelativeTime()?.let { Text(text = it) } }
+   )
+   Divider(color = colorResource(id = R.color.colorStroke))
+}
+
+@Preview
+@Composable
+fun HistoryTrack(
+   @PreviewParameter(FakeHistoryTrackProvider::class) track: Track,
+   onTrackSelected: (Track) -> Unit = { },
+   onNowPlayingSelected: (Track) -> Unit = { }
+) {
+   if(track.isPlaying()) {
+      NowPlayingTrack(track = track)
+   } else {
+      ScrobbledTrack(track = track, onClick = onTrackSelected)
+   }
+}
+
+
+@Composable
+fun HistoryTrackList(
+   tracks: List<Track>,
+   onTrackSelected: (Track) -> Unit,
+   onNowPlayingSelected: (Track) -> Unit
+) {
+   AdapterList(data = tracks) {track ->
+      HistoryTrack(
+         track = track,
+         onTrackSelected = onTrackSelected,
+         onNowPlayingSelected = onNowPlayingSelected
+      )
+   }
+}

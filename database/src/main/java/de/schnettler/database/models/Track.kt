@@ -1,5 +1,6 @@
 package de.schnettler.database.models
 
+import android.text.format.DateUtils
 import androidx.room.*
 
 @Entity(tableName = "tracks")
@@ -19,6 +20,12 @@ data class Track(
 ): ListingMin {
     @Ignore var timestamp: Long = 0
     @Ignore var scrobbleStatus: ScrobbleStatus = ScrobbleStatus.VOLATILE
+    fun isPlaying() = scrobbleStatus == ScrobbleStatus.PLAYING
+    fun timestampToRelativeTime() =
+        if (timestamp > 0) {
+            DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(), DateUtils
+                .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
+        } else null
 }
 
 data class TrackWithAlbum(
@@ -62,7 +69,7 @@ data class LocalTrack(
     private fun canBeScrobbled() = duration > 30000
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
-    private fun isPlaying() = status == ScrobbleStatus.PLAYING
+    fun isPlaying() = status == ScrobbleStatus.PLAYING
 
     fun pause() {
         updateAmountPlayed()
