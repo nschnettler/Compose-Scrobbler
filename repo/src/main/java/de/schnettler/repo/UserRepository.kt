@@ -8,6 +8,9 @@ import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.UserMapper
 import de.schnettler.repo.mapping.map
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
+import java.lang.Exception
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -49,11 +52,18 @@ class UserRepository @Inject constructor(
         ).build().stream(StoreRequest.cached("", true))
     }
 
-    val historyStore = StoreBuilder.from<String, List<Track>>(
-            fetcher = nonFlowValueFetcher {
-                service.getUserRecentTrack(authProvider.session!!.key).map { it.map() }
+    private val historyStore = StoreBuilder.from(
+            fetcher = nonFlowValueFetcher {_: String ->
+                service.getUserRecentTrack(authProvider.getSessionKeyOrThrow()).map { it.map() }
             }
     ).build()
 
-    suspend fun getUserRecentTrack():List<Track> = historyStore.fresh("")
+    suspend fun getUserRecentTrack():List<Track> {
+        return try {
+            historyStore.fresh("")
+        } catch (e: Exception) {
+            Timber.e(e)
+            emptyList()
+        }
+    }
 }

@@ -30,12 +30,14 @@ class TopListRepository @Inject constructor(
 ) {
     fun getTopArtists(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            val session = authProvider.session
-            val response = service.getUserTopArtists(timePeriod, session!!.key)
+            val session = authProvider.getSessionOrThrow()
+            val response = service.getUserTopArtists(timePeriod, session.key)
             val artists = response.artist.map { it.map() }
             userDao.updateArtistCount(session.name, response.info.total)
             artists.forEach { artist ->
                 refreshImageUrl(artistDao.getArtistImageUrl(artist.id), artist)
+                artist.imageUrl?.let { artistDao.updateArtistImageUrl(it, artist.id) }
+
             }
             artists
         },
@@ -56,7 +58,7 @@ class TopListRepository @Inject constructor(
 
     fun getTopAlbums(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            service.getUserTopAlbums(timePeriod, authProvider.session!!.key).map { it.map() }
+            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {
@@ -76,9 +78,9 @@ class TopListRepository @Inject constructor(
     fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
             val tracks =
-                service.getUserTopTracks(timePeriod, authProvider.session!!.key).map { it.map() }
+                service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
             tracks.forEach { track ->
-                refreshImageUrl(trackDao.getTrackImageUrl(track.id), track)
+                //refreshImageUrl(trackDao.getTrackImageUrl(track.id), track)
             }
             tracks
         },

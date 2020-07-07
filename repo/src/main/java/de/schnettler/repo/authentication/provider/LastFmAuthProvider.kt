@@ -27,6 +27,9 @@ class LastFmAuthProvider @Inject constructor(
         return session
     }
 
+    fun getSessionOrThrow() = session ?: throw Exception("Session was null")
+    fun getSessionKeyOrThrow() = session?.key ?: throw Exception("Session was null")
+
     init {
         scope.launch(Dispatchers.IO) {
             sessionLive.collect {

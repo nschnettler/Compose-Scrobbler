@@ -34,7 +34,7 @@ class DetailRepository @Inject constructor(
 ) {
     fun getArtistInfo(id: String) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
-            val response = service.getArtistInfo(key, lastFmAuthProvider.session!!.key)
+            val response = service.getArtistInfo(key, lastFmAuthProvider.getSessionKeyOrThrow())
             val artist = response.map()
             refreshImageUrl(artistDao.getArtistImageUrl(key), artist)
             artist.topAlbums = service.getArtistAlbums(key).map { it.map() }
@@ -92,7 +92,7 @@ class DetailRepository @Inject constructor(
     fun getTrackInfo(track: Track) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { track: Track ->
             val result =
-                service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.session!!.key)
+                service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.getSessionKeyOrThrow())
                     .map()
             result
         },
