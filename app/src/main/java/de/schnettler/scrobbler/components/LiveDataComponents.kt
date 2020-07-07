@@ -3,10 +3,10 @@ package de.schnettler.scrobbler.components
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.AdapterList
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.wrapContentWidth
 import androidx.ui.material.CircularProgressIndicator
@@ -32,7 +32,7 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 
 @Composable
 fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -> Unit) {
-    AdapterList(data = data) {item ->
+    LazyColumnItems(items = data) {item ->
         when(item) {
             is Track -> HistoryItem(
                 listing = item,

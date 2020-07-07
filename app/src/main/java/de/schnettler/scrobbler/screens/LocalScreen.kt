@@ -6,9 +6,9 @@ import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.AdapterList
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
 import androidx.ui.layout.padding
 import androidx.ui.material.Button
@@ -128,7 +128,7 @@ fun HistoryTrackList(
    onTrackSelected: (Track) -> Unit,
    onNowPlayingSelected: (Track) -> Unit
 ) {
-   AdapterList(data = tracks) {track ->
+   LazyColumnItems(items = tracks) {track ->
       HistoryTrack(
          track = track,
          onTrackSelected = onTrackSelected,
