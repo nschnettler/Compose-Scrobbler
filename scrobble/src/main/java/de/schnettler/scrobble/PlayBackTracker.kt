@@ -1,16 +1,17 @@
-package de.schnettler.scrobbler.service
+package de.schnettler.scrobble
 
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
+import de.schnettler.repo.ScrobbleRepository
 import javax.inject.Inject
 
-class PlayBackTracker @Inject constructor(private val scrobbler: Scrobbler) {
+class PlayBackTracker @Inject constructor(private val repo: ScrobbleRepository) {
     private val playerStates = hashMapOf<MediaController, PlaybackController>()
 
     private fun getPlaybackController(controller: MediaController) =
-            playerStates[controller] ?: PlaybackController(controller, scrobbler).also { playerStates[controller] = it }
+            playerStates[controller] ?: PlaybackController(controller, repo).also { playerStates[controller] = it }
 
     fun onMetadataChanged(controller: MediaController, metadata: MediaMetadata) {
         val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()

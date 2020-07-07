@@ -54,6 +54,7 @@ dependencies {
 
     implementation(project(":repo"))
     implementation(project(":common"))
+    implementation(project(":scrobble"))
 
     //Kotlin
     implementation(Kotlin.stdlib.jdk8)

@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.service
+package de.schnettler.scrobble
 
 import android.media.MediaMetadata
 import android.media.session.MediaController

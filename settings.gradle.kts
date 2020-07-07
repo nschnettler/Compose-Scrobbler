@@ -4,6 +4,7 @@ include(":common")
 include(":repo")
 include(":lastfm")
 include(":database")
+include(":scrobble")
 include(":app")
 rootProject.name = "Scrobbler"
 

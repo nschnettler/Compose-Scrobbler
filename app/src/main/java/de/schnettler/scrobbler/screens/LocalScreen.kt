@@ -13,6 +13,7 @@ import de.schnettler.scrobbler.components.GenericAdapterList
 import de.schnettler.scrobbler.service.MediaListenerService
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
+import de.schnettler.scrobble.MediaListenerService
 
 @Composable
 fun LocalScreen(localViewModel: LocalViewModel) {

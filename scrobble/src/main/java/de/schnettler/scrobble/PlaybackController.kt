@@ -1,34 +1,35 @@
-package de.schnettler.scrobbler.service
+package de.schnettler.scrobble
 
 import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
+import de.schnettler.repo.ScrobbleRepository
 import timber.log.Timber
 
-class PlaybackController(private val controller: MediaController, private val scrobbler: Scrobbler) {
+class PlaybackController(private val controller: MediaController, private val repo: ScrobbleRepository) {
 
     var lastPlaybackState: Int? = null
 
     fun saveOldTrack(track: LocalTrack) {
         if (track.readyToScrobble()) {
-            scrobbler.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+            repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
         } else {
-            scrobbler.removeTrack(track)
+            repo.removeTrack(track)
         }
     }
 
     fun insertNowPlaying(track: LocalTrack) {
-        scrobbler.saveTrack(track)
+        repo.saveTrack(track)
     }
 
     fun updateTrack(track: LocalTrack) {
-        val currentTrack = scrobbler.currentTrack
-        when(track.isTheSameAs(scrobbler.currentTrack)) {
+        val currentTrack = repo.currentTrack
+        when(track.isTheSameAs(repo.currentTrack)) {
             // Track is the same (title and artist match)
             true -> {
                 // Update Metadata
-                scrobbler.updateTrackAlbum(currentTrack, track.album)
+                repo.updateTrackAlbum(currentTrack, track.album)
                 Timber.d("[Update] $currentTrack")
             }
 
@@ -51,7 +52,7 @@ class PlaybackController(private val controller: MediaController, private val sc
     }
 
     fun updatePlayBackState(playbackState: PlaybackState) {
-        val currentTrack = scrobbler.currentTrack ?: return
+        val currentTrack = repo.currentTrack ?: return
         if (playbackState.state == lastPlaybackState) return
         lastPlaybackState = playbackState.state
 
@@ -63,7 +64,7 @@ class PlaybackController(private val controller: MediaController, private val sc
             Timber.d("[Pause] $currentTrack")
         }
 
-        scrobbler.saveTrack(currentTrack)
+        repo.saveTrack(currentTrack)
     }
 }
 

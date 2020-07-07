@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.service
+package de.schnettler.scrobble
 
 import android.content.ComponentName
 import android.content.Context
@@ -38,8 +38,8 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         scope.cancel()
+        super.onDestroy()
     }
 
     override fun onActiveSessionsChanged(activeControllers: MutableList<MediaController>?) {
