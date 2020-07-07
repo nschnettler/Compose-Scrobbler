@@ -77,7 +77,7 @@ fun LocalTrack.mapToLastFmTrack() = Track(
 }
 
 @Composable
-fun NowPlayingTrack(track: Track) {
+fun NowPlayingTrack(track: Track, onClick: (Track) -> Unit) {
    Card(modifier = Modifier.padding(16.dp)) {
       ListItem(
          text = { Text(track.name) },
@@ -89,7 +89,8 @@ fun NowPlayingTrack(track: Track) {
                   tint = Color.White
                )
             }
-         }
+         },
+         onClick = { onClick.invoke(track) }
       )
    }
 }
@@ -114,7 +115,7 @@ fun HistoryTrack(
    onNowPlayingSelected: (Track) -> Unit = { }
 ) {
    if(track.isPlaying()) {
-      NowPlayingTrack(track = track)
+      NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
    } else {
       ScrobbledTrack(track = track, onClick = onTrackSelected)
    }
