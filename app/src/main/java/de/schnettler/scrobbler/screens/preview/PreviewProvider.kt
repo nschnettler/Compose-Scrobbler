@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens.preview
 
 import androidx.ui.tooling.preview.PreviewParameterProvider
+import de.schnettler.database.models.Artist
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
@@ -20,5 +21,17 @@ class FakeHistoryTrackProvider: PreviewParameterProvider<Track> {
                 status = status,
                 playedBy = ""
         ).mapToLastFmTrack()
+    }
+}
+
+class FakeTopListEntry: PreviewParameterProvider<Artist> {
+    override val values = sequenceOf(
+        generateArtist())
+
+    private fun generateArtist(): Artist {
+        return Artist(name = "Dreamcatcher",
+            url = "Url",
+            userPlays = 10,
+            plays = 20)
     }
 }

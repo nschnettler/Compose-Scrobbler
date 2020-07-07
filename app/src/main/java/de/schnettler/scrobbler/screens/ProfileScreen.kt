@@ -7,6 +7,7 @@ import androidx.ui.core.tag
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
+import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
@@ -17,6 +18,8 @@ import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.ListingCard
+import de.schnettler.scrobbler.components.NewListingCard
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.util.*
@@ -50,8 +53,7 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit)
 
    userState.handleIfError(ContextAmbient.current)
 
-   VerticalScroller(modifier = Modifier.padding(bottom = 56.dp)) {
-      Column(modifier = Modifier.padding(bottom = defaultSpacerSize)) {
+   VerticalScroller(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
          userState.data?.let {
             UserInfoComponent(it)
          }
@@ -59,7 +61,6 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit)
          onListingSelected)
          TopListScroller(title = "Top-Alben", content = albumState, onEntrySelected = onListingSelected)
          TopListScroller(title = "Top-Titel", content = trackState, onEntrySelected = onListingSelected)
-      }
    }
 }
 
