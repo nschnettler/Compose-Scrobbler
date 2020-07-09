@@ -12,4 +12,7 @@ data class Album(
     override var imageUrl: String? = null,
     override val listeners: Long = 0,
     val artist: String?
-): ListingMin
+): ListingMin {
+    fun getArtistOrThrow() = artist ?: throw Exception("Artist missing")
+    @Ignore var tracks: List<Track> = listOf()
+}

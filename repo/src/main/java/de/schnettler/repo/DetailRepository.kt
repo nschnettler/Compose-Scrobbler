@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 
+typealias AlbumIdentifier = Pair<String, String>
+
 class DetailRepository @Inject constructor(
     private val artistDao: ArtistDao,
     private val albumDao: AlbumDao,
@@ -90,30 +92,54 @@ class DetailRepository @Inject constructor(
     ).build().stream(StoreRequest.cached(id, true))
 
     fun getTrackInfo(track: Track) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { track: Track ->
-            val result =
-                service.getTrackInfo(track.artist, track.name, lastFmAuthProvider.getSessionKeyOrThrow())
+        fetcher = nonFlowValueFetcher { key: Track ->
+            service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow())
                     .map()
-            result
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = { key ->
                 trackDao.getTrack(key.id, key.artist).mapLatest { it?.map() }
             },
-            writer = { _: Track, track ->
-                trackDao.forceInsert(track)
-                track.album?.let {
+            writer = { _: Track, value ->
+                trackDao.forceInsert(value)
+                value.album?.let {
                     albumDao.insert(
                         Album(
                             name = it,
                             artist = track.artist,
-                            url = "https://www.last.fm/music/${track.artist}/${it}"
+                            url = "https://www.last.fm/music/${value.artist}/${it}"
                         )
                     )
                 }
             }
         )
     ).build().stream(StoreRequest.cached(track, true))
+
+
+    private val albumDetailStore = StoreBuilder.from<Album, Album, Album>(
+        fetcher = nonFlowValueFetcher { key: Album ->
+            service.getAlbumInfo(artistName = key.getArtistOrThrow(),
+                albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()).map()
+        },
+        sourceOfTruth = SourceOfTruth.from(
+            reader = {key ->
+                albumDao.getAlbum(id = key.id,
+                    artistId = key.getArtistOrThrow()
+                ).combine(trackDao.getAlbumTracks(key.name)) {album, tracks ->
+                    album?.tracks = tracks
+                    return@combine album
+                }
+            },
+            writer = {key, value ->
+                albumDao.forceInsert(value)
+                //TODO: DONT FORCE INSERT, ONLY UPDATE ALBUM
+                trackDao.forceInsertAll(value.tracks)
+            }
+        )
+    ).build()
+
+    fun getAlbumInfo(album: Album) =
+        albumDetailStore.stream(StoreRequest.cached(album, true))
 
 
     private suspend fun refreshImageUrl(localImageUrl: String?, listing: ListingMin) {

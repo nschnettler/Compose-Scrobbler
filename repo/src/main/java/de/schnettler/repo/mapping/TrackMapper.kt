@@ -2,10 +2,7 @@ package de.schnettler.repo.mapping
 
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
-import de.schnettler.lastfm.models.ArtistTracksDto
-import de.schnettler.lastfm.models.RecentTracksDto
-import de.schnettler.lastfm.models.TrackInfoDto
-import de.schnettler.lastfm.models.UserTrackDto
+import de.schnettler.lastfm.models.*
 import de.schnettler.repo.util.toBoolean
 
 fun UserTrackDto.map() = Track(
@@ -45,4 +42,12 @@ fun TrackInfoDto.map() = Track(
     userPlays = this.userplaycount ?: 0,
     userLoved = this.userloved.toBoolean(),
     tags = this.toptags.tag.map { tag -> tag.name }
+)
+
+suspend fun AlbumTrack.map(albumName: String) = Track(
+    name = name,
+    url = url,
+    duration = duration,
+    artist = artist.name,
+    album = albumName
 )

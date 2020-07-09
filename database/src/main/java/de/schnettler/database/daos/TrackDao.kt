@@ -12,7 +12,7 @@ abstract class TrackDao: BaseRelationsDao<Track> {
     abstract fun getTrack(id: String, artist: String): Flow<TrackWithAlbum?>
 
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
-    abstract suspend fun getSingletTrack(id: String, artist: String): Track
+    abstract suspend fun getSingletTrack(id: String, artist: String): Track?
 
     @Query("SELECT imageUrl FROM tracks WHERE id = :id")
     abstract fun getTrackImageUrl(id: String): String?
@@ -22,6 +22,9 @@ abstract class TrackDao: BaseRelationsDao<Track> {
 
     @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
     abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)
+
+    @Query("SELECT * FROM tracks WHERE album = :album")
+    abstract fun getAlbumTracks(album: String): Flow<List<Track>>
 
     suspend fun insertOrUpdateStats(tracks: List<Track>) {
         val result = insertAll(tracks)

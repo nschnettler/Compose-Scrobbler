@@ -92,8 +92,8 @@ class TopListRepository @Inject constructor(
                 )
                 listings.forEach {track ->
                     val loaded = trackDao.getSingletTrack(track.id, track.artist)
-                    if (loaded.imageUrl == null) {
-                        loaded.album?.let {album ->
+                    if (loaded?.imageUrl == null) {
+                        loaded?.album?.let {album ->
                             val url = albumDao.getImageUrl(album.toLowerCase())
                             url?.let { trackDao.updateImageUrl(it, track.id) }
                         }

@@ -40,6 +40,11 @@ data class ArtistInfoDto(
     val stats: StatsDto
 ): ListingDto
 
+data class TrackArtistDto(
+    val name: String,
+    val url: String
+)
+
 data class BioDto(
     val published: String,
     val summary: String,
