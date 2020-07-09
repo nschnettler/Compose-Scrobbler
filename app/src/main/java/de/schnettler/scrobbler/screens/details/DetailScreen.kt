@@ -57,7 +57,11 @@ fun AlbumCategory(album: Album) {
             Surface(color = colorResource(id = R.color.colorStroke), shape = RoundedCornerShape(8.dp)) {
                 Box(modifier = Modifier.preferredHeight(60.dp) + Modifier.preferredWidth(60.dp)) {
                     album.imageUrl?.let {
-                        CoilImageWithCrossfade(data = it, contentScale = ContentScale.Crop)
+                        CoilImageWithCrossfade(
+                            data = it,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
                 }
             }
