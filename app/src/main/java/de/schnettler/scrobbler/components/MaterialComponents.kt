@@ -5,6 +5,7 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
+import androidx.ui.material.MaterialTheme
 import androidx.ui.res.vectorResource
 import de.schnettler.scrobbler.AppRoute
 import timber.log.Timber
@@ -27,7 +28,8 @@ fun BottomNavigationBar(
                         Text(text = screen.title)
                     },
                     selected = currentScreen::class == screen::class,
-                    onSelected = { onDestinationSelected.invoke(screen) }
+                    onSelected = { onDestinationSelected.invoke(screen) },
+                    activeColor = MaterialTheme.colors.onBackground
                 )
             }
         }
