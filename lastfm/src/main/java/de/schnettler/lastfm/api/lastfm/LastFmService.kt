@@ -44,14 +44,14 @@ interface LastFmService {
         @Query("sk") sessionKey: String
     ): UserDto
 
-    @GET("?method=$METHOD_USER_ALBUMS&limit=5")
+    @GET("?method=$METHOD_USER_ALBUMS&limit=10")
     @Wrapped(path = ["topalbums", "album"])
     suspend fun getUserTopAlbums(
         @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
     ): List<UserAlbumDto>
 
-    @GET("?method=$METHOD_USER_ARTISTS&limit=5")
+    @GET("?method=$METHOD_USER_ARTISTS&limit=10")
     @Wrapped(path = ["topartists"])
     suspend fun getUserTopArtists(
         @Query("period") timePeriod: TimePeriod,
@@ -64,7 +64,7 @@ interface LastFmService {
         @Query("sk") sessionKey: String
     ): LovedTracksResponse
 
-    @GET("?method=$METHOD_USER_TRACKS&limit=5")
+    @GET("?method=$METHOD_USER_TRACKS&limit=10")
     @Wrapped(path = ["toptracks", "track"])
     suspend fun getUserTopTracks(
         @Query("period") timePeriod: TimePeriod,
