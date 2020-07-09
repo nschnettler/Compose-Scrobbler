@@ -78,7 +78,7 @@ dependencies {
     implementation(Google.android.material)
 
     //Other
-    val versionAccompanist = "0.1.6"
+    val versionAccompanist = "0.1.7-SNAPSHOT"
     val versionCoil = "0.11.0"
     val versionNavigator = "0.3.3"
     val versionHilt = "1.0.0-alpha01"
