@@ -31,6 +31,7 @@ fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit
         when(details) {
             is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected)
             is TrackDomain -> TrackDetailScreen(details)
+            is Album -> AlbumDetailScreen(album = details, onListingSelected = onListingSelected)
         }
 
     }

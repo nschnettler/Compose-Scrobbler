@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
+import de.schnettler.database.models.Album
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.Track
@@ -34,6 +35,7 @@ class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : Vi
                 when (listing) {
                     is Artist -> repo.getArtistInfo(listing.id)
                     is Track -> repo.getTrackInfo(listing)
+                    is Album -> repo.getAlbumInfo(listing)
                     else -> flowOf(StoreResponse.Error.Message("Not implemented yet", ResponseOrigin.Cache))
                 }
             }.collect {response ->

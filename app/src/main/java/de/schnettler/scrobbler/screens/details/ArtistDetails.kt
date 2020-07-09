@@ -14,6 +14,7 @@ import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
 import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.screens.formatter
@@ -40,25 +41,8 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
         TagCategory(tags = artist.tags)
 
         TitleComponent(title = "Top Tracks")
+        TrackList(tracks = artist.topTracks, onListingSelected = onListingSelected)
 
-        artist.topTracks.forEachIndexed { index, track ->
-            ListItem(
-                text = { Text(track.name) },
-                secondaryText = {
-                    Text(formatter.format(track.listeners).toString() + " Hörer")
-                },
-                icon = {
-                    Surface(
-                        color = colorResource(id = R.color.colorBackgroundElevated),
-                        shape = CircleShape,
-                        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
-                        Box(gravity = ContentGravity.Center) {
-                            Text(text = "${index +1}")
-                        }
-                    }
-                }, onClick = { onListingSelected.invoke(track) }
-            )
-        }
         ListingScroller(
             title = "Top Albums",
             content = artist.topAlbums.sortedByDescending { it.plays },
@@ -73,6 +57,28 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
             height = 136.dp,
             playsStyle = PlaysStyle.NO_PLAYS,
             onEntrySelected = onListingSelected
+        )
+    }
+}
+
+@Composable
+fun TrackList(tracks: List<Track>, onListingSelected: (ListingMin) -> Unit) {
+    tracks.forEachIndexed { index, track ->
+        ListItem(
+            text = { Text(track.name) },
+            secondaryText = {
+                Text(formatter.format(track.listeners).toString() + " Hörer")
+            },
+            icon = {
+                Surface(
+                    color = colorResource(id = R.color.colorBackgroundElevated),
+                    shape = CircleShape,
+                    modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                    Box(gravity = ContentGravity.Center) {
+                        Text(text = "${index +1}")
+                    }
+                }
+            }, onClick = { onListingSelected.invoke(track) }
         )
     }
 }

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.Composable
+import androidx.core.text.HtmlCompat
 import androidx.ui.material.Surface
 import androidx.ui.unit.dp
 import de.schnettler.database.models.ListingMin
@@ -68,3 +69,14 @@ internal fun ThemedPreview(
         }
     }
 }
+
+inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
+    var sum: Long = 0
+    for (element in this) {
+        sum += selector(element)
+    }
+    return sum
+}
+
+fun String.fromHtml() = HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
+fun String.fromHtmlLastFm() = this.fromHtml().removeSuffix("Read more on Last.fm.")
