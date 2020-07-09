@@ -52,12 +52,6 @@ fun Context.openUrlInCustomTab(url: String) {
     customTabsIntent.launchUrl(this, Uri.parse(url))
 }
 
-fun onOpenInBrowserClicked(listing: ListingMin, activity: Context) {
-    listing.url?.let {url ->
-        activity.openUrlInCustomTab(url)
-    }
-}
-
 @Composable
 internal fun ThemedPreview(
     darkTheme: Boolean = false,

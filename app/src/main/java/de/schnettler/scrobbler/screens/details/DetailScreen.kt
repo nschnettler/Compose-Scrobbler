@@ -22,16 +22,16 @@ import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit) {
+fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit, onTagClicked: (String) -> Unit) {
     val artistState by model.entryState.collectAsState()
 
     artistState.handleIfError(ContextAmbient.current)
 
     artistState.data?.let {details ->
         when(details) {
-            is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected)
-            is TrackDomain -> TrackDetailScreen(details)
-            is Album -> AlbumDetailScreen(album = details, onListingSelected = onListingSelected)
+            is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
+            is TrackDomain -> TrackDetailScreen(details, onTagClicked = onTagClicked)
+            is Album -> AlbumDetailScreen(album = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
         }
 
     }
@@ -39,9 +39,9 @@ fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit
 
 @OptIn(ExperimentalLayout::class)
 @Composable
-fun TagCategory(tags: List<String>) {
+fun TagCategory(tags: List<String>, onTagClicked: (String) -> Unit) {
     TitleComponent(title = "Tags")
-    ChipRow(items = tags)
+    ChipRow(items = tags, onChipClicked = onTagClicked)
 }
 
 @Composable
@@ -72,11 +72,11 @@ fun AlbumCategory(album: Album) {
 
 @ExperimentalLayout
 @Composable
-fun ChipRow(items: List<String>) {
+fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
     Box(modifier = Modifier.padding(horizontal = 16.dp)) {
         FlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 16.dp) {
             items.forEach {
-                Box(modifier = Modifier.clickable(onClick = {})) {
+                Box(modifier = Modifier.clickable(onClick = { onChipClicked.invoke(it) })) {
                     Text(
                         text = it,
                         style = MaterialTheme.typography.body2,

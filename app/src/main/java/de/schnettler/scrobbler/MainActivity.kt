@@ -22,7 +22,7 @@ import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionState
-import de.schnettler.scrobbler.util.onOpenInBrowserClicked
+import de.schnettler.scrobbler.util.openUrlInCustomTab
 import de.schnettler.scrobbler.viewmodels.*
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
@@ -39,7 +39,12 @@ class MainActivity : AppCompatActivity() {
     private val localViewModel: LocalViewModel by viewModels()
 
     private val onOpenInBrowser: (ListingMin) -> Unit = {
-        onOpenInBrowserClicked(it, this)
+        it.url?.let {url -> openUrlInCustomTab(url) }
+    }
+
+    private val onTagClicked: (String) -> Unit = {tag ->
+        val url = "https://www.last.fm/tag/$tag"
+        openUrlInCustomTab(url)
     }
 
     private lateinit var onListingClicked: (ListingMin) -> Unit
@@ -130,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 is AppRoute.DetailRoute -> {
                     detailsViewModel.updateEntry(screen.item)
-                    DetailScreen(model = detailsViewModel, onListingSelected = onListingClicked)
+                    DetailScreen(model = detailsViewModel, onListingSelected = onListingClicked, onTagClicked = onTagClicked)
                 }
             }
         }

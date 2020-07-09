@@ -23,7 +23,7 @@ import de.schnettler.scrobbler.util.defaultSpacerSize
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) {
+fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit, onTagClicked: (String) -> Unit) {
     VerticalScroller() {
         Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
 
@@ -38,7 +38,7 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
 
         ListeningStats(item = artist)
 
-        TagCategory(tags = artist.tags)
+        TagCategory(tags = artist.tags, onTagClicked = onTagClicked)
 
         TitleComponent(title = "Top Tracks")
         TrackList(tracks = artist.topTracks, onListingSelected = onListingSelected)
