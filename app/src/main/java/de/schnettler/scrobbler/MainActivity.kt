@@ -12,6 +12,7 @@ import androidx.ui.foundation.Text
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.*
 import androidx.ui.res.vectorResource
+import androidx.ui.text.style.TextOverflow
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                     Scaffold(
                         topBar = {
                             TopAppBar(
-                                title = { Text(text = currentRoute.data.title) },
+                                title = { Text(text = currentRoute.data.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                                 actions = {
                                     currentRoute.data.menuActions.forEach {menuAction ->
                                         Timber.d("MenuItem $menuAction")
