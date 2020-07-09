@@ -125,7 +125,7 @@ class DetailRepository @Inject constructor(
             reader = {key ->
                 albumDao.getAlbum(id = key.id,
                     artistId = key.getArtistOrThrow()
-                ).combine(trackDao.getAlbumTracks(key.name)) {album, tracks ->
+                ).combine(trackDao.getAlbumTracks(key.name, key.getArtistOrThrow())) {album, tracks ->
                     album?.tracks = tracks
                     return@combine album
                 }

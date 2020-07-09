@@ -10,5 +10,9 @@ suspend fun AlbumInfoDto.map() = Album(
     userPlays = userplaycount,
     imageUrl = image[3].url,
     listeners = listeners,
-    artist = artist
-).apply { tracks = this@map.tracks.track.map { it.map(this@map.name) } }
+    artist = artist,
+    tags = tags.tag.map { tag -> tag.name },
+    description = wiki?.summary
+).apply { tracks = this@map.tracks.track.mapIndexed{ index, track ->
+    track.map(this@map.name, index) }
+}

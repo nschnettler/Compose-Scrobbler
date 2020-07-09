@@ -11,7 +11,9 @@ data class Album(
     override val userPlays: Long = 0,
     override var imageUrl: String? = null,
     override val listeners: Long = 0,
-    val artist: String?
+    val artist: String?,
+    val tags: List<String> = listOf(),
+    val description: String? = null
 ): ListingMin {
     fun getArtistOrThrow() = artist ?: throw Exception("Artist missing")
     @Ignore var tracks: List<Track> = listOf()

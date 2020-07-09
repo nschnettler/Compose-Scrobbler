@@ -29,7 +29,7 @@ data class AlbumInfoDto(
     val playcount: Long,
     val userplaycount: Long = 0,
     val tracks: AlbumTracksDto,
-    val tagsDto: TagsDto?,
+    val tags: TagsDto,
     val wiki: WikiDto?
 )
 

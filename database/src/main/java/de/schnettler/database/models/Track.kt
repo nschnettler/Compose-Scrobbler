@@ -16,7 +16,8 @@ data class Track(
     override val userPlays: Long = 0,
     val userLoved: Boolean = false,
     val tags: List<String> = listOf(),
-    override var imageUrl: String? = null
+    override var imageUrl: String? = null,
+    val rank: Int = -1
 ): ListingMin {
     @Ignore var timestamp: Long = 0
     @Ignore var scrobbleStatus: ScrobbleStatus = ScrobbleStatus.VOLATILE
