@@ -11,8 +11,14 @@ abstract class TrackDao: BaseRelationsDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract fun getTrack(id: String, artist: String): Flow<TrackWithAlbum?>
 
+    @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
+    abstract suspend fun getSingletTrack(id: String, artist: String): Track
+
     @Query("SELECT imageUrl FROM tracks WHERE id = :id")
     abstract fun getTrackImageUrl(id: String): String?
+
+    @Query("UPDATE tracks SET imageUrl = :url WHERE id = :id")
+    abstract fun updateImageUrl(url: String, id: String): Int
 
     @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
     abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)

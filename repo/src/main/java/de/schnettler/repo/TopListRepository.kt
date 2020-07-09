@@ -77,12 +77,7 @@ class TopListRepository @Inject constructor(
 
     fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            val tracks =
-                service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
-            tracks.forEach { track ->
-                //refreshImageUrl(trackDao.getTrackImageUrl(track.id), track)
-            }
-            tracks
+            service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {
@@ -95,6 +90,15 @@ class TopListRepository @Inject constructor(
                     listings,
                     topListEntries
                 )
+                listings.forEach {track ->
+                    val loaded = trackDao.getSingletTrack(track.id, track.artist)
+                    if (loaded.imageUrl == null) {
+                        loaded.album?.let {album ->
+                            val url = albumDao.getImageUrl(album.toLowerCase())
+                            url?.let { trackDao.updateImageUrl(it, track.id) }
+                        }
+                    }
+                }
             }
         )
     ).build().stream(StoreRequest.cached("", true))
