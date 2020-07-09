@@ -7,7 +7,6 @@ import androidx.ui.core.tag
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
@@ -18,8 +17,6 @@ import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.ListingMin
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.ListingCard
-import de.schnettler.scrobbler.components.NewListingCard
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.util.*

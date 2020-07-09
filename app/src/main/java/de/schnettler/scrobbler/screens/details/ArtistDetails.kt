@@ -62,8 +62,7 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
         ListingScroller(
             title = "Top Albums",
             content = artist.topAlbums.sortedByDescending { it.plays },
-            width = 136.dp,
-            height = 136.dp,
+            height = 160.dp,
             playsStyle = PlaysStyle.PUBLIC_PLAYS,
             onEntrySelected = onListingSelected
         )
@@ -71,8 +70,7 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit) 
         ListingScroller(
             title = "Ähnliche Künstler",
             content = artist.similarArtists,
-            width = 104.dp,
-            height = 104.dp,
+            height = 136.dp,
             playsStyle = PlaysStyle.NO_PLAYS,
             onEntrySelected = onListingSelected
         )
