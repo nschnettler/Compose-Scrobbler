@@ -2,10 +2,7 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Border
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.VerticalScroller
-import androidx.ui.foundation.drawBackground
+import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
 import androidx.ui.material.Card
@@ -31,12 +28,14 @@ fun AlbumDetailScreen(album: Album, onListingSelected: (ListingMin) -> Unit, onT
         Column {
             Row(modifier = Modifier.padding(16.dp)) {
                 Card(modifier = Modifier.preferredWidth(182.dp)
-                    .aspectRatio(1F)
-                    .drawBackground(colorResource(id = R.color.colorStroke)
-                    ), shape = RoundedCornerShape(cardCornerRadius)
+                    .aspectRatio(1F),
+                    shape = RoundedCornerShape(cardCornerRadius)
                 ) {
-                    album.imageUrl?.let {url ->
-                        CoilImage(data = url, modifier = Modifier.fillMaxSize())
+                    Box(modifier = Modifier.fillMaxSize().drawBackground(
+                        colorResource(id = R.color.colorStroke))) {
+                        album.imageUrl?.let {url ->
+                            CoilImage(data = url, modifier = Modifier.fillMaxSize())
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.preferredWidth(16.dp))
