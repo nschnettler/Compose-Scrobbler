@@ -23,8 +23,8 @@ abstract class TrackDao: BaseRelationsDao<Track> {
     @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
     abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)
 
-    @Query("SELECT * FROM tracks WHERE album = :album")
-    abstract fun getAlbumTracks(album: String): Flow<List<Track>>
+    @Query("SELECT * FROM tracks WHERE album = :album and artist = :artist ORDER BY rank ASC")
+    abstract fun getAlbumTracks(album: String, artist: String): Flow<List<Track>>
 
     suspend fun insertOrUpdateStats(tracks: List<Track>) {
         val result = insertAll(tracks)
