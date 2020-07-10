@@ -7,7 +7,11 @@ import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import timber.log.Timber
 
-class PlaybackController(private val controller: MediaController, private val repo: ScrobbleRepository) {
+class PlaybackController(
+        private val controller: MediaController,
+        private val repo: ScrobbleRepository,
+        private val notificationManager: ScrobbleNotificationManager
+) {
 
     var lastPlaybackState: Int? = null
 
@@ -46,7 +50,8 @@ class PlaybackController(private val controller: MediaController, private val re
                     track.play()
                 }
                 insertNowPlaying(track)
-                Timber.d("[New] $currentTrack")
+                Timber.d("[New] $track")
+                updateNowPlaying(track)
             }
         }
     }
@@ -59,12 +64,22 @@ class PlaybackController(private val controller: MediaController, private val re
         if (playbackState.isPlaying()) {
             currentTrack.play()
             Timber.d("[Play] $currentTrack")
+            updateNowPlaying(currentTrack)
         } else {
             currentTrack.pause()
             Timber.d("[Pause] $currentTrack")
+            updateNowPlaying(null)
         }
 
         repo.saveTrack(currentTrack)
+    }
+
+    private fun updateNowPlaying(current: LocalTrack?) {
+        if (current == null) {
+            notificationManager.cancelNotifications(NOW_PLAYING_ID)
+        } else {
+            notificationManager.updateNowPlayingNotification(current)
+        }
     }
 }
 
