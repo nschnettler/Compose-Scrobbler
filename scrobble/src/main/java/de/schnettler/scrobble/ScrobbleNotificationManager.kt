@@ -4,11 +4,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.os.Build
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import de.schnettler.database.models.LocalTrack
 import javax.inject.Inject
 
 val NOW_PLAYING_ID  = 0
+val SCROBBLE_ID = 1
+
 class ScrobbleNotificationManager @Inject constructor(
         private val context: Service,
         private val notificationManager: android.app.NotificationManager
@@ -17,6 +21,11 @@ class ScrobbleNotificationManager @Inject constructor(
         createChannel(
                 context.getString(R.string.np_notification_channel_id),
                 context.getString(R.string.np_notification_channel_name)
+        )
+
+        createChannel(
+                context.getString(R.string.scrobble_notification_channel_id),
+                context.getString(R.string.scrobble_notification_channel_name)
         )
     }
 
@@ -34,17 +43,25 @@ class ScrobbleNotificationManager @Inject constructor(
         }
     }
 
-    private fun sendNotification(track: LocalTrack) {
+    private fun sendNotification(
+            track: LocalTrack,
+            @StringRes channelId: Int,
+            @StringRes title: Int,
+            @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
+            priority: Int = NotificationCompat.PRIORITY_LOW,
+            notificationId: Int
+
+    ) {
         val builder = NotificationCompat.Builder(
                 context,
-                context.getString(R.string.np_notification_channel_id)
+                context.getString(channelId)
         )
-                .setSmallIcon(R.drawable.ic_outline_album_24)
-                .setContentTitle(context.getString(R.string.np_title))
+                .setSmallIcon(icon)
+                .setContentTitle(context.getString(title))
                 .setContentText("${track.artist} - ${track.title}")
-                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setPriority(priority)
                 .setAutoCancel(true)
-        notificationManager.notify(NOW_PLAYING_ID, builder.build())
+        notificationManager.notify(notificationId, builder.build())
     }
 
     fun cancelNotifications(id: Int? = null) {
@@ -56,6 +73,20 @@ class ScrobbleNotificationManager @Inject constructor(
     }
 
     fun updateNowPlayingNotification(track: LocalTrack) {
-        sendNotification(track)
+        sendNotification(
+                track = track,
+                channelId = R.string.np_notification_channel_id,
+                title = R.string.np_notification_channel_name,
+                notificationId = NOW_PLAYING_ID
+        )
+    }
+
+    fun scrobbledNotification(track: LocalTrack) {
+        sendNotification(
+                track = track,
+                channelId = R.string.scrobble_notification_channel_id,
+                title = R.string.scrobble_notification_channel_name,
+                notificationId = SCROBBLE_ID
+        )
     }
 }

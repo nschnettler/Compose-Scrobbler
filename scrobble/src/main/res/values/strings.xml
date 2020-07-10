@@ -1,6 +1,10 @@
 <resources>
     <string name="np_notification_channel_id" translatable="false">now_playing_channel</string>
     <string name="np_notification_channel_name" translatable="true">Now playing</string>
+    <string name="scrobble_notification_channel_id" translatable="false">scrobble_channel</string>
+    <string name="scrobble_notification_channel_name" translatable="true">Tracks scrobbled</string>
     <string name="np_title">Now playing</string>
     <string name="np_description">Description</string>
+    <string name="scrobble_title">Tracks scrobbled</string>
+    <string name="scrobble_description">Description</string>
 </resources>

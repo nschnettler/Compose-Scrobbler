@@ -18,6 +18,7 @@ class PlaybackController(
     fun saveOldTrack(track: LocalTrack) {
         if (track.readyToScrobble()) {
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+            notificationManager.scrobbledNotification(track)
         } else {
             repo.removeTrack(track)
         }
