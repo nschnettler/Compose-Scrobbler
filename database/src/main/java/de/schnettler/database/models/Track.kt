@@ -63,14 +63,15 @@ data class LocalTrack(
         val endTime: Long = System.currentTimeMillis(),
         var amountPlayed: Long = 0,
         val playedBy: String,
-        var status: ScrobbleStatus = ScrobbleStatus.VOLATILE
+        var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
+        var trackingStart: Long = startTime
 ) {
-    @Ignore var trackingStart: Long = startTime
     fun isTheSameAs(other: LocalTrack?) = title == other?.title && artist == other.artist
     private fun canBeScrobbled() = duration > 30000
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
     fun isPlaying() = status == ScrobbleStatus.PLAYING
+    fun playPercent() = amountPlayed.toFloat() / duration * 100
 
     fun pause() {
         updateAmountPlayed()
@@ -80,7 +81,7 @@ data class LocalTrack(
     private fun updateAmountPlayed() {
         if (!isPlaying()) return
         val now = System.currentTimeMillis()
-        amountPlayed =  now - trackingStart
+        amountPlayed +=  now - trackingStart
         trackingStart = now
     }
 
