@@ -10,8 +10,8 @@ import androidx.core.app.NotificationCompat
 import de.schnettler.database.models.LocalTrack
 import javax.inject.Inject
 
-val NOW_PLAYING_ID  = 0
-val SCROBBLE_ID = 1
+const val NOW_PLAYING_ID  = 0
+const val SCROBBLE_ID = 1
 
 class ScrobbleNotificationManager @Inject constructor(
         private val context: Service,
@@ -44,9 +44,9 @@ class ScrobbleNotificationManager @Inject constructor(
     }
 
     private fun sendNotification(
-            track: LocalTrack,
             @StringRes channelId: Int,
             @StringRes title: Int,
+            description: String,
             @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
             priority: Int = NotificationCompat.PRIORITY_LOW,
             notificationId: Int
@@ -58,7 +58,7 @@ class ScrobbleNotificationManager @Inject constructor(
         )
                 .setSmallIcon(icon)
                 .setContentTitle(context.getString(title))
-                .setContentText("${track.artist} - ${track.title}")
+                .setContentText(description)
                 .setPriority(priority)
                 .setAutoCancel(true)
         notificationManager.notify(notificationId, builder.build())
@@ -74,18 +74,18 @@ class ScrobbleNotificationManager @Inject constructor(
 
     fun updateNowPlayingNotification(track: LocalTrack) {
         sendNotification(
-                track = track,
                 channelId = R.string.np_notification_channel_id,
                 title = R.string.np_notification_channel_name,
+                description = "${track.artist} - ${track.name}",
                 notificationId = NOW_PLAYING_ID
         )
     }
 
     fun scrobbledNotification(track: LocalTrack) {
         sendNotification(
-                track = track,
                 channelId = R.string.scrobble_notification_channel_id,
                 title = R.string.scrobble_notification_channel_name,
+                description = "${track.artist} - ${track.name} - ${track.playPercent()}%",
                 notificationId = SCROBBLE_ID
         )
     }
