@@ -4,7 +4,9 @@ import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.BuildConfig
 import de.schnettler.common.TimePeriod
 import de.schnettler.lastfm.models.*
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface LastFmService {
@@ -25,6 +27,7 @@ interface LastFmService {
         const val METHOD_ARTIST_TRACKS = "artist.getTopTracks"
         const val METHOD_TRACK_INFO = "track.getInfo"
         const val METHOD_ALBUM_INFO = "album.getInfo"
+        const val METHOD_SCROBBLE = "track.scrobble"
     }
 
     @GET("?method=chart.gettopartists")
@@ -112,4 +115,18 @@ interface LastFmService {
         @Query("album") albumName: String,
         @Query("sk") sessionKey: String
     ): AlbumInfoDto
+
+    @POST(METHOD_SCROBBLE)
+    fun requestScrobble(@Body scrobble: ScrobbleRequest): String
 }
+
+data class ScrobbleRequest(
+    val artist: String,
+    val track: String,
+    val timestamp: Long, //SECONDS, NOT MS
+    val album: String?,
+    val duration: Long, //SECONDS
+    val api_key: String = BuildConfig.LASTFM_API_KEY,
+    val api_sig: String,
+    val sk: String
+)
