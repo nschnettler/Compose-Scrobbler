@@ -34,7 +34,7 @@ class ScrobbleRepository @Inject constructor(
 
     fun updateTrackAlbum(track: LocalTrack?, album: String) {
         scope.launch {
-            track?.let { localTrackDao.updateAlbum(album, it.startTime, it.playedBy) }
+            track?.let { localTrackDao.updateAlbum(album, it.timestamp, it.playedBy) }
 
         }
     }

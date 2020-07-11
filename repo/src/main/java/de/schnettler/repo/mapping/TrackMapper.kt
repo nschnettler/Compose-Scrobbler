@@ -28,7 +28,7 @@ fun RecentTracksDto.map() = Track(
     album = this.album.name
 ).apply {
     timestamp = this@map.date?.asMs() ?: 0
-    scrobbleStatus = if (attrs?.nowplaying?.toBoolean() == true) ScrobbleStatus.PLAYING else ScrobbleStatus.SCROBBLED
+    status = if (attrs?.nowplaying?.toBoolean() == true) ScrobbleStatus.PLAYING else ScrobbleStatus.SCROBBLED
 }
 
 fun TrackInfoDto.map() = Track(

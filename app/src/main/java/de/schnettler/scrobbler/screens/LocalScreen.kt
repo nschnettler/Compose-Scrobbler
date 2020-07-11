@@ -10,6 +10,7 @@ import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
+import androidx.ui.layout.Column
 import androidx.ui.layout.padding
 import androidx.ui.material.Button
 import androidx.ui.material.Card
@@ -24,6 +25,7 @@ import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
+import de.schnettler.database.models.TrackTest
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.NameListIcon
@@ -49,12 +51,11 @@ fun Content(localViewModel: LocalViewModel) {
    val data by localViewModel.data.collectAsState()
 
    data?.let { list ->
-      val trackList = list.map { it.mapToLastFmTrack() }.filterIndexed { index, track ->
+      val trackList = list.filterIndexed { index, track ->
          if (index == 0) {
-            return@filterIndexed track.scrobbleStatus == ScrobbleStatus.PLAYING || track.scrobbleStatus ==
-                    ScrobbleStatus.LOCAL
+            return@filterIndexed track.isPlaying() || track.isLocal()
          } else {
-            return@filterIndexed track.scrobbleStatus == ScrobbleStatus.LOCAL
+            return@filterIndexed track.isLocal()
          }
       }
       HistoryTrackList(
@@ -65,19 +66,8 @@ fun Content(localViewModel: LocalViewModel) {
    }
 }
 
-fun LocalTrack.mapToLastFmTrack() = Track(
-        name = title,
-        url = "",
-        duration = duration,
-        artist = artist,
-        album = album
-).apply {
-   timestamp = startTime
-   scrobbleStatus = status
-}
-
 @Composable
-fun NowPlayingTrack(track: Track, onClick: (Track) -> Unit) {
+fun NowPlayingTrack(track: TrackTest, onClick: (Track) -> Unit) {
    Card(modifier = Modifier.padding(16.dp)) {
       ListItem(
          text = { Text(track.name) },
@@ -90,19 +80,35 @@ fun NowPlayingTrack(track: Track, onClick: (Track) -> Unit) {
                )
             }
          },
-         onClick = { onClick.invoke(track) }
+         onClick = {
+            when(track) {
+               is Track -> onClick.invoke(track)
+            }
+         }
       )
    }
 }
 
 @Composable
-fun ScrobbledTrack(track: Track, onClick: (Track) -> Unit) {
+fun ScrobbledTrack(track: TrackTest, onClick: (Track) -> Unit) {
    ListItem(
       text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
       secondaryText = { Text(text = "${track.artist} ⦁ ${track.album}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
-      icon = { NameListIcon(item = track) },
-      onClick = { onClick.invoke(track) },
-      trailing = { track.timestampToRelativeTime()?.let { Text(text = it) } }
+      icon = { NameListIcon(title = track.name) },
+      onClick = {
+         when(track) {
+            is Track -> onClick.invoke(track)
+            is LocalTrack -> Timber.d("Clicked on Local Track")
+         }
+
+      },
+      trailing = { track.timestampToRelativeTime()?.let {
+         Column() {
+            Text(text = it)
+            Text(text = track.status.name)
+            if (track is LocalTrack) Text(text = "${track.playPercent()} %")
+         }
+      } }
    )
    Divider(color = colorResource(id = R.color.colorStroke))
 }
@@ -110,7 +116,7 @@ fun ScrobbledTrack(track: Track, onClick: (Track) -> Unit) {
 @Preview
 @Composable
 fun HistoryTrack(
-   @PreviewParameter(FakeHistoryTrackProvider::class) track: Track,
+   @PreviewParameter(FakeHistoryTrackProvider::class) track: TrackTest,
    onTrackSelected: (Track) -> Unit = { },
    onNowPlayingSelected: (Track) -> Unit = { }
 ) {
@@ -124,7 +130,7 @@ fun HistoryTrack(
 
 @Composable
 fun HistoryTrackList(
-   tracks: List<Track>,
+   tracks: List<TrackTest>,
    onTrackSelected: (Track) -> Unit,
    onNowPlayingSelected: (Track) -> Unit
 ) {

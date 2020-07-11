@@ -162,9 +162,9 @@ fun ListingScroller(
 }
 
 @Composable
-fun NameListIcon(item: ListingMin) {
+fun NameListIcon(title: String) {
     PlainListIconBackground {
-        Text(text = item.name.firstLetter())
+        Text(text = title.firstLetter())
     }
 }
 

@@ -23,7 +23,7 @@ class PlayBackTracker @Inject constructor(
         val album = (metadata.getText(MediaMetadata.METADATA_KEY_ALBUM) ?: "").toString()
         val duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION)
         val track = LocalTrack(
-                title = title,
+                name = title,
                 artist = artist,
                 album = album,
                 duration = duration,

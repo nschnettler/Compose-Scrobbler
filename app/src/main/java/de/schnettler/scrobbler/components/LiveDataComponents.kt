@@ -60,7 +60,7 @@ fun HistoryItem(
     ListItem(
         text = { Text(text = listing.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = { Text(text = subTitle, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        icon = { NameListIcon(item = listing) },
+        icon = { NameListIcon(title = listing.name) },
         onClick = { onListingSelected.invoke(listing) },
         trailing = { trailingText?.let { Text(text = it)} }
     )
