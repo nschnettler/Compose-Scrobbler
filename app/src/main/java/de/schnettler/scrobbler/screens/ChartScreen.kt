@@ -6,7 +6,7 @@ import androidx.compose.getValue
 import androidx.ui.livedata.observeAsState
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.Artist
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.scrobbler.components.GenericAdapterList
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
@@ -16,7 +16,7 @@ import java.util.*
 val formatter: CompactDecimalFormat = CompactDecimalFormat.getInstance(Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
 
 @Composable
-fun ChartScreen(model: ChartsViewModel, onListingSelected: (ListingMin) -> Unit) {
+fun ChartScreen(model: ChartsViewModel, onListingSelected: (CommonEntity) -> Unit) {
     val artistResponse by model.artistResponse.observeAsState()
 
     when (artistResponse) {

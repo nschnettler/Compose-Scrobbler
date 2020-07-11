@@ -11,7 +11,7 @@ import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Album
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.ListeningStats
@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalLayout::class)
 @Composable
-fun AlbumDetailScreen(album: Album, onListingSelected: (ListingMin) -> Unit, onTagClicked: (String) -> Unit) {
+fun AlbumDetailScreen(album: Album, onListingSelected: (CommonEntity) -> Unit, onTagClicked: (String) -> Unit) {
     VerticalScroller {
         Column {
             Row(modifier = Modifier.padding(16.dp)) {

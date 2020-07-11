@@ -19,7 +19,7 @@ data class Track(
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null,
     val rank: Int = -1
-): ListingMin, TrackTest {
+): LastFmStatsEntity, StatusTrack {
     @Ignore override var timestamp: Long = 0
     @Ignore override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE
 }
@@ -45,7 +45,7 @@ data class TrackDomain(
     val userLoved: Boolean = false,
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null
-): ListingMin
+): LastFmStatsEntity
 
 @Entity(tableName = "localTracks", primaryKeys = ["timestamp", "playedBy"])
 data class LocalTrack(
@@ -60,7 +60,7 @@ data class LocalTrack(
         val playedBy: String,
         override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
         var trackingStart: Long = timestamp
-): TrackTest {
+): StatusTrack {
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
     fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
@@ -91,17 +91,18 @@ enum class ScrobbleStatus {
     VOLATILE
 }
 
-interface TrackTest {
-    val name: String
+interface CommonTrack: CommonEntity {
     val artist: String
     val album: String?
     val duration: Long
+    fun isTheSameAs(track: CommonTrack?) = name == track?.name && artist == track.artist
+    fun canBeScrobbled() = duration > 30000
+}
 
+interface StatusTrack: CommonTrack {
     val timestamp: Long
     var status: ScrobbleStatus
 
-    fun isTheSameAs(track: TrackTest?) = name == track?.name && artist == track.artist
-    fun canBeScrobbled() = duration > 30000
     fun isPlaying() = status == ScrobbleStatus.PLAYING
     fun isLocal() = status == ScrobbleStatus.LOCAL
     fun timestampToRelativeTime() =

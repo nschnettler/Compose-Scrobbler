@@ -17,7 +17,8 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.LastFmStatsEntity
 import de.schnettler.database.models.TopListEntryWithData
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.LoadingState
@@ -63,11 +64,11 @@ fun <T> GenericHorizontalListingScrollerWithTitle(
 
 @Composable
 fun ListingCard(
-    data: ListingMin,
+    data: LastFmEntity,
     height: Dp = 200.dp,
     plays: Long = -1,
     hintSuffix: String = "Wiedergaben",
-    onEntrySelected: (ListingMin) -> Unit) {
+    onEntrySelected: (LastFmEntity) -> Unit) {
 
     val titleTextSize = 14.dp
     val subtitleTextsize = if (plays >= 0) 12.dp else 0.dp
@@ -118,7 +119,7 @@ fun TopListScroller(
     title: String,
     content: LoadingState<List<TopListEntryWithData>>,
     height: Dp = 200.dp,
-    onEntrySelected: (ListingMin) -> Unit) {
+    onEntrySelected: (LastFmEntity) -> Unit) {
     GenericHorizontalListingScrollerWithTitle(
         items = content.data,
         title = title,
@@ -138,10 +139,10 @@ fun TopListScroller(
 @Composable
 fun ListingScroller(
     title: String,
-    content: List<ListingMin>,
+    content: List<LastFmStatsEntity>,
     height: Dp,
     playsStyle: PlaysStyle,
-    onEntrySelected: (ListingMin) -> Unit) {
+    onEntrySelected: (LastFmEntity) -> Unit) {
 
     GenericHorizontalListingScrollerWithTitle(
         items = content,

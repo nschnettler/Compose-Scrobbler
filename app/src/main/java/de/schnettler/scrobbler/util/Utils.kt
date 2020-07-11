@@ -8,7 +8,6 @@ import androidx.compose.Composable
 import androidx.core.text.HtmlCompat
 import androidx.ui.material.Surface
 import androidx.ui.unit.dp
-import de.schnettler.database.models.ListingMin
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import java.util.*
 

@@ -49,5 +49,5 @@ data class TopListAlbum(
 
 interface TopListEntryWithData {
     val topListEntry: TopListEntry
-    val data: ListingMin
+    val data: LastFmStatsEntity
 }

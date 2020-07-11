@@ -96,8 +96,8 @@ object SpotifyAuthMapper: Mapper<SpotifyAccessTokenDto, AuthToken> {
     )
 }
 
-object RelationMapper: IndexedMapper<Pair<ListingMin, ListingMin>, RelationEntity> {
-    override suspend fun map(index: Int, from: Pair<ListingMin, ListingMin>): RelationEntity {
+object RelationMapper: IndexedMapper<Pair<LastFmEntity, LastFmEntity>, RelationEntity> {
+    override suspend fun map(index: Int, from: Pair<LastFmEntity, LastFmEntity>): RelationEntity {
         val source = from.first
         val target = from.second
         return RelationEntity(

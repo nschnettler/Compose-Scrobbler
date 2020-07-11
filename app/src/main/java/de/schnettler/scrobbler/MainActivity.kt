@@ -16,7 +16,10 @@ import androidx.ui.text.style.TextOverflow
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.LastFmStatsEntity
+import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.*
 import de.schnettler.scrobbler.screens.details.DetailScreen
@@ -38,8 +41,8 @@ class MainActivity : AppCompatActivity() {
     private val historyViewModel: HistoryViewModel by viewModels()
     private val localViewModel: LocalViewModel by viewModels()
 
-    private val onOpenInBrowser: (ListingMin) -> Unit = {
-        it.url?.let {url -> openUrlInCustomTab(url) }
+    private val onOpenInBrowser: (LastFmEntity) -> Unit = {
+        openUrlInCustomTab(it.url)
     }
 
     private val onTagClicked: (String) -> Unit = {tag ->
@@ -47,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         openUrlInCustomTab(url)
     }
 
-    private lateinit var onListingClicked: (ListingMin) -> Unit
+    private lateinit var onListingClicked: (CommonEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
             AppRoute.ChartRoute,
@@ -69,7 +72,11 @@ class MainActivity : AppCompatActivity() {
             MaterialThemeFromMdcTheme  {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
-                        this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
+                        when(it) {
+                            is LastFmStatsEntity -> this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
+                            is LocalTrack -> Timber.d("Scrobble plz!!!")
+                        }
+
                     }
 
                     Scaffold(

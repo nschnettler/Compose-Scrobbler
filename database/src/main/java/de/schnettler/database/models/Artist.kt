@@ -13,7 +13,7 @@ data class Artist(
     override var imageUrl: String? = null,
     val bio: String? = null,
     val tags: List<String> = listOf()
-): ListingMin {
+): LastFmStatsEntity {
     @Ignore var similarArtists: List<Artist> = listOf()
     @Ignore var topAlbums: List<Album> = listOf()
     @Ignore var topTracks: List<Track> = listOf()

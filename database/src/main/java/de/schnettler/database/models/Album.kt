@@ -14,7 +14,7 @@ data class Album(
     val artist: String?,
     val tags: List<String> = listOf(),
     val description: String? = null
-): ListingMin {
+): LastFmStatsEntity {
     fun getArtistOrThrow() = artist ?: throw Exception("Artist missing")
     @Ignore var tracks: List<Track> = listOf()
 }

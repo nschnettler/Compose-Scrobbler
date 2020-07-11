@@ -14,7 +14,7 @@ import androidx.ui.material.*
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.StatsRow
@@ -29,7 +29,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onListingSelected: (ListingMin) -> Unit) {
+fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Unit) {
 
    val userState by model.userState.collectAsState()
 

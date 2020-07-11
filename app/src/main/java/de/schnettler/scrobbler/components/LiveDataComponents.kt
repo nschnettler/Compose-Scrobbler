@@ -16,7 +16,7 @@ import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import de.schnettler.database.models.Artist
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.screens.formatter
@@ -31,7 +31,7 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 }
 
 @Composable
-fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -> Unit) {
+fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntity) -> Unit) {
     LazyColumnItems(items = data) {item ->
         when(item) {
             is Track -> HistoryItem(
@@ -53,9 +53,9 @@ fun GenericAdapterList(data: List<ListingMin>, onListingSelected: (ListingMin) -
 
 @Composable
 fun HistoryItem(
-        listing: ListingMin,
+        listing: CommonEntity,
         subTitle: String,
-        onListingSelected: (ListingMin) -> Unit,
+        onListingSelected: (CommonEntity) -> Unit,
         trailingText: String? = null) {
     ListItem(
         text = { Text(text = listing.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },

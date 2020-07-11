@@ -22,7 +22,7 @@ import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun DetailScreen(model: DetailViewModel, onListingSelected: (ListingMin) -> Unit, onTagClicked: (String) -> Unit) {
+fun DetailScreen(model: DetailViewModel, onListingSelected: (CommonEntity) -> Unit, onTagClicked: (String) -> Unit) {
     val artistState by model.entryState.collectAsState()
 
     artistState.handleIfError(ContextAmbient.current)

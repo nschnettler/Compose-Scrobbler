@@ -103,7 +103,7 @@ class TopListRepository @Inject constructor(
         )
     ).build().stream(StoreRequest.cached("", true))
 
-    private suspend fun refreshImageUrl(localImageUrl: String?, listing: ListingMin) {
+    private suspend fun refreshImageUrl(localImageUrl: String?, listing: LastFmEntity) {
         if (localImageUrl.isNullOrBlank()) {
             println("Refreshing ImageURl for ${listing.name}")
             val url: String? = when (listing) {

@@ -13,7 +13,7 @@ import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
-import de.schnettler.database.models.ListingMin
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.*
@@ -23,7 +23,7 @@ import de.schnettler.scrobbler.util.defaultSpacerSize
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit, onTagClicked: (String) -> Unit) {
+fun ArtistDetailScreen(artist: Artist, onListingSelected: (CommonEntity) -> Unit, onTagClicked: (String) -> Unit) {
     VerticalScroller() {
         Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
 
@@ -62,7 +62,7 @@ fun ArtistDetailScreen(artist: Artist, onListingSelected: (ListingMin) -> Unit, 
 }
 
 @Composable
-fun TrackList(tracks: List<Track>, onListingSelected: (ListingMin) -> Unit) {
+fun TrackList(tracks: List<Track>, onListingSelected: (CommonEntity) -> Unit) {
     tracks.forEachIndexed { index, track ->
         ListItem(
             text = { Text(track.name) },

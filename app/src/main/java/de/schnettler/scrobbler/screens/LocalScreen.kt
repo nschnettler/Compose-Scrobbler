@@ -23,9 +23,8 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
-import de.schnettler.database.models.TrackTest
+import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.NameListIcon
@@ -67,7 +66,7 @@ fun Content(localViewModel: LocalViewModel) {
 }
 
 @Composable
-fun NowPlayingTrack(track: TrackTest, onClick: (Track) -> Unit) {
+fun NowPlayingTrack(track: StatusTrack, onClick: (Track) -> Unit) {
    Card(modifier = Modifier.padding(16.dp)) {
       ListItem(
          text = { Text(track.name) },
@@ -90,7 +89,7 @@ fun NowPlayingTrack(track: TrackTest, onClick: (Track) -> Unit) {
 }
 
 @Composable
-fun ScrobbledTrack(track: TrackTest, onClick: (Track) -> Unit) {
+fun ScrobbledTrack(track: StatusTrack, onClick: (Track) -> Unit) {
    ListItem(
       text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
       secondaryText = { Text(text = "${track.artist} ⦁ ${track.album}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -116,7 +115,7 @@ fun ScrobbledTrack(track: TrackTest, onClick: (Track) -> Unit) {
 @Preview
 @Composable
 fun HistoryTrack(
-   @PreviewParameter(FakeHistoryTrackProvider::class) track: TrackTest,
+   @PreviewParameter(FakeHistoryTrackProvider::class) track: StatusTrack,
    onTrackSelected: (Track) -> Unit = { },
    onNowPlayingSelected: (Track) -> Unit = { }
 ) {
@@ -130,7 +129,7 @@ fun HistoryTrack(
 
 @Composable
 fun HistoryTrackList(
-   tracks: List<TrackTest>,
+   tracks: List<StatusTrack>,
    onTrackSelected: (Track) -> Unit,
    onNowPlayingSelected: (Track) -> Unit
 ) {

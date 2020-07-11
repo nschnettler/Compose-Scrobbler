@@ -1,13 +1,7 @@
 package de.schnettler.database.models
 
-interface ListingMin {
-    val id: String
+interface CommonEntity {
     val name: String
-    val plays: Long
-    val userPlays: Long
-    val listeners: Long
-    val url: String?
-    var imageUrl: String?
     val type: ListingType
         get() = when(this) {
             is Album -> ListingType.ALBUM
@@ -15,4 +9,16 @@ interface ListingMin {
             is Track -> ListingType.TRACK
             else -> ListingType.UNDEFINED
         }
+}
+
+interface LastFmEntity: CommonEntity {
+    val id: String
+    val url: String
+    var imageUrl: String?
+}
+
+interface LastFmStatsEntity: LastFmEntity {
+    val plays: Long
+    val userPlays: Long
+    val listeners: Long
 }

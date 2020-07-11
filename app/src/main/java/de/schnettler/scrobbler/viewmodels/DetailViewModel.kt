@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.Album
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.ListingMin
-import de.schnettler.database.models.Track
+import de.schnettler.database.models.*
 import de.schnettler.repo.DetailRepository
 import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.util.updateState
@@ -20,10 +17,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : ViewModel() {
-    private val entry: MutableStateFlow<ListingMin?> = MutableStateFlow(null)
-    val entryState: MutableStateFlow<LoadingState<ListingMin>> = MutableStateFlow(LoadingState.Initial())
+    private val entry: MutableStateFlow<LastFmStatsEntity?> = MutableStateFlow(null)
+    val entryState: MutableStateFlow<LoadingState<LastFmStatsEntity>> = MutableStateFlow(LoadingState.Initial())
 
-    fun updateEntry(new: ListingMin) {
+    fun updateEntry(new: LastFmStatsEntity) {
         if (entry.updateValue(new)) {
             entryState.value = LoadingState.Initial()
         }
