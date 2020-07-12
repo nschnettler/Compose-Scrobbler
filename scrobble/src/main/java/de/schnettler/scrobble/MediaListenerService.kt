@@ -63,10 +63,10 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
 
                     //
                     controller.playbackState?.let { state ->
-                        tracker.onStateChanged(controller = controller, state = state)
+                        tracker.onStateChanged(packageName = controller.packageName, state = state)
                     }
                     controller.metadata?.let { metadata ->
-                        tracker.onMetadataChanged(controller = controller, metadata = metadata)
+                        tracker.onMetadataChanged(packageName = controller.packageName, metadata = metadata)
                     }
                 }
             }

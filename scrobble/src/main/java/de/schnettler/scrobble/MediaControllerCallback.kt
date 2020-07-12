@@ -9,10 +9,10 @@ class MediaControllerCallback(private val controller: MediaController, private v
 
 
     override fun onPlaybackStateChanged(state: PlaybackState?) {
-        state?.let { playbackTracker.onStateChanged(controller = controller, state = it) }
+        state?.let { playbackTracker.onStateChanged(packageName = controller.packageName, state = it) }
     }
 
     override fun onMetadataChanged(metadata: MediaMetadata?) {
-        metadata?.let { playbackTracker.onMetadataChanged(controller = controller, metadata = it) }
+        metadata?.let { playbackTracker.onMetadataChanged(packageName = controller.packageName, metadata = it) }
     }
 }

@@ -8,7 +8,6 @@ import de.schnettler.repo.ScrobbleRepository
 import timber.log.Timber
 
 class PlaybackController(
-        private val controller: MediaController,
         private val repo: ScrobbleRepository,
         private val notificationManager: ScrobbleNotificationManager
 ) {
@@ -47,7 +46,7 @@ class PlaybackController(
                     Timber.d("[Save] $currentTrack")
                 }
                 //Start new Track
-                if (controller.isPlaying()) {
+                if (currentTrack?.isPlaying() == true) {
                     track.play()
                 }
                 insertNowPlaying(track)

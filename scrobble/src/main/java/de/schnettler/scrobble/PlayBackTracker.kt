@@ -1,7 +1,6 @@
 package de.schnettler.scrobble
 
 import android.media.MediaMetadata
-import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.repo.ScrobbleRepository
@@ -11,12 +10,12 @@ class PlayBackTracker @Inject constructor(
         private val repo: ScrobbleRepository,
         private val notificationManager: ScrobbleNotificationManager
 ) {
-    private val playerStates = hashMapOf<MediaController, PlaybackController>()
+    private val playerStates = hashMapOf<String, PlaybackController>()
 
-    private fun getPlaybackController(controller: MediaController) =
-            playerStates[controller] ?: PlaybackController(controller, repo, notificationManager).also { playerStates[controller] = it }
+    private fun getPlaybackController(packageName: String) =
+            playerStates[packageName] ?: PlaybackController(repo, notificationManager).also { playerStates[packageName] = it }
 
-    fun onMetadataChanged(controller: MediaController, metadata: MediaMetadata) {
+    fun onMetadataChanged(packageName: String, metadata: MediaMetadata) {
         val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()
         val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
                 .METADATA_KEY_ALBUM_ARTIST)) ?: "").toString()
@@ -27,12 +26,12 @@ class PlayBackTracker @Inject constructor(
                 artist = artist,
                 album = album,
                 duration = duration,
-                playedBy = controller.packageName
+                playedBy = packageName
         )
-        getPlaybackController(controller).updateTrack(track)
+        getPlaybackController(packageName).updateTrack(track)
     }
 
-    fun onStateChanged(controller: MediaController, state: PlaybackState) {
-        getPlaybackController(controller).updatePlayBackState(state)
+    fun onStateChanged(packageName: String, state: PlaybackState) {
+        getPlaybackController(packageName).updatePlayBackState(state)
     }
 }
