@@ -59,14 +59,16 @@ fun Content(localViewModel: LocalViewModel) {
       }
       HistoryTrackList(
          tracks = trackList,
-         onTrackSelected = {Timber.d("Selected $it")},
+         onTrackSelected = {
+            localViewModel.submitScrobble(it)
+         },
          onNowPlayingSelected = { Timber.d("Selected Nowplaying $it")}
       )
    }
 }
 
 @Composable
-fun NowPlayingTrack(track: StatusTrack, onClick: (Track) -> Unit) {
+fun <T: StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
    Card(modifier = Modifier.padding(16.dp)) {
       ListItem(
          text = { Text(track.name) },
@@ -89,18 +91,12 @@ fun NowPlayingTrack(track: StatusTrack, onClick: (Track) -> Unit) {
 }
 
 @Composable
-fun ScrobbledTrack(track: StatusTrack, onClick: (Track) -> Unit) {
+fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
    ListItem(
       text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
       secondaryText = { Text(text = "${track.artist} ⦁ ${track.album}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
       icon = { NameListIcon(title = track.name) },
-      onClick = {
-         when(track) {
-            is Track -> onClick.invoke(track)
-            is LocalTrack -> Timber.d("Clicked on Local Track")
-         }
-
-      },
+      onClick = { onClick.invoke(track) },
       trailing = { track.timestampToRelativeTime()?.let {
          Column() {
             Text(text = it)
@@ -114,10 +110,10 @@ fun ScrobbledTrack(track: StatusTrack, onClick: (Track) -> Unit) {
 
 @Preview
 @Composable
-fun HistoryTrack(
-   @PreviewParameter(FakeHistoryTrackProvider::class) track: StatusTrack,
-   onTrackSelected: (Track) -> Unit = { },
-   onNowPlayingSelected: (Track) -> Unit = { }
+fun <T: StatusTrack> HistoryTrack(
+   @PreviewParameter(FakeHistoryTrackProvider::class) track: T,
+   onTrackSelected: (T) -> Unit = { },
+   onNowPlayingSelected: (T) -> Unit = { }
 ) {
    if(track.isPlaying()) {
       NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
@@ -128,10 +124,10 @@ fun HistoryTrack(
 
 
 @Composable
-fun HistoryTrackList(
-   tracks: List<StatusTrack>,
-   onTrackSelected: (Track) -> Unit,
-   onNowPlayingSelected: (Track) -> Unit
+fun <T: StatusTrack> HistoryTrackList(
+   tracks: List<T>,
+   onTrackSelected: (T) -> Unit,
+   onNowPlayingSelected: (T) -> Unit
 ) {
    LazyColumnItems(items = tracks) {track ->
       HistoryTrack(
