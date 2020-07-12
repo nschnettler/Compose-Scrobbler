@@ -5,10 +5,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import dagger.hilt.android.components.ServiceComponent
 import de.schnettler.database.AppDatabase
 import de.schnettler.lastfm.api.*
 import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.ScrobblerService
 import de.schnettler.lastfm.api.spotify.SpotifyAuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +25,14 @@ class NetworkModule {
         provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
     ).create(
         LastFmService::class.java
+    )
+
+    @Provides
+    @Singleton
+    fun provideScrobblerService() = provideRetrofit(
+            provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
+    ).create(
+            ScrobblerService::class.java
     )
 
     @Provides

@@ -64,6 +64,8 @@ data class LocalTrack(
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
     fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
+    fun timeStampUnix() = (timestamp / 1000).toString()
+    fun durationUnix() = (duration / 1000).toString()
 
     fun pause() {
         updateAmountPlayed()

@@ -4,13 +4,12 @@ import de.schnettler.lastfm.api.RetrofitService
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
-import java.math.BigInteger
 import java.security.MessageDigest
 
-fun String.md5(): String {
-    val md = MessageDigest.getInstance("MD5")
-    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
-}
+//fun String.md5(): String {
+//    val md = MessageDigest.getInstance("MD5")
+//    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
+//}
 
 fun createSignature(method: String, params: MutableMap<String, String>, secret: String): String {
     params["method"] = method
@@ -36,3 +35,10 @@ suspend fun provideSpotifyService(
         authProvider.getToken().token,
         authenticator = authenticator
     )
+
+fun String.md5(): String {
+    val bytes = MessageDigest.getInstance("MD5").digest(this.toByteArray())
+    return bytes.joinToString("") {
+        "%02x".format(it)
+    }
+}
