@@ -47,9 +47,7 @@ class PlaybackController(
                     Timber.d("[Save] $currentTrack")
                 }
                 //Start new Track
-                if (wasPlaying) {
-                    track.play()
-                }
+                track.play()
                 insertNowPlaying(track)
                 Timber.d("[New] $track")
                 updateNowPlaying(track)
