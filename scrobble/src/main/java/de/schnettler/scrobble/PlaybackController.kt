@@ -29,6 +29,7 @@ class PlaybackController(
 
     fun updateTrack(track: LocalTrack) {
         val currentTrack = repo.currentTrack
+        val wasPlaying = currentTrack?.isPlaying() ?: false
         when(track.isTheSameAs(repo.currentTrack)) {
             // Track is the same (title and artist match)
             true -> {
@@ -46,7 +47,7 @@ class PlaybackController(
                     Timber.d("[Save] $currentTrack")
                 }
                 //Start new Track
-                if (currentTrack?.isPlaying() == true) {
+                if (wasPlaying) {
                     track.play()
                 }
                 insertNowPlaying(track)
