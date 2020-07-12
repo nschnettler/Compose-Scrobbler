@@ -62,7 +62,10 @@ fun Content(localViewModel: LocalViewModel) {
          onTrackSelected = {
             localViewModel.submitScrobble(it)
          },
-         onNowPlayingSelected = { Timber.d("Selected Nowplaying $it")}
+         onNowPlayingSelected = {
+            Timber.d("Update NowPlaying")
+            localViewModel.submitNowPlaying(it)
+         }
       )
    }
 }
@@ -81,11 +84,7 @@ fun <T: StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
                )
             }
          },
-         onClick = {
-            when(track) {
-               is Track -> onClick.invoke(track)
-            }
-         }
+         onClick = { onClick.invoke(track) }
       )
    }
 }
