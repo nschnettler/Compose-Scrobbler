@@ -5,16 +5,23 @@ import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
+import de.schnettler.repo.ServiceCoroutineScope
+import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.mapping.LastFmPostResponse
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class PlaybackController(
         private val repo: ScrobbleRepository,
-        private val notificationManager: ScrobbleNotificationManager
+        private val notificationManager: ScrobbleNotificationManager,
+        private val scope: ServiceCoroutineScope,
+        private val authProvider: LastFmAuthProvider
 ) {
-
+    var nowPlaying: LocalTrack? = null
     var lastPlaybackState: Int? = null
 
-    fun saveOldTrack(track: LocalTrack) {
+    private fun saveOldTrack(track: LocalTrack) {
+        Timber.d("[Save] $nowPlaying")
         if (track.readyToScrobble()) {
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
             notificationManager.scrobbledNotification(track)
@@ -23,54 +30,65 @@ class PlaybackController(
         }
     }
 
-    fun insertNowPlaying(track: LocalTrack) {
-        repo.saveTrack(track)
+    private fun notifyNowPlaying(track: LocalTrack?) {
+        updateNowPlaying(nowPlaying)
+        Timber.d("[New] $nowPlaying")
+        track?.let {
+            scope.launch {
+                if (authProvider.loggedIn()) {
+                    val result = repo.submitNowPlaying(track)
+                    handleResult(result)
+                }
+            }
+        }
+    }
+
+    private fun handleResult(result: LastFmPostResponse) {
+        when(result) {
+            is LastFmPostResponse.ERROR -> Timber.e("${result.error}")
+            is LastFmPostResponse.SUCCESS<*> -> Timber.d("${result.data}")
+        }
     }
 
     fun updateTrack(track: LocalTrack) {
-        val currentTrack = repo.currentTrack
-        val wasPlaying = currentTrack?.isPlaying() ?: false
-        when(track.isTheSameAs(repo.currentTrack)) {
+        when(track.isTheSameAs(nowPlaying)) {
             // Track is the same (title and artist match)
             true -> {
-                // Update Metadata
-                repo.updateTrackAlbum(currentTrack, track.album)
-                Timber.d("[Update] $currentTrack")
+                if (track.album != nowPlaying?.album) {
+                    //Album updated. Metadata change complete
+                    nowPlaying = nowPlaying?.copy(album = track.album)
+                    notifyNowPlaying(nowPlaying)
+                }
             }
 
             // Track changed
             false -> {
                 // Save old Track
-                currentTrack?.let {
+                nowPlaying?.let {
                     it.pause()
                     saveOldTrack(it)
-                    Timber.d("[Save] $currentTrack")
                 }
                 //Start new Track
+                nowPlaying = track
                 track.play()
-                insertNowPlaying(track)
-                Timber.d("[New] $track")
-                updateNowPlaying(track)
             }
         }
     }
 
     fun updatePlayBackState(playbackState: PlaybackState) {
-        val currentTrack = repo.currentTrack ?: return
+        val current = nowPlaying ?: return
         if (playbackState.state == lastPlaybackState) return
         lastPlaybackState = playbackState.state
 
         if (playbackState.isPlaying()) {
-            currentTrack.play()
-            Timber.d("[Play] $currentTrack")
-            updateNowPlaying(currentTrack)
+            current.play()
+            //Timber.d("[Play] $current")
+            updateNowPlaying(current)
         } else {
-            currentTrack.pause()
-            Timber.d("[Pause] $currentTrack")
+            current.pause()
+            //Timber.d("[Pause] $current")
             updateNowPlaying(null)
         }
-
-        repo.saveTrack(currentTrack)
     }
 
     private fun updateNowPlaying(current: LocalTrack?) {
