@@ -80,3 +80,21 @@ data class LovedTracksResponse(
     val track: List<UserTrackDto>,
     @Json(name = "@attr") val info: ResponseInfo
 )
+
+data class NowPlayingResponse(
+        val artist: CorrectionResponse,
+        val album: CorrectionResponse,
+        val albumArtist: CorrectionResponse,
+        val track: CorrectionResponse,
+        val ignoredMessage: IgnoredResponse
+)
+
+data class CorrectionResponse(
+        val corrected: String,
+        @Json(name= "#text") val correctValue: String
+)
+
+data class IgnoredResponse(
+        val code: Long,
+        @Json(name= "#text") val reason: String
+)
