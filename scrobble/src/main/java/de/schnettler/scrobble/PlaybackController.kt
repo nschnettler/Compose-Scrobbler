@@ -4,6 +4,7 @@ import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
+import de.schnettler.lastfm.models.Errors
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
@@ -21,12 +22,38 @@ class PlaybackController(
     var lastPlaybackState: Int? = null
 
     private fun saveOldTrack(track: LocalTrack) {
-        Timber.d("[Save] $nowPlaying")
         if (track.readyToScrobble()) {
-            repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
-            notificationManager.scrobbledNotification(track)
+            Timber.d("[Save] $nowPlaying")
+            scope.launch {
+                if (authProvider.loggedIn()) {
+                    when(val result = repo.createAndSubmitScrobble(track)) {
+                        is LastFmPostResponse.ERROR -> {
+                            when(result.error) {
+                                Errors.OFFLINE, Errors.UNAVAILABLE -> {
+                                    //Cache Scrobble
+                                    Timber.d("Scrobble failed. Service offline")
+                                    repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+                                }
+                                Errors.SESSION -> {
+                                    //Reauth and retry
+                                    Timber.d("Scrobble failed. Unauthorized")
+                                    repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+                                }
+                                else -> {
+                                    //Skip this Scrobble
+                                }
+                            }
+                        }
+                        is LastFmPostResponse.SUCCESS<*> -> {
+                            Timber.d("Scrobble successful")
+                            notificationManager.scrobbledNotification(track)
+                            repo.saveTrack(track.copy(status = ScrobbleStatus.SCROBBLED))
+                        }
+                    }
+                }
+            }
         } else {
-            repo.removeTrack(track)
+            Timber.d("[Skip] $nowPlaying")
         }
     }
 

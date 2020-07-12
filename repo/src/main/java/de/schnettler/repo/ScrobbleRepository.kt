@@ -66,4 +66,26 @@ class ScrobbleRepository @Inject constructor(
                     LastFmService.SECRET
             )
     ).map()
+
+    suspend fun createAndSubmitScrobble(track: LocalTrack)= service.submitScrobble(
+            method = LastFmService.METHOD_SCROBBLE,
+            artist = track.artist,
+            track = track.name,
+            timestamp = track.timeStampUnix(),
+            album = track.album,
+            duration = track.durationUnix(),
+            sessionKey = authProvider.getSessionKeyOrThrow(),
+            signature = createSignature(
+                    LastFmService.METHOD_SCROBBLE,
+                    mutableMapOf(
+                            "artist" to track.artist,
+                            "track" to track.name,
+                            "album" to track.album,
+                            "duration" to track.durationUnix(),
+                            "timestamp" to track.timeStampUnix(),
+                            "sk" to authProvider.getSessionKeyOrThrow()
+                    ),
+                    LastFmService.SECRET
+            )
+    ).map()
 }
