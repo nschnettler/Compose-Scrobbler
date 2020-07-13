@@ -60,11 +60,9 @@ fun Content(localViewModel: LocalViewModel) {
       HistoryTrackList(
          tracks = trackList,
          onTrackSelected = {
-            localViewModel.submitScrobble(it)
          },
          onNowPlayingSelected = {
             Timber.d("Update NowPlaying")
-            localViewModel.submitNowPlaying(it)
          }
       )
    }

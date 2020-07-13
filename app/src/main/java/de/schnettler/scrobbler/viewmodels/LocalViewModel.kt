@@ -16,25 +16,4 @@ class LocalViewModel @ViewModelInject constructor(
     val data by lazy {
         repo.getData()
     }
-
-    fun submitScrobble(track: LocalTrack) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = repo.createAndSubmitScrobble(track)
-            handleResult(result)
-        }
-    }
-
-    fun submitNowPlaying(track: LocalTrack) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val result = repo.submitNowPlaying(track)
-            handleResult(result)
-        }
-    }
-
-    private fun handleResult(result: LastFmPostResponse) {
-        when(result) {
-            is LastFmPostResponse.ERROR -> Timber.e("${result.error}")
-            is LastFmPostResponse.SUCCESS<*> -> Timber.d("${result.data}")
-        }
-    }
 }
