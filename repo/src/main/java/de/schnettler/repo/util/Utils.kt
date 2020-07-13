@@ -11,8 +11,7 @@ import java.security.MessageDigest
 //    return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 //}
 
-fun createSignature(method: String, params: MutableMap<String, String>, secret: String): String {
-    params["method"] = method
+fun createSignature(params: MutableMap<String, String>): String {
     params["api_key"] = LastFmService.API_KEY
     val sorted = params.toSortedMap()
     val signature = StringBuilder()
@@ -20,7 +19,7 @@ fun createSignature(method: String, params: MutableMap<String, String>, secret: 
         signature.append(key)
         signature.append(value)
     }
-    signature.append(secret)
+    signature.append(LastFmService.SECRET)
     return signature.toString().md5()
 }
 

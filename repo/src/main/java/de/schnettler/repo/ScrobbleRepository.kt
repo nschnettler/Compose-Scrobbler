@@ -34,58 +34,43 @@ class ScrobbleRepository @Inject constructor(
         }
     }
 
-    fun removeTrack(track: LocalTrack) {
-        scope.launch {
-            localTrackDao.delete(track)
-        }
-    }
-
-    fun updateTrackAlbum(track: LocalTrack?, album: String) {
-        scope.launch {
-            track?.let { localTrackDao.updateAlbum(album, it.timestamp, it.playedBy) }
-
-        }
-    }
-
-    suspend fun submitNowPlaying(track: LocalTrack) = service.submitNowPlaying(
-            method = LastFmService.METHOD_NOWPLAYING,
-            artist = track.artist,
-            track = track.name,
-            album = track.album,
-            duration = track.durationUnix(),
-            sessionKey = authProvider.getSessionKeyOrThrow(),
-            signature = createSignature(
-                    LastFmService.METHOD_NOWPLAYING,
-                    mutableMapOf(
-                            "artist" to track.artist,
-                            "track" to track.name,
-                            "album" to track.album,
-                            "duration" to track.durationUnix(),
-                            "sk" to authProvider.getSessionKeyOrThrow()
-                    ),
-                    LastFmService.SECRET
+    suspend fun createAndSubmitScrobble(track: LocalTrack)= service.submitScrobble(
+        method = LastFmService.METHOD_SCROBBLE,
+        artist = track.artist,
+        track = track.name,
+        timestamp = track.timeStampUnix(),
+        album = track.album,
+        duration = track.durationUnix(),
+        sessionKey = authProvider.getSessionKeyOrThrow(),
+        signature = createSignature(
+            mutableMapOf(
+                "method" to LastFmService.METHOD_SCROBBLE,
+                "artist" to track.artist,
+                "track" to track.name,
+                "album" to track.album,
+                "duration" to track.durationUnix(),
+                "timestamp" to track.timeStampUnix(),
+                "sk" to authProvider.getSessionKeyOrThrow()
             )
+        )
     ).map()
 
-    suspend fun createAndSubmitScrobble(track: LocalTrack)= service.submitScrobble(
-            method = LastFmService.METHOD_SCROBBLE,
-            artist = track.artist,
-            track = track.name,
-            timestamp = track.timeStampUnix(),
-            album = track.album,
-            duration = track.durationUnix(),
-            sessionKey = authProvider.getSessionKeyOrThrow(),
-            signature = createSignature(
-                    LastFmService.METHOD_SCROBBLE,
-                    mutableMapOf(
-                            "artist" to track.artist,
-                            "track" to track.name,
-                            "album" to track.album,
-                            "duration" to track.durationUnix(),
-                            "timestamp" to track.timeStampUnix(),
-                            "sk" to authProvider.getSessionKeyOrThrow()
-                    ),
-                    LastFmService.SECRET
+    suspend fun submitNowPlaying(track: LocalTrack) = service.submitNowPlaying(
+        method = LastFmService.METHOD_NOWPLAYING,
+        artist = track.artist,
+        track = track.name,
+        album = track.album,
+        duration = track.durationUnix(),
+        sessionKey = authProvider.getSessionKeyOrThrow(),
+        signature = createSignature(
+            mutableMapOf(
+                "method" to LastFmService.METHOD_NOWPLAYING,
+                "artist" to track.artist,
+                "track" to track.name,
+                "album" to track.album,
+                "duration" to track.durationUnix(),
+                "sk" to authProvider.getSessionKeyOrThrow()
             )
+        )
     ).map()
 }
