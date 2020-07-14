@@ -50,15 +50,8 @@ fun Content(localViewModel: LocalViewModel) {
    val data by localViewModel.data.collectAsState()
 
    data?.let { list ->
-      val trackList = list.filterIndexed { index, track ->
-         if (index == 0) {
-            return@filterIndexed track.isPlaying() || track.isLocal()
-         } else {
-            return@filterIndexed track.isLocal()
-         }
-      }
       HistoryTrackList(
-         tracks = trackList,
+         tracks = list,
          onTrackSelected = {
          },
          onNowPlayingSelected = {
