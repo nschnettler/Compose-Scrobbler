@@ -53,4 +53,4 @@ class AccessTokenInterceptor(private val token: String?): Interceptor {
     }
 }
 
-val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+val loggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
