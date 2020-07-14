@@ -2,6 +2,7 @@ package de.schnettler.scrobble
 
 import android.media.MediaMetadata
 import android.media.session.PlaybackState
+import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.ServiceCoroutineScope
@@ -12,12 +13,13 @@ class PlayBackTracker @Inject constructor(
         private val repo: ScrobbleRepository,
         private val notificationManager: ScrobbleNotificationManager,
         private val scope: ServiceCoroutineScope,
-        private val authProvider: LastFmAuthProvider
+        private val authProvider: LastFmAuthProvider,
+        private val workManager: WorkManager
 ) {
     private val playerStates = hashMapOf<String, PlaybackController>()
 
     private fun getPlaybackController(packageName: String) =
-            playerStates[packageName] ?: PlaybackController(repo, notificationManager, scope, authProvider).also {
+            playerStates[packageName] ?: PlaybackController(repo, notificationManager, scope, authProvider, workManager).also {
                 playerStates[packageName] = it }
 
     fun onMetadataChanged(packageName: String, metadata: MediaMetadata) {

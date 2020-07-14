@@ -2,13 +2,17 @@ package de.schnettler.scrobble
 
 import android.media.session.MediaController
 import android.media.session.PlaybackState
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.lastfm.models.Errors
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.LastFmPostResponse
+import de.schnettler.scrobble.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.scrobble.work.ScrobbleWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -16,42 +20,26 @@ class PlaybackController(
         private val repo: ScrobbleRepository,
         private val notificationManager: ScrobbleNotificationManager,
         private val scope: ServiceCoroutineScope,
-        private val authProvider: LastFmAuthProvider
+        private val authProvider: LastFmAuthProvider,
+        private val workManager: WorkManager
 ) {
     var nowPlaying: LocalTrack? = null
     var lastPlaybackState: Int? = null
 
     private fun saveOldTrack(track: LocalTrack) {
         if (track.readyToScrobble()) {
-            Timber.d("[Save] $nowPlaying")
-            scope.launch {
-                if (authProvider.loggedIn()) {
-                    when(val result = repo.createAndSubmitScrobble(track)) {
-                        is LastFmPostResponse.ERROR -> {
-                            when(result.error) {
-                                Errors.OFFLINE, Errors.UNAVAILABLE -> {
-                                    //Cache Scrobble
-                                    Timber.d("Scrobble failed. Service offline")
-                                    repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
-                                }
-                                Errors.SESSION -> {
-                                    //Reauth and retry
-                                    Timber.d("Scrobble failed. Unauthorized")
-                                    repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
-                                }
-                                else -> {
-                                    //Skip this Scrobble
-                                }
-                            }
-                        }
-                        is LastFmPostResponse.SUCCESS<*> -> {
-                            Timber.d("Scrobble successful")
-                            notificationManager.scrobbledNotification(track)
-                            repo.saveTrack(track.copy(status = ScrobbleStatus.SCROBBLED))
-                        }
-                    }
-                }
-            }
+            // 1. Cache Scrobble
+            Timber.d("[Cache] $nowPlaying")
+            repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+            // 2. Schedule Workmanager Work
+            Timber.d("[Scheduled] $nowPlaying")
+            val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
+                .build()
+            workManager.enqueueUniqueWork(
+                SUBMIT_CACHED_SCROBBLES_WORK,
+                ExistingWorkPolicy.KEEP,
+                request
+            )
         } else {
             Timber.d("[Skip] $nowPlaying")
         }
@@ -70,7 +58,7 @@ class PlaybackController(
         }
     }
 
-    private fun handleResult(result: LastFmPostResponse) {
+    private fun <T>handleResult(result: LastFmPostResponse<T>) {
         when(result) {
             is LastFmPostResponse.ERROR -> Timber.e("${result.error}")
             is LastFmPostResponse.SUCCESS<*> -> Timber.d("${result.data}")

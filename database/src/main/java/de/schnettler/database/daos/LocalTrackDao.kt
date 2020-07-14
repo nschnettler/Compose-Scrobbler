@@ -13,6 +13,9 @@ abstract class LocalTrackDao:BaseDao<LocalTrack> {
     @Query("SELECT * FROM localTracks ORDER BY timestamp DESC")
     abstract fun getLocalTracks(): Flow<List<LocalTrack>>
 
+    @Query("SELECT * FROM localTracks WHERE status = :status ORDER BY timestamp DESC")
+    abstract suspend fun getCachedTracks(status: ScrobbleStatus = ScrobbleStatus.LOCAL): List<LocalTrack>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertTrack(track: LocalTrack): Long
 

@@ -72,6 +72,7 @@ dependencies {
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
+    implementation(AndroidX.work.runtimeKtx)
 
     //Google
     implementation(Google.android.material)
