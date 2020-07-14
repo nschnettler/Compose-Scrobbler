@@ -81,7 +81,22 @@ data class LovedTracksResponse(
     @Json(name = "@attr") val info: ResponseInfo
 )
 
-data class NowPlayingResponse(
+data class MutlipleScrobblesResponse(
+    @Json(name="@attr") val status: StatusResponse,
+    val scrobble: List<ScrobbleResponse>
+)
+
+data class SingleScrobbleResponse(
+    @Json(name="@attr") val status: StatusResponse,
+    val scrobble: ScrobbleResponse
+)
+
+data class StatusResponse(
+    val accepted: Int,
+    val ignored: Int
+)
+
+data class ScrobbleResponse(
         val artist: CorrectionResponse,
         val album: CorrectionResponse,
         val albumArtist: CorrectionResponse,

@@ -4,10 +4,12 @@ import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
+import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.mapping.LastFmPostResponse
 import de.schnettler.repo.mapping.map
+import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -73,4 +75,32 @@ class ScrobbleRepository @Inject constructor(
             )
         )
     ).map()
+
+    suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
+
+    suspend fun submitScrobbles(tracks: List<LocalTrack>): LastFmPostResponse<MutlipleScrobblesResponse> {
+        val result: MutableMap<String, String> = mutableMapOf(
+            "method" to LastFmService.METHOD_SCROBBLE,
+            "sk" to authProvider.getSessionKeyOrThrow()
+        )
+        val artists = tracks.map { it.artist }
+        val albums = tracks.map { it.album }
+        val names = tracks.map { it.name }
+        val durations = tracks.map { it.durationUnix() }
+        val timestamps = tracks.map { it.timeStampUnix() }
+
+        result.putAll(listToMap(artists, "artist"))
+        result.putAll(listToMap(albums, "album"))
+        result.putAll(listToMap(names, "track"))
+        result.putAll(listToMap(timestamps, "timestamp"))
+        result.putAll(listToMap(durations, "duration"))
+        val signature = createSignature(result)
+
+        result["api_sig"] = signature
+        result["api_key"] = LastFmService.API_KEY
+        result["format"] = "json"
+
+        return service.submitMultipleScrobbles(createBody(result)).map()
+    }
 }
+fun listToMap(list: List<String>, key: String) = list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })

@@ -5,14 +5,14 @@ import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.parseErrJsonResponse
 import retrofit2.Response
 
-fun <T> Response<T>.map(): LastFmPostResponse =
+fun <T: Any> Response<T>.map(): LastFmPostResponse<T> =
         if (isSuccessful) {
             LastFmPostResponse.SUCCESS(body())
         } else {
             LastFmPostResponse.ERROR(parseErrJsonResponse<ErrorResponse>()?.asError())
         }
 
-sealed class LastFmPostResponse {
-    class SUCCESS<T>(val data: T): LastFmPostResponse()
-    class ERROR(val error: Errors?): LastFmPostResponse()
+sealed class LastFmPostResponse<out T : Any?> {
+    class SUCCESS<out T : Any>(val data: T?): LastFmPostResponse<T>()
+    class ERROR(val error: Errors?): LastFmPostResponse<Nothing>()
 }

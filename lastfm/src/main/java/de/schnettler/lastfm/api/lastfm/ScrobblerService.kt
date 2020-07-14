@@ -2,8 +2,11 @@ package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.BuildConfig
-import de.schnettler.lastfm.models.NowPlayingResponse
+import de.schnettler.lastfm.models.MutlipleScrobblesResponse
+import de.schnettler.lastfm.models.ScrobbleResponse
+import de.schnettler.lastfm.models.SingleScrobbleResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -11,6 +14,7 @@ import retrofit2.http.POST
 interface ScrobblerService {
     @POST(LastFmService.ENDPOINT)
     @FormUrlEncoded
+    @Wrapped(path = ["scrobbles"])
     suspend fun submitScrobble(
             @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
             @Field("method") method: String,
@@ -22,7 +26,7 @@ interface ScrobblerService {
             @Field("sk") sessionKey: String,
             @Field("api_sig") signature: String,
             @Field("format") format: String = "json"
-    ): Response<String>
+    ): Response<SingleScrobbleResponse>
 
     @POST(LastFmService.ENDPOINT)
     @Wrapped(path = ["nowplaying"])
@@ -37,5 +41,11 @@ interface ScrobblerService {
             @Field("sk") sessionKey: String,
             @Field("api_sig") signature: String,
             @Field("format") format: String = "json"
-    ): Response<NowPlayingResponse>
+    ): Response<ScrobbleResponse>
+
+    @POST(LastFmService.ENDPOINT)
+    @Wrapped(path = ["scrobbles"])
+    suspend fun submitMultipleScrobbles(
+        @Body body: String
+    ): Response<MutlipleScrobblesResponse>
 }
