@@ -5,6 +5,6 @@
     <string name="scrobble_notification_channel_name" translatable="true">Tracks scrobbled</string>
     <string name="np_title">Now playing</string>
     <string name="np_description">Description</string>
-    <string name="scrobble_title">Tracks scrobbled</string>
+    <string name="scrobble_title">Submitted Scobbles</string>
     <string name="scrobble_description">Description</string>
 </resources>

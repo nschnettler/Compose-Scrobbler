@@ -64,6 +64,31 @@ class ScrobbleNotificationManager @Inject constructor(
         notificationManager.notify(notificationId, builder.build())
     }
 
+    private fun sendNotification2(
+        @StringRes channelId: Int,
+        @StringRes title: Int,
+        description: String,
+        @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
+        priority: Int = NotificationCompat.PRIORITY_LOW,
+        notificationId: Int,
+        lines: List<String>
+
+    ) {
+        val builder = NotificationCompat.Builder(
+            context,
+            context.getString(channelId)
+        )
+            .setSmallIcon(icon)
+            .setContentTitle(context.getString(title))
+            .setContentText(description)
+            .setPriority(priority)
+            .setAutoCancel(true)
+            .setStyle(NotificationCompat.InboxStyle().also {
+                lines.forEach { line -> it.addLine(line) }
+            }.addLine("Test"))
+        notificationManager.notify(notificationId, builder.build())
+    }
+
     fun cancelNotifications(id: Int? = null) {
         if (id == null) {
             notificationManager.cancelAll()
@@ -81,12 +106,14 @@ class ScrobbleNotificationManager @Inject constructor(
         )
     }
 
-    fun scrobbledNotification(track: LocalTrack) {
-        sendNotification(
+    fun scrobbledNotification(lines: List<String>, count: Int) {
+        val append = if(count > lines.size) " + $count more" else ""
+        sendNotification2(
                 channelId = R.string.scrobble_notification_channel_id,
-                title = R.string.scrobble_notification_channel_name,
-                description = "${track.artist} - ${track.name} - ${track.playPercent()}%",
-                notificationId = SCROBBLE_ID
+                title = R.string.scrobble_title,
+                description = "${lines.first()}$append",
+                notificationId = SCROBBLE_ID,
+            lines = lines
         )
     }
 }

@@ -2,6 +2,7 @@ package de.schnettler.scrobble.work
 
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.WorkerParameters
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
@@ -11,6 +12,7 @@ import de.schnettler.repo.mapping.LastFmPostResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import kotlin.math.min
 
 const val SUBMIT_CACHED_SCROBBLES_WORK = "submit_cached_scrobbles"
 const val MAX_SCROBBLE_BATCH_SIZE = 50
@@ -20,8 +22,12 @@ class ScrobbleWorker(
     params: WorkerParameters,
     private val repo: ScrobbleRepository
 ): CoroutineWorker(ctx, params) {
+
+    private val scrobbledTracks = mutableListOf<LocalTrack>()
+
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         var result = Result.success()
+        scrobbledTracks.clear()
 
         Timber.d("[Scrobble] Started cached scrobble submission")
         val cachedTracks = repo.getCachedTracks()
@@ -56,6 +62,14 @@ class ScrobbleWorker(
             }
         }
 
+        if (result is Result.Success) {
+            val max = min(5, scrobbledTracks.size)
+            val stringMap = scrobbledTracks.subList(0,max).withIndex().associateBy({ it.index.toString() }, { it.value.name })
+            val data = Data.Builder().putAll(stringMap).putInt("count", scrobbledTracks.size).build()
+            result = Result.success(data)
+            Timber.d("Worker returned data ${data.keyValueMap}")
+        }
+
         Timber.d("[Worker] Result: $result")
         return@withContext result
     }
@@ -79,7 +93,8 @@ class ScrobbleWorker(
         }
     }
 
-    fun markTracksAsSubmitted(tracks: List<LocalTrack>) {
+    private fun markTracksAsSubmitted(tracks: List<LocalTrack>) {
+        scrobbledTracks.addAll(tracks)
         tracks.forEach {
             repo.saveTrack(it.copy(status = ScrobbleStatus.SCROBBLED))
         }

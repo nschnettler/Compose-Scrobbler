@@ -40,6 +40,13 @@ class PlaybackController(
                 ExistingWorkPolicy.KEEP,
                 request
             )
+            // 3. Observe for result
+            workManager.getWorkInfoByIdLiveData(request.id).observeForever {info ->
+                if (info != null && info.state.isFinished) {
+                    Timber.d("Worker finished")
+                    notificationManager.scrobbledNotification(info.outputData.keyValueMap.values.filterIsInstance(String::class.java), info.outputData.getInt("count", -1))
+                }
+            }
         } else {
             Timber.d("[Skip] $nowPlaying")
         }
