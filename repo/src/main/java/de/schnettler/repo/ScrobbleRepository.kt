@@ -10,7 +10,6 @@ import de.schnettler.repo.mapping.LastFmPostResponse
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,16 +19,6 @@ class ScrobbleRepository @Inject constructor(
     private val service: ScrobblerService,
     private val authProvider: LastFmAuthProvider
 ) {
-    var currentTrack: LocalTrack? = null
-
-    init {
-        scope.launch {
-            localTrackDao.getCurrentTrack().collect {
-                currentTrack = it
-            }
-        }
-    }
-
     fun saveTrack(track: LocalTrack) {
         scope.launch {
             localTrackDao.insertOrUpdatTrack(track)
