@@ -64,7 +64,7 @@ class ScrobbleNotificationManager @Inject constructor(
         notificationManager.notify(notificationId, builder.build())
     }
 
-    private fun sendNotification2(
+    private fun sendExpandableNotification(
         @StringRes channelId: Int,
         @StringRes title: Int,
         description: String,
@@ -84,8 +84,8 @@ class ScrobbleNotificationManager @Inject constructor(
             .setPriority(priority)
             .setAutoCancel(true)
             .setStyle(NotificationCompat.InboxStyle().also {
-                lines.forEach { line -> it.addLine(line) }
-            }.addLine("Test"))
+                lines.reversed().forEach { line -> it.addLine(line) }
+            })
         notificationManager.notify(notificationId, builder.build())
     }
 
@@ -106,13 +106,16 @@ class ScrobbleNotificationManager @Inject constructor(
         )
     }
 
-    fun scrobbledNotification(lines: List<String>, count: Int) {
-        val append = if(count > lines.size) " + $count more" else ""
-        sendNotification2(
-                channelId = R.string.scrobble_notification_channel_id,
-                title = R.string.scrobble_title,
-                description = "${lines.first()}$append",
-                notificationId = SCROBBLE_ID,
+    fun scrobbledNotification(lines: List<String>, count: Int, description: String) {
+        val fullDescription =
+            if (count > 1) "$description + ${count-1} more"
+            else lines.first()
+
+        sendExpandableNotification(
+            channelId = R.string.scrobble_notification_channel_id,
+            title = R.string.scrobble_title,
+            description = fullDescription,
+            notificationId = SCROBBLE_ID,
             lines = lines
         )
     }

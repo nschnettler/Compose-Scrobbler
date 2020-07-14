@@ -47,7 +47,6 @@ class ScrobbleWorker(
                 when(val response = repo.submitScrobbles(list)) {
                     is LastFmPostResponse.ERROR -> result = handleError(response.error)
                     is LastFmPostResponse.SUCCESS -> {
-                        result = Result.success()
                         val accepted = response.data?.status?.accepted ?: 0
                         Timber.d("[Scrobble] Accepted ${accepted/list.size * 100} %")
                         if (response.data?.status?.accepted == list.size) {
@@ -56,7 +55,6 @@ class ScrobbleWorker(
                         } else {
                             //Filter accepted tracks, ignore other
                         }
-
                     }
                 }
             }
@@ -64,8 +62,14 @@ class ScrobbleWorker(
 
         if (result is Result.Success) {
             val max = min(5, scrobbledTracks.size)
-            val stringMap = scrobbledTracks.subList(0,max).withIndex().associateBy({ it.index.toString() }, { it.value.name })
-            val data = Data.Builder().putAll(stringMap).putInt("count", scrobbledTracks.size).build()
+            val stringMap = scrobbledTracks
+                .subList(0,max).withIndex()
+                .associateBy({ "track${it.index}" }, { "${it.value.artist} ⦁ ${it.value.name}" })
+            val data = Data.Builder()
+                .putAll(stringMap)
+                .putInt("count", scrobbledTracks.size)
+                .putString("description", scrobbledTracks.first().name)
+                .build()
             result = Result.success(data)
             Timber.d("Worker returned data ${data.keyValueMap}")
         }

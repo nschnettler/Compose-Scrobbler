@@ -1,76 +1,13 @@
 package de.schnettler.scrobble
 
-import android.media.session.MediaController
 import android.media.session.PlaybackState
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.ServiceCoroutineScope
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.LastFmPostResponse
-import de.schnettler.scrobble.work.SUBMIT_CACHED_SCROBBLES_WORK
-import de.schnettler.scrobble.work.ScrobbleWorker
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class PlaybackController(
-        private val repo: ScrobbleRepository,
-        private val notificationManager: ScrobbleNotificationManager,
-        private val scope: ServiceCoroutineScope,
-        private val authProvider: LastFmAuthProvider,
-        private val workManager: WorkManager
+    private val scrobbler: Scrobbler
 ) {
     var nowPlaying: LocalTrack? = null
     var lastPlaybackState: Int? = null
-
-    private fun saveOldTrack(track: LocalTrack) {
-        if (track.readyToScrobble()) {
-            // 1. Cache Scrobble
-            Timber.d("[Cache] $nowPlaying")
-            repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
-            // 2. Schedule Workmanager Work
-            Timber.d("[Scheduled] $nowPlaying")
-            val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
-                .build()
-            workManager.enqueueUniqueWork(
-                SUBMIT_CACHED_SCROBBLES_WORK,
-                ExistingWorkPolicy.KEEP,
-                request
-            )
-            // 3. Observe for result
-            workManager.getWorkInfoByIdLiveData(request.id).observeForever {info ->
-                if (info != null && info.state.isFinished) {
-                    Timber.d("Worker finished")
-                    notificationManager.scrobbledNotification(info.outputData.keyValueMap.values.filterIsInstance(String::class.java), info.outputData.getInt("count", -1))
-                }
-            }
-        } else {
-            Timber.d("[Skip] $nowPlaying")
-        }
-    }
-
-    private fun notifyNowPlaying(track: LocalTrack?) {
-        updateNowPlaying(nowPlaying)
-        Timber.d("[New] $nowPlaying")
-        track?.let {
-            scope.launch {
-                if (authProvider.loggedIn()) {
-                    val result = repo.submitNowPlaying(track)
-                    handleResult(result)
-                }
-            }
-        }
-    }
-
-    private fun <T>handleResult(result: LastFmPostResponse<T>) {
-        when(result) {
-            is LastFmPostResponse.ERROR -> Timber.e("${result.error}")
-            is LastFmPostResponse.SUCCESS<*> -> Timber.d("${result.data}")
-        }
-    }
 
     fun updateTrack(track: LocalTrack) {
         when(track.isTheSameAs(nowPlaying)) {
@@ -79,7 +16,7 @@ class PlaybackController(
                 if (track.album != nowPlaying?.album) {
                     //Album updated. Metadata change complete
                     nowPlaying = nowPlaying?.copy(album = track.album)
-                    notifyNowPlaying(nowPlaying)
+                    scrobbler.notifyNowPlaying(nowPlaying)
                 }
             }
 
@@ -88,7 +25,7 @@ class PlaybackController(
                 // Save old Track
                 nowPlaying?.let {
                     it.pause()
-                    saveOldTrack(it)
+                    scrobbler.submitScrobble(it)
                 }
                 //Start new Track
                 nowPlaying = track
@@ -104,23 +41,10 @@ class PlaybackController(
 
         if (playbackState.isPlaying()) {
             current.play()
-            //Timber.d("[Play] $current")
-            updateNowPlaying(current)
+            scrobbler.updateNowPlayingNotification(current)
         } else {
             current.pause()
-            //Timber.d("[Pause] $current")
-            updateNowPlaying(null)
-        }
-    }
-
-    private fun updateNowPlaying(current: LocalTrack?) {
-        if (current == null) {
-            notificationManager.cancelNotifications(NOW_PLAYING_ID)
-        } else {
-            notificationManager.updateNowPlayingNotification(current)
+            scrobbler.updateNowPlayingNotification(null)
         }
     }
 }
-
-fun MediaController.isPlaying() = playbackState?.isPlaying() ?: false
-fun PlaybackState.isPlaying() = state == PlaybackState.STATE_PLAYING
