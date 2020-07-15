@@ -1,21 +1,19 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Intent
-import androidx.compose.Composable
-import androidx.compose.collectAsState
-import androidx.compose.getValue
+import androidx.compose.*
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
+import androidx.ui.input.TextFieldValue
 import androidx.ui.layout.Column
+import androidx.ui.layout.Spacer
 import androidx.ui.layout.padding
-import androidx.ui.material.Button
-import androidx.ui.material.Card
-import androidx.ui.material.Divider
-import androidx.ui.material.ListItem
+import androidx.ui.layout.preferredHeight
+import androidx.ui.material.*
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
@@ -23,13 +21,13 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.Track
 import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
+import de.schnettler.scrobbler.util.copyByState
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
@@ -48,14 +46,71 @@ fun LocalScreen(localViewModel: LocalViewModel) {
 @Composable
 fun Content(localViewModel: LocalViewModel) {
    val data by localViewModel.data.collectAsState()
+   var showDialog by state { false }
+   val selectedTrack: MutableState<LocalTrack?> = state { null }
 
    data?.let { list ->
       HistoryTrackList(
          tracks = list,
          onTrackSelected = {
+            selectedTrack.value = it
+            showDialog = true
          },
          onNowPlayingSelected = {
             Timber.d("Update NowPlaying")
+         }
+      )
+   }
+
+   if (showDialog) {
+      TrackEditDialog(onSelect = {track ->
+         showDialog = false
+         track?.let {updatedTrack ->
+            Timber.d("[LocalEdit - Old]${selectedTrack.value}")
+            Timber.d("[LocalEdit - New]$updatedTrack")
+         }
+      }, onDismiss = {
+         showDialog = false
+      }, track = selectedTrack.value)
+   }
+}
+
+@Composable
+private fun TrackEditDialog(track: LocalTrack?, onSelect: (selected: LocalTrack?) -> Unit, onDismiss: () -> Unit) {
+   if (track != null) {
+      val trackState = state { TextFieldValue(track.name) }
+      val artistState = state { TextFieldValue(track.artist) }
+      val albumState = state { TextFieldValue(track.album) }
+
+      AlertDialog(
+         onCloseRequest = {
+            if (track.copyByState(trackState, artistState, albumState) == track) {
+               onDismiss()
+            }
+         },
+         title = { Text(text = "Scrobble bearbeiten") },
+         text = {
+            Column {
+               FilledTextField(value = trackState.value, onValueChange = {trackState.value = it}, label = { Text("Song") })
+               Spacer(modifier = Modifier.preferredHeight(16.dp))
+               FilledTextField(value = artistState.value, onValueChange = {artistState.value = it}, label = { Text("Künstler") })
+               Spacer(modifier = Modifier.preferredHeight(16.dp))
+               FilledTextField(value = albumState.value, onValueChange = {albumState.value = it}, label = { Text("Album") })
+            }
+         },
+         confirmButton = {
+            val updated = track.copyByState(trackState, artistState, albumState)
+            TextButton(
+               onClick = { onSelect(if (updated != track) updated else null) },
+               contentColor = MaterialTheme.colors.secondary
+            ) {
+               Text(text = "Select")
+            }
+         },
+         dismissButton = {
+            TextButton(onClick = onDismiss, contentColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.5F)) {
+               Text(text = "Discard")
+            }
          }
       )
    }

@@ -5,9 +5,12 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.Composable
+import androidx.compose.State
 import androidx.core.text.HtmlCompat
+import androidx.ui.input.TextFieldValue
 import androidx.ui.material.Surface
 import androidx.ui.unit.dp
+import de.schnettler.database.models.LocalTrack
 import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import java.util.*
 
@@ -73,3 +76,13 @@ inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
 
 fun String.fromHtml() = HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
 fun String.fromHtmlLastFm() = this.fromHtml().removeSuffix("Read more on Last.fm.")
+
+fun LocalTrack.copyByState(
+    trackState: State<TextFieldValue>,
+    artistState: State<TextFieldValue>,
+    albumState: State<TextFieldValue>
+) = this.copy(
+    name = trackState.value.text,
+    artist = artistState.value.text,
+    album = albumState.value.text
+)
