@@ -1,9 +1,6 @@
 package de.schnettler.scrobble
 
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
+import androidx.work.*
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
@@ -22,6 +19,9 @@ class Scrobbler @Inject constructor(
     private val scope: ServiceCoroutineScope,
     private val authProvider: LastFmAuthProvider
 ) {
+    private val constraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .build()
 
     init {
         workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK).observeForever {workInfos ->
@@ -52,6 +52,7 @@ class Scrobbler @Inject constructor(
 
     private fun scheduleScrobble(): UUID {
         val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
+            .setConstraints(constraints)
             .build()
         workManager.enqueueUniqueWork(
             SUBMIT_CACHED_SCROBBLES_WORK,
