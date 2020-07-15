@@ -16,6 +16,9 @@ import kotlin.math.min
 
 const val SUBMIT_CACHED_SCROBBLES_WORK = "submit_cached_scrobbles"
 const val MAX_SCROBBLE_BATCH_SIZE = 50
+const val RESULT_COUNT = "count"
+const val RESULT_DESCRIPTION = "description"
+const val RESULT_TRACKS = "tracks"
 
 class ScrobbleWorker(
     ctx: Context,
@@ -62,13 +65,13 @@ class ScrobbleWorker(
 
         if (result is Result.Success) {
             val max = min(5, scrobbledTracks.size)
-            val stringMap = scrobbledTracks
-                .subList(0,max).withIndex()
-                .associateBy({ "track${it.index}" }, { "${it.value.artist} ⦁ ${it.value.name}" })
+            val scrobbles = scrobbledTracks
+                .subList(0, max).map { "${it.artist} ⦁ ${it.name}" }
+                .toTypedArray()
             val data = Data.Builder()
-                .putAll(stringMap)
-                .putInt("count", scrobbledTracks.size)
-                .putString("description", scrobbledTracks.first().name)
+                .putStringArray(RESULT_TRACKS, scrobbles)
+                .putInt(RESULT_COUNT, scrobbledTracks.size)
+                .putString(RESULT_DESCRIPTION, scrobbledTracks.first().name)
                 .build()
             result = Result.success(data)
             Timber.d("Worker returned data ${data.keyValueMap}")

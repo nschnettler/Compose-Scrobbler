@@ -71,7 +71,7 @@ class ScrobbleNotificationManager @Inject constructor(
         @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
         priority: Int = NotificationCompat.PRIORITY_LOW,
         notificationId: Int,
-        lines: List<String>
+        lines: Array<String>
 
     ) {
         val builder = NotificationCompat.Builder(
@@ -106,7 +106,7 @@ class ScrobbleNotificationManager @Inject constructor(
         )
     }
 
-    fun scrobbledNotification(lines: List<String>, count: Int, description: String) {
+    fun scrobbledNotification(lines: Array<String>, count: Int, description: String) {
         val fullDescription =
             if (count > 1) "$description + ${count-1} more"
             else lines.first()

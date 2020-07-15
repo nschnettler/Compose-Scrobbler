@@ -9,8 +9,7 @@ import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.scrobble.work.SUBMIT_CACHED_SCROBBLES_WORK
-import de.schnettler.scrobble.work.ScrobbleWorker
+import de.schnettler.scrobble.work.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
@@ -28,16 +27,11 @@ class Scrobbler @Inject constructor(
         workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK).observeForever {workInfos ->
             workInfos.forEach {info ->
                 if (info.state == WorkInfo.State.SUCCEEDED) {
-                    val count = info.outputData.getInt("count", -1)
-                    val content = info.outputData.keyValueMap.filter { it.key.startsWith("track") }.values.filterIsInstance(String::class.java)
-                    val description = info.outputData.getString("description") ?: ""
-                    if (count > 0) {
-                        notificationManager.scrobbledNotification(
-                                content,
-                                count,
-                                description
-                        )
-                    }
+                    val tracks = info.outputData.getStringArray(RESULT_TRACKS)
+                    tracks?.let { notificationManager.scrobbledNotification(
+                            it,
+                            info.outputData.getInt(RESULT_COUNT, -1),
+                            info.outputData.getString(RESULT_DESCRIPTION) ?: "") }
                 }
             }
         }
