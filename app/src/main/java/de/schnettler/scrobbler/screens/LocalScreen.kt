@@ -55,7 +55,8 @@ fun Content(localViewModel: LocalViewModel) {
          },
          onNowPlayingSelected = {
             Timber.d("Update NowPlaying")
-         }
+         },
+         modifier = Modifier.padding(bottom = 56.dp)
       )
    }
 
@@ -174,9 +175,10 @@ fun <T: StatusTrack> HistoryTrack(
 fun <T: StatusTrack> HistoryTrackList(
    tracks: List<T>,
    onTrackSelected: (T) -> Unit,
-   onNowPlayingSelected: (T) -> Unit
+   onNowPlayingSelected: (T) -> Unit,
+   modifier: Modifier = Modifier
 ) {
-   LazyColumnItems(items = tracks) {track ->
+   LazyColumnItems(items = tracks, modifier = modifier) {track ->
       HistoryTrack(
          track = track,
          onTrackSelected = onTrackSelected,
