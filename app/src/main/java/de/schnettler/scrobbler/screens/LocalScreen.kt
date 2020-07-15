@@ -9,10 +9,7 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
 import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.Column
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.*
 import androidx.ui.material.*
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
@@ -145,8 +142,13 @@ fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
       trailing = { track.timestampToRelativeTime()?.let {
          Column() {
             Text(text = it)
-            Text(text = track.status.name)
-            if (track is LocalTrack) Text(text = "${track.playPercent()} %")
+            Row() {
+               if (track.isLocal()) {
+                  Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
+                  Spacer(modifier = Modifier.preferredWidth(8.dp))
+               }
+               if (track is LocalTrack) Text(text = "${track.playPercent()} %")
+            }
          }
       } }
    )
