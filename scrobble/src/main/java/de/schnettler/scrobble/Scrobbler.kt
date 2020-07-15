@@ -2,6 +2,7 @@ package de.schnettler.scrobble
 
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
@@ -22,6 +23,26 @@ class Scrobbler @Inject constructor(
     private val scope: ServiceCoroutineScope,
     private val authProvider: LastFmAuthProvider
 ) {
+
+    init {
+        workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK).observeForever {workInfos ->
+            workInfos.forEach {info ->
+                if (info.state == WorkInfo.State.SUCCEEDED) {
+                    val count = info.outputData.getInt("count", -1)
+                    val content = info.outputData.keyValueMap.filter { it.key.startsWith("track") }.values.filterIsInstance(String::class.java)
+                    val description = info.outputData.getString("description") ?: ""
+                    if (count > 0) {
+                        notificationManager.scrobbledNotification(
+                                content,
+                                count,
+                                description
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun submitScrobble(track: LocalTrack) {
         if (track.readyToScrobble()) {
             // 1. Cache Scrobble
@@ -29,24 +50,7 @@ class Scrobbler @Inject constructor(
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
 
             // 2. Schedule Workmanager Work
-            val id = scheduleScrobble()
-
-            // 3. Observe for result
-            workManager.getWorkInfoByIdLiveData(id).observeForever {info ->
-                if (info != null && info.state.isFinished) {
-                    Timber.d("Worker finished")
-                    val count = info.outputData.getInt("count", -1)
-                    val content = info.outputData.keyValueMap.filter { it.key.startsWith("track") }.values.filterIsInstance(String::class.java)
-                    val description = info.outputData.getString("description") ?: ""
-                    if (count > 0) {
-                        notificationManager.scrobbledNotification(
-                            content,
-                            count,
-                            description
-                        )
-                    }
-                }
-            }
+            scheduleScrobble()
         } else {
             Timber.d("[Skip] $track")
         }
