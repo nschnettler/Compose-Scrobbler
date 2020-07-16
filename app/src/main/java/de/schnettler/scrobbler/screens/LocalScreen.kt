@@ -6,6 +6,7 @@ import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
 import androidx.ui.input.TextFieldValue
@@ -106,7 +107,8 @@ private fun TrackEditDialog(track: LocalTrack?, onSelect: (selected: LocalTrack?
             }
          },
          dismissButton = {
-            TextButton(onClick = onDismiss, contentColor = MaterialTheme.colors.onPrimary.copy(alpha = 0.5F)) {
+            TextButton(onClick = onDismiss, contentColor = EmphasisAmbient.current.medium.applyEmphasis(
+               contentColor())) {
                Text(text = "Discard")
             }
          }

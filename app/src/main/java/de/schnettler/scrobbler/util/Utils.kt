@@ -4,14 +4,11 @@ import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.compose.Composable
 import androidx.compose.State
 import androidx.core.text.HtmlCompat
 import androidx.ui.input.TextFieldValue
-import androidx.ui.material.Surface
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
-import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import java.util.*
 
 
@@ -54,17 +51,6 @@ fun Context.openUrlInCustomTab(url: String) {
     customTabsIntent.launchUrl(this, Uri.parse(url))
 }
 
-@Composable
-internal fun ThemedPreview(
-    darkTheme: Boolean = false,
-    children: @Composable() () -> Unit
-) {
-    MaterialThemeFromMdcTheme {
-        Surface {
-            children()
-        }
-    }
-}
 
 inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
     var sum: Long = 0

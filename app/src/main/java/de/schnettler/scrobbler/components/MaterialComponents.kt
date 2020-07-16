@@ -17,7 +17,7 @@ fun BottomNavigationBar(
         onDestinationSelected: (AppRoute) -> Unit
 ) {
     if (currentScreen !is AppRoute.DetailRoute) {
-        BottomNavigation() {
+        BottomNavigation(backgroundColor = MaterialTheme.colors.surface) {
             items.forEach {screen ->
                 Timber.d("ScreenInfo: ${screen.title}, selected: ${screen === currentScreen }")
                 BottomNavigationItem(
@@ -28,8 +28,7 @@ fun BottomNavigationBar(
                         Text(text = screen.title)
                     },
                     selected = currentScreen::class == screen::class,
-                    onSelected = { onDestinationSelected.invoke(screen) },
-                    activeColor = MaterialTheme.colors.onBackground
+                    onSelected = { onDestinationSelected.invoke(screen) }
                 )
             }
         }

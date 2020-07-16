@@ -7,12 +7,10 @@ import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
 import de.schnettler.scrobbler.components.GenericHorizontalListingScroller
 import de.schnettler.scrobbler.components.ListingCard
-import de.schnettler.scrobbler.util.ThemedPreview
 
 @Preview
 @Composable
 fun ListingCardPreview() {
-    ThemedPreview() {
         Column {
             val artist = Artist(
                 name = "Dreamcatcher",
@@ -28,7 +26,6 @@ fun ListingCardPreview() {
                 data = artist,
                 plays = -1)
         }
-    }
 }
 
 @Preview
@@ -48,12 +45,10 @@ fun HorizontalListingScrollerPreview() {
             plays = 20
         )
     )
-    ThemedPreview() {
-        GenericHorizontalListingScroller(
-            items = artists,
-            height = 200.dp
-        ) { listing ->
-            ListingCard(data = listing, onEntrySelected = {})
-        }
+    GenericHorizontalListingScroller(
+        items = artists,
+        height = 200.dp
+    ) { listing ->
+        ListingCard(data = listing, onEntrySelected = {})
     }
 }

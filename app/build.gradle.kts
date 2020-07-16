@@ -87,7 +87,6 @@ dependencies {
     val versionLeakCanary = "2.4"
 
     implementation("io.coil-kt", "coil", versionCoil)
-    implementation("dev.chrisbanes.accompanist","accompanist-mdc-theme", versionAccompanist)
     implementation("dev.chrisbanes.accompanist","accompanist-coil", versionAccompanist)
     implementation("com.jakewharton.threetenabp","threetenabp", versionThreeten)
     implementation("com.github.mvarnagiris.compose-navigation", "navigation", versionNavigator)

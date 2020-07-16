@@ -4,11 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.*
+import androidx.compose.Composable
+import androidx.compose.getValue
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.isSystemInDarkTheme
+import androidx.ui.graphics.Color
 import androidx.ui.livedata.observeAsState
 import androidx.ui.material.*
 import androidx.ui.res.vectorResource
@@ -27,7 +30,6 @@ import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.openUrlInCustomTab
 import de.schnettler.scrobbler.viewmodels.*
-import dev.chrisbanes.accompanist.mdctheme.MaterialThemeFromMdcTheme
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -69,7 +71,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MaterialThemeFromMdcTheme  {
+            val colorPalette = if (isSystemInDarkTheme()) {
+                darkThemeColors
+            } else {
+                lightThemeColors
+            }
+            MaterialTheme(colors = colorPalette) {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
                         when(it) {
@@ -98,7 +105,8 @@ class MainActivity : AppCompatActivity() {
                                             Icon(vectorResource(id = menuAction.icon))
                                         }
                                     }
-                                }
+                                },
+                                backgroundColor = MaterialTheme.colors.surface
                             )
                         },
                         bodyContent = {
@@ -166,3 +174,18 @@ class MainActivity : AppCompatActivity() {
 
 const val AUTH_ENDPOINT = "https://www.last.fm/api/auth/"
 const val REDIRECT_URL = "de.schnettler.scrobble://auth"
+
+val lightThemeColors  = lightColorPalette(
+    primary = Color(0xFF7E8ACD),
+    primaryVariant = Color(0xFF7E8ACD),
+    secondary = Color(0xFF7E8ACD),
+    secondaryVariant = Color(0x7E8ACD),
+    onPrimary = Color.Black
+)
+val darkThemeColors = darkColorPalette(
+    primary = Color(0xFF7E8ACD),
+    primaryVariant = Color(0xFF7E8ACD),
+    secondary = Color(0xFF7E8ACD),
+    background = Color(0xFF202030),
+    surface = Color(0xFF202030)
+)
