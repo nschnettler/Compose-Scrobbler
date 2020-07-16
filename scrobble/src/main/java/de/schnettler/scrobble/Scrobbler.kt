@@ -20,7 +20,8 @@ class Scrobbler @Inject constructor(
     private val authProvider: LastFmAuthProvider
 ) {
     private val constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.CONNECTED)
+        .setRequiredNetworkType(NetworkType.UNMETERED)
+        .setRequiresBatteryNotLow(true)
         .build()
 
     init {
