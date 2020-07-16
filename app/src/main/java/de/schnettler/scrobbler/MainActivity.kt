@@ -57,9 +57,7 @@ class MainActivity : AppCompatActivity() {
     private val bottomNavDestinations = listOf(
             AppRoute.ChartRoute,
             AppRoute.LocalRoute,
-            AppRoute.HistoryRoute(onRefreshClicked = {
-                historyViewModel.refreshHistory()
-            }),
+            AppRoute.HistoryRoute,
             AppRoute.ProfileRoute(onFilterClicked = {
                 userViewModel.showDialog(true)
             })
@@ -99,7 +97,6 @@ class MainActivity : AppCompatActivity() {
                                                     menuAction.onClick.invoke((currentRoute.data as AppRoute.DetailRoute).item)
                                                 }
                                                 is MenuAction.Period -> menuAction.onClick.invoke()
-                                                is MenuAction.Refresh -> menuAction.onClick.invoke()
                                             }
                                         }) {
                                             Icon(vectorResource(id = menuAction.icon))
