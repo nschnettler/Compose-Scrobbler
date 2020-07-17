@@ -81,43 +81,53 @@ class MainActivity : AppCompatActivity() {
                             is LastFmStatsEntity -> this.push(AppRoute.NestedRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                             is LocalTrack -> Timber.d("Scrobble plz!!!")
                         }
-
                     }
 
-                    Scaffold(
-                        topBar = {
-                            TopAppBar(
-                                title = { Text(text = currentRoute.data.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                                actions = {
-                                    currentRoute.data.menuActions.forEach {menuAction ->
-                                        Timber.d("MenuItem $menuAction")
-                                        IconButton(onClick = {
-                                            when(menuAction) {
-                                                is MenuAction.OpenInBrowser -> {
-                                                    menuAction.onClick.invoke((currentRoute.data as AppRoute.NestedRoute.DetailRoute).item)
+                    when (val current = currentRoute.data) {
+                        is AppRoute.MainRoute -> {
+                            Scaffold(
+                                topBar = {
+                                    TopAppBar(
+                                        title = { Text(text = currentRoute.data.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                                        actions = {
+                                            currentRoute.data.menuActions.forEach {menuAction ->
+                                                Timber.d("MenuItem $menuAction")
+                                                IconButton(onClick = {
+                                                    when(menuAction) {
+                                                        is MenuAction.OpenInBrowser -> {
+                                                            menuAction.onClick.invoke((currentRoute.data as AppRoute.NestedRoute.DetailRoute).item)
+                                                        }
+                                                        is MenuAction.Period -> menuAction.onClick.invoke()
+                                                    }
+                                                }) {
+                                                    Icon(vectorResource(id = menuAction.icon))
                                                 }
-                                                is MenuAction.Period -> menuAction.onClick.invoke()
                                             }
-                                        }) {
-                                            Icon(vectorResource(id = menuAction.icon))
-                                        }
-                                    }
+                                        },
+                                        backgroundColor = MaterialTheme.colors.surface
+                                    )
                                 },
-                                backgroundColor = MaterialTheme.colors.surface
+                                bodyContent = {
+                                    AppContent(currentRoute.data)
+                                },
+                                bottomBar = {
+                                    BottomNavigationBar(
+                                        items = bottomNavDestinations,
+                                        currentScreen = currentRoute.data
+                                    ) { newScreen ->
+                                        replace(newScreen)
+                                    }
+                                }
                             )
-                        },
-                        bodyContent = {
-                            AppContent(currentRoute.data)
-                        },
-                        bottomBar = {
-                            BottomNavigationBar(
-                                    items = bottomNavDestinations,
-                                    currentScreen = currentRoute.data
-                            ) { newScreen ->
-                                replace(newScreen)
-                            }
                         }
-                    )
+                        is AppRoute.NestedRoute -> {
+                            Scaffold(
+                                bodyContent = {
+                                    AppContent(currentScreen = current)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
