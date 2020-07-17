@@ -55,15 +55,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onListingClicked: (CommonEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
-            AppRoute.ChartRoute,
-            AppRoute.LocalRoute,
-            AppRoute.HistoryRoute,
-            AppRoute.ProfileRoute(onFilterClicked = {
+            AppRoute.MainRoute.ChartRoute,
+            AppRoute.MainRoute.LocalRoute,
+            AppRoute.MainRoute.HistoryRoute,
+            AppRoute.MainRoute.ProfileRoute(onFilterClicked = {
                 userViewModel.showDialog(true)
             })
     )
 
-    private val startScreen: AppRoute = AppRoute.LocalRoute
+    private val startScreen: AppRoute = AppRoute.MainRoute.LocalRoute
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
                         when(it) {
-                            is LastFmStatsEntity -> this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
+                            is LastFmStatsEntity -> this.push(AppRoute.NestedRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                             is LocalTrack -> Timber.d("Scrobble plz!!!")
                         }
 
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                                         IconButton(onClick = {
                                             when(menuAction) {
                                                 is MenuAction.OpenInBrowser -> {
-                                                    menuAction.onClick.invoke((currentRoute.data as AppRoute.DetailRoute).item)
+                                                    menuAction.onClick.invoke((currentRoute.data as AppRoute.NestedRoute.DetailRoute).item)
                                                 }
                                                 is MenuAction.Period -> menuAction.onClick.invoke()
                                             }
@@ -129,15 +129,15 @@ class MainActivity : AppCompatActivity() {
 
         Crossfade(currentScreen) { screen ->
             when(screen) {
-                is AppRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
-                is AppRoute.HistoryRoute ->  {
+                is AppRoute.MainRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
+                is AppRoute.MainRoute.HistoryRoute ->  {
                     when(sessionStatus) {
                         is SessionState.LoggedOut -> LoginScreen(context = this)
                         is SessionState.LoggedIn -> HistoryScreen(historyViewModel, onListingSelected = onListingClicked)
                     }
                 }
-                is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel)
-                is AppRoute.ProfileRoute -> {
+                is AppRoute.MainRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel)
+                is AppRoute.MainRoute.ProfileRoute -> {
                     when(sessionStatus) {
                         is SessionState.LoggedOut -> LoginScreen(context = this)
                         is SessionState.LoggedIn -> {
@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-                is AppRoute.DetailRoute -> {
+                is AppRoute.NestedRoute.DetailRoute -> {
                     detailsViewModel.updateEntry(screen.item)
                     DetailScreen(model = detailsViewModel, onListingSelected = onListingClicked, onTagClicked = onTagClicked)
                 }
