@@ -34,10 +34,10 @@ class LocalViewModel @ViewModelInject constructor(
     fun refresh() {
         recentTracksState.update(Result.Loading)
         viewModelScope.launch {
-            val result = try {
+            try {
                 repo.refreshRecentTracks()
             } catch (e: Exception) {
-                Result.Error(e)
+                recentTracksState.update(Result.Error(e))
             }
         }
     }
