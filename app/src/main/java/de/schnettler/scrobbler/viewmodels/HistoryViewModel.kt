@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.Track
 import de.schnettler.repo.UserRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.Result
+import de.schnettler.repo.Result
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

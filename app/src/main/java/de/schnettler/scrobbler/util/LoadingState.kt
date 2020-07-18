@@ -5,6 +5,7 @@ import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
+import de.schnettler.repo.Result
 
 sealed class LoadingState<T>(open val data: T? = null) {
     class Initial<T>: LoadingState<T>()
@@ -55,6 +56,23 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
                 exception = result.exception, previousData = this.value.currentData
         )
         is Result.Loading -> RefreshableUiState.Success(
+                data = this.value.currentData, loading = true
+        )
+    }
+}
+
+fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>) {
+    value = when (result) {
+        is StoreResponse.Data -> RefreshableUiState.Success(
+                data = result.value, loading = false
+        )
+        is StoreResponse.Error.Exception -> RefreshableUiState.Error(
+                exception = result.error, previousData = this.value.currentData
+        )
+        is StoreResponse.Error.Message -> RefreshableUiState.Error(
+                errorMessage = result.message, previousData = this.value.currentData
+        )
+        is StoreResponse.Loading -> RefreshableUiState.Success(
                 data = this.value.currentData, loading = true
         )
     }

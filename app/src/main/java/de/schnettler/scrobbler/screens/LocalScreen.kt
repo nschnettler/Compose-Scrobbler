@@ -22,10 +22,9 @@ import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.NameListIcon
-import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
-import de.schnettler.scrobbler.util.copyByState
+import de.schnettler.scrobbler.util.*
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
@@ -43,22 +42,32 @@ fun LocalScreen(localViewModel: LocalViewModel) {
 
 @Composable
 fun Content(localViewModel: LocalViewModel) {
-   val data by localViewModel.data.collectAsState()
+   val recentTracksState by localViewModel.recentTracksState.collectAsState()
    var showDialog by state { false }
    val selectedTrack: MutableState<LocalTrack?> = state { null }
 
-   data?.let { list ->
-      HistoryTrackList(
-         tracks = list,
-         onTrackSelected = {
-            selectedTrack.value = it
-            showDialog = true
-         },
-         onNowPlayingSelected = {
-            Timber.d("Update NowPlaying")
-         },
-         modifier = Modifier.padding(bottom = 56.dp)
-      )
+   if (recentTracksState.loading) {
+      LiveDataLoadingComponent()
+   } else {
+      SwipeToRefreshLayout(
+              refreshingState = recentTracksState.refreshing,
+              onRefresh = { localViewModel.refresh() },
+              refreshIndicator = { SwipeRefreshPrograssIndicator() }
+      ) {
+         recentTracksState.currentData?.let {list ->
+            HistoryTrackList(
+                    tracks = list,
+                    onTrackSelected = {
+                       selectedTrack.value = it
+                       showDialog = true
+                    },
+                    onNowPlayingSelected = {
+                       Timber.d("Update NowPlaying")
+                    },
+                    modifier = Modifier.padding(bottom = 56.dp)
+            )
+         }
+      }
    }
 
    if (showDialog) {
@@ -146,11 +155,11 @@ fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
          Column() {
             Text(text = it)
             Row() {
-               if (track.isLocal()) {
+               if (track.isCached()) {
                   Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
                   Spacer(modifier = Modifier.preferredWidth(8.dp))
                }
-               if (track is LocalTrack) Text(text = "${track.playPercent()} %")
+               if (track is LocalTrack && track.isLocal()) Text(text = "${track.playPercent()} %")
             }
          }
       } }

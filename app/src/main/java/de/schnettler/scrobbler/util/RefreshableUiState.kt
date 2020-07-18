@@ -6,18 +6,15 @@ package de.schnettler.scrobbler.util
  * loaded data apart from the error.
  */
 sealed class RefreshableUiState<out T> {
-    data class Success<out T>(val data: T?, val loading: Boolean) : RefreshableUiState<T>()
-    data class Error<out T>(val exception: Exception, val previousData: T?) :
-        RefreshableUiState<T>()
-}
-
-/**
- * A generic class that holds a value or an exception
- */
-sealed class Result<out R> {
-    object Loading: Result<Nothing>()
-    data class Success<out T>(val data: T) : Result<T>()
-    data class Error(val exception: Exception) : Result<Nothing>()
+    data class Success<out T>(
+            val data: T?,
+            val loading: Boolean
+    ): RefreshableUiState<T>()
+    data class Error<out T>(
+            val exception: Throwable? = null,
+            val errorMessage: String? = null,
+            val previousData: T?
+    ): RefreshableUiState<T>()
 }
 
 val <T> RefreshableUiState<T>.loading: Boolean
@@ -30,11 +27,4 @@ val <T> RefreshableUiState<T>.currentData: T?
     get() = when (this) {
         is RefreshableUiState.Success -> this.data
         is RefreshableUiState.Error -> this.previousData
-    }
-
-val <T> RefreshableUiState<T>.error: Exception?
-    get() = if(this is RefreshableUiState.Error) {
-        this.exception
-    } else {
-        null
     }
