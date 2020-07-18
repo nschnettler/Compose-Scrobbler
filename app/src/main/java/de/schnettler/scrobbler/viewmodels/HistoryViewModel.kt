@@ -5,20 +5,29 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.Track
 import de.schnettler.repo.UserRepository
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.Result
+import de.schnettler.scrobbler.util.update
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class HistoryViewModel @ViewModelInject constructor(private val repo: UserRepository) : ViewModel() {
-    fun refreshHistory(callback: (Result<List<Track>>) -> Unit) {
-        Timber.d("Refreshing History")
+    val recentTracksState: MutableStateFlow<RefreshableUiState<List<Track>>> =
+            MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
+
+    init {
+        refreshHistory()
+    }
+
+    fun refreshHistory() {
+        recentTracksState.update(Result.Loading)
         viewModelScope.launch {
-            try {
-                val response = repo.getUserRecentTrack()
-                callback(Result.Success(response))
+            val result = try {
+                Result.Success(repo.getUserRecentTrack())
             } catch (e: Exception) {
-                callback(Result.Error(e))
+                Result.Error(e)
             }
+            recentTracksState.update(result)
         }
     }
 }

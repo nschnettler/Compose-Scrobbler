@@ -45,3 +45,17 @@ fun <T> MutableStateFlow<LoadingState<T>>.updateState(response: StoreResponse<T>
         )
     }
 }
+
+fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
+    value = when (result) {
+        is Result.Success -> RefreshableUiState.Success(
+                data = result.data, loading = false
+        )
+        is Result.Error -> RefreshableUiState.Error(
+                exception = result.exception, previousData = this.value.currentData
+        )
+        is Result.Loading -> RefreshableUiState.Success(
+                data = this.value.currentData, loading = true
+        )
+    }
+}
