@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens
 
 import android.content.Intent
 import androidx.compose.*
+import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
@@ -46,40 +47,50 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) ->
    val recentTracksState by localViewModel.recentTracksState.collectAsState()
    var showDialog by state { false }
    val selectedTrack: MutableState<LocalTrack?> = state { null }
+   val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
+      recentTracksState is RefreshableUiState.Error
+   }
 
-   if (recentTracksState.loading) {
-      LiveDataLoadingComponent()
-   } else {
-      SwipeToRefreshLayout(
-              refreshingState = recentTracksState.refreshing,
-              onRefresh = { localViewModel.refresh() },
-              refreshIndicator = { SwipeRefreshPrograssIndicator() }
-      ) {
-         recentTracksState.currentData?.let {list ->
-            HistoryTrackList(
-                    tracks = list,
-                    onTrackSelected = {track, actionType ->
-                       when(actionType) {
-                          HistoryActionType.EDIT -> {
-                             selectedTrack.value = track
-                             showDialog = true
+   Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
+      if (recentTracksState.loading) {
+         LiveDataLoadingComponent()
+      } else {
+         SwipeToRefreshLayout(
+                 refreshingState = recentTracksState.refreshing,
+                 onRefresh = { localViewModel.refresh() },
+                 refreshIndicator = { SwipeRefreshPrograssIndicator() }
+         ) {
+            recentTracksState.currentData?.let { list ->
+               HistoryTrackList(
+                       tracks = list,
+                       onTrackSelected = { track, actionType ->
+                          when (actionType) {
+                             HistoryActionType.EDIT -> {
+                                selectedTrack.value = track
+                                showDialog = true
+                             }
+                             HistoryActionType.DELETE -> {
+                                // DELETE A TRACK
+                             }
+                             HistoryActionType.OPEN -> {
+                                onListingSelected(track)
+                             }
                           }
-                          HistoryActionType.DELETE -> {
-                             // DELETE A TRACK
-                          }
-                          HistoryActionType.OPEN -> {
-                             onListingSelected(track)
-                          }
+
+                       },
+                       onNowPlayingSelected = {
+                          Timber.d("Update NowPlaying")
                        }
-
-                    },
-                    onNowPlayingSelected = {
-                       Timber.d("Update NowPlaying")
-                    },
-                    modifier = Modifier.padding(bottom = 56.dp)
-            )
+               )
+            }
          }
       }
+      ErrorSnackbar(
+              showError = showSnackbarError,
+              onErrorAction = { localViewModel.refresh() },
+              onDismiss = { updateShowSnackbarError(false) },
+              modifier = Modifier.gravity(Alignment.BottomCenter)
+      )
    }
 
    if (showDialog) {
