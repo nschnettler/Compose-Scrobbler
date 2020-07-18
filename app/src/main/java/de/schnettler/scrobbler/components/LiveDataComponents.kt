@@ -34,12 +34,6 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntity) -> Unit) {
     LazyColumnItems(items = data) {item ->
         when(item) {
-            is Track -> HistoryItem(
-                listing = item,
-                subTitle = "${item.artist} ⦁ ${item.album}",
-                trailingText = item.timestampToRelativeTime(),
-                onListingSelected = onListingSelected
-            )
             is Artist -> HistoryItem(listing = item,
                 subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${ formatter.format(item.plays)} Plays",
                 onListingSelected = onListingSelected

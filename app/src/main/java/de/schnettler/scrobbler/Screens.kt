@@ -12,10 +12,7 @@ sealed class AppRoute(
     val menuActions: List<MenuAction> = listOf()
 ) {
     object ChartRoute : AppRoute("Charts", R.drawable.ic_round_insights_24)
-    object HistoryRoute : AppRoute(
-            title = "History",
-            icon = R.drawable.ic_round_history_24)
-    object LocalRoute : AppRoute("Local", R.drawable.ic_round_favorite_border_24)
+    object LocalRoute : AppRoute("History", R.drawable.ic_round_history_24)
     class ProfileRoute(onFilterClicked: () -> Unit) : AppRoute(
         title = "Profile",
         icon = R.drawable.ic_outline_account_circle_24,

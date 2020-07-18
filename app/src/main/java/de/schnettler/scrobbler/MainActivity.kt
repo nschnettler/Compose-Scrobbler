@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel: ChartsViewModel by viewModels()
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
-    private val historyViewModel: HistoryViewModel by viewModels()
     private val localViewModel: LocalViewModel by viewModels()
 
     private val onOpenInBrowser: (LastFmEntity) -> Unit = {
@@ -57,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     private val bottomNavDestinations = listOf(
             AppRoute.ChartRoute,
             AppRoute.LocalRoute,
-            AppRoute.HistoryRoute,
             AppRoute.ProfileRoute(onFilterClicked = {
                 userViewModel.showDialog(true)
             })
@@ -130,12 +128,6 @@ class MainActivity : AppCompatActivity() {
         Crossfade(currentScreen) { screen ->
             when(screen) {
                 is AppRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
-                is AppRoute.HistoryRoute ->  {
-                    when(sessionStatus) {
-                        is SessionState.LoggedOut -> LoginScreen(context = this)
-                        is SessionState.LoggedIn -> HistoryScreen(historyViewModel, onListingSelected = onListingClicked)
-                    }
-                }
                 is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel)
                 is AppRoute.ProfileRoute -> {
                     when(sessionStatus) {

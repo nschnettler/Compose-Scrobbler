@@ -22,16 +22,6 @@ fun ArtistTracksDto.map() = Track(
     artist = this.artist.name
 )
 
-fun RecentTracksDto.map() = Track(
-    name = this.name,
-    url = this.url,
-    artist = this.artist.name,
-    album = this.album.name
-).apply {
-    timestamp = this@map.date?.asMs() ?: 0
-    status = if (attrs?.nowplaying?.toBoolean() == true) ScrobbleStatus.PLAYING else ScrobbleStatus.SCROBBLED
-}
-
 fun RecentTracksDto.mapToLocal() = LocalTrack(
         name = name,
         artist = artist.name,

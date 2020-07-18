@@ -19,10 +19,7 @@ data class Track(
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null,
     val rank: Int = -1
-): LastFmStatsEntity, StatusTrack {
-    @Ignore override var timestamp: Long = 0
-    @Ignore override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE
-}
+): LastFmStatsEntity, CommonTrack
 
 data class TrackWithAlbum(
     @Embedded val track: Track,
