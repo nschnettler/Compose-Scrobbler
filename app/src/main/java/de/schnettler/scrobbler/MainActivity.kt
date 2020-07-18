@@ -76,8 +76,7 @@ class MainActivity : AppCompatActivity() {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
                         when(it) {
-                            is LastFmStatsEntity -> this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
-                            is LocalTrack -> Timber.d("Scrobble plz!!!")
+                            is LastFmEntity -> this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                         }
 
                     }
@@ -128,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         Crossfade(currentScreen) { screen ->
             when(screen) {
                 is AppRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
-                is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel)
+                is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel, onListingSelected = onListingClicked)
                 is AppRoute.ProfileRoute -> {
                     when(sessionStatus) {
                         is SessionState.LoggedOut -> LoginScreen(context = this)

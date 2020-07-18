@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.util
 
 import android.content.Context
+import android.icu.text.DateFormat
 import android.net.Uri
 import android.widget.Toast
 import androidx.browser.customtabs.CustomTabsIntent
@@ -10,6 +11,7 @@ import androidx.ui.input.TextFieldValue
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 val defaultSpacerSize = 16.dp
@@ -72,3 +74,19 @@ fun LocalTrack.copyByState(
     artist = artistState.value.text,
     album = albumState.value.text
 )
+
+fun milliSecondsToMinSeconds(input: Long) = String.format("%d:%d",
+        TimeUnit.MILLISECONDS.toMinutes(input),
+        TimeUnit.MILLISECONDS.toSeconds(input) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(input)))
+
+
+const val PACKAGE_YT_MUSIC = "com.google.android.apps.youtube.music"
+
+fun packageNameToAppName(packageName: String) = when (packageName) {
+    PACKAGE_YT_MUSIC -> "YouTube Music"
+    else -> packageName
+}
+
+fun Long.milliSecondsToDate() =
+        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,Locale.getDefault()).format(Date(this))

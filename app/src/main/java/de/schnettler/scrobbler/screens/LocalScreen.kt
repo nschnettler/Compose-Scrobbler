@@ -18,6 +18,7 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
 import androidx.ui.unit.dp
+import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
@@ -29,10 +30,10 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
 @Composable
-fun LocalScreen(localViewModel: LocalViewModel) {
+fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
    val context = ContextAmbient.current
    when(MediaListenerService.isEnabled(context)) {
-      true -> Content(localViewModel = localViewModel)
+      true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
       false -> Button(onClick = {
          context.startActivity( Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
       }, text = {Text(text = "Enable")})
@@ -41,7 +42,7 @@ fun LocalScreen(localViewModel: LocalViewModel) {
 }
 
 @Composable
-fun Content(localViewModel: LocalViewModel) {
+fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
    val recentTracksState by localViewModel.recentTracksState.collectAsState()
    var showDialog by state { false }
    val selectedTrack: MutableState<LocalTrack?> = state { null }
@@ -57,9 +58,20 @@ fun Content(localViewModel: LocalViewModel) {
          recentTracksState.currentData?.let {list ->
             HistoryTrackList(
                     tracks = list,
-                    onTrackSelected = {
-                       selectedTrack.value = it
-                       showDialog = true
+                    onTrackSelected = {track, actionType ->
+                       when(actionType) {
+                          HistoryActionType.EDIT -> {
+                             selectedTrack.value = track
+                             showDialog = true
+                          }
+                          HistoryActionType.DELETE -> {
+                             // DELETE A TRACK
+                          }
+                          HistoryActionType.OPEN -> {
+                             onListingSelected(track)
+                          }
+                       }
+
                     },
                     onNowPlayingSelected = {
                        Timber.d("Update NowPlaying")
@@ -145,12 +157,23 @@ fun <T: StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
 }
 
 @Composable
-fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
+fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
+   var expanded by state { false }
    ListItem(
       text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-      secondaryText = { Text(text = "${track.artist} ⦁ ${track.album}", maxLines = 1, overflow = TextOverflow.Ellipsis) },
+      secondaryText = {
+         Column {
+            Text(text = "${track.artist} ⦁ ${track.album}", maxLines = if (expanded) 3 else 1, overflow = TextOverflow.Ellipsis)
+            if (expanded) {
+               if (track.isLocal()) ComposeAdditionalInformation(track)
+               else Spacer(modifier = Modifier.preferredHeight(16.dp))
+               Divider()
+               ComposeQuickActions(track, onClick)
+            }
+         }
+      },
       icon = { NameListIcon(title = track.name) },
-      onClick = { onClick.invoke(track) },
+      onClick = { expanded = !expanded},
       trailing = { track.timestampToRelativeTime()?.let {
          Column() {
             Text(text = it)
@@ -159,7 +182,7 @@ fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
                   Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
                   Spacer(modifier = Modifier.preferredWidth(8.dp))
                }
-               if (track is LocalTrack && track.isLocal()) Text(text = "${track.playPercent()} %")
+               if (track.isLocal()) Text(text = "${track.playPercent()} %")
             }
          }
       } }
@@ -167,12 +190,32 @@ fun <T: StatusTrack> ScrobbledTrack(track: T, onClick: (T) -> Unit) {
    Divider(color = colorResource(id = R.color.colorStroke))
 }
 
+@Composable
+fun ComposeAdditionalInformation(track: LocalTrack) {
+   Spacer(modifier = Modifier.preferredHeight(8.dp))
+   Text(text = "Source: ${packageNameToAppName(track.playedBy)}")
+   Text(text = "Runtime: ${milliSecondsToMinSeconds(track.amountPlayed)}/${milliSecondsToMinSeconds(track.duration)} (${track.playPercent()}%)")
+   Text(text = "Timestamp: ${(track.timestamp * 1000).milliSecondsToDate()}")
+   Spacer(modifier = Modifier.preferredHeight(8.dp))
+}
+
+@Composable
+fun ComposeQuickActions(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
+   val actions = mutableListOf<Pair<@androidx.annotation.DrawableRes Int, () -> Unit>>()
+   if (track.isCached()) {
+      actions.add(R.drawable.ic_outline_edit_32 to { onClick.invoke(track, HistoryActionType.EDIT) })
+      actions.add(R.drawable.ic_round_delete_outline_32 to { onClick.invoke(track, HistoryActionType.DELETE) })
+   }
+   actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(track, HistoryActionType.OPEN) })
+   QuickActionsRow(items = actions)
+}
+
 @Preview
 @Composable
-fun <T: StatusTrack> HistoryTrack(
-   @PreviewParameter(FakeHistoryTrackProvider::class) track: T,
-   onTrackSelected: (T) -> Unit = { },
-   onNowPlayingSelected: (T) -> Unit = { }
+fun HistoryTrack(
+   @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
+   onTrackSelected: (LocalTrack, HistoryActionType) -> Unit = {t1, t2 -> },
+   onNowPlayingSelected: (LocalTrack) -> Unit = { }
 ) {
    if(track.isPlaying()) {
       NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
@@ -183,10 +226,10 @@ fun <T: StatusTrack> HistoryTrack(
 
 
 @Composable
-fun <T: StatusTrack> HistoryTrackList(
-   tracks: List<T>,
-   onTrackSelected: (T) -> Unit,
-   onNowPlayingSelected: (T) -> Unit,
+fun HistoryTrackList(
+   tracks: List<LocalTrack>,
+   onTrackSelected: (LocalTrack, HistoryActionType) -> Unit,
+   onNowPlayingSelected: (LocalTrack) -> Unit,
    modifier: Modifier = Modifier
 ) {
    LazyColumnItems(items = tracks, modifier = modifier) {track ->
@@ -196,4 +239,10 @@ fun <T: StatusTrack> HistoryTrackList(
          onNowPlayingSelected = onNowPlayingSelected
       )
    }
+}
+
+enum class HistoryActionType() {
+   EDIT,
+   DELETE,
+   OPEN
 }

@@ -18,7 +18,7 @@ sealed class AppRoute(
         icon = R.drawable.ic_outline_account_circle_24,
         menuActions = listOf(MenuAction.Period(onFilterClicked))
     )
-    class DetailRoute(val item: LastFmStatsEntity, onOpenInBrowser: (LastFmEntity) -> Unit) : AppRoute(
+    class DetailRoute(val item: LastFmEntity, onOpenInBrowser: (LastFmEntity) -> Unit) : AppRoute(
         title = item.name,
         icon = R.drawable.ic_outline_account_circle_24,
         menuActions = listOf(MenuAction.OpenInBrowser(onClick = onOpenInBrowser))

@@ -91,8 +91,8 @@ class DetailRepository @Inject constructor(
         )
     ).build().stream(StoreRequest.cached(id, true))
 
-    fun getTrackInfo(track: Track) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { key: Track ->
+    fun getTrackInfo(track: CommonTrack) = StoreBuilder.from(
+        fetcher = nonFlowValueFetcher { key: CommonTrack ->
             service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow())
                     .map()
         },
@@ -100,7 +100,7 @@ class DetailRepository @Inject constructor(
             reader = { key ->
                 trackDao.getTrack(key.id, key.artist).mapLatest { it?.map() }
             },
-            writer = { _: Track, value ->
+            writer = { _: CommonTrack, value ->
                 trackDao.forceInsert(value)
                 value.album?.let {
                     albumDao.insert(

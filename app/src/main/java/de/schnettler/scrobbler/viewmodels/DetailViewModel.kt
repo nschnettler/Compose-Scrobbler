@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : ViewModel() {
-    private val entry: MutableStateFlow<LastFmStatsEntity?> = MutableStateFlow(null)
+    private val entry: MutableStateFlow<CommonEntity?> = MutableStateFlow(null)
     val entryState: MutableStateFlow<LoadingState<LastFmStatsEntity>> = MutableStateFlow(LoadingState.Initial())
 
-    fun updateEntry(new: LastFmStatsEntity) {
+    fun updateEntry(new: CommonEntity) {
         if (entry.updateValue(new)) {
             entryState.value = LoadingState.Initial()
         }
@@ -31,7 +31,7 @@ class DetailViewModel @ViewModelInject constructor(repo: DetailRepository)  : Vi
             entry.flatMapLatest {listing ->
                 when (listing) {
                     is Artist -> repo.getArtistInfo(listing.id)
-                    is Track -> repo.getTrackInfo(listing)
+                    is CommonTrack -> repo.getTrackInfo(listing)
                     is Album -> repo.getAlbumInfo(listing)
                     else -> flowOf(StoreResponse.Error.Message("Not implemented yet", ResponseOrigin.Cache))
                 }

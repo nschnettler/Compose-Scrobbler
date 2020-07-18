@@ -6,6 +6,7 @@ import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
 import androidx.ui.layout.*
+import androidx.ui.material.IconButton
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LastFmStatsEntity
@@ -25,6 +26,18 @@ fun StatsRow(
                 Icon(asset = vectorResource(id = it.first))
                 Text(text = formatter.format(it.second))
             }
+        }
+    }
+}
+
+@Composable
+fun QuickActionsRow(items: List<Pair<Int, () -> Unit>>) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        items.forEach {
+            IconButton(onClick = { it.second.invoke() }) {
+                Icon(asset = vectorResource(id = it.first))
+            }
+            Spacer(modifier = Modifier.width(24.dp))
         }
     }
 }

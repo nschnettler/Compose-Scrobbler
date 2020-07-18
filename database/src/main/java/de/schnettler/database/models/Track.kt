@@ -2,6 +2,7 @@ package de.schnettler.database.models
 
 import android.text.format.DateUtils
 import androidx.room.*
+import java.net.URLEncoder
 import kotlin.math.roundToInt
 
 @Entity(tableName = "tracks")
@@ -58,6 +59,9 @@ data class LocalTrack(
         override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
         var trackingStart: Long = timestamp
 ): StatusTrack {
+    @Ignore override val id: String = name.toLowerCase()
+    @Ignore override val url: String = "https://www.last.fm/music/$artist/_/$name"
+    @Ignore override var imageUrl: String? = null
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
     fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
@@ -91,7 +95,7 @@ enum class ScrobbleStatus {
     EXTERNAL
 }
 
-interface CommonTrack: CommonEntity {
+interface CommonTrack: LastFmEntity {
     val artist: String
     val album: String?
     val duration: Long

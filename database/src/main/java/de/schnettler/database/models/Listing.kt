@@ -1,6 +1,7 @@
 package de.schnettler.database.models
 
 interface CommonEntity {
+    val id: String
     val name: String
     val type: ListingType
         get() = when(this) {
@@ -12,7 +13,6 @@ interface CommonEntity {
 }
 
 interface LastFmEntity: CommonEntity {
-    val id: String
     val url: String
     var imageUrl: String?
 }
