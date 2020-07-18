@@ -1,5 +1,6 @@
 package de.schnettler.repo.mapping
 
+import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
 import de.schnettler.lastfm.models.*
@@ -30,6 +31,16 @@ fun RecentTracksDto.map() = Track(
     timestamp = this@map.date?.asMs() ?: 0
     status = if (attrs?.nowplaying?.toBoolean() == true) ScrobbleStatus.PLAYING else ScrobbleStatus.SCROBBLED
 }
+
+fun RecentTracksDto.mapToLocal() = LocalTrack(
+        name = name,
+        artist = artist.name,
+        album = album.name,
+        duration = 1,
+        timestamp = date?.uts ?: -1,
+        playedBy = "external",
+        status = if (date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
+)
 
 fun TrackInfoDto.map() = Track(
     name = this.name,

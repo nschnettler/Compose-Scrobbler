@@ -47,14 +47,14 @@ data class TrackDomain(
     override var imageUrl: String? = null
 ): LastFmStatsEntity
 
-@Entity(tableName = "localTracks", primaryKeys = ["timestamp", "playedBy"])
+@Entity(tableName = "localTracks")
 data class LocalTrack(
         override val name: String,
         override val artist: String,
         override val album: String,
         override val duration: Long,
 
-        override val timestamp: Long = System.currentTimeMillis(),
+        @PrimaryKey override val timestamp: Long = System.currentTimeMillis() / 1000,
         val endTime: Long = System.currentTimeMillis(),
         var amountPlayed: Long = 0,
         val playedBy: String,
@@ -64,7 +64,7 @@ data class LocalTrack(
     private fun playedEnough() = amountPlayed >= (duration / 2)
     fun readyToScrobble() = canBeScrobbled() && playedEnough()
     fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
-    fun timeStampUnix() = (timestamp / 1000).toString()
+    fun timeStampString() = timestamp.toString()
     fun durationUnix() = (duration / 1000).toString()
 
     fun pause() {
@@ -90,7 +90,8 @@ enum class ScrobbleStatus {
     PLAYING,
     PAUSED,
     SCROBBLED,
-    VOLATILE
+    VOLATILE,
+    EXTERNAL
 }
 
 interface CommonTrack: CommonEntity {
@@ -106,10 +107,11 @@ interface StatusTrack: CommonTrack {
     var status: ScrobbleStatus
 
     fun isPlaying() = status == ScrobbleStatus.PLAYING
-    fun isLocal() = status == ScrobbleStatus.LOCAL
+    fun isLocal() = isCached() || status == ScrobbleStatus.SCROBBLED
+    fun isCached() = status == ScrobbleStatus.LOCAL
     fun timestampToRelativeTime() =
             if (timestamp > 0) {
-                DateUtils.getRelativeTimeSpanString(timestamp, System.currentTimeMillis(), DateUtils
+                DateUtils.getRelativeTimeSpanString(timestamp * 1000, System.currentTimeMillis(), DateUtils
                         .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
             } else null
 }

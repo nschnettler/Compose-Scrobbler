@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class LocalTrackDao:BaseDao<LocalTrack> {
-    @Query("SELECT * FROM localTracks ORDER BY timestamp DESC")
-    abstract fun getLocalTracks(): Flow<List<LocalTrack>>
+    @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC")
+    abstract fun getLocalTracks(exclude: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<List<LocalTrack>>
+
+    @Query("SELECT * FROM localTracks WHERE status = :include LIMIT 1")
+    abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<LocalTrack?>
 
     @Query("SELECT * FROM localTracks WHERE status = :status ORDER BY timestamp DESC")
     abstract suspend fun getCachedTracks(status: ScrobbleStatus = ScrobbleStatus.LOCAL): List<LocalTrack>
@@ -30,4 +33,7 @@ abstract class LocalTrackDao:BaseDao<LocalTrack> {
 
     @Query("UPDATE localTracks SET album = :album WHERE timestamp = :startTime AND playedBy = :packageName")
     abstract suspend fun updateAlbum(album: String, startTime: Long, packageName: String)
+
+    @Query("DELETE FROM localTracks WHERE status = :include")
+    abstract fun deleteByStatus(include: ScrobbleStatus = ScrobbleStatus.PLAYING)
 }

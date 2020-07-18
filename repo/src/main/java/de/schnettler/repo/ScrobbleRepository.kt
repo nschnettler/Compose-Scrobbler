@@ -29,7 +29,7 @@ class ScrobbleRepository @Inject constructor(
         method = LastFmService.METHOD_SCROBBLE,
         artist = track.artist,
         track = track.name,
-        timestamp = track.timeStampUnix(),
+        timestamp = track.timeStampString(),
         album = track.album,
         duration = track.durationUnix(),
         sessionKey = authProvider.getSessionKeyOrThrow(),
@@ -40,7 +40,7 @@ class ScrobbleRepository @Inject constructor(
                 "track" to track.name,
                 "album" to track.album,
                 "duration" to track.durationUnix(),
-                "timestamp" to track.timeStampUnix(),
+                "timestamp" to track.timeStampString(),
                 "sk" to authProvider.getSessionKeyOrThrow()
             )
         )
@@ -76,7 +76,7 @@ class ScrobbleRepository @Inject constructor(
         val albums = tracks.map { it.album }
         val names = tracks.map { it.name }
         val durations = tracks.map { it.durationUnix() }
-        val timestamps = tracks.map { it.timeStampUnix() }
+        val timestamps = tracks.map { it.timeStampString() }
 
         result.putAll(listToMap(artists, "artist"))
         result.putAll(listToMap(albums, "album"))
