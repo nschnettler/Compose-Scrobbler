@@ -19,7 +19,6 @@ fun BottomNavigationBar(
     if (currentScreen !is AppRoute.DetailRoute) {
         BottomNavigation(backgroundColor = MaterialTheme.colors.surface) {
             items.forEach {screen ->
-                Timber.d("ScreenInfo: ${screen.title}, selected: ${screen === currentScreen }")
                 BottomNavigationItem(
                     icon = {
                         Icon(asset = vectorResource(id = screen.icon))
