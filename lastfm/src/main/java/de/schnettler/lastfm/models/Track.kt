@@ -82,14 +82,18 @@ data class LovedTracksResponse(
 )
 
 data class MutlipleScrobblesResponse(
-    @Json(name="@attr") val status: StatusResponse,
+    @Json(name="@attr") override val status: StatusResponse,
     val scrobble: List<ScrobbleResponse>
-)
+): GeneralScrobbleResponse
 
 data class SingleScrobbleResponse(
-    @Json(name="@attr") val status: StatusResponse,
+    @Json(name="@attr") override val status: StatusResponse,
     val scrobble: ScrobbleResponse
-)
+): GeneralScrobbleResponse
+
+interface GeneralScrobbleResponse {
+    val status: StatusResponse
+}
 
 data class StatusResponse(
     val accepted: Int,
