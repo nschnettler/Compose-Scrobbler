@@ -16,7 +16,6 @@ dependencies {
     implementation(Square.okHttp3.okHttp)
     api(Square.okHttp3.loggingInterceptor)
 
-    implementation("com.jakewharton.retrofit","retrofit2-kotlin-coroutines-adapter","_")
     implementation("com.squareup.moshi","moshi-kotlin","_")
     implementation("com.serjltt.moshi","moshi-lazy-adapters","_")
 }
