@@ -23,4 +23,5 @@ sealed class AppRoute(
         icon = R.drawable.ic_outline_account_circle_24,
         menuActions = listOf(MenuAction.OpenInBrowser(onClick = onOpenInBrowser))
     )
+    object SearchRoute: AppRoute("Search", R.drawable.ic_round_search_24)
 }

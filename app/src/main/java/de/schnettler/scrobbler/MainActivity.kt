@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val localViewModel: LocalViewModel by viewModels()
+    private val searchViewModel: SearchViewModel by viewModels()
 
     private val onOpenInBrowser: (LastFmEntity) -> Unit = {
         openUrlInCustomTab(it.url)
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     private val bottomNavDestinations = listOf(
             AppRoute.ChartRoute,
             AppRoute.LocalRoute,
+            AppRoute.SearchRoute,
             AppRoute.ProfileRoute(onFilterClicked = {
                 userViewModel.showDialog(true)
             })
@@ -136,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
+                is AppRoute.SearchRoute -> SearchScreen(searchViewModel, onListingClicked)
                 is AppRoute.DetailRoute -> {
                     detailsViewModel.updateEntry(screen.item)
                     DetailScreen(model = detailsViewModel, onListingSelected = onListingClicked, onTagClicked = onTagClicked)
