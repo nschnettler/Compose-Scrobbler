@@ -1,6 +1,8 @@
 package de.schnettler.scrobble.work
 
 import android.content.Context
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
@@ -20,11 +22,11 @@ const val RESULT_COUNT = "count"
 const val RESULT_DESCRIPTION = "description"
 const val RESULT_TRACKS = "tracks"
 
-class ScrobbleWorker(
-    ctx: Context,
-    params: WorkerParameters,
+class ScrobbleWorker @WorkerInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
     private val repo: ScrobbleRepository
-): CoroutineWorker(ctx, params) {
+): CoroutineWorker(appContext, workerParams) {
 
     private val scrobbledTracks = mutableListOf<LocalTrack>()
 
