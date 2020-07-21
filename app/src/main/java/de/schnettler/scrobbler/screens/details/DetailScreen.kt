@@ -17,24 +17,38 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import de.schnettler.database.models.*
 import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.util.currentData
+import de.schnettler.scrobbler.util.loading
+import de.schnettler.scrobbler.util.refreshing
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun DetailScreen(model: DetailViewModel, onListingSelected: (CommonEntity) -> Unit, onTagClicked: (String) -> Unit) {
-    val artistState by model.entryState.collectAsState()
+    val artistState by model.state.collectAsState()
 
-    artistState.handleIfError(ContextAmbient.current)
+     if (artistState.loading) {
+         LiveDataLoadingComponent()
+      } else {
+         SwipeToRefreshLayout(
+             refreshingState = artistState.refreshing,
+             onRefresh = { model.refresh() },
+             refreshIndicator = { SwipeRefreshPrograssIndicator() }
+         ) {
+             artistState.currentData?.let {details ->
+                 when(details) {
+                     is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
+                     is TrackDomain -> TrackDetailScreen(details, onTagClicked = onTagClicked)
+                     is Album -> AlbumDetailScreen(album = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
+                 }
 
-    artistState.data?.let {details ->
-        when(details) {
-            is Artist -> ArtistDetailScreen(artist = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
-            is TrackDomain -> TrackDetailScreen(details, onTagClicked = onTagClicked)
-            is Album -> AlbumDetailScreen(album = details, onListingSelected = onListingSelected, onTagClicked = onTagClicked)
-        }
-
-    }
+             }
+         }
+     }
 }
 
 @OptIn(ExperimentalLayout::class)

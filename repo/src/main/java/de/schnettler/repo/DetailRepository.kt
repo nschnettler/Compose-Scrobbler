@@ -1,9 +1,6 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.nonFlowValueFetcher
+import com.dropbox.android.external.store4.*
 import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.RelationshipDao
@@ -22,8 +19,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import javax.inject.Inject
 
-typealias AlbumIdentifier = Pair<String, String>
-
 class DetailRepository @Inject constructor(
     private val artistDao: ArtistDao,
     private val albumDao: AlbumDao,
@@ -34,7 +29,7 @@ class DetailRepository @Inject constructor(
     private val spotifyAuthProvider: SpotifyAuthProvider,
     private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
-    fun getArtistInfo(id: String) = StoreBuilder.from(
+    val artistStore = StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: String ->
             val response = service.getArtistInfo(key, lastFmAuthProvider.getSessionKeyOrThrow())
             val artist = response.map()
@@ -89,9 +84,9 @@ class DetailRepository @Inject constructor(
                 )
             }
         )
-    ).build().stream(StoreRequest.cached(id, true))
+    ).build()
 
-    fun getTrackInfo(track: CommonTrack) = StoreBuilder.from(
+    val trackStore =  StoreBuilder.from(
         fetcher = nonFlowValueFetcher { key: CommonTrack ->
             service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow())
                     .map()
@@ -106,17 +101,17 @@ class DetailRepository @Inject constructor(
                     albumDao.insert(
                         Album(
                             name = it,
-                            artist = track.artist,
+                            artist = value.artist,
                             url = "https://www.last.fm/music/${value.artist}/${it}"
                         )
                     )
                 }
             }
         )
-    ).build().stream(StoreRequest.cached(track, true))
+    ).build()
 
 
-    private val albumDetailStore = StoreBuilder.from<Album, Album, Album>(
+    val albumStore = StoreBuilder.from<Album, Album, Album>(
         fetcher = nonFlowValueFetcher { key: Album ->
             service.getAlbumInfo(artistName = key.getArtistOrThrow(),
                 albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()).map()
@@ -137,10 +132,6 @@ class DetailRepository @Inject constructor(
             }
         )
     ).build()
-
-    fun getAlbumInfo(album: Album) =
-        albumDetailStore.stream(StoreRequest.cached(album, true))
-
 
     private suspend fun refreshImageUrl(localImageUrl: String?, listing: LastFmEntity) {
         if (localImageUrl.isNullOrBlank()) {
