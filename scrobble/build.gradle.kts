@@ -22,10 +22,10 @@ dependencies {
     implementation(KotlinX.coroutines.core)
 
     // Dagger
-    implementation("androidx.hilt","hilt-lifecycle-viewmodel","1.0.0-alpha01")
-    kapt("androidx.hilt","hilt-compiler","1.0.0-alpha01")
-    implementation("com.google.dagger","hilt-android","2.28-alpha")
-    kapt("com.google.dagger","hilt-android-compiler","2.28-alpha")
-    implementation("androidx.hilt:hilt-work:1.0.0-alpha01")
+    implementation("androidx.hilt","hilt-lifecycle-viewmodel","_")
+    kapt("androidx.hilt","hilt-compiler","_")
+    implementation("com.google.dagger","hilt-android","_")
+    kapt("com.google.dagger","hilt-android-compiler","_")
+    implementation("androidx.hilt", "hilt-work", "_")
     implementation(AndroidX.work.runtimeKtx)
 }

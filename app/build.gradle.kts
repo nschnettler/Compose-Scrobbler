@@ -67,7 +67,7 @@ dependencies {
     implementation(AndroidX.ui.layout)
     implementation(AndroidX.ui.material)
     implementation(AndroidX.ui.tooling)
-    implementation("androidx.ui","ui-livedata","0.1.0-dev14")
+    implementation("androidx.ui","ui-livedata","_")
     implementation(AndroidX.lifecycle.extensions)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
@@ -77,25 +77,16 @@ dependencies {
     //Google
     implementation(Google.android.material)
 
-    //Other
-    val versionAccompanist = "0.1.7-SNAPSHOT"
-    val versionCoil = "0.11.0"
-    val versionNavigator = "0.3.3"
-    val versionHilt = "1.0.0-alpha01"
-    val versionDagger = "2.28-alpha"
-    val versionThreeten = "1.2.4"
-    val versionLeakCanary = "2.4"
-
-    implementation("io.coil-kt", "coil", versionCoil)
-    implementation("dev.chrisbanes.accompanist","accompanist-coil", versionAccompanist)
-    implementation("com.jakewharton.threetenabp","threetenabp", versionThreeten)
-    implementation("com.github.mvarnagiris.compose-navigation", "navigation", versionNavigator)
-    debugImplementation("com.squareup.leakcanary", "leakcanary-android", versionLeakCanary)
+    implementation("io.coil-kt", "coil", "_")
+    implementation("dev.chrisbanes.accompanist","accompanist-coil", "_")
+    implementation("com.jakewharton.threetenabp","threetenabp", "_")
+    implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
+    debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
 
     //Dagger
-    implementation("androidx.hilt","hilt-lifecycle-viewmodel", versionHilt)
-    implementation("com.google.dagger","hilt-android",versionDagger)
-    kapt("androidx.hilt","hilt-compiler", versionHilt)
-    kapt("com.google.dagger","hilt-android-compiler",versionDagger)
-    implementation("androidx.hilt:hilt-work:1.0.0-alpha01")
+    implementation("androidx.hilt","hilt-lifecycle-viewmodel", "_")
+    implementation("androidx.hilt", "hilt-work", "_")
+    implementation("com.google.dagger","hilt-android","_")
+    kapt("androidx.hilt","hilt-compiler", "_")
+    kapt("com.google.dagger","hilt-android-compiler","_")
 }
