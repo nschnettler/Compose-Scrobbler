@@ -1,5 +1,6 @@
 package de.schnettler.repo.authentication.provider
 
+import android.content.SharedPreferences
 import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.models.Session
 import de.schnettler.lastfm.api.lastfm.LastFmService
@@ -38,5 +39,30 @@ class LastFmAuthProvider @Inject constructor(
                 session = it
             }
         }
+    }
+}
+
+const val SESSION_KEY = "session_key"
+
+class SessionManager(
+        private val service: LastFmService,
+        private val sharedPreferences: SharedPreferences
+) {
+    private val sessionKey by lazy {
+        sharedPreferences.getString(SESSION_KEY, null)
+    }
+
+    fun isAuthenticated() = sessionKey != null
+
+    fun getSession() = sessionKey
+    fun removeSession() = sharedPreferences.edit().remove(SESSION_KEY).apply()
+    private fun insertSession(sessionKey: String) =
+            sharedPreferences.edit().putString(SESSION_KEY, sessionKey).apply()
+
+    suspend fun refreshSession(token: String) {
+        val params= mutableMapOf("token" to token, "method" to METHOD_AUTH_SESSION)
+        val signature = createSignature(params)
+        val session = SessionMapper.map(service.getSession(token, signature))
+        insertSession(session.key)
     }
 }

@@ -1,6 +1,8 @@
 package de.schnettler.repo
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -94,6 +96,9 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideServiceScope() = ServiceCoroutineScope(Job() + Dispatchers.IO)
+
+    @Provides
+    fun provideSharedPreferences(application: Application): SharedPreferences = application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
 }
 
 interface ServiceCoroutineScope : CoroutineScope
