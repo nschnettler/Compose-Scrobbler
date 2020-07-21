@@ -11,7 +11,7 @@ import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.GeneralScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.mapping.LastFmPostResponse
+import de.schnettler.repo.mapping.LastFmResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -91,9 +91,9 @@ class ScrobbleWorker @WorkerInject constructor(
         }
     }
 
-    private fun <T: GeneralScrobbleResponse> handleResponse(input: List<LocalTrack>, response: LastFmPostResponse<T>): Result {
+    private fun <T: GeneralScrobbleResponse> handleResponse(input: List<LocalTrack>, response: LastFmResponse<T>): Result {
         return when(response) {
-            is LastFmPostResponse.SUCCESS -> {
+            is LastFmResponse.SUCCESS -> {
                 val accepted = response.data?.status?.accepted ?: 0
                 Timber.d("[Scrobble] Accepted ${accepted/input.size * 100} %")
                 if (accepted == input.size) {
@@ -103,7 +103,7 @@ class ScrobbleWorker @WorkerInject constructor(
                 }
                 Result.success()
             }
-            is LastFmPostResponse.ERROR -> {
+            is LastFmResponse.ERROR -> {
                 handleError(response.error)
             }
         }

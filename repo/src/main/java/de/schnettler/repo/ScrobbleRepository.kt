@@ -6,7 +6,7 @@ import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.LastFmPostResponse
+import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
@@ -67,7 +67,7 @@ class ScrobbleRepository @Inject constructor(
 
     suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
 
-    suspend fun submitScrobbles(tracks: List<LocalTrack>): LastFmPostResponse<MutlipleScrobblesResponse> {
+    suspend fun submitScrobbles(tracks: List<LocalTrack>): LastFmResponse<MutlipleScrobblesResponse> {
         val result: MutableMap<String, String> = mutableMapOf(
             "method" to LastFmService.METHOD_SCROBBLE,
             "sk" to authProvider.getSessionKeyOrThrow()
