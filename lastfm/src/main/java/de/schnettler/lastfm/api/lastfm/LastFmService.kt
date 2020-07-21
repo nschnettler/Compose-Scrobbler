@@ -114,4 +114,11 @@ interface LastFmService {
         @Query("album") albumName: String,
         @Query("sk") sessionKey: String
     ): AlbumInfoDto
+
+    @GET("?method=artist.search")
+    @Wrapped(path = ["results", "artistmatches", "artist" ])
+    suspend fun searchArtist(
+        @Query("artist") query: String,
+        @Query("limit") limit: Long = 30
+    ): List<ChartArtistDto>
 }
