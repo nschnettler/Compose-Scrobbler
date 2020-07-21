@@ -16,9 +16,6 @@ import kotlinx.coroutines.launch
 class LocalViewModel @ViewModelInject constructor(
     private val repo: LocalRepository
 ) : ViewModel() {
-    val data by lazy {
-        repo.getData()
-    }
 
     val recentTracksState: MutableStateFlow<RefreshableUiState<List<LocalTrack>>> =
             MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
