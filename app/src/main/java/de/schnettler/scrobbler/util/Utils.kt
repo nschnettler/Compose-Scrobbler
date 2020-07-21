@@ -90,3 +90,8 @@ fun packageNameToAppName(packageName: String) = when (packageName) {
 
 fun Long.milliSecondsToDate() =
         DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,Locale.getDefault()).format(Date(this))
+
+enum class Orientation() {
+    Vertical,
+    Horizontal
+}

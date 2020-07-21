@@ -5,6 +5,7 @@ import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
@@ -23,6 +24,7 @@ import de.schnettler.database.models.TopListEntryWithData
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.screens.formatter
+import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.firstLetter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -34,12 +36,20 @@ enum class PlaysStyle() {
 }
 
 @Composable
-fun <T>GenericHorizontalListingScroller(
+fun <T> Recyclerview(
     items: List<T>,
-    height: Dp,
-    childView: @Composable() (listing: T) -> Unit) {
-    LazyRowItems(items = items, modifier = Modifier.preferredHeight(height)) {
-        childView(it)
+    height: Dp = 100.dp,
+    orientation: Orientation = Orientation.Vertical,
+    childView: @Composable() (listing: T) -> Unit
+) {
+    if (orientation == Orientation.Horizontal) {
+        LazyRowItems(items = items, modifier = Modifier.preferredHeight(height)) {
+            childView(it)
+        }
+    } else {
+        LazyColumnItems(items = items) {
+            childView(it)
+        }
     }
 }
 
@@ -58,7 +68,7 @@ fun <T> GenericHorizontalListingScrollerWithTitle(
     }
 
     items?.let {
-        GenericHorizontalListingScroller<T>(items = items, childView = childView, height = scrollerHeight)
+        Recyclerview(items = items, childView = childView, height = scrollerHeight, orientation = Orientation.Horizontal)
     }
 }
 

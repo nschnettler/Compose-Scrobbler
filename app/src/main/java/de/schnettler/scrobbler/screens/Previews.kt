@@ -5,8 +5,9 @@ import androidx.ui.layout.Column
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import de.schnettler.database.models.Artist
-import de.schnettler.scrobbler.components.GenericHorizontalListingScroller
+import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.components.ListingCard
+import de.schnettler.scrobbler.util.Orientation
 
 @Preview
 @Composable
@@ -45,9 +46,10 @@ fun HorizontalListingScrollerPreview() {
             plays = 20
         )
     )
-    GenericHorizontalListingScroller(
+    Recyclerview(
         items = artists,
-        height = 200.dp
+        height = 200.dp,
+        orientation = Orientation.Horizontal
     ) { listing ->
         ListingCard(data = listing, onEntrySelected = {})
     }
