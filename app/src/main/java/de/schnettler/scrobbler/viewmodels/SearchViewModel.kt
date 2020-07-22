@@ -3,11 +3,11 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmStatsEntity
 import de.schnettler.repo.SearchRepository
+import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,8 @@ class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepos
     private val _query: MutableStateFlow<String> = MutableStateFlow("")
     val query: StateFlow<String>
         get() = _query
-    val state: MutableStateFlow<StoreResponse<List<Artist>>> = MutableStateFlow(StoreResponse.Loading(origin = ResponseOrigin.Fetcher))
+    val state: MutableStateFlow<RefreshableUiState<List<LastFmStatsEntity>>> =
+        MutableStateFlow(RefreshableUiState.Success(null, true))
 
     fun updateEntry(new: String) {
         _query.updateValue(new)
@@ -30,8 +31,25 @@ class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepos
             query.flatMapLatest { key ->
                 repo.artistStore.stream(StoreRequest.fresh(key))
             }.collect {
-                state.value = it
+                state.update(it)
             }
+            /*query
+                .debounce(300)
+                .filter {input ->
+                    input.isNotEmpty()
+                }
+                .distinctUntilChanged()
+                .flatMapLatest {key ->
+                    repo.artistStore
+                        .stream(StoreRequest.fresh(key))
+                        .combine(repo.albumStore.stream(StoreRequest.fresh(key))) {artists, albums ->
+                            artists to albums
+                        }
+                }
+                .collect {
+                    state.update(it.first)
+                    albumState.update(it.second)
+                }*/
         }
     }
 }
