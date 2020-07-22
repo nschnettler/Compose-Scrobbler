@@ -68,7 +68,9 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
         )
         is StoreResponse.Error.Exception -> RefreshableUiState.Error(
                 exception = result.error, previousData = this.value.currentData
-        )
+        ).also {
+            Timber.e(it.exception)
+        }
         is StoreResponse.Error.Message -> RefreshableUiState.Error(
                 errorMessage = result.message, previousData = this.value.currentData
         )
