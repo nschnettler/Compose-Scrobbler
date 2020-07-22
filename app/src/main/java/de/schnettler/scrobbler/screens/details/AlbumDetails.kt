@@ -13,6 +13,7 @@ import androidx.ui.unit.dp
 import de.schnettler.database.models.Album
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.util.cardCornerRadius

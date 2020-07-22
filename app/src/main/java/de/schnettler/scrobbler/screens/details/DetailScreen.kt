@@ -4,23 +4,17 @@ import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.ContentScale
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.*
 import androidx.ui.material.ListItem
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
-import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import de.schnettler.database.models.*
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
-import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.util.currentData
 import de.schnettler.scrobbler.util.loading
 import de.schnettler.scrobbler.util.refreshing
@@ -80,28 +74,6 @@ fun AlbumCategory(album: Album) {
                     }
                 }
             }
-
-        })
-}
-
-@ExperimentalLayout
-@Composable
-fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
-    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-        FlowRow(mainAxisSpacing = 8.dp, crossAxisSpacing = 16.dp) {
-            items.forEach {
-                Box(modifier = Modifier.clickable(onClick = { onChipClicked.invoke(it) })) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.body2,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.drawBackground(
-                            color = colorResource(id = R.color.colorBackgroundElevated),
-                            shape = RoundedCornerShape(25.dp)
-                        ) + Modifier.padding(horizontal = 12.dp, vertical = 8.dp) + Modifier.fillMaxHeight()
-                    )
-                }
-            }
         }
-    }
+    )
 }
