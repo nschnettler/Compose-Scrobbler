@@ -11,6 +11,13 @@ data class AlbumDto(
     @Json(name = "image") val images: List<ImageDto>
 ): ListingDto
 
+data class SearchResultDto(
+    val name: String,
+    val artist: String = "Unknown Artist",
+    val url: String,
+    val listeners: Long = 0
+)
+
 data class AlbumInfoDto(
     val name: String,
     val artist: String,

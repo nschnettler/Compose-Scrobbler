@@ -120,5 +120,19 @@ interface LastFmService {
     suspend fun searchArtist(
         @Query("artist") query: String,
         @Query("limit") limit: Long = 30
-    ): List<ChartArtistDto>
+    ): List<SearchResultDto>
+
+    @GET("?method=album.search")
+    @Wrapped(path = ["results", "albummatches", "album" ])
+    suspend fun searchAlbum(
+        @Query("album") query: String,
+        @Query("limit") limit: Long = 30
+    ): List<SearchResultDto>
+
+    @GET("?method=track.search")
+    @Wrapped(path = ["results", "trackmatches", "track" ])
+    suspend fun searchTrack(
+        @Query("track") query: String,
+        @Query("limit") limit: Long = 30
+    ): List<SearchResultDto>
 }
