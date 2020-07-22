@@ -41,13 +41,15 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit)
             Box(modifier = Modifier.padding(16.dp)) {
                 FilledTextField(
                     value = trackState.value,
-                    onValueChange = {trackState.value = it},
+                    onValueChange = {
+                        trackState.value = it
+                        model.updateEntry(it.text)
+                    },
                     label = { Text("Search") },
                     modifier = Modifier.fillMaxWidth(),
                     imeAction = ImeAction.Search,
                     onImeActionPerformed = { _, controller ->
                         controller?.hideSoftwareKeyboard()
-                        model.updateEntry(trackState.value.text)
                     }
                 )
             }

@@ -9,10 +9,7 @@ import de.schnettler.repo.SearchRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepository): ViewModel() {
@@ -28,28 +25,13 @@ class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepos
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            query.flatMapLatest { key ->
-                repo.artistStore.stream(StoreRequest.fresh(key))
-            }.collect {
-                state.update(it)
-            }
-            /*query
-                .debounce(300)
-                .filter {input ->
-                    input.isNotEmpty()
+            query.debounce(300)
+                .filter { it.isNotBlank() }
+                .flatMapLatest { key ->
+                    repo.artistStore.stream(StoreRequest.fresh(key))
+                }.collect {
+                    state.update(it)
                 }
-                .distinctUntilChanged()
-                .flatMapLatest {key ->
-                    repo.artistStore
-                        .stream(StoreRequest.fresh(key))
-                        .combine(repo.albumStore.stream(StoreRequest.fresh(key))) {artists, albums ->
-                            artists to albums
-                        }
-                }
-                .collect {
-                    state.update(it.first)
-                    albumState.update(it.second)
-                }*/
         }
     }
 }
