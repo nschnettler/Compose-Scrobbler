@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 fun ErrorSnackbar(
         showError: Boolean,
         modifier: Modifier = Modifier,
+        text: String = "Can't update history",
         onErrorAction: () -> Unit = { },
         onDismiss: () -> Unit = { }
 ) {
@@ -28,7 +29,7 @@ fun ErrorSnackbar(
 
         Snackbar(
                 modifier = modifier.padding(16.dp),
-                text = { Text("Can't update history") },
+                text = { Text(text) },
                 action = {
                     TextButton(
                             onClick = {
