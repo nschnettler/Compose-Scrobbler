@@ -14,6 +14,7 @@ import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.TopListMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
+import de.schnettler.repo.mapping.mapToUserAlbum
 import de.schnettler.repo.util.provideSpotifyService
 import javax.inject.Inject
 
@@ -58,7 +59,7 @@ class TopListRepository @Inject constructor(
 
     fun getTopAlbums(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = nonFlowValueFetcher {
-            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
+            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.mapToUserAlbum() }
         },
         sourceOfTruth = SourceOfTruth.from(
             reader = {

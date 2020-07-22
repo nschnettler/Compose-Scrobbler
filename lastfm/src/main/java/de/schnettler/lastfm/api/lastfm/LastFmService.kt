@@ -52,7 +52,7 @@ interface LastFmService {
     suspend fun getUserTopAlbums(
         @Query("period") timePeriod: TimePeriod,
         @Query("sk") sessionKey: String
-    ): List<UserAlbumDto>
+    ): List<AlbumDto>
 
     @GET("?method=$METHOD_USER_ARTISTS&limit=10")
     @Wrapped(path = ["topartists"])

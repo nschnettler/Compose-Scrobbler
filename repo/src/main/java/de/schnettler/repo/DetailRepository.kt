@@ -10,10 +10,7 @@ import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
-import de.schnettler.repo.mapping.RelationMapper
-import de.schnettler.repo.mapping.forLists
-import de.schnettler.repo.mapping.map
-import de.schnettler.repo.mapping.mapToArtist
+import de.schnettler.repo.mapping.*
 import de.schnettler.repo.util.provideSpotifyService
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -34,7 +31,7 @@ class DetailRepository @Inject constructor(
             val response = service.getArtistInfo(key, lastFmAuthProvider.getSessionKeyOrThrow())
             val artist = response.map()
             refreshImageUrl(artistDao.getArtistImageUrl(key), artist)
-            artist.topAlbums = service.getArtistAlbums(key).map { it.map() }
+            artist.topAlbums = service.getArtistAlbums(key).map { it.mapToAlbum() }
             artist.topTracks = service.getArtistTracks(key).map { it.map() }
             artist.similarArtists = response.similar.artist.map { it.mapToArtist() }
             artist

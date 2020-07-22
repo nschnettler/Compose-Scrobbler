@@ -31,22 +31,6 @@ fun ArtistInfoDto.map() = Artist(
     tags = this.tags.tag.map { tag -> tag.name }
 )
 
-fun UserAlbumDto.map() = Album(
-    name = this.name,
-    artist = this.artist.name,
-    userPlays = this.playcount,
-    url = this.url,
-    imageUrl = this.images[3].url
-)
-
-fun AlbumDto.map() = Album(
-    name = this.name,
-    artist = this.artist.name,
-    plays = this.playcount,
-    url = this.url,
-    imageUrl = this.images[3].url
-)
-
 fun TrackWithAlbum.map() = TrackDomain(
     name = this.track.name,
     artist = this.track.artist,
