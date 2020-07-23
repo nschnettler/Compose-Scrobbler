@@ -175,7 +175,13 @@ fun ListingScroller(
 @Composable
 fun NameListIcon(title: String) {
     PlainListIconBackground {
-        Text(text = title.firstLetter())
+        try {
+            title.firstLetter()
+        } catch (e: NoSuchElementException) {
+            title.first().toString()
+        }.also {
+            Text(text = it)
+        }
     }
 }
 
