@@ -33,7 +33,7 @@ fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
 @OptIn(ExperimentalLayout::class)
 @Composable
 fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChanged: (Int) -> Unit) {
-    Box(modifier = Modifier.padding(horizontal = 16.dp).drawBorder(size= 1.dp, color =  MaterialTheme.colors.onSurface.copy(alpha = 0.12f), shape = RoundedCornerShape(25.dp))) {
+    Box(modifier = Modifier.padding(horizontal = 16.dp).drawBorder(size= 1.dp, color =  MaterialTheme.colors.onSurface.copy(alpha = 0.12f), shape = RoundedCornerShape(16.dp))) {
         Row() {
             items.forEachIndexed {i, text ->
                 Row(Modifier.preferredHeight(32.dp)) {
@@ -58,7 +58,7 @@ fun Chip(
     onSelected: () -> Unit) {
 
     Surface(
-        shape = RoundedCornerShape(25.dp),
+        shape = RoundedCornerShape(16.dp),
         color = if (selected) colorSelected else colorNormal
     ) {
         Box(gravity = Alignment.Center,
