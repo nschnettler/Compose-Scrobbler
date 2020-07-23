@@ -21,29 +21,28 @@ import de.schnettler.database.models.Artist
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.ErrorSnackbar
-import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.currentData
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable
 fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit) {
-    val result by model.state.collectAsState()
-    val query = model.query.collectAsState()
-    val trackState = state { TextFieldValue(query.value) }
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(result) {
-        result is RefreshableUiState.Error
+    val searchResult by model.state.collectAsState()
+    val searchQuery by model.searchQuery.collectAsState()
+    val searchInputState = state { TextFieldValue(searchQuery.query) }
+    val (showSnackbarError, updateShowSnackbarError) = stateFor(searchResult) {
+        searchResult is RefreshableUiState.Error
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
         Column {
             Box(modifier = Modifier.padding(16.dp)) {
                 FilledTextField(
-                    value = trackState.value,
+                    value = searchInputState.value,
                     onValueChange = {
-                        trackState.value = it
-                        model.updateEntry(it.text)
+                        searchInputState.value = it
+                        model.updateQuery(it.text)
                     },
                     label = { Text("Search") },
                     modifier = Modifier.fillMaxWidth(),
@@ -53,7 +52,10 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit)
                     }
                 )
             }
-            result.currentData?.let {searchResults ->
+            SelectableChipRow(items = listOf("Alles", "Artist", "Album", "Track"), selectedIndex = searchQuery.filter) {
+                model.updateFilter(it)
+            }
+            searchResult.currentData?.let { searchResults ->
                 LazyColumnItems(items = searchResults) {
                     when(it) {
                         is Artist -> {

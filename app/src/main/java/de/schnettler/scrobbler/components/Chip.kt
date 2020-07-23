@@ -53,8 +53,8 @@ fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChange
 fun Chip(
     text: String,
     selected: Boolean = false,
-    colorSelected: Color = MaterialTheme.colors.secondary.copy(alpha = 0.4f),
-    colorNormal: Color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
+    colorSelected: Color = MaterialTheme.colors.secondary.copy(0.4f),
+    colorNormal: Color = MaterialTheme.colors.onSurface.copy(0.12f),
     onSelected: () -> Unit) {
 
     Surface(

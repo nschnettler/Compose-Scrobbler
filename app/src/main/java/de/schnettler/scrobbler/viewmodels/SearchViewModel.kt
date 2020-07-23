@@ -5,30 +5,41 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreRequest
 import de.schnettler.database.models.LastFmStatsEntity
+import de.schnettler.repo.SearchQuery
 import de.schnettler.repo.SearchRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepository): ViewModel() {
-    private val _query: MutableStateFlow<String> = MutableStateFlow("")
-    val query: StateFlow<String>
-        get() = _query
+    private val _searchQuery: MutableStateFlow<SearchQuery> = MutableStateFlow(SearchQuery("", 0))
+    val searchQuery: StateFlow<SearchQuery>
+        get() = _searchQuery
     val state: MutableStateFlow<RefreshableUiState<List<LastFmStatsEntity>>> =
         MutableStateFlow(RefreshableUiState.Success(null, true))
 
-    fun updateEntry(new: String) {
-        _query.updateValue(new)
+    fun updateQuery(new: String) {
+        if(new != searchQuery.value.query) {
+            _searchQuery.value = searchQuery.value.copy(query = new)
+        }
+    }
+
+    fun updateFilter(filter: Int) {
+        if(filter != searchQuery.value.filter) {
+            _searchQuery.value = searchQuery.value.copy(filter = filter)
+        }
     }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            query.debounce(300)
-                .filter { it.isNotBlank() }
-                .flatMapLatest { key ->
-                    repo.artistStore.stream(StoreRequest.fresh(key))
+            searchQuery.debounce(300)
+                .filter { it.query.isNotBlank() }
+                .flatMapLatest { query ->
+                    Timber.d("Filter: ${query.filter}")
+                    repo.artistStore.stream(StoreRequest.fresh(query))
                 }.collect {
                     state.update(it)
                 }
