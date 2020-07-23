@@ -29,8 +29,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
-        kotlinCompilerExtensionVersion = "0.1.0-dev14"
+        kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
+        kotlinCompilerExtensionVersion = "0.1.0-dev15"
     }
 
     compileOptions {
@@ -40,6 +40,7 @@ android {
 
     kotlinOptions {
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check")
     }
 
     signingConfigs {
@@ -64,10 +65,10 @@ dependencies {
     implementation(AndroidX.coreKtx)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.activityKtx)
-    implementation(AndroidX.ui.layout)
-    implementation(AndroidX.ui.material)
-    implementation(AndroidX.ui.tooling)
-    implementation("androidx.ui","ui-livedata","_")
+    implementation("androidx.compose.foundation", "foundation-layout", "_")
+    implementation("androidx.compose.material", "material", "_")
+    implementation("androidx.ui", "ui-tooling", "_")
+    implementation("androidx.compose.runtime","runtime-livedata","_")
     implementation(AndroidX.lifecycle.extensions)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
