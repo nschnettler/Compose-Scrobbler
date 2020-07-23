@@ -16,10 +16,10 @@ class LocalRepository @Inject constructor(
         private val authProvider: LastFmAuthProvider
 ) {
     private val recentTracksStore = StoreBuilder.from(
-            fetcher = nonFlowValueFetcher { _: String ->
+            fetcher = Fetcher.of { _: String ->
                 service.getUserRecentTrack(authProvider.getSessionKeyOrThrow()).map { it.mapToLocal() }
             },
-            sourceOfTruth = SourceOfTruth.from(
+            sourceOfTruth = SourceOfTruth.of(
                     reader = {
                         localTrackDao.getLocalTracks().combine(
                                 localTrackDao.getNowPlaying()

@@ -19,10 +19,10 @@ class UserRepository @Inject constructor(
     private val authProvider: LastFmAuthProvider
 ) {
     private val userStore = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { session: Session ->
+        fetcher = Fetcher.of { session: Session ->
             UserMapper.map(service.getUserInfo(session.key))
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = { session: Session ->
                 userDao.getUser(session.name)
             },
@@ -43,7 +43,7 @@ class UserRepository @Inject constructor(
 
     fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {
         return StoreBuilder.from(
-            fetcher = nonFlowValueFetcher { _: String ->
+            fetcher = Fetcher.of { _: String ->
                 val session = authProvider.session!!
                 val result = service.getUserLikedTracks(session.key)
                 userDao.updateLovedTracksCount(session.name, result.info.total)

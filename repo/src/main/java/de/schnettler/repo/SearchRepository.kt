@@ -1,7 +1,7 @@
 package de.schnettler.repo
 
+import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.nonFlowValueFetcher
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.mapping.mapToAlbum
 import de.schnettler.repo.mapping.mapToArtist
@@ -12,7 +12,7 @@ class SearchRepository @Inject constructor(
     private val service: LastFmService
 ) {
     val artistStore = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {query: SearchQuery ->
+        fetcher = Fetcher.of { query: SearchQuery ->
             when(query.filter) {
                 1 -> service.searchArtist(query.query, 30).map { it.mapToArtist() }
                 2 -> service.searchAlbum(query.query, 30).map { it.mapToAlbum() }

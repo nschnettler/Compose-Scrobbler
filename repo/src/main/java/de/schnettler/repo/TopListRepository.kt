@@ -1,9 +1,6 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.nonFlowValueFetcher
+import com.dropbox.android.external.store4.*
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.daos.*
 import de.schnettler.database.models.*
@@ -30,7 +27,7 @@ class TopListRepository @Inject constructor(
     private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
     fun getTopArtists(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {
+        fetcher = Fetcher.of {
             val session = authProvider.getSessionOrThrow()
             val response = service.getUserTopArtists(timePeriod, session.key)
             val artists = response.artist.map { it.map() }
@@ -42,7 +39,7 @@ class TopListRepository @Inject constructor(
             }
             artists
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = {
                 chartDao.getTopArtists(TopListEntryType.USER_ARTIST)
             },
@@ -58,10 +55,10 @@ class TopListRepository @Inject constructor(
 
 
     fun getTopAlbums(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {
+        fetcher = Fetcher.of {
             service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.mapToUserAlbum() }
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = {
                 chartDao.getTopAlbums(TopListEntryType.USER_ALBUM)
             },
@@ -77,10 +74,10 @@ class TopListRepository @Inject constructor(
     ).build().stream(StoreRequest.cached("", true))
 
     fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher {
+        fetcher = Fetcher.of {
             service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = {
                 chartDao.getTopTracks(TopListEntryType.USER_TRACKS)
             },

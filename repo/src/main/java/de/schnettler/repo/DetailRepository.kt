@@ -27,7 +27,7 @@ class DetailRepository @Inject constructor(
     private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
     val artistStore = StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { key: String ->
+        fetcher = Fetcher.of { key: String ->
             val response = service.getArtistInfo(key, lastFmAuthProvider.getSessionKeyOrThrow())
             val artist = response.map()
             refreshImageUrl(artistDao.getArtistImageUrl(key), artist)
@@ -36,7 +36,7 @@ class DetailRepository @Inject constructor(
             artist.similarArtists = response.similar.artist.map { it.mapToArtist() }
             artist
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = { key: String ->
                 var artist = artistDao.getArtist(key)
                 artist = artist.combine(
@@ -84,11 +84,11 @@ class DetailRepository @Inject constructor(
     ).build()
 
     val trackStore =  StoreBuilder.from(
-        fetcher = nonFlowValueFetcher { key: CommonTrack ->
+        fetcher = Fetcher.of { key: CommonTrack ->
             service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow())
                     .map()
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = { key ->
                 trackDao.getTrack(key.id, key.artist).mapLatest { it?.map() }
             },
@@ -109,11 +109,11 @@ class DetailRepository @Inject constructor(
 
 
     val albumStore = StoreBuilder.from<Album, Album, Album>(
-        fetcher = nonFlowValueFetcher { key: Album ->
+        fetcher = Fetcher.of { key: Album ->
             service.getAlbumInfo(artistName = key.getArtistOrThrow(),
                 albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()).map()
         },
-        sourceOfTruth = SourceOfTruth.from(
+        sourceOfTruth = SourceOfTruth.of(
             reader = {key ->
                 albumDao.getAlbum(id = key.id,
                     artistId = key.getArtistOrThrow()

@@ -20,11 +20,11 @@ class ChartRepository @Inject constructor(
 ) {
     fun getArtistChart(): Flow<StoreResponse<List<Artist>>> {
         val userInfoStore = StoreBuilder.from(
-            fetcher = nonFlowValueFetcher { _: String ->
+            fetcher = Fetcher.of { _: String ->
                 service.getTopArtists().map { it.map() }
 
             },
-            sourceOfTruth = SourceOfTruth.from(
+            sourceOfTruth = SourceOfTruth.of(
                 reader = { _: String ->
                     chartDao.getTopArtists(TopListEntryType.CHART_ARTIST)
                         .map { list -> list.map { it.data } }
