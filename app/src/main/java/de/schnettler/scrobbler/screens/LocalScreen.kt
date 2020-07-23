@@ -37,7 +37,9 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity
       true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
       false -> Button(onClick = {
          context.startActivity( Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-      }, text = {Text(text = "Enable")})
+      }) {
+         Text(text = "Enable")
+      }
    }
    Timber.i("Started Service")
 }
