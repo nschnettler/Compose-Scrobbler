@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class LocalTrackDao:BaseDao<LocalTrack> {
-    @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC")
-    abstract fun getLocalTracks(exclude: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<List<LocalTrack>>
+    @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC LIMIT :limit")
+    abstract fun getLocalTracks(exclude: ScrobbleStatus = ScrobbleStatus.PLAYING, limit: Int = 50): Flow<List<LocalTrack>>
 
     @Query("SELECT * FROM localTracks WHERE status = :include LIMIT 1")
     abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<LocalTrack?>
