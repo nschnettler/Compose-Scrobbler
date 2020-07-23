@@ -1,0 +1,3 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('navigation-debug.aar'))
+dependencies.add("default", files('core.jar'))
