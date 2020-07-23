@@ -5,8 +5,6 @@
     <color name="colorAccent">#7E8ACD</color>
     <color name="colorBackground">#FFF</color>
     <color name="colorBackgroundElevated">#F3F3F3</color>
-    <color name="colorBackgroundTransparent">#CCFFFFFF</color>
-    <color name="colorBackgroundTransparent40">#66FFFFFF</color>
     <color name="colorStroke">#0d000000</color>
     <color name="navigationBar">@color/colorBackground</color>
 </resources>

@@ -2,5 +2,4 @@
     <string name="app_name">Scrobbler</string>
     <string name="ic_period">Period</string>
     <string name="ic_open_in">Open in browser</string>
-    <string name="refresh">Refresh</string>
 </resources>
