@@ -1,3 +1,3 @@
 # Scrobble
 
-![detekt](https://github.com/Sh4dowSoul/Scrobble/workflows/detekt/badge.svg?event=issues)
+![detekt](https://github.com/Sh4dowSoul/Scrobble/workflows/detekt/badge.svg)
