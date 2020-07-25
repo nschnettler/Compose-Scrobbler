@@ -10,7 +10,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class ScrobblerApp: Application(), Configuration.Provider {
+class ScrobblerApp : Application(), Configuration.Provider {
 
     @Inject
     lateinit var workerFactory: HiltWorkerFactory
@@ -18,7 +18,7 @@ class ScrobblerApp: Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this)
     }
 
     override fun getWorkManagerConfiguration(): Configuration {

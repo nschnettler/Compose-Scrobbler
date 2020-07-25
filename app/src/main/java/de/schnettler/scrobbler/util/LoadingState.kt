@@ -8,20 +8,22 @@ import timber.log.Timber
 import de.schnettler.repo.Result
 
 sealed class LoadingState<T>(open val data: T? = null) {
-    class Initial<T>: LoadingState<T>()
+    class Initial<T> : LoadingState<T>()
     data class Loading<T>(
-            val origin: ResponseOrigin,
-            val oldData: T? = null
+        val origin: ResponseOrigin,
+        val oldData: T? = null
     ) : LoadingState<T>(oldData)
+
     data class Data<T>(
-            val origin: ResponseOrigin,
-            val newData: T
-    ): LoadingState<T>(newData)
+        val origin: ResponseOrigin,
+        val newData: T
+    ) : LoadingState<T>(newData)
+
     data class Error<T>(
-            val errorMsg: String?,
-            val exception: Throwable? = null,
-            val oldData: T? = null
-    ): LoadingState<T>(oldData)
+        val errorMsg: String?,
+        val exception: Throwable? = null,
+        val oldData: T? = null
+    ) : LoadingState<T>(oldData)
 
     fun handleIfError(ctx: Context) {
         if (this is Error) {
@@ -32,17 +34,23 @@ sealed class LoadingState<T>(open val data: T? = null) {
 }
 
 fun <T> MutableStateFlow<LoadingState<T>>.updateState(response: StoreResponse<T>) {
-    value = when(response) {
-        is StoreResponse.Data -> LoadingState.Data(origin = response.origin, newData = response.value)
-        is StoreResponse.Loading -> LoadingState.Loading(origin = response.origin, oldData = value.data)
+    value = when (response) {
+        is StoreResponse.Data -> LoadingState.Data(
+            origin = response.origin,
+            newData = response.value
+        )
+        is StoreResponse.Loading -> LoadingState.Loading(
+            origin = response.origin,
+            oldData = value.data
+        )
         is StoreResponse.Error.Message -> LoadingState.Error(
-                errorMsg = response.errorMessageOrNull(),
-                oldData = value.data
+            errorMsg = response.errorMessageOrNull(),
+            oldData = value.data
         )
         is StoreResponse.Error.Exception -> LoadingState.Error(
-                errorMsg = response.errorMessageOrNull(),
-                exception = response.error,
-                oldData = value.data
+            errorMsg = response.errorMessageOrNull(),
+            exception = response.error,
+            oldData = value.data
         )
     }
 }
@@ -50,13 +58,13 @@ fun <T> MutableStateFlow<LoadingState<T>>.updateState(response: StoreResponse<T>
 fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
     value = when (result) {
         is Result.Success -> RefreshableUiState.Success(
-                data = result.data, loading = false
+            data = result.data, loading = false
         )
         is Result.Error -> RefreshableUiState.Error(
-                exception = result.exception, previousData = this.value.currentData
+            exception = result.exception, previousData = this.value.currentData
         )
         is Result.Loading -> RefreshableUiState.Success(
-                data = this.value.currentData, loading = true
+            data = this.value.currentData, loading = true
         )
     }
 }
@@ -64,18 +72,18 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
 fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>) {
     value = when (result) {
         is StoreResponse.Data -> RefreshableUiState.Success(
-                data = result.value, loading = false
+            data = result.value, loading = false
         )
         is StoreResponse.Error.Exception -> RefreshableUiState.Error(
-                exception = result.error, previousData = this.value.currentData
+            exception = result.error, previousData = this.value.currentData
         ).also {
             Timber.e(it.exception)
         }
         is StoreResponse.Error.Message -> RefreshableUiState.Error(
-                errorMessage = result.message, previousData = this.value.currentData
+            errorMessage = result.message, previousData = this.value.currentData
         )
         is StoreResponse.Loading -> RefreshableUiState.Success(
-                data = this.value.currentData, loading = true
+            data = this.value.currentData, loading = true
         )
     }
 }

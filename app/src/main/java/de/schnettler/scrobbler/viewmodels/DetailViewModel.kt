@@ -7,10 +7,15 @@ import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.fresh
-import de.schnettler.database.models.*
+import de.schnettler.database.models.Album
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.CommonEntity
+import de.schnettler.database.models.CommonTrack
+import de.schnettler.database.models.LastFmStatsEntity
 import de.schnettler.repo.DetailRepository
 import de.schnettler.repo.Result
-import de.schnettler.scrobbler.util.*
+import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -20,9 +25,10 @@ import kotlinx.coroutines.launch
 
 class DetailViewModel @ViewModelInject constructor(
     private val repo: DetailRepository
-): ViewModel() {
+) : ViewModel() {
     private val entry: MutableStateFlow<CommonEntity?> = MutableStateFlow(null)
-    val state: MutableStateFlow<RefreshableUiState<LastFmStatsEntity>> = MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
+    val state: MutableStateFlow<RefreshableUiState<LastFmStatsEntity>> =
+        MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
 
     fun updateEntry(new: CommonEntity) {
         if (entry.updateValue(new)) {
@@ -32,7 +38,7 @@ class DetailViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            entry.flatMapLatest {listing ->
+            entry.flatMapLatest { listing ->
                 when (listing) {
                     is Artist ->
                         repo.artistStore.stream(StoreRequest.cached(listing.id, true))
@@ -41,9 +47,14 @@ class DetailViewModel @ViewModelInject constructor(
                     is Album ->
                         repo.albumStore.stream(StoreRequest.cached(listing, true))
                     else ->
-                        flowOf(StoreResponse.Error.Message("Not implemented yet", ResponseOrigin.Cache))
+                        flowOf(
+                            StoreResponse.Error.Message(
+                                "Not implemented yet",
+                                ResponseOrigin.Cache
+                            )
+                        )
                 }
-            }.collect {response ->
+            }.collect { response ->
                 state.update(response)
             }
         }
@@ -54,7 +65,7 @@ class DetailViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val current = state.value.currentData
             try {
-                when(current) {
+                when (current) {
                     is Artist -> repo.artistStore.fresh(current.id)
                     is CommonTrack -> repo.trackStore.fresh(current)
                     is Album -> repo.albumStore.fresh(current)
