@@ -23,7 +23,7 @@ import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.*
 import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.currentData
+import de.schnettler.scrobbler.util.formatter
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable

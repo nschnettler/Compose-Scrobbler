@@ -19,23 +19,25 @@ import de.schnettler.database.models.Artist
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.screens.formatter
+import de.schnettler.scrobbler.util.formatter
 
 @Composable
 fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
     Box(modifier = modifier, gravity = ContentGravity.Center) {
         CircularProgressIndicator(
             color = colorResource(id = R.color.colorAccent),
-            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally))
+            modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
+        )
     }
 }
 
 @Composable
 fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntity) -> Unit) {
-    LazyColumnItems(items = data) {item ->
-        when(item) {
-            is Artist -> HistoryItem(listing = item,
-                subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${ formatter.format(item.plays)} Plays",
+    LazyColumnItems(items = data) { item ->
+        when (item) {
+            is Artist -> HistoryItem(
+                listing = item,
+                subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${formatter.format(item.plays)} Plays",
                 onListingSelected = onListingSelected
             )
         }
@@ -43,31 +45,28 @@ fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntit
     }
 }
 
-
-
 @Composable
 fun HistoryItem(
-        listing: CommonEntity,
-        subTitle: String,
-        onListingSelected: (CommonEntity) -> Unit,
-        trailingText: String? = null) {
+    listing: CommonEntity,
+    subTitle: String,
+    onListingSelected: (CommonEntity) -> Unit,
+    trailingText: String? = null
+) {
     ListItem(
         text = { Text(text = listing.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = { Text(text = subTitle, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         icon = { NameListIcon(title = listing.name) },
         onClick = { onListingSelected.invoke(listing) },
-        trailing = { trailingText?.let { Text(text = it)} }
+        trailing = { trailingText?.let { Text(text = it) } }
     )
 }
-
 
 @Preview
 @Composable
 fun testPreview() {
-    //ThemedPreview() {
-    HistoryItem(listing = Track(name = "test", url="", artist = ""), subTitle =
-    "sfhsjvbjdsabvujoeadbouvboujebaouvboua", onListingSelected = {},
-            trailingText = "Vor 5 Minuten")
-
-    //}
+    HistoryItem(
+        listing = Track(name = "test", url = "", artist = ""), subTitle =
+        "sfhsjvbjdsabvujoeadbouvboujebaouvboua", onListingSelected = {},
+        trailingText = "Vor 5 Minuten"
+    )
 }

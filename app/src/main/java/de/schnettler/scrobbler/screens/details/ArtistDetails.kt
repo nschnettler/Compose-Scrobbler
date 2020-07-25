@@ -3,10 +3,20 @@ package de.schnettler.scrobbler.screens.details
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.*
+import androidx.ui.foundation.Border
+import androidx.ui.foundation.Box
+import androidx.ui.foundation.ContentGravity
+import androidx.ui.foundation.ScrollableColumn
+import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
-import androidx.ui.layout.*
+import androidx.ui.layout.Stack
+import androidx.ui.layout.aspectRatio
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredWidth
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
@@ -16,22 +26,33 @@ import de.schnettler.database.models.Artist
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.Track
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.*
-import de.schnettler.scrobbler.screens.formatter
+import de.schnettler.scrobbler.components.ExpandingSummary
+import de.schnettler.scrobbler.components.ListeningStats
+import de.schnettler.scrobbler.components.ListingScroller
+import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
+import de.schnettler.scrobbler.util.formatter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun ArtistDetailScreen(artist: Artist, onListingSelected: (CommonEntity) -> Unit, onTagClicked: (String) -> Unit) {
-    VerticalScroller() {
+fun ArtistDetailScreen(
+    artist: Artist,
+    onListingSelected: (CommonEntity) -> Unit,
+    onTagClicked: (String) -> Unit
+) {
+    ScrollableColumn {
         Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
 
-        Card(border = Border(1.dp, colorResource(id = R.color.colorStroke)), modifier = Modifier.padding(
-            defaultSpacerSize
-        ) + Modifier.fillMaxWidth(), shape = RoundedCornerShape(
-            cardCornerRadius
-        )
+        Card(
+            border = Border(1.dp, colorResource(id = R.color.colorStroke)),
+            modifier = Modifier.padding(
+                defaultSpacerSize
+            ) + Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(
+                cardCornerRadius
+            )
         ) {
             ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
         }
@@ -73,9 +94,10 @@ fun TrackList(tracks: List<Track>, onListingSelected: (CommonEntity) -> Unit) {
                 Surface(
                     color = colorResource(id = R.color.colorBackgroundElevated),
                     shape = CircleShape,
-                    modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)) {
+                    modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)
+                ) {
                     Box(gravity = ContentGravity.Center) {
-                        Text(text = "${index +1}")
+                        Text(text = "${index + 1}")
                     }
                 }
             }, onClick = { onListingSelected.invoke(track) }

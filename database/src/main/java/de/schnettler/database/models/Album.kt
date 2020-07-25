@@ -1,6 +1,8 @@
 package de.schnettler.database.models
 
 import androidx.room.*
+import de.schnettler.database.sumByLong
+import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "albums")
 data class Album(
@@ -17,4 +19,5 @@ data class Album(
 ): LastFmStatsEntity {
     fun getArtistOrThrow() = artist ?: throw Exception("Artist missing")
     @Ignore var tracks: List<Track> = listOf()
+    fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.duration })
 }

@@ -10,15 +10,16 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Snackbar
 import androidx.ui.material.TextButton
 import androidx.ui.unit.dp
+import de.schnettler.scrobbler.util.PADDING_16
 import kotlinx.coroutines.delay
 
 @Composable
 fun ErrorSnackbar(
-        showError: Boolean,
-        modifier: Modifier = Modifier,
-        text: String = "Can't update history",
-        onErrorAction: () -> Unit = { },
-        onDismiss: () -> Unit = { }
+    showError: Boolean,
+    modifier: Modifier = Modifier,
+    text: String = "Can't update history",
+    onErrorAction: () -> Unit = { },
+    onDismiss: () -> Unit = { }
 ) {
     if (showError) {
         // Make Snackbar disappear after 5 seconds if the user hasn't interacted with it
@@ -28,22 +29,22 @@ fun ErrorSnackbar(
         }
 
         Snackbar(
-                modifier = modifier.padding(16.dp),
-                text = { Text(text) },
-                action = {
-                    TextButton(
-                            onClick = {
-                                onErrorAction()
-                                onDismiss()
-                            },
-                            contentColor = contentColor()
-                    ) {
-                        Text(
-                                text = "RETRY",
-                                color = MaterialTheme.colors.secondary
-                        )
-                    }
+            modifier = modifier.padding(PADDING_16.dp),
+            text = { Text(text) },
+            action = {
+                TextButton(
+                    onClick = {
+                        onErrorAction()
+                        onDismiss()
+                    },
+                    contentColor = contentColor()
+                ) {
+                    Text(
+                        text = "RETRY",
+                        color = MaterialTheme.colors.secondary
+                    )
                 }
+            }
         )
     }
 }

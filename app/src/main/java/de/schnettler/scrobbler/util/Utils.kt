@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.util
 
 import android.content.Context
+import android.icu.text.CompactDecimalFormat
 import android.icu.text.DateFormat
 import android.net.Uri
 import android.widget.Toast
@@ -53,15 +54,6 @@ fun Context.openUrlInCustomTab(url: String) {
     customTabsIntent.launchUrl(this, Uri.parse(url))
 }
 
-
-inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
-    var sum: Long = 0
-    for (element in this) {
-        sum += selector(element)
-    }
-    return sum
-}
-
 fun String.fromHtml() = HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
 fun String.fromHtmlLastFm() = this.fromHtml().removeSuffix("Read more on Last.fm.")
 
@@ -91,7 +83,10 @@ fun packageNameToAppName(packageName: String) = when (packageName) {
 fun Long.milliSecondsToDate() =
         DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT,Locale.getDefault()).format(Date(this))
 
-enum class Orientation() {
+enum class Orientation {
     Vertical,
     Horizontal
 }
+
+val formatter: CompactDecimalFormat =
+    CompactDecimalFormat.getInstance(Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)
