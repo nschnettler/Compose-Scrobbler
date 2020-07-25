@@ -87,7 +87,7 @@ complexity:
     constructorThreshold: 7
     ignoreDefaultParameters: false
     ignoreDataClasses: true
-    ignoreAnnotated: []
+    ignoreAnnotated: ['Composable']
   MethodOverloading:
     active: false
     threshold: 6
@@ -233,9 +233,9 @@ formatting:
   Filename:
     active: true
   FinalNewline:
-    active: true
-    autoCorrect: true
-    insertFinalNewLine: true
+    active: false
+    autoCorrect: false
+    insertFinalNewLine: false
   ImportOrdering:
     active: false
     autoCorrect: true
@@ -507,7 +507,7 @@ style:
     active: false
     includeLineWrapping: false
   ForbiddenComment:
-    active: true
+    active: false
     values: ['TODO:', 'FIXME:', 'STOPSHIP:']
     allowedPatterns: ''
   ForbiddenImport:
@@ -535,7 +535,7 @@ style:
     active: true
     maxJumpCount: 1
   MagicNumber:
-    active: true
+    active: false
     excludes: ['**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
     ignoreNumbers: ['-1', '0', '1', '2']
     ignoreHashCodeFunction: true
@@ -564,7 +564,7 @@ style:
   NestedClassesVisibility:
     active: false
   NewLineAtEndOfFile:
-    active: true
+    active: false
   NoTabs:
     active: false
   OptionalAbstractKeyword:
