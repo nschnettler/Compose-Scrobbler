@@ -1,16 +1,27 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.*
+import com.dropbox.android.external.store4.Fetcher
+import com.dropbox.android.external.store4.SourceOfTruth
+import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.RelationshipDao
 import de.schnettler.database.daos.TrackDao
-import de.schnettler.database.models.*
+import de.schnettler.database.models.Album
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.CommonTrack
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.ListingType
+import de.schnettler.database.models.Track
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
-import de.schnettler.repo.mapping.*
+import de.schnettler.repo.mapping.RelationMapper
+import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.map
+import de.schnettler.repo.mapping.mapToAlbum
+import de.schnettler.repo.mapping.mapToArtist
 import de.schnettler.repo.util.provideSpotifyService
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
@@ -62,19 +73,23 @@ class DetailRepository @Inject constructor(
                 artist
             },
             writer = { key: String, artist: Artist ->
-                //Make sure to not overwrite the already saved ImageUrl
+                // Make sure to not overwrite the already saved ImageUrl
                 val oldImageUrl = artistDao.getArtistImageUrl(key)
                 oldImageUrl?.let {
                     artist.imageUrl = oldImageUrl
                 }
                 artistDao.forceInsert(artist)
-                //Tracks
+                // Tracks
                 trackDao.insertOrUpdateStats(artist.topTracks)
-                trackDao.insertRelations(RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) }))
-                //Albums
+                trackDao.insertRelations(
+                    RelationMapper.forLists().invoke(artist.topTracks.map { Pair(artist, it) })
+                )
+                // Albums
                 albumDao.insertOrUpdateStats(artist.topAlbums)
-                albumDao.insertRelations(RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) }))
-                //Artist
+                albumDao.insertRelations(
+                    RelationMapper.forLists().invoke(artist.topAlbums.map { Pair(artist, it) })
+                )
+                // Artist
                 artistDao.insertEntriesWithRelations(
                     artist.similarArtists,
                     RelationMapper.forLists().invoke(artist.similarArtists.map { Pair(artist, it) })
@@ -83,10 +98,10 @@ class DetailRepository @Inject constructor(
         )
     ).build()
 
-    val trackStore =  StoreBuilder.from(
+    val trackStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: CommonTrack ->
             service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow())
-                    .map()
+                .map()
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key ->
@@ -99,7 +114,7 @@ class DetailRepository @Inject constructor(
                         Album(
                             name = it,
                             artist = value.artist,
-                            url = "https://www.last.fm/music/${value.artist}/${it}"
+                            url = "https://www.last.fm/music/${value.artist}/$it"
                         )
                     )
                 }
@@ -107,24 +122,31 @@ class DetailRepository @Inject constructor(
         )
     ).build()
 
-
     val albumStore = StoreBuilder.from<Album, Album, Album>(
         fetcher = Fetcher.of { key: Album ->
-            service.getAlbumInfo(artistName = key.getArtistOrThrow(),
-                albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()).map()
+            service.getAlbumInfo(
+                artistName = key.getArtistOrThrow(),
+                albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()
+            ).map()
         },
         sourceOfTruth = SourceOfTruth.of(
-            reader = {key ->
-                albumDao.getAlbum(id = key.id,
+            reader = { key ->
+                albumDao.getAlbum(
+                    id = key.id,
                     artistId = key.getArtistOrThrow()
-                ).combine(trackDao.getAlbumTracks(key.name, key.getArtistOrThrow())) {album, tracks ->
+                ).combine(
+                    trackDao.getAlbumTracks(
+                        key.name,
+                        key.getArtistOrThrow()
+                    )
+                ) { album, tracks ->
                     album?.tracks = tracks
                     return@combine album
                 }
             },
-            writer = {key, value ->
+            writer = { key, value ->
                 albumDao.forceInsert(value)
-                //TODO: DONT FORCE INSERT, ONLY UPDATE ALBUM
+                // TODO: DONT FORCE INSERT, ONLY UPDATE ALBUM
                 trackDao.forceInsertAll(value.tracks)
             }
         )

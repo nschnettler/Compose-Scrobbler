@@ -1,9 +1,20 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.*
+import com.dropbox.android.external.store4.Fetcher
+import com.dropbox.android.external.store4.SourceOfTruth
+import com.dropbox.android.external.store4.StoreBuilder
+import com.dropbox.android.external.store4.StoreRequest
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.daos.*
-import de.schnettler.database.models.*
+import de.schnettler.database.daos.AlbumDao
+import de.schnettler.database.daos.ArtistDao
+import de.schnettler.database.daos.ChartDao
+import de.schnettler.database.daos.TrackDao
+import de.schnettler.database.daos.UserDao
+import de.schnettler.database.models.Album
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.TopListEntryType
+import de.schnettler.database.models.Track
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
@@ -35,7 +46,6 @@ class TopListRepository @Inject constructor(
             artists.forEach { artist ->
                 refreshImageUrl(artistDao.getArtistImageUrl(artist.id), artist)
                 artist.imageUrl?.let { artistDao.updateArtistImageUrl(it, artist.id) }
-
             }
             artists
         },
@@ -53,10 +63,10 @@ class TopListRepository @Inject constructor(
         )
     ).build().stream(StoreRequest.cached("", true))
 
-
     fun getTopAlbums(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = Fetcher.of {
-            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.mapToUserAlbum() }
+            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
+                .map { it.mapToUserAlbum() }
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {
@@ -75,7 +85,8 @@ class TopListRepository @Inject constructor(
 
     fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
         fetcher = Fetcher.of {
-            service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow()).map { it.map() }
+            service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
+                .map { it.map() }
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {
@@ -88,10 +99,10 @@ class TopListRepository @Inject constructor(
                     listings,
                     topListEntries
                 )
-                listings.forEach {track ->
+                listings.forEach { track ->
                     val loaded = trackDao.getSingletTrack(track.id, track.artist)
                     if (loaded?.imageUrl == null) {
-                        loaded?.album?.let {album ->
+                        loaded?.album?.let { album ->
                             val url = albumDao.getImageUrl(album.toLowerCase())
                             url?.let { trackDao.updateImageUrl(it, track.id) }
                         }

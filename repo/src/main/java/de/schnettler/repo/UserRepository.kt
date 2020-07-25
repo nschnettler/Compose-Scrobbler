@@ -1,16 +1,19 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.*
+import com.dropbox.android.external.store4.Fetcher
+import com.dropbox.android.external.store4.SourceOfTruth
+import com.dropbox.android.external.store4.StoreBuilder
+import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.daos.UserDao
-import de.schnettler.database.models.*
+import de.schnettler.database.models.Session
+import de.schnettler.database.models.Track
+import de.schnettler.database.models.User
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.UserMapper
 import de.schnettler.repo.mapping.map
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
-import java.lang.Exception
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(

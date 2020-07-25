@@ -32,9 +32,9 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideScrobblerService() = provideRetrofit(
-            provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
+        provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
     ).create(
-            ScrobblerService::class.java
+        ScrobblerService::class.java
     )
 
     @Provides
@@ -47,12 +47,7 @@ class NetworkModule {
     )
 }
 
-//@Module
-//@InstallIn(ServiceComponent::class)
-//class ServiceModule {
-//
-//}
-
+@Suppress("TooManyFunctions")
 @Module
 @InstallIn(ApplicationComponent::class)
 class DatabaseModule {
@@ -95,17 +90,17 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideServiceScope() = ServiceCoroutineScope(Job() + Dispatchers.IO)
+    fun provideServiceScope() = serviceCoroutineScope(Job() + Dispatchers.IO)
 
     @Provides
-    fun provideSharedPreferences(application: Application): SharedPreferences = application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
+    fun provideSharedPreferences(application: Application): SharedPreferences =
+        application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
 }
 
 interface ServiceCoroutineScope : CoroutineScope
 
-fun ServiceCoroutineScope(
-        context: CoroutineContext
+fun serviceCoroutineScope(
+    context: CoroutineContext
 ): ServiceCoroutineScope = object : ServiceCoroutineScope {
     override val coroutineContext = context + Dispatchers.IO
 }
-

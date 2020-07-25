@@ -1,6 +1,10 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.*
+import com.dropbox.android.external.store4.Fetcher
+import com.dropbox.android.external.store4.SourceOfTruth
+import com.dropbox.android.external.store4.StoreBuilder
+import com.dropbox.android.external.store4.StoreRequest
+import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.models.Artist
@@ -22,7 +26,6 @@ class ChartRepository @Inject constructor(
         val userInfoStore = StoreBuilder.from(
             fetcher = Fetcher.of { _: String ->
                 service.getTopArtists().map { it.map() }
-
             },
             sourceOfTruth = SourceOfTruth.of(
                 reader = { _: String ->

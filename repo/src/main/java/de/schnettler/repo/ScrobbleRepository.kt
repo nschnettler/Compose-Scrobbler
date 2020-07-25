@@ -25,7 +25,7 @@ class ScrobbleRepository @Inject constructor(
         }
     }
 
-    suspend fun createAndSubmitScrobble(track: LocalTrack)= service.submitScrobble(
+    suspend fun createAndSubmitScrobble(track: LocalTrack) = service.submitScrobble(
         method = LastFmService.METHOD_SCROBBLE,
         artist = track.artist,
         track = track.name,
@@ -92,4 +92,6 @@ class ScrobbleRepository @Inject constructor(
         return service.submitMultipleScrobbles(createBody(result)).map()
     }
 }
-fun listToMap(list: List<String>, key: String) = list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })
+
+fun listToMap(list: List<String>, key: String) =
+    list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })
