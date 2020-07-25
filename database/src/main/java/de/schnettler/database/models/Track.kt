@@ -1,8 +1,11 @@
 package de.schnettler.database.models
 
 import android.text.format.DateUtils
-import androidx.room.*
-import java.net.URLEncoder
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import kotlin.math.roundToInt
 
 @Entity(tableName = "tracks")
@@ -20,7 +23,7 @@ data class Track(
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null,
     val rank: Int = -1
-): LastFmStatsEntity, CommonTrack
+) : LastFmStatsEntity, CommonTrack
 
 data class TrackWithAlbum(
     @Embedded val track: Track,
@@ -43,22 +46,22 @@ data class TrackDomain(
     val userLoved: Boolean = false,
     val tags: List<String> = listOf(),
     override var imageUrl: String? = null
-): LastFmStatsEntity
+) : LastFmStatsEntity
 
 @Entity(tableName = "localTracks")
 data class LocalTrack(
-        override val name: String,
-        override val artist: String,
-        override val album: String,
-        override val duration: Long,
+    override val name: String,
+    override val artist: String,
+    override val album: String,
+    override val duration: Long,
 
-        @PrimaryKey override val timestamp: Long = System.currentTimeMillis() / 1000,
-        val endTime: Long = System.currentTimeMillis(),
-        var amountPlayed: Long = 0,
-        val playedBy: String,
-        override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
-        var trackingStart: Long = timestamp
-): StatusTrack {
+    @PrimaryKey override val timestamp: Long = System.currentTimeMillis() / 1000,
+    val endTime: Long = System.currentTimeMillis(),
+    var amountPlayed: Long = 0,
+    val playedBy: String,
+    override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
+    var trackingStart: Long = timestamp
+) : StatusTrack {
     @Ignore override val id: String = name.toLowerCase()
     @Ignore override val url: String = "https://www.last.fm/music/$artist/_/$name"
     @Ignore override var imageUrl: String? = null
@@ -76,7 +79,7 @@ data class LocalTrack(
     private fun updateAmountPlayed() {
         if (!isPlaying()) return
         val now = System.currentTimeMillis()
-        amountPlayed +=  now - trackingStart
+        amountPlayed += now - trackingStart
         trackingStart = now
     }
 
@@ -95,7 +98,7 @@ enum class ScrobbleStatus {
     EXTERNAL
 }
 
-interface CommonTrack: LastFmEntity {
+interface CommonTrack : LastFmEntity {
     val artist: String
     val album: String?
     val duration: Long
@@ -103,7 +106,7 @@ interface CommonTrack: LastFmEntity {
     fun canBeScrobbled() = duration > 30000
 }
 
-interface StatusTrack: CommonTrack {
+interface StatusTrack : CommonTrack {
     val timestamp: Long
     var status: ScrobbleStatus
 
@@ -111,8 +114,10 @@ interface StatusTrack: CommonTrack {
     fun isLocal() = isCached() || status == ScrobbleStatus.SCROBBLED
     fun isCached() = status == ScrobbleStatus.LOCAL
     fun timestampToRelativeTime() =
-            if (timestamp > 0) {
-                DateUtils.getRelativeTimeSpanString(timestamp * 1000, System.currentTimeMillis(), DateUtils
-                        .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL).toString()
-            } else null
+        if (timestamp > 0) {
+            DateUtils.getRelativeTimeSpanString(
+                timestamp * 1000, System.currentTimeMillis(), DateUtils
+                    .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL
+            ).toString()
+        } else null
 }

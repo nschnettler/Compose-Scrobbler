@@ -13,7 +13,7 @@ data class RelationEntity(
     val targetType: ListingType
 )
 
-enum class ListingType(val id: Int){
+enum class ListingType(val id: Int) {
     UNDEFINED(-1),
     ALBUM(0),
     ARTIST(1),

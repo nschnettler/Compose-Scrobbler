@@ -6,7 +6,7 @@ import de.schnettler.database.models.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class UserDao: BaseDao<User> {
+abstract class UserDao : BaseDao<User> {
     @Query("SELECT * FROM users WHERE name = :name")
     abstract fun getUser(name: String): Flow<User?>
 

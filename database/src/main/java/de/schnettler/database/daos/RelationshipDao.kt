@@ -8,14 +8,27 @@ import de.schnettler.database.models.RelatedArtist
 import de.schnettler.database.models.RelatedTrack
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("MaxLineLength", "MaximumLineLength")
 @Dao
-abstract class RelationshipDao {
+interface RelationshipDao {
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    abstract fun getRelatedAlbums(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ALBUM): Flow<List<RelatedAlbum>>
+    fun getRelatedAlbums(
+        id: String,
+        sourceType: ListingType,
+        targetType: ListingType = ListingType.ALBUM
+    ): Flow<List<RelatedAlbum>>
 
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    abstract fun getRelatedTracks(id: String, sourceType: ListingType, targetType: ListingType = ListingType.TRACK): Flow<List<RelatedTrack>>
+    fun getRelatedTracks(
+        id: String,
+        sourceType: ListingType,
+        targetType: ListingType = ListingType.TRACK
+    ): Flow<List<RelatedTrack>>
 
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")
-    abstract fun getRelatedArtists(id: String, sourceType: ListingType, targetType: ListingType = ListingType.ARTIST): Flow<List<RelatedArtist>>
+    fun getRelatedArtists(
+        id: String,
+        sourceType: ListingType,
+        targetType: ListingType = ListingType.ARTIST
+    ): Flow<List<RelatedArtist>>
 }

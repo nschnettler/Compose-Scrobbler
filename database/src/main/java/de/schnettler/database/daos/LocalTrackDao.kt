@@ -9,9 +9,12 @@ import de.schnettler.database.models.ScrobbleStatus
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class LocalTrackDao:BaseDao<LocalTrack> {
+abstract class LocalTrackDao : BaseDao<LocalTrack> {
     @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC LIMIT :limit")
-    abstract fun getLocalTracks(exclude: ScrobbleStatus = ScrobbleStatus.PLAYING, limit: Int = 50): Flow<List<LocalTrack>>
+    abstract fun getLocalTracks(
+        exclude: ScrobbleStatus = ScrobbleStatus.PLAYING,
+        limit: Int = 50
+    ): Flow<List<LocalTrack>>
 
     @Query("SELECT * FROM localTracks WHERE status = :include LIMIT 1")
     abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<LocalTrack?>
@@ -26,7 +29,11 @@ abstract class LocalTrackDao:BaseDao<LocalTrack> {
     abstract fun insertOrUpdatTrack(track: LocalTrack): Long
 
     @Query("UPDATE localTracks SET status = :status WHERE timestamp = :startTime AND playedBy = :packageName")
-    abstract suspend fun updateTrackStatus(startTime: Long, packageName: String, status: ScrobbleStatus)
+    abstract suspend fun updateTrackStatus(
+        startTime: Long,
+        packageName: String,
+        status: ScrobbleStatus
+    )
 
     @Query("SELECT * FROM localTracks ORDER BY timestamp DESC LIMIT 1")
     abstract fun getCurrentTrack(): Flow<LocalTrack>

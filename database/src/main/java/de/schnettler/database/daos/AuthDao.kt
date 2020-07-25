@@ -9,7 +9,7 @@ import de.schnettler.database.models.Session
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class AuthDao: BaseDao<AuthToken> {
+abstract class AuthDao : BaseDao<AuthToken> {
     @Query("SELECT * FROM sessions LIMIT 1")
     abstract fun getSession(): Flow<Session?>
 
@@ -21,7 +21,6 @@ abstract class AuthDao: BaseDao<AuthToken> {
 
     @Delete
     abstract suspend fun deleteSession(session: Session)
-
 
     /*
     Spotify
