@@ -46,11 +46,10 @@ class AlbumDaoTest {
         dao.insertOrUpdateStats(albums)
 
         // THEN Tracks are inserted normally
-        albums.forEach {album ->
-            dao.getAlbum(album.id, album.artist!!).collectValue {loaded ->
+        albums.forEach { album ->
+            dao.getAlbum(album.id, album.artist!!).collectValue { loaded ->
                 expect(loaded).toBe(album)
             }
-
         }
     }
 
@@ -62,7 +61,7 @@ class AlbumDaoTest {
 
         // WHEN Artist Track with the same ids and artists are inserted
         val newAlbums = albums.mapIndexed { index, track ->
-            track.copy(url = "newUrl$index", plays = 100L+index)
+            track.copy(url = "newUrl$index", plays = 100L + index)
         }
         dao.insertOrUpdateStats(newAlbums)
 
@@ -82,13 +81,15 @@ class AlbumDaoTest {
 fun generateTopAlbums(num: Int): List<Album> {
     val result = mutableListOf<Album>()
     for (i in 0..num) {
-        result.add(Album(
-            name = "album$i",
-            url = "url$i",
-            plays = 10L+i,
-            artist = "artist",
-            imageUrl = "image$i"
-        ))
+        result.add(
+            Album(
+                name = "album$i",
+                url = "url$i",
+                plays = 10L + i,
+                artist = "artist",
+                imageUrl = "image$i"
+            )
+        )
     }
     return result
 }

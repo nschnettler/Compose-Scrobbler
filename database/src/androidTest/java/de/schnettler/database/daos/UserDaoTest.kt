@@ -52,7 +52,8 @@ class UserDaoTest {
         user3.collectValue { expect(it).toBe(users[2]) }
     }
 
-    @Test fun getUserReturnsNull() = runBlockingTest {
+    @Test
+    fun getUserReturnsNull() = runBlockingTest {
         // GIVEN - Database with 3 Artists
         database.userDao().insertAll(generateUsers(3))
 
@@ -71,7 +72,8 @@ class UserDaoTest {
 
         // WHEN - artistcount is Updated
         val updatedUser = oldUser.copy(artistCount = 10)
-        val changedRows = database.userDao().updateArtistCount(oldUser.name, updatedUser.artistCount)
+        val changedRows =
+            database.userDao().updateArtistCount(oldUser.name, updatedUser.artistCount)
         val loadedUser = database.userDao().getUser(oldUser.name)
 
         // THEN - update reflected in data from db
@@ -86,7 +88,19 @@ class UserDaoTest {
 fun generateUsers(num: Int): List<User> {
     val result = mutableListOf<User>()
     for (i in 0..num) {
-        result.add(User(name = "User$i", playcount = 10L*i, url = "User${i}Url", realname = "User${i}Real", age = 10L*i+10, registerDate = 1000L*i, countryCode = "DE", imageUrl = "User${i}Image", artistCount = 0))
+        result.add(
+            User(
+                name = "User$i",
+                playcount = 10L * i,
+                url = "User${i}Url",
+                realname = "User${i}Real",
+                age = 10L * i + 10,
+                registerDate = 1000L * i,
+                countryCode = "DE",
+                imageUrl = "User${i}Image",
+                artistCount = 0
+            )
+        )
     }
     return result
 }

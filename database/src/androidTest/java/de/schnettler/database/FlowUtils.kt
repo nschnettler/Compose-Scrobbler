@@ -13,7 +13,10 @@ suspend inline fun <T> Flow<T?>.collectValue(crossinline action: suspend (value:
 }
 
 @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-suspend inline fun <T> Flow<T>.collectValues(number: Int, crossinline action: suspend (value: T) -> Unit) {
+suspend inline fun <T> Flow<T>.collectValues(
+    number: Int,
+    crossinline action: suspend (value: T) -> Unit
+) {
     this.take(number).collect {
         action(it)
     }
