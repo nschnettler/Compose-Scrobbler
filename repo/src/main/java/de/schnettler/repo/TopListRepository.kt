@@ -24,7 +24,7 @@ import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.mapping.mapToUserAlbum
 import de.schnettler.repo.util.provideSpotifyService
-import java.util.*
+import java.util.Locale
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(

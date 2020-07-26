@@ -8,7 +8,7 @@ import de.schnettler.database.models.RelatedArtist
 import de.schnettler.database.models.RelatedTrack
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("MaxLineLength", "MaximumLineLength")
+@Suppress("MaxLineLength")
 @Dao
 interface RelationshipDao {
     @Query("SELECT * FROM relations WHERE sourceId = :id AND sourceType = :sourceType AND targetType = :targetType ORDER BY `index` ASC")

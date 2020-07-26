@@ -13,7 +13,7 @@ import timber.log.Timber
 
 class MainViewModel @ViewModelInject constructor(
     private val authProvider: LastFmAuthProvider
-): ViewModel() {
+) : ViewModel() {
 
     private val sessionResponse by lazy {
         authProvider.sessionLive.asLiveData(viewModelScope.coroutineContext)
