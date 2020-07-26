@@ -28,6 +28,7 @@ class LocalViewModel @ViewModelInject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun refresh() {
         recentTracksState.update(Result.Loading)
         viewModelScope.launch {
