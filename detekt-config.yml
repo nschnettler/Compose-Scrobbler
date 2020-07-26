@@ -69,7 +69,7 @@ complexity:
     active: true
     threshold: 15
     ignoreSingleWhenExpression: false
-    ignoreSimpleWhenEntries: false
+    ignoreSimpleWhenEntries: true
     ignoreNestingFunctions: false
     nestingFunctions: [run, let, apply, with, also, use, forEach, isNotNull, ifNull]
   LabeledExpression:
@@ -85,9 +85,9 @@ complexity:
     active: true
     functionThreshold: 6
     constructorThreshold: 7
-    ignoreDefaultParameters: false
+    ignoreDefaultParameters: true
     ignoreDataClasses: true
-    ignoreAnnotated: ['Composable', 'Inject']
+    ignoreAnnotated: ['Composable', 'Inject', 'FormUrlEncoded']
   MethodOverloading:
     active: false
     threshold: 6
