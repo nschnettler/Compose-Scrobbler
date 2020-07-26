@@ -23,7 +23,6 @@ fun provideAuthenticatedSpotifyService(
         ), SpotifyService.ENDPOINT
     ).create(SpotifyService::class.java)
 
-
 fun provideOkHttpClient(
     vararg interceptor: Interceptor,
     auth: Authenticator? = null

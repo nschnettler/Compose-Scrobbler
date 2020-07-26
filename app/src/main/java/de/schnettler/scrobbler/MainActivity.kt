@@ -187,7 +187,7 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if ("${intent?.data?.scheme}://${intent?.data?.host}" == REDIRECT_URL) {
-            //AuthResponse
+            // AuthResponse
             intent?.data?.getQueryParameter("token")?.let { token ->
                 Timber.i("TOKEN: $token")
                 model.onTokenReceived(token)

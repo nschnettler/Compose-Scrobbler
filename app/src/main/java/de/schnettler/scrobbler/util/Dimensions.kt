@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.util
 
-
 const val PADDING_16 = 16
 const val PADDING_8 = 8
 const val PADDING_4 = 4

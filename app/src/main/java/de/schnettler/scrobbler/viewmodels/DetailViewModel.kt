@@ -60,6 +60,7 @@ class DetailViewModel @ViewModelInject constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun refresh() {
         state.update(Result.Loading)
         viewModelScope.launch {

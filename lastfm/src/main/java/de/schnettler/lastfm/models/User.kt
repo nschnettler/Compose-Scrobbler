@@ -14,7 +14,6 @@ data class UserDto(
     val image: List<ImageDto>
 ) : ListingDto
 
-
 data class DateDto(
     @Json(name = "#text") val unixtime: Long
 )

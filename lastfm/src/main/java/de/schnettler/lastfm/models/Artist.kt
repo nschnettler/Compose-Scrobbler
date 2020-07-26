@@ -24,7 +24,6 @@ data class UserArtistDto(
     override val playcount: Long?
 ) : BaseArtistDto
 
-
 data class UserArtistResponse(
     val artist: List<UserArtistDto>,
     @Json(name = "@attr") val info: ResponseInfo

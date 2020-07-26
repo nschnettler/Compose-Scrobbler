@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+class NoSessionFoundException(message: String) : Exception(message)
+
 class LastFmAuthProvider @Inject constructor(
     private val service: LastFmService,
     private val dao: AuthDao
@@ -28,8 +30,8 @@ class LastFmAuthProvider @Inject constructor(
         return session
     }
 
-    fun getSessionOrThrow() = session ?: throw Exception("Session was null")
-    fun getSessionKeyOrThrow() = session?.key ?: throw Exception("Session was null")
+    fun getSessionOrThrow() = session ?: throw NoSessionFoundException("Session was null. Reauthorise the user")
+    fun getSessionKeyOrThrow() = session?.key ?: throw NoSessionFoundException("Session was null. Reauthorise the user")
 
     fun loggedIn() = session != null
 

@@ -18,6 +18,5 @@ fun Long.milliSecondsToDate(): String =
         Date(this)
     )
 
-
 val formatter: CompactDecimalFormat =
     CompactDecimalFormat.getInstance(Locale.getDefault(), CompactDecimalFormat.CompactStyle.SHORT)

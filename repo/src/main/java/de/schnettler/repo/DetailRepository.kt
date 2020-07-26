@@ -122,7 +122,7 @@ class DetailRepository @Inject constructor(
         )
     ).build()
 
-    val albumStore = StoreBuilder.from<Album, Album, Album>(
+    val albumStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Album ->
             service.getAlbumInfo(
                 artistName = key.getArtistOrThrow(),
@@ -144,7 +144,7 @@ class DetailRepository @Inject constructor(
                     return@combine album
                 }
             },
-            writer = { key, value ->
+            writer = { _, value ->
                 albumDao.forceInsert(value)
                 // TODO: DONT FORCE INSERT, ONLY UPDATE ALBUM
                 trackDao.forceInsertAll(value.tracks)
