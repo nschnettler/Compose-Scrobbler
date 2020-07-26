@@ -8,7 +8,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 const val USER_AGENT = "JAScrobbler/0.0.1 ( service.niklasschnettler@gmail.com )"
 
-class UserAgentInterceptor: Interceptor {
+class UserAgentInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
         val newRequest = req.newBuilder()
@@ -18,10 +18,10 @@ class UserAgentInterceptor: Interceptor {
     }
 }
 
-class LastFMInterceptor: Interceptor {
+class LastFMInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        val url= original.url.newBuilder()
+        val url = original.url.newBuilder()
             .addQueryParameter("api_key", LastFmService.API_KEY)
             .addQueryParameter("format", "json")
             .build()
@@ -29,7 +29,7 @@ class LastFMInterceptor: Interceptor {
     }
 }
 
-class SpotifyAuthInterceptor: Interceptor {
+class SpotifyAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
         val newRequest = req.newBuilder()
@@ -39,7 +39,7 @@ class SpotifyAuthInterceptor: Interceptor {
     }
 }
 
-class AccessTokenInterceptor(private val token: String?): Interceptor {
+class AccessTokenInterceptor(private val token: String?) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return if (token == null) {
             chain.proceed(chain.request())

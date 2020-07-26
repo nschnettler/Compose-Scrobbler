@@ -3,9 +3,13 @@ package de.schnettler.lastfm.api.spotify
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.BuildConfig
 import de.schnettler.lastfm.encodeBase64
-import de.schnettler.lastfm.models.SpotifyAccessTokenDto
+import de.schnettler.lastfm.models.SpotifyTokenDto
 import de.schnettler.lastfm.models.SpotifyArtist
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface SpotifyService {
     companion object {
@@ -29,5 +33,5 @@ interface SpotifyAuthService {
 
     @POST("token")
     @FormUrlEncoded
-    suspend fun login(@Field("grant_type") type: String): SpotifyAccessTokenDto
+    suspend fun login(@Field("grant_type") type: String): SpotifyTokenDto
 }

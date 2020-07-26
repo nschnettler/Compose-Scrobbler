@@ -12,7 +12,7 @@ data class UserDto(
     val realname: String,
     @Json(name = "registered") val registerDate: DateDto,
     val image: List<ImageDto>
-): ListingDto
+) : ListingDto
 
 
 data class DateDto(

@@ -27,7 +27,7 @@ class ScrobbleWorker @WorkerInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val repo: ScrobbleRepository
-): CoroutineWorker(appContext, workerParams) {
+) : CoroutineWorker(appContext, workerParams) {
 
     private val scrobbledTracks = mutableListOf<LocalTrack>()
 
@@ -38,7 +38,7 @@ class ScrobbleWorker @WorkerInject constructor(
         val cachedTracks = repo.getCachedTracks()
         Timber.d("[Scrobble] Found ${cachedTracks.size} cached scrobbles")
 
-        when(cachedTracks.size == 1) {
+        when (cachedTracks.size == 1) {
             true -> {
                 val input = cachedTracks.first()
                 val result = handleResponse(listOf(input), repo.createAndSubmitScrobble(input))
@@ -52,7 +52,7 @@ class ScrobbleWorker @WorkerInject constructor(
             }
         }
 
-        //Result has to be Success here
+        // Result has to be Success here
         val max = min(5, scrobbledTracks.size)
         val scrobbles = scrobbledTracks
             .subList(0, max).map { "${it.artist} ⦁ ${it.name}" }
@@ -66,19 +66,19 @@ class ScrobbleWorker @WorkerInject constructor(
     }
 
     private fun handleError(error: Errors?): Result {
-        return when(error) {
+        return when (error) {
             Errors.OFFLINE, Errors.UNAVAILABLE -> {
-                //Cache Scrobble
+                // Cache Scrobble
                 Timber.d("Scrobble failed. Service offline")
                 Result.retry()
             }
             Errors.SESSION -> {
-                //Reauth and retry
+                // Reauth and retry
                 Timber.d("Scrobble failed. Unauthorized")
                 Result.failure()
             }
             else -> {
-                //Skip this Scrobble
+                // Skip this Scrobble
                 Result.failure()
             }
         }
@@ -91,15 +91,18 @@ class ScrobbleWorker @WorkerInject constructor(
         }
     }
 
-    private fun <T: GeneralScrobbleResponse> handleResponse(input: List<LocalTrack>, response: LastFmResponse<T>): Result {
-        return when(response) {
+    private fun <T : GeneralScrobbleResponse> handleResponse(
+        input: List<LocalTrack>,
+        response: LastFmResponse<T>
+    ): Result {
+        return when (response) {
             is LastFmResponse.SUCCESS -> {
                 val accepted = response.data?.status?.accepted ?: 0
-                Timber.d("[Scrobble] Accepted ${accepted/input.size * 100} %")
+                Timber.d("[Scrobble] Accepted ${accepted / input.size * 100} %")
                 if (accepted == input.size) {
                     markTracksAsSubmitted(input)
                 } else {
-                    //Filter accepted tracks, ignore other
+                    // Filter accepted tracks, ignore other
                 }
                 Result.success()
             }

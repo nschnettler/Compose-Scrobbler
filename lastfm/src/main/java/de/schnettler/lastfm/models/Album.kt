@@ -9,7 +9,7 @@ data class AlbumDto(
     val playcount: Long,
     val artist: MinimalListing,
     @Json(name = "image") val images: List<ImageDto>
-): ListingDto
+) : ListingDto
 
 data class SearchResultDto(
     val name: String,

@@ -9,7 +9,7 @@ data class UserTrackDto(
     val duration: Long,
     val artist: MinimalListing,
     val playcount: Long
-): ListingDto
+) : ListingDto
 
 data class RecentTracksDto(
     override val name: String,
@@ -19,7 +19,7 @@ data class RecentTracksDto(
     val album: TrackRelationDto,
     val date: TrackDateDto?,
     @Json(name = "@attr") val attrs: AttributesDto?
-): ListingDto
+) : ListingDto
 
 data class AlbumTrack(
     override val name: String,
@@ -27,14 +27,14 @@ data class AlbumTrack(
     override val url: String,
     val duration: Long,
     val artist: TrackArtistDto
-): ListingDto
+) : ListingDto
 
 data class AttributesDto(
     val nowplaying: String
 )
 
 data class TrackDateDto(
-        val uts: Long
+    val uts: Long
 ) {
     fun asMs() = uts * 1000
 }
@@ -46,7 +46,7 @@ data class ArtistTracksDto(
     val listeners: Long,
     val playcount: Long,
     val artist: MinimalListing
-): ListingDto
+) : ListingDto
 
 data class TrackInfoDto(
     override val name: String,
@@ -60,7 +60,7 @@ data class TrackInfoDto(
     val userplaycount: Long?,
     val userloved: Long,
     val toptags: TagsDto
-): ListingDto
+) : ListingDto
 
 data class TrackRelationDto(
     @Json(name = "#text") val name: String,
@@ -82,14 +82,14 @@ data class LovedTracksResponse(
 )
 
 data class MutlipleScrobblesResponse(
-    @Json(name="@attr") override val status: StatusResponse,
+    @Json(name = "@attr") override val status: StatusResponse,
     val scrobble: List<ScrobbleResponse>
-): GeneralScrobbleResponse
+) : GeneralScrobbleResponse
 
 data class SingleScrobbleResponse(
-    @Json(name="@attr") override val status: StatusResponse,
+    @Json(name = "@attr") override val status: StatusResponse,
     val scrobble: ScrobbleResponse
-): GeneralScrobbleResponse
+) : GeneralScrobbleResponse
 
 interface GeneralScrobbleResponse {
     val status: StatusResponse
@@ -101,19 +101,19 @@ data class StatusResponse(
 )
 
 data class ScrobbleResponse(
-        val artist: CorrectionResponse,
-        val album: CorrectionResponse,
-        val albumArtist: CorrectionResponse,
-        val track: CorrectionResponse,
-        val ignoredMessage: IgnoredResponse
+    val artist: CorrectionResponse,
+    val album: CorrectionResponse,
+    val albumArtist: CorrectionResponse,
+    val track: CorrectionResponse,
+    val ignoredMessage: IgnoredResponse
 )
 
 data class CorrectionResponse(
-        val corrected: String,
-        @Json(name= "#text") val correctValue: String
+    val corrected: String,
+    @Json(name = "#text") val correctValue: String
 )
 
 data class IgnoredResponse(
-        val code: Long,
-        @Json(name= "#text") val reason: String
+    val code: Long,
+    @Json(name = "#text") val reason: String
 )

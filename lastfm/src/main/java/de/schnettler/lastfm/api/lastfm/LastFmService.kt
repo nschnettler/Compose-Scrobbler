@@ -3,10 +3,23 @@ package de.schnettler.lastfm.api.lastfm
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.BuildConfig
 import de.schnettler.common.TimePeriod
-import de.schnettler.lastfm.models.*
+import de.schnettler.lastfm.models.AlbumDto
+import de.schnettler.lastfm.models.AlbumInfoDto
+import de.schnettler.lastfm.models.ArtistInfoDto
+import de.schnettler.lastfm.models.ArtistTracksDto
+import de.schnettler.lastfm.models.ChartArtistDto
+import de.schnettler.lastfm.models.LovedTracksResponse
+import de.schnettler.lastfm.models.RecentTracksDto
+import de.schnettler.lastfm.models.SearchResultDto
+import de.schnettler.lastfm.models.SessionDto
+import de.schnettler.lastfm.models.TrackInfoDto
+import de.schnettler.lastfm.models.UserArtistResponse
+import de.schnettler.lastfm.models.UserDto
+import de.schnettler.lastfm.models.UserTrackDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+@Suppress("TooManyFunctions")
 interface LastFmService {
     companion object {
         const val ENDPOINT = "https://ws.audioscrobbler.com/2.0/"
@@ -32,7 +45,6 @@ interface LastFmService {
     @GET("?method=chart.gettopartists")
     @Wrapped(path = ["artists", "artist"])
     suspend fun getTopArtists(): List<ChartArtistDto>
-
 
     @GET("?method=$METHOD_AUTH_SESSION")
     @Wrapped(path = ["session"])
@@ -116,21 +128,21 @@ interface LastFmService {
     ): AlbumInfoDto
 
     @GET("?method=artist.search")
-    @Wrapped(path = ["results", "artistmatches", "artist" ])
+    @Wrapped(path = ["results", "artistmatches", "artist"])
     suspend fun searchArtist(
         @Query("artist") query: String,
         @Query("limit") limit: Long = 30
     ): List<SearchResultDto>
 
     @GET("?method=album.search")
-    @Wrapped(path = ["results", "albummatches", "album" ])
+    @Wrapped(path = ["results", "albummatches", "album"])
     suspend fun searchAlbum(
         @Query("album") query: String,
         @Query("limit") limit: Long = 30
     ): List<SearchResultDto>
 
     @GET("?method=track.search")
-    @Wrapped(path = ["results", "trackmatches", "track" ])
+    @Wrapped(path = ["results", "trackmatches", "track"])
     suspend fun searchTrack(
         @Query("track") query: String,
         @Query("limit") limit: Long = 30

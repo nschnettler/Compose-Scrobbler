@@ -10,22 +10,22 @@ import androidx.core.app.NotificationCompat
 import de.schnettler.database.models.LocalTrack
 import javax.inject.Inject
 
-const val NOW_PLAYING_ID  = 0
+const val NOW_PLAYING_ID = 0
 const val SCROBBLE_ID = 1
 
 class ScrobbleNotificationManager @Inject constructor(
-        private val context: Service,
-        private val notificationManager: android.app.NotificationManager
+    private val context: Service,
+    private val notificationManager: android.app.NotificationManager
 ) {
     init {
         createChannel(
-                context.getString(R.string.np_notification_channel_id),
-                context.getString(R.string.np_notification_channel_name)
+            context.getString(R.string.np_notification_channel_id),
+            context.getString(R.string.np_notification_channel_name)
         )
 
         createChannel(
-                context.getString(R.string.scrobble_notification_channel_id),
-                context.getString(R.string.scrobble_notification_channel_name)
+            context.getString(R.string.scrobble_notification_channel_id),
+            context.getString(R.string.scrobble_notification_channel_name)
         )
     }
 
@@ -33,9 +33,9 @@ class ScrobbleNotificationManager @Inject constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             val channel = NotificationChannel(
-                    channelId,
-                    channelName,
-                    IMPORTANCE_LOW
+                channelId,
+                channelName,
+                IMPORTANCE_LOW
             ).apply {
                 description = context.getString(R.string.np_description)
             }
@@ -44,23 +44,22 @@ class ScrobbleNotificationManager @Inject constructor(
     }
 
     private fun sendNotification(
-            @StringRes channelId: Int,
-            @StringRes title: Int,
-            description: String,
-            @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
-            priority: Int = NotificationCompat.PRIORITY_LOW,
-            notificationId: Int
-
+        @StringRes channelId: Int,
+        @StringRes title: Int,
+        description: String,
+        @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
+        priority: Int = NotificationCompat.PRIORITY_LOW,
+        notificationId: Int
     ) {
         val builder = NotificationCompat.Builder(
-                context,
-                context.getString(channelId)
+            context,
+            context.getString(channelId)
         )
-                .setSmallIcon(icon)
-                .setContentTitle(context.getString(title))
-                .setContentText(description)
-                .setPriority(priority)
-                .setAutoCancel(true)
+            .setSmallIcon(icon)
+            .setContentTitle(context.getString(title))
+            .setContentText(description)
+            .setPriority(priority)
+            .setAutoCancel(true)
         notificationManager.notify(notificationId, builder.build())
     }
 
@@ -99,16 +98,16 @@ class ScrobbleNotificationManager @Inject constructor(
 
     fun updateNowPlayingNotification(track: LocalTrack) {
         sendNotification(
-                channelId = R.string.np_notification_channel_id,
-                title = R.string.np_notification_channel_name,
-                description = "${track.artist} - ${track.name}",
-                notificationId = NOW_PLAYING_ID
+            channelId = R.string.np_notification_channel_id,
+            title = R.string.np_notification_channel_name,
+            description = "${track.artist} - ${track.name}",
+            notificationId = NOW_PLAYING_ID
         )
     }
 
     fun scrobbledNotification(lines: Array<String>, count: Int, description: String) {
         val fullDescription =
-            if (count > 1) "$description + ${count-1} more"
+            if (count > 1) "$description + ${count - 1} more"
             else lines.first()
 
         sendExpandableNotification(

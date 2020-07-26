@@ -1,10 +1,15 @@
 plugins {
-    id ("com.android.library")
+    id("com.android.library")
     kotlin("android")
 }
 
 android {
     compileSdkVersion(29)
+
+    defaultConfig {
+        minSdkVersion(24)
+        targetSdkVersion(29)
+    }
 }
 
 dependencies {
@@ -16,6 +21,6 @@ dependencies {
     implementation(Square.okHttp3.okHttp)
     api(Square.okHttp3.loggingInterceptor)
 
-    implementation("com.squareup.moshi","moshi-kotlin","_")
-    implementation("com.serjltt.moshi","moshi-lazy-adapters","_")
+    implementation("com.squareup.moshi", "moshi-kotlin", "_")
+    implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 }

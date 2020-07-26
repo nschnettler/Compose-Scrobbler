@@ -13,7 +13,7 @@ import de.schnettler.lastfm.models.ArtistInfoDto
 import de.schnettler.lastfm.models.ChartArtistDto
 import de.schnettler.lastfm.models.MinimalListing
 import de.schnettler.lastfm.models.SessionDto
-import de.schnettler.lastfm.models.SpotifyAccessTokenDto
+import de.schnettler.lastfm.models.SpotifyTokenDto
 import de.schnettler.lastfm.models.UserArtistDto
 import de.schnettler.lastfm.models.UserDto
 
@@ -83,10 +83,10 @@ object UserMapper : Mapper<UserDto, User> {
     }
 }
 
-object SpotifyAuthMapper : Mapper<SpotifyAccessTokenDto, AuthToken> {
-    override suspend fun map(from: SpotifyAccessTokenDto) = AuthToken(
-        type = from.token_type,
-        token = from.access_token,
+object SpotifyAuthMapper : Mapper<SpotifyTokenDto, AuthToken> {
+    override suspend fun map(from: SpotifyTokenDto) = AuthToken(
+        type = from.type,
+        token = from.accessToken,
         tokenType = AuthTokenType.Spotify.value,
         validTill = System.currentTimeMillis() + 3600000
     )

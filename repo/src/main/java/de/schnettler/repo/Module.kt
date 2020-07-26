@@ -8,9 +8,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import de.schnettler.database.AppDatabase
-import de.schnettler.lastfm.api.*
+import de.schnettler.lastfm.api.LastFMInterceptor
+import de.schnettler.lastfm.api.SpotifyAuthInterceptor
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
+import de.schnettler.lastfm.api.loggingInterceptor
+import de.schnettler.lastfm.api.provideOkHttpClient
+import de.schnettler.lastfm.api.provideRetrofit
 import de.schnettler.lastfm.api.spotify.SpotifyAuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

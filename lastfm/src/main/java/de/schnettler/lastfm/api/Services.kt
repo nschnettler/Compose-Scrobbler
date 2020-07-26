@@ -11,19 +11,27 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 
-object RetrofitService {
+fun provideAuthenticatedSpotifyService(
+    token: String,
+    authenticator: Authenticator
+): SpotifyService =
+    provideRetrofit(
+        provideOkHttpClient(
+            AccessTokenInterceptor(token),
+            loggingInterceptor,
+            auth = authenticator
+        ), SpotifyService.ENDPOINT
+    ).create(SpotifyService::class.java)
 
-    fun provideAuthenticatedSpotifyService(token: String, authenticator: Authenticator): SpotifyService =
-        provideRetrofit(
-            provideOkHttpClient(AccessTokenInterceptor(token), loggingInterceptor, auth = authenticator), SpotifyService.ENDPOINT
-        ).create(SpotifyService::class.java)
 
-}
-
-fun provideOkHttpClient(vararg interceptor: Interceptor, auth: Authenticator? = null): OkHttpClient = OkHttpClient().newBuilder()
-    .apply { interceptor.forEach { addInterceptor(it) } }
-    .apply { auth?.let { authenticator(auth) } }
-    .build()
+fun provideOkHttpClient(
+    vararg interceptor: Interceptor,
+    auth: Authenticator? = null
+): OkHttpClient =
+    OkHttpClient().newBuilder()
+        .apply { interceptor.forEach { addInterceptor(it) } }
+        .apply { auth?.let { authenticator(auth) } }
+        .build()
 
 fun provideRetrofit(okHttpClient: OkHttpClient, endpoint: String): Retrofit = Retrofit.Builder()
     .baseUrl(endpoint)
