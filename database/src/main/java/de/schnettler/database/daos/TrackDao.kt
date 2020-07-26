@@ -7,7 +7,7 @@ import de.schnettler.database.models.TrackWithAlbum
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class TrackDao: BaseRelationsDao<Track> {
+abstract class TrackDao : BaseRelationsDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract fun getTrack(id: String, artist: String): Flow<TrackWithAlbum?>
 

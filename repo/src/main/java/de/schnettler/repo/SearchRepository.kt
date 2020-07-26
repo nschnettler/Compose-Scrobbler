@@ -13,13 +13,13 @@ class SearchRepository @Inject constructor(
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { query: SearchQuery ->
-            when(query.filter) {
+            when (query.filter) {
                 1 -> service.searchArtist(query.query, 30).map { it.mapToArtist() }
                 2 -> service.searchAlbum(query.query, 30).map { it.mapToAlbum() }
                 3 -> service.searchTrack(query.query, 30).map { it.mapToTrack() }
                 else -> service.searchArtist(query.query, 3).map { it.mapToArtist() } +
-                        service.searchAlbum(query.query, 3).map { it.mapToAlbum() } +
-                        service.searchTrack(query.query, 3).map { it.mapToTrack() }
+                    service.searchAlbum(query.query, 3).map { it.mapToAlbum() } +
+                    service.searchTrack(query.query, 3).map { it.mapToTrack() }
             }
         }
     ).build()

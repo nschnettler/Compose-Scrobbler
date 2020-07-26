@@ -11,7 +11,8 @@ import kotlin.coroutines.CoroutineContext
 
 class AccessTokenAuthenticator @Inject constructor(
     private val provider: SpotifyAuthProvider,
-    private val context: CoroutineContext): Authenticator {
+    private val context: CoroutineContext
+) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
 

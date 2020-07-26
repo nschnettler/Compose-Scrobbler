@@ -10,11 +10,16 @@ import de.schnettler.repo.SearchRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepository): ViewModel() {
+class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepository) : ViewModel() {
     private val _searchQuery: MutableStateFlow<SearchQuery> = MutableStateFlow(SearchQuery("", 0))
     val searchQuery: StateFlow<SearchQuery>
         get() = _searchQuery
@@ -22,13 +27,13 @@ class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepos
         MutableStateFlow(RefreshableUiState.Success(null, true))
 
     fun updateQuery(new: String) {
-        if(new != searchQuery.value.query) {
+        if (new != searchQuery.value.query) {
             _searchQuery.value = searchQuery.value.copy(query = new)
         }
     }
 
     fun updateFilter(filter: Int) {
-        if(filter != searchQuery.value.filter) {
+        if (filter != searchQuery.value.filter) {
             _searchQuery.value = searchQuery.value.copy(filter = filter)
         }
     }

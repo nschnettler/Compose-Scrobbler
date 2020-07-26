@@ -3,7 +3,11 @@ package de.schnettler.repo.mapping
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Track
-import de.schnettler.lastfm.models.*
+import de.schnettler.lastfm.models.AlbumTrack
+import de.schnettler.lastfm.models.ArtistTracksDto
+import de.schnettler.lastfm.models.RecentTracksDto
+import de.schnettler.lastfm.models.TrackInfoDto
+import de.schnettler.lastfm.models.UserTrackDto
 import de.schnettler.repo.util.toBoolean
 
 fun UserTrackDto.map() = Track(
@@ -23,13 +27,13 @@ fun ArtistTracksDto.map() = Track(
 )
 
 fun RecentTracksDto.mapToLocal() = LocalTrack(
-        name = name,
-        artist = artist.name,
-        album = album.name,
-        duration = 1,
-        timestamp = date?.uts ?: -1,
-        playedBy = "external",
-        status = if (date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
+    name = name,
+    artist = artist.name,
+    album = album.name,
+    duration = 1,
+    timestamp = date?.uts ?: -1,
+    playedBy = "external",
+    status = if (date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
 )
 
 fun TrackInfoDto.map() = Track(
@@ -45,7 +49,7 @@ fun TrackInfoDto.map() = Track(
     tags = this.toptags.tag.map { tag -> tag.name }
 )
 
-suspend fun AlbumTrack.map(albumName: String, index: Int) = Track(
+fun AlbumTrack.map(albumName: String, index: Int) = Track(
     name = name,
     url = url,
     duration = duration,

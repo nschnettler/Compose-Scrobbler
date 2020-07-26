@@ -10,4 +10,5 @@ enum class TimePeriod(private val key: String, val niceName: String) {
 
     override fun toString(): String {
         return key
-    }}
+    }
+}

@@ -6,7 +6,7 @@ import timber.log.Timber
 
 fun PlaybackState.isPlaying() = state == PlaybackState.STATE_PLAYING
 
-fun <T>LastFmResponse<T>.printResult() = when(this) {
+fun <T> LastFmResponse<T>.printResult() = when (this) {
     is LastFmResponse.ERROR -> Timber.e("${this.error}")
     is LastFmResponse.SUCCESS<*> -> Timber.d("${this.data}")
 }

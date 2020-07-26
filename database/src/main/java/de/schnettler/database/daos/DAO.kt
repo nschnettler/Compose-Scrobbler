@@ -1,8 +1,13 @@
 package de.schnettler.database.daos
 
-import androidx.room.*
-import de.schnettler.database.models.*
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Transaction
+import androidx.room.Update
+import de.schnettler.database.models.RelationEntity
+import de.schnettler.database.models.TopListEntry
 
 @Dao
 interface BaseDao<T> {
@@ -14,6 +19,7 @@ interface BaseDao<T> {
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(obj: T): Long
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun forceInsert(obj: T)
 
@@ -24,6 +30,7 @@ interface BaseDao<T> {
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(obj: List<T>): List<Long>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun forceInsertAll(obj: List<T>): List<Long>
 
@@ -46,33 +53,35 @@ interface BaseDao<T> {
     @Delete
     fun delete(obj: T)
 
-
     @Transaction
     suspend fun upsert(obj: T) {
         val id: Long = insert(obj)
         if (id == -1L) {
-            //Get old value
+            // Get old value
             update(obj)
         }
     }
 
-   @Transaction
+    @Transaction
     suspend fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
-       val insertResult: List<Long> = insertAll(objList)
-       val updateList = objList.filterIndexed { index, value ->  insertResult[index] == -1L}
-       if (updateList.isNotEmpty()) {
-           updateAll(updateList)
-       }
-   }
+        val insertResult: List<Long> = insertAll(objList)
+        val updateList = objList.filterIndexed { index, value -> insertResult[index] == -1L }
+        if (updateList.isNotEmpty()) {
+            updateAll(updateList)
+        }
+    }
 }
 
 @Dao
-interface BaseRelationsDao<T>: BaseDao<T> {
+interface BaseRelationsDao<T> : BaseDao<T> {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRelations(relations: List<RelationEntity>)
 
     @Transaction
-    suspend fun insertEntriesWithRelations(entities: List<@JvmSuppressWildcards T>, relations: List<RelationEntity>) {
+    suspend fun insertEntriesWithRelations(
+        entities: List<@JvmSuppressWildcards T>,
+        relations: List<RelationEntity>
+    ) {
         insertAll(entities)
         insertRelations(relations)
     }
@@ -81,7 +90,10 @@ interface BaseRelationsDao<T>: BaseDao<T> {
     suspend fun insertTopListEntries(topListEntries: List<TopListEntry>)
 
     @Transaction
-    suspend fun insertEntitiesWithTopListEntries(entities: List<@JvmSuppressWildcards T>, topListEntries: List<TopListEntry>) {
+    suspend fun insertEntitiesWithTopListEntries(
+        entities: List<@JvmSuppressWildcards T>,
+        topListEntries: List<TopListEntry>
+    ) {
         insertAll(entities)
         insertTopListEntries(topListEntries)
     }

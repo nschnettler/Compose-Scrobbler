@@ -8,17 +8,16 @@ import androidx.ui.material.BottomNavigationItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.res.vectorResource
 import de.schnettler.scrobbler.AppRoute
-import timber.log.Timber
 
 @Composable
 fun BottomNavigationBar(
-        items: List<AppRoute>,
-        currentScreen: AppRoute,
-        onDestinationSelected: (AppRoute) -> Unit
+    items: List<AppRoute>,
+    currentScreen: AppRoute,
+    onDestinationSelected: (AppRoute) -> Unit
 ) {
     if (currentScreen !is AppRoute.DetailRoute) {
         BottomNavigation(backgroundColor = MaterialTheme.colors.surface) {
-            items.forEach {screen ->
+            items.forEach { screen ->
                 BottomNavigationItem(
                     icon = {
                         Icon(asset = vectorResource(id = screen.icon))

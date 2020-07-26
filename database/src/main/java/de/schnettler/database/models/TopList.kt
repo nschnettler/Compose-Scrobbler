@@ -27,7 +27,7 @@ data class TopListArtist(
         entityColumn = "id"
     )
     override val data: Artist
-): TopListEntryWithData
+) : TopListEntryWithData
 
 data class TopListTrack(
     @Embedded override val topListEntry: TopListEntry,
@@ -36,7 +36,7 @@ data class TopListTrack(
         entityColumn = "id"
     )
     override val data: Track
-): TopListEntryWithData
+) : TopListEntryWithData
 
 data class TopListAlbum(
     @Embedded override val topListEntry: TopListEntry,
@@ -45,7 +45,7 @@ data class TopListAlbum(
         entityColumn = "id"
     )
     override val data: Album
-): TopListEntryWithData
+) : TopListEntryWithData
 
 interface TopListEntryWithData {
     val topListEntry: TopListEntry

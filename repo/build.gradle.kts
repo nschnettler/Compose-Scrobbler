@@ -26,8 +26,8 @@ dependencies {
     implementation(KotlinX.coroutines.core)
     implementation(Square.okHttp3.okHttp)
 
-    implementation("org.jetbrains.kotlin","kotlin-stdlib","1.3.72")
-    implementation("com.google.dagger","hilt-android","_")
-    kapt("com.google.dagger","hilt-android-compiler","_")
-    api("com.dropbox.mobile.store","store4","_")
+    implementation("org.jetbrains.kotlin", "kotlin-stdlib", "1.3.72")
+    implementation("com.google.dagger", "hilt-android", "_")
+    kapt("com.google.dagger", "hilt-android-compiler", "_")
+    api("com.dropbox.mobile.store", "store4", "_")
 }

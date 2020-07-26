@@ -7,24 +7,25 @@ package de.schnettler.scrobbler.util
  */
 sealed class RefreshableUiState<out T> {
     data class Success<out T>(
-            val data: T?,
-            val loading: Boolean
-    ): RefreshableUiState<T>()
+        val data: T?,
+        val loading: Boolean
+    ) : RefreshableUiState<T>()
+
     data class Error<out T>(
-            val exception: Throwable? = null,
-            val errorMessage: String? = null,
-            val previousData: T?
-    ): RefreshableUiState<T>()
+        val exception: Throwable? = null,
+        val errorMessage: String? = null,
+        val previousData: T?
+    ) : RefreshableUiState<T>()
+
+    val isLoading: Boolean
+        get() = this is Success && this.loading && this.data == null
+
+    val isRefreshing: Boolean
+        get() = this is Success && this.loading && this.data != null
+
+    val currentData: T?
+        get() = when (this) {
+            is Success -> this.data
+            is Error -> this.previousData
+        }
 }
-
-val <T> RefreshableUiState<T>.loading: Boolean
-    get() = this is RefreshableUiState.Success && this.loading && this.data == null
-
-val <T> RefreshableUiState<T>.refreshing: Boolean
-    get() = this is RefreshableUiState.Success && this.loading && this.data != null
-
-val <T> RefreshableUiState<T>.currentData: T?
-    get() = when (this) {
-        is RefreshableUiState.Success -> this.data
-        is RefreshableUiState.Error -> this.previousData
-    }

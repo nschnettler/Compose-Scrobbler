@@ -1,9 +1,11 @@
 package de.schnettler.scrobbler.screens.preview
 
 import androidx.ui.tooling.preview.PreviewParameterProvider
-import de.schnettler.database.models.*
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.ScrobbleStatus
 
-class FakeHistoryTrackProvider: PreviewParameterProvider<LocalTrack> {
+class FakeHistoryTrackProvider : PreviewParameterProvider<LocalTrack> {
     override val values = sequenceOf(
             generateTrack(ScrobbleStatus.PLAYING),
             generateTrack(ScrobbleStatus.LOCAL))
@@ -20,7 +22,7 @@ class FakeHistoryTrackProvider: PreviewParameterProvider<LocalTrack> {
     }
 }
 
-class FakeTopListEntry: PreviewParameterProvider<Artist> {
+class FakeTopListEntry : PreviewParameterProvider<Artist> {
     override val values = sequenceOf(
         generateArtist())
 

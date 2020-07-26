@@ -11,9 +11,10 @@ import kotlinx.coroutines.CoroutineScope
 
 @Module
 @InstallIn(ActivityComponent::class)
-class ActivityModule() {
+class ActivityModule {
     @Provides
-    fun provideActivityCoroutineScope(activity: Activity): CoroutineScope = (activity as AppCompatActivity).lifecycleScope
+    fun provideActivityCoroutineScope(activity: Activity): CoroutineScope =
+        (activity as AppCompatActivity).lifecycleScope
 
     @Provides
     fun provideCoroutineContext(coroutineScope: CoroutineScope) = coroutineScope.coroutineContext

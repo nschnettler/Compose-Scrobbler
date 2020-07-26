@@ -1,7 +1,21 @@
 package de.schnettler.repo.mapping
 
-import de.schnettler.database.models.*
-import de.schnettler.lastfm.models.*
+import de.schnettler.database.models.Artist
+import de.schnettler.database.models.AuthToken
+import de.schnettler.database.models.AuthTokenType
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.RelationEntity
+import de.schnettler.database.models.Session
+import de.schnettler.database.models.TrackDomain
+import de.schnettler.database.models.TrackWithAlbum
+import de.schnettler.database.models.User
+import de.schnettler.lastfm.models.ArtistInfoDto
+import de.schnettler.lastfm.models.ChartArtistDto
+import de.schnettler.lastfm.models.MinimalListing
+import de.schnettler.lastfm.models.SessionDto
+import de.schnettler.lastfm.models.SpotifyTokenDto
+import de.schnettler.lastfm.models.UserArtistDto
+import de.schnettler.lastfm.models.UserDto
 
 fun ChartArtistDto.map(): Artist = Artist(
     name = this.name,
@@ -10,7 +24,7 @@ fun ChartArtistDto.map(): Artist = Artist(
     listeners = this.listeners ?: 0
 )
 
-fun UserArtistDto.map()= Artist(
+fun UserArtistDto.map() = Artist(
     name = this.name,
     url = this.url,
     userPlays = this.playcount ?: 0
@@ -46,8 +60,7 @@ fun TrackWithAlbum.map() = TrackDomain(
     tags = this.track.tags
 )
 
-
-object SessionMapper: Mapper<SessionDto, Session> {
+object SessionMapper : Mapper<SessionDto, Session> {
     override suspend fun map(from: SessionDto): Session = Session(
         from.name,
         from.key,
@@ -55,9 +68,9 @@ object SessionMapper: Mapper<SessionDto, Session> {
     )
 }
 
-object UserMapper: Mapper<UserDto, User> {
+object UserMapper : Mapper<UserDto, User> {
     override suspend fun map(from: UserDto): User {
-        val user = User(
+        return User(
             name = from.name,
             playcount = from.playcount,
             url = from.url,
@@ -67,20 +80,19 @@ object UserMapper: Mapper<UserDto, User> {
             registerDate = from.registerDate.unixtime,
             imageUrl = from.image[3].url
         )
-        return user
     }
 }
 
-object SpotifyAuthMapper: Mapper<SpotifyAccessTokenDto, AuthToken> {
-    override suspend fun map(from: SpotifyAccessTokenDto) = AuthToken(
-        type = from.token_type,
-        token = from.access_token,
+object SpotifyAuthMapper : Mapper<SpotifyTokenDto, AuthToken> {
+    override suspend fun map(from: SpotifyTokenDto) = AuthToken(
+        type = from.type,
+        token = from.accessToken,
         tokenType = AuthTokenType.Spotify.value,
         validTill = System.currentTimeMillis() + 3600000
     )
 }
 
-object RelationMapper: IndexedMapper<Pair<LastFmEntity, LastFmEntity>, RelationEntity> {
+object RelationMapper : IndexedMapper<Pair<LastFmEntity, LastFmEntity>, RelationEntity> {
     override suspend fun map(index: Int, from: Pair<LastFmEntity, LastFmEntity>): RelationEntity {
         val source = from.first
         val target = from.second

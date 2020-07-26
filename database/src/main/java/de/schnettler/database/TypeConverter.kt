@@ -21,7 +21,8 @@ class TypeConverter {
     fun topListingTypeToString(type: TopListEntryType) = type.id
 
     @TypeConverter
-    fun stringToTopListingType(id: String): TopListEntryType = topListingTypeMap[id] ?: TopListEntryType.UNDEFINED
+    fun stringToTopListingType(id: String): TopListEntryType =
+        topListingTypeMap[id] ?: TopListEntryType.UNDEFINED
 
     @TypeConverter
     fun stringToList(value: String) = value.split(",").map { it }.filter { it.isNotBlank() }
@@ -33,5 +34,6 @@ class TypeConverter {
     fun scrobbleStatusToString(status: ScrobbleStatus) = status.name
 
     @TypeConverter
-    fun stringToScrobbleStatus(name: String) = scrobbleStatusTypeMap[name] ?: ScrobbleStatus.VOLATILE
+    fun stringToScrobbleStatus(name: String) =
+        scrobbleStatusTypeMap[name] ?: ScrobbleStatus.VOLATILE
 }

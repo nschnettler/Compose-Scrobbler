@@ -1,7 +1,11 @@
 package de.schnettler.scrobbler.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.scrobbler.util.SessionState
 import kotlinx.coroutines.launch

@@ -1,15 +1,24 @@
 package de.schnettler.scrobble
 
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.scrobble.work.*
+import de.schnettler.scrobble.work.RESULT_COUNT
+import de.schnettler.scrobble.work.RESULT_DESCRIPTION
+import de.schnettler.scrobble.work.RESULT_TRACKS
+import de.schnettler.scrobble.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.scrobble.work.ScrobbleWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 class Scrobbler @Inject constructor(
@@ -25,17 +34,21 @@ class Scrobbler @Inject constructor(
         .build()
 
     init {
-        workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK).observeForever {workInfos ->
-            workInfos.forEach {info ->
-                if (info.state == WorkInfo.State.SUCCEEDED) {
-                    val tracks = info.outputData.getStringArray(RESULT_TRACKS)
-                    tracks?.let { notificationManager.scrobbledNotification(
-                            it,
-                            info.outputData.getInt(RESULT_COUNT, -1),
-                            info.outputData.getString(RESULT_DESCRIPTION) ?: "") }
+        workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK)
+            .observeForever { workInfos ->
+                workInfos.forEach { info ->
+                    if (info.state == WorkInfo.State.SUCCEEDED) {
+                        val tracks = info.outputData.getStringArray(RESULT_TRACKS)
+                        tracks?.let {
+                            notificationManager.scrobbledNotification(
+                                it,
+                                info.outputData.getInt(RESULT_COUNT, -1),
+                                info.outputData.getString(RESULT_DESCRIPTION) ?: ""
+                            )
+                        }
+                    }
                 }
             }
-        }
     }
 
     fun submitScrobble(track: LocalTrack) {
@@ -75,7 +88,6 @@ class Scrobbler @Inject constructor(
             }
         }
     }
-
 
     fun updateNowPlayingNotification(current: LocalTrack?) {
         if (current == null) {

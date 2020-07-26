@@ -10,7 +10,7 @@ data class MinimalListing(
     override val name: String,
     override val mbid: String? = null,
     override val url: String
-): ListingDto
+) : ListingDto
 
 data class ResponseInfo(
     val page: Long,

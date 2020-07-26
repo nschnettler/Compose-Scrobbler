@@ -1,7 +1,13 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Intent
-import androidx.compose.*
+import androidx.compose.Composable
+import androidx.compose.MutableState
+import androidx.compose.collectAsState
+import androidx.compose.getValue
+import androidx.compose.setValue
+import androidx.compose.state
+import androidx.compose.stateFor
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
@@ -11,8 +17,23 @@ import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
 import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.*
-import androidx.ui.material.*
+import androidx.ui.layout.Column
+import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
+import androidx.ui.layout.Stack
+import androidx.ui.layout.fillMaxSize
+import androidx.ui.layout.padding
+import androidx.ui.layout.preferredHeight
+import androidx.ui.layout.preferredWidth
+import androidx.ui.material.AlertDialog
+import androidx.ui.material.Button
+import androidx.ui.material.Card
+import androidx.ui.material.Divider
+import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.FilledTextField
+import androidx.ui.material.ListItem
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.TextButton
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
@@ -24,238 +45,285 @@ import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.*
+import de.schnettler.scrobbler.components.ErrorSnackbar
+import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.NameListIcon
+import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.components.QuickActionsRow
+import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
-import de.schnettler.scrobbler.util.*
+import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.copyByState
+import de.schnettler.scrobbler.util.milliSecondsToDate
+import de.schnettler.scrobbler.util.milliSecondsToMinSeconds
+import de.schnettler.scrobbler.util.packageNameToAppName
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
 @Composable
 fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
-   val context = ContextAmbient.current
-   when(MediaListenerService.isEnabled(context)) {
-      true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
-      false -> Button(onClick = {
-         context.startActivity( Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-      }) {
-         Text(text = "Enable")
-      }
-   }
-   Timber.i("Started Service")
+    val context = ContextAmbient.current
+    when (MediaListenerService.isEnabled(context)) {
+        true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
+        false -> Button(onClick = {
+            context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+        }) {
+            Text(text = "Enable")
+        }
+    }
+    Timber.i("Started Service")
 }
 
 @Composable
 fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
-   val recentTracksState by localViewModel.recentTracksState.collectAsState()
-   var showDialog by state { false }
-   val selectedTrack: MutableState<LocalTrack?> = state { null }
-   val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
-      recentTracksState is RefreshableUiState.Error
-   }
+    val recentTracksState by localViewModel.recentTracksState.collectAsState()
+    var showDialog by state { false }
+    val selectedTrack: MutableState<LocalTrack?> = state { null }
+    val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
+        recentTracksState is RefreshableUiState.Error
+    }
 
-   Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-      if (recentTracksState.loading) {
-         LiveDataLoadingComponent()
-      } else {
-         SwipeToRefreshLayout(
-                 refreshingState = recentTracksState.refreshing,
-                 onRefresh = { localViewModel.refresh() },
-                 refreshIndicator = { SwipeRefreshPrograssIndicator() }
-         ) {
-            recentTracksState.currentData?.let { list ->
-               HistoryTrackList(
-                       tracks = list,
-                       onTrackSelected = { track, actionType ->
-                          when (actionType) {
-                             HistoryActionType.EDIT -> {
-                                selectedTrack.value = track
-                                showDialog = true
-                             }
-                             HistoryActionType.DELETE -> {
-                                // DELETE A TRACK
-                             }
-                             HistoryActionType.OPEN -> {
-                                onListingSelected(track)
-                             }
-                          }
-
-                       },
-                       onNowPlayingSelected = {
-                          Timber.d("Update NowPlaying")
-                       }
-               )
-            }
-         }
-      }
-      ErrorSnackbar(
-              showError = showSnackbarError,
-              onErrorAction = { localViewModel.refresh() },
-              onDismiss = { updateShowSnackbarError(false) },
-              modifier = Modifier.gravity(Alignment.BottomCenter)
-      )
-   }
-
-   if (showDialog) {
-      TrackEditDialog(onSelect = {track ->
-         showDialog = false
-         track?.let {updatedTrack ->
-            Timber.d("[LocalEdit - Old]${selectedTrack.value}")
-            Timber.d("[LocalEdit - New]$updatedTrack")
-         }
-      }, onDismiss = {
-         showDialog = false
-      }, track = selectedTrack.value)
-   }
-}
-
-@Composable
-private fun TrackEditDialog(track: LocalTrack?, onSelect: (selected: LocalTrack?) -> Unit, onDismiss: () -> Unit) {
-   if (track != null) {
-      val trackState = state { TextFieldValue(track.name) }
-      val artistState = state { TextFieldValue(track.artist) }
-      val albumState = state { TextFieldValue(track.album) }
-
-      AlertDialog(
-         onCloseRequest = {
-            if (track.copyByState(trackState, artistState, albumState) == track) {
-               onDismiss()
-            }
-         },
-         title = { Text(text = "Scrobble bearbeiten") },
-         text = {
-            Column {
-               FilledTextField(value = trackState.value, onValueChange = {trackState.value = it}, label = { Text("Song") })
-               Spacer(modifier = Modifier.preferredHeight(16.dp))
-               FilledTextField(value = artistState.value, onValueChange = {artistState.value = it}, label = { Text("Künstler") })
-               Spacer(modifier = Modifier.preferredHeight(16.dp))
-               FilledTextField(value = albumState.value, onValueChange = {albumState.value = it}, label = { Text("Album") })
-            }
-         },
-         confirmButton = {
-            val updated = track.copyByState(trackState, artistState, albumState)
-            TextButton(
-               onClick = { onSelect(if (updated != track) updated else null) },
-               contentColor = MaterialTheme.colors.secondary
+    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
+        if (recentTracksState.isLoading) {
+            LiveDataLoadingComponent()
+        } else {
+            SwipeToRefreshLayout(
+                refreshingState = recentTracksState.isRefreshing,
+                onRefresh = { localViewModel.refresh() },
+                refreshIndicator = { SwipeRefreshPrograssIndicator() }
             ) {
-               Text(text = "Select")
+                recentTracksState.currentData?.let { list ->
+                    HistoryTrackList(
+                        tracks = list,
+                        onTrackSelected = { track, actionType ->
+                            when (actionType) {
+                                HistoryActionType.EDIT -> {
+                                    selectedTrack.value = track
+                                    showDialog = true
+                                }
+                                HistoryActionType.DELETE -> {
+                                    // DELETE A TRACK
+                                }
+                                HistoryActionType.OPEN -> {
+                                    onListingSelected(track)
+                                }
+                            }
+                        },
+                        onNowPlayingSelected = {
+                            Timber.d("Update NowPlaying")
+                        }
+                    )
+                }
             }
-         },
-         dismissButton = {
-            TextButton(onClick = onDismiss, contentColor = EmphasisAmbient.current.medium.applyEmphasis(
-               contentColor())) {
-               Text(text = "Discard")
+        }
+        ErrorSnackbar(
+            showError = showSnackbarError,
+            onErrorAction = { localViewModel.refresh() },
+            onDismiss = { updateShowSnackbarError(false) },
+            modifier = Modifier.gravity(Alignment.BottomCenter)
+        )
+    }
+
+    if (showDialog) {
+        TrackEditDialog(onSelect = { track ->
+            showDialog = false
+            track?.let { updatedTrack ->
+                Timber.d("[LocalEdit - Old]${selectedTrack.value}")
+                Timber.d("[LocalEdit - New]$updatedTrack")
             }
-         }
-      )
-   }
+        }, onDismiss = {
+            showDialog = false
+        }, track = selectedTrack.value)
+    }
 }
 
 @Composable
-fun <T: StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
-   Card(modifier = Modifier.padding(16.dp)) {
-      ListItem(
-         text = { Text(track.name) },
-         secondaryText = { Text(track.artist) },
-         icon = {
-            PlainListIconBackground(color = R.color.colorAccent) {
-               Icon(
-                  asset = vectorResource(id = R.drawable.ic_round_music_note_24),
-                  tint = Color.White
-               )
+private fun TrackEditDialog(
+    track: LocalTrack?,
+    onSelect: (selected: LocalTrack?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (track != null) {
+        val trackState = state { TextFieldValue(track.name) }
+        val artistState = state { TextFieldValue(track.artist) }
+        val albumState = state { TextFieldValue(track.album) }
+
+        AlertDialog(
+            onCloseRequest = {
+                if (track.copyByState(trackState, artistState, albumState) == track) {
+                    onDismiss()
+                }
+            },
+            title = { Text(text = "Scrobble bearbeiten") },
+            text = {
+                Column {
+                    FilledTextField(
+                        value = trackState.value,
+                        onValueChange = { trackState.value = it },
+                        label = { Text("Song") })
+                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    FilledTextField(
+                        value = artistState.value,
+                        onValueChange = { artistState.value = it },
+                        label = { Text("Künstler") })
+                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    FilledTextField(
+                        value = albumState.value,
+                        onValueChange = { albumState.value = it },
+                        label = { Text("Album") })
+                }
+            },
+            confirmButton = {
+                val updated = track.copyByState(trackState, artistState, albumState)
+                TextButton(
+                    onClick = { onSelect(if (updated != track) updated else null) },
+                    contentColor = MaterialTheme.colors.secondary
+                ) {
+                    Text(text = "Select")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = onDismiss,
+                    contentColor = EmphasisAmbient.current.medium.applyEmphasis(
+                        contentColor()
+                    )
+                ) {
+                    Text(text = "Discard")
+                }
             }
-         },
-         onClick = { onClick.invoke(track) }
-      )
-   }
+        )
+    }
+}
+
+@Composable
+fun <T : StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
+    Card(modifier = Modifier.padding(16.dp)) {
+        ListItem(
+            text = { Text(track.name) },
+            secondaryText = { Text(track.artist) },
+            icon = {
+                PlainListIconBackground(color = R.color.colorAccent) {
+                    Icon(
+                        asset = vectorResource(id = R.drawable.ic_round_music_note_24),
+                        tint = Color.White
+                    )
+                }
+            },
+            onClick = { onClick.invoke(track) }
+        )
+    }
 }
 
 @Composable
 fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
-   var expanded by state { false }
-   ListItem(
-      text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-      secondaryText = {
-         Column {
-            Text(text = "${track.artist} ⦁ ${track.album}", maxLines = if (expanded) 3 else 1, overflow = TextOverflow.Ellipsis)
-            if (expanded) {
-               if (track.isLocal()) ComposeAdditionalInformation(track)
-               else Spacer(modifier = Modifier.preferredHeight(16.dp))
-               Divider()
-               ComposeQuickActions(track, onClick)
+    var expanded by state { false }
+    ListItem(
+        text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+        secondaryText = {
+            Column {
+                Text(
+                    text = "${track.artist} ⦁ ${track.album}",
+                    maxLines = if (expanded) 3 else 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (expanded) {
+                    if (track.isLocal()) ComposeAdditionalInformation(track)
+                    else Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    Divider()
+                    ComposeQuickActions(track, onClick)
+                }
             }
-         }
-      },
-      icon = { NameListIcon(title = track.name) },
-      onClick = { expanded = !expanded},
-      trailing = { track.timestampToRelativeTime()?.let {
-         Column() {
-            Text(text = it)
-            Row() {
-               if (track.isCached()) {
-                  Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
-                  Spacer(modifier = Modifier.preferredWidth(8.dp))
-               }
-               if (track.isLocal()) Text(text = "${track.playPercent()} %")
+        },
+        icon = { NameListIcon(title = track.name) },
+        onClick = { expanded = !expanded },
+        trailing = {
+            track.timestampToRelativeTime()?.let {
+                Column() {
+                    Text(text = it)
+                    Row() {
+                        if (track.isCached()) {
+                            Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
+                            Spacer(modifier = Modifier.preferredWidth(8.dp))
+                        }
+                        if (track.isLocal()) Text(text = "${track.playPercent()} %")
+                    }
+                }
             }
-         }
-      } }
-   )
-   Divider(color = colorResource(id = R.color.colorStroke))
+        }
+    )
+    Divider(color = colorResource(id = R.color.colorStroke))
 }
 
 @Composable
 fun ComposeAdditionalInformation(track: LocalTrack) {
-   Spacer(modifier = Modifier.preferredHeight(8.dp))
-   Text(text = "Source: ${packageNameToAppName(track.playedBy)}")
-   Text(text = "Runtime: ${milliSecondsToMinSeconds(track.amountPlayed)}/${milliSecondsToMinSeconds(track.duration)} (${track.playPercent()}%)")
-   Text(text = "Timestamp: ${(track.timestamp * 1000).milliSecondsToDate()}")
-   Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Text(text = "Source: ${packageNameToAppName(track.playedBy)}")
+    Text(
+        text = "Runtime: ${milliSecondsToMinSeconds(track.amountPlayed)}/${
+            milliSecondsToMinSeconds(
+                track.duration
+            )
+        } (${track.playPercent()}%)"
+    )
+    Text(text = "Timestamp: ${(track.timestamp * 1000).milliSecondsToDate()}")
+    Spacer(modifier = Modifier.preferredHeight(8.dp))
 }
 
 @Composable
 fun ComposeQuickActions(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
-   val actions = mutableListOf<Pair<@androidx.annotation.DrawableRes Int, () -> Unit>>()
-   if (track.isCached()) {
-      actions.add(R.drawable.ic_outline_edit_32 to { onClick.invoke(track, HistoryActionType.EDIT) })
-      actions.add(R.drawable.ic_round_delete_outline_32 to { onClick.invoke(track, HistoryActionType.DELETE) })
-   }
-   actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(track, HistoryActionType.OPEN) })
-   QuickActionsRow(items = actions)
+    val actions = mutableListOf<Pair<@androidx.annotation.DrawableRes Int, () -> Unit>>()
+    if (track.isCached()) {
+        actions.add(R.drawable.ic_outline_edit_32 to {
+            onClick.invoke(
+                track,
+                HistoryActionType.EDIT
+            )
+        })
+        actions.add(R.drawable.ic_round_delete_outline_32 to {
+            onClick.invoke(
+                track,
+                HistoryActionType.DELETE
+            )
+        })
+    }
+    actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(track, HistoryActionType.OPEN) })
+    QuickActionsRow(items = actions)
 }
 
 @Preview
 @Composable
 fun HistoryTrack(
-   @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
-   onTrackSelected: (LocalTrack, HistoryActionType) -> Unit = {t1, t2 -> },
-   onNowPlayingSelected: (LocalTrack) -> Unit = { }
+    @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
+    onTrackSelected: (LocalTrack, HistoryActionType) -> Unit = { t1, t2 -> },
+    onNowPlayingSelected: (LocalTrack) -> Unit = { }
 ) {
-   if(track.isPlaying()) {
-      NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
-   } else {
-      ScrobbledTrack(track = track, onClick = onTrackSelected)
-   }
+    if (track.isPlaying()) {
+        NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
+    } else {
+        ScrobbledTrack(track = track, onClick = onTrackSelected)
+    }
 }
-
 
 @Composable
 fun HistoryTrackList(
-   tracks: List<LocalTrack>,
-   onTrackSelected: (LocalTrack, HistoryActionType) -> Unit,
-   onNowPlayingSelected: (LocalTrack) -> Unit,
-   modifier: Modifier = Modifier
+    tracks: List<LocalTrack>,
+    onTrackSelected: (LocalTrack, HistoryActionType) -> Unit,
+    onNowPlayingSelected: (LocalTrack) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-   LazyColumnItems(items = tracks, modifier = modifier) {track ->
-      HistoryTrack(
-         track = track,
-         onTrackSelected = onTrackSelected,
-         onNowPlayingSelected = onNowPlayingSelected
-      )
-   }
+    LazyColumnItems(items = tracks, modifier = modifier) { track ->
+        HistoryTrack(
+            track = track,
+            onTrackSelected = onTrackSelected,
+            onNowPlayingSelected = onNowPlayingSelected
+        )
+    }
 }
 
-enum class HistoryActionType() {
-   EDIT,
-   DELETE,
-   OPEN
+enum class HistoryActionType {
+    EDIT,
+    DELETE,
+    OPEN
 }

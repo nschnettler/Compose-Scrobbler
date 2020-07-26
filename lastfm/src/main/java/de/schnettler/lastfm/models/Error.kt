@@ -1,10 +1,10 @@
 package de.schnettler.lastfm.models
 
 data class ErrorResponse(
-        val error: Int,
-        val message: String
+    val error: Int,
+    val message: String
 ) {
-    fun asError() = when(error) {
+    fun asError() = when (error) {
         2 -> Errors.SERVICE
         3 -> Errors.METHOD
         4 -> Errors.AUTHENTICATION
@@ -51,7 +51,11 @@ enum class Errors(val num: Long, val title: String, val description: String) {
     SIGNATURE(13, "Invalid signature", "Invalid method signature supplied"),
     TOKEN(14, "Unauthorized Token", "This token has not been authorized"),
     STREAMING(15, "Streaming not possible", "This item is not available for streaming"),
-    UNAVAILABLE(16, "Service unavailable", "The service is temporarily unavailable, please try again."),
+    UNAVAILABLE(
+        16,
+        "Service unavailable",
+        "The service is temporarily unavailable, please try again."
+    ),
     LOGIN(17, "Login", "User requires to be logged in"),
     TRIAL(18, "Trial Expired", "This user has no free radio plays left. Subscription required."),
     UNKNOWN2(19, "Unknown Error", "This error does not exist"),
@@ -64,9 +68,17 @@ enum class Errors(val num: Long, val title: String, val description: String) {
     PEAK(24, "No Peak Radio", "This user is not allowed to listen to radio during peak usage"),
     RADIO(25, "Radio Not Found", "Radio station not found"),
 
-    SUSPENDED(26, "API Key Suspended", "This application is not allowed to make requests to the web services"),
+    SUSPENDED(
+        26,
+        "API Key Suspended",
+        "This application is not allowed to make requests to the web services"
+    ),
     DEPRECATED(27, "Deprecated", "This type of request is no longer supported"),
-    RATE_LIMIT(29, "Rate Limit Exceded", "Your IP has made too many requests in a short period, exceeding our API guidelines");
+    RATE_LIMIT(
+        29,
+        "Rate Limit Exceded",
+        "Your IP has made too many requests in a short period, exceeding our API guidelines"
+    );
 
     override fun toString(): String = "[$num] $name: $title - $description"
 }

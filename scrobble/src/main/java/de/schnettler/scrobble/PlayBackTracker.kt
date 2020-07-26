@@ -11,22 +11,24 @@ class PlayBackTracker @Inject constructor(
     private val playerStates = hashMapOf<String, PlaybackController>()
 
     private fun getPlaybackController(packageName: String) =
-            playerStates[packageName] ?: PlaybackController(scrobbler).also {
-                playerStates[packageName] = it
-            }
+        playerStates[packageName] ?: PlaybackController(scrobbler).also {
+            playerStates[packageName] = it
+        }
 
     fun onMetadataChanged(packageName: String, metadata: MediaMetadata) {
         val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()
-        val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(MediaMetadata
-                .METADATA_KEY_ALBUM_ARTIST)) ?: "").toString()
+        val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(
+            MediaMetadata
+                .METADATA_KEY_ALBUM_ARTIST
+        )) ?: "").toString()
         val album = (metadata.getText(MediaMetadata.METADATA_KEY_ALBUM) ?: "").toString()
         val duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION)
         val track = LocalTrack(
-                name = title,
-                artist = artist,
-                album = album,
-                duration = duration,
-                playedBy = packageName
+            name = title,
+            artist = artist,
+            album = album,
+            duration = duration,
+            playedBy = packageName
         )
         getPlaybackController(packageName).updateTrack(track)
     }

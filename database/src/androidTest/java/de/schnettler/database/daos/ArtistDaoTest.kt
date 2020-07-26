@@ -17,7 +17,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 class ArtistDaoTest {
     @get:Rule
@@ -38,14 +37,14 @@ class ArtistDaoTest {
 
     @Test
     fun getArtistRetrievesData() = runBlockingTest {
-        //GIVEN - Artist in Database
+        // GIVEN - Artist in Database
         val artist = Artist(name = "TestArtist", url = "ArtistUrl")
         database.artistDao().insert(artist)
 
-        //WHEN - Get the artist by id from db
+        // WHEN - Get the artist by id from db
         val loadedArtist = database.artistDao().getArtist(artist.id)
 
-        //THEN - Loaded Data is equal to artist
+        // THEN - Loaded Data is equal to artist
         loadedArtist.collectValue {
             expect(it).notToBeNull().toBe(artist)
         }
@@ -99,7 +98,8 @@ class ArtistDaoTest {
     @Test
     fun updateArtistImageUrlNoMatch() = runBlockingTest {
         // GIVEN - Other artist in db
-        database.artistDao().insert(Artist(name = "TestArtist", url = "ArtistUrl", imageUrl = "OldImageUrl"))
+        database.artistDao()
+            .insert(Artist(name = "TestArtist", url = "ArtistUrl", imageUrl = "OldImageUrl"))
 
         // WHEN - ImageUrl of wrong artist updated
         val imageURl = "ImageUrl"

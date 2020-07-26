@@ -20,7 +20,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -40,7 +43,11 @@ android {
 
     kotlinOptions {
         freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        freeCompilerArgs += listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check")
+        freeCompilerArgs += listOf(
+            "-Xopt-in=kotlin.RequiresOptIn",
+            "-Xallow-jvm-ir-dependencies",
+            "-Xskip-prerelease-check"
+        )
     }
 
     signingConfigs {
@@ -58,10 +65,10 @@ dependencies {
     implementation(project(":scrobble"))
     implementation(project(":navigation"))
 
-    //Kotlin
+    // Kotlin
     implementation(Kotlin.stdlib.jdk8)
 
-    //AndroidX
+    // AndroidX
     implementation(AndroidX.browser)
     implementation(AndroidX.coreKtx)
     implementation(AndroidX.appCompat)
@@ -69,26 +76,26 @@ dependencies {
     implementation("androidx.compose.foundation", "foundation-layout", "_")
     implementation("androidx.compose.material", "material", "_")
     implementation("androidx.ui", "ui-tooling", "_")
-    implementation("androidx.compose.runtime","runtime-livedata","_")
+    implementation("androidx.compose.runtime", "runtime-livedata", "_")
     implementation(AndroidX.lifecycle.extensions)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
 
-    //Google
+    // Google
     implementation(Google.android.material)
 
     implementation("io.coil-kt", "coil", "_")
-    implementation("dev.chrisbanes.accompanist","accompanist-coil", "_")
-    implementation("com.jakewharton.threetenabp","threetenabp", "_")
-    //implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
+    implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
+    implementation("com.jakewharton.threetenabp", "threetenabp", "_")
+    // implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
     debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
 
-    //Dagger
-    implementation("androidx.hilt","hilt-lifecycle-viewmodel", "_")
+    // Dagger
+    implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")
     implementation("androidx.hilt", "hilt-work", "_")
-    implementation("com.google.dagger","hilt-android","_")
-    kapt("androidx.hilt","hilt-compiler", "_")
-    kapt("com.google.dagger","hilt-android-compiler","_")
+    implementation("com.google.dagger", "hilt-android", "_")
+    kapt("androidx.hilt", "hilt-compiler", "_")
+    kapt("com.google.dagger", "hilt-android-compiler", "_")
 }

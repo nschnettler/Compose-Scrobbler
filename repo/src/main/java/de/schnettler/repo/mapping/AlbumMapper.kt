@@ -14,8 +14,10 @@ suspend fun AlbumInfoDto.map() = Album(
     artist = artist,
     tags = tags.tag.map { tag -> tag.name },
     description = wiki?.summary
-).apply { tracks = this@map.tracks.track.mapIndexed{ index, track ->
-    track.map(this@map.name, index) }
+).apply {
+    tracks = this@map.tracks.track.mapIndexed { index, track ->
+        track.map(this@map.name, index)
+    }
 }
 
 fun AlbumDto.mapToUserAlbum() = Album(
@@ -33,4 +35,3 @@ fun AlbumDto.mapToAlbum() = Album(
     url = this.url,
     imageUrl = this.images[3].url
 )
-

@@ -10,11 +10,11 @@ class PlaybackController(
     var lastPlaybackState: Int? = null
 
     fun updateTrack(track: LocalTrack) {
-        when(track.isTheSameAs(nowPlaying)) {
+        when (track.isTheSameAs(nowPlaying)) {
             // Track is the same (title and artist match)
             true -> {
                 if (track.album != nowPlaying?.album) {
-                    //Album updated. Metadata change complete
+                    // Album updated. Metadata change complete
                     nowPlaying = nowPlaying?.copy(album = track.album)
                     scrobbler.notifyNowPlaying(nowPlaying)
                 }
@@ -27,7 +27,7 @@ class PlaybackController(
                     it.pause()
                     scrobbler.submitScrobble(it)
                 }
-                //Start new Track
+                // Start new Track
                 nowPlaying = track
                 track.play()
             }

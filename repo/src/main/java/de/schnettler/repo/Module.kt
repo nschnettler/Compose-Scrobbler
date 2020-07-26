@@ -8,9 +8,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import de.schnettler.database.AppDatabase
-import de.schnettler.lastfm.api.*
+import de.schnettler.lastfm.api.LastFMInterceptor
+import de.schnettler.lastfm.api.SpotifyAuthInterceptor
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
+import de.schnettler.lastfm.api.loggingInterceptor
+import de.schnettler.lastfm.api.provideOkHttpClient
+import de.schnettler.lastfm.api.provideRetrofit
 import de.schnettler.lastfm.api.spotify.SpotifyAuthService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 class NetworkModule {
     @Provides
     @Singleton
-    fun provideLastFmService() = provideRetrofit(
+    fun provideLastFmService(): LastFmService = provideRetrofit(
         provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
     ).create(
         LastFmService::class.java
@@ -31,15 +35,15 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideScrobblerService() = provideRetrofit(
-            provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
+    fun provideScrobblerService(): ScrobblerService = provideRetrofit(
+        provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
     ).create(
-            ScrobblerService::class.java
+        ScrobblerService::class.java
     )
 
     @Provides
     @Singleton
-    fun spotifyAuthService() = provideRetrofit(
+    fun spotifyAuthService(): SpotifyAuthService = provideRetrofit(
         provideOkHttpClient(SpotifyAuthInterceptor(), loggingInterceptor),
         SpotifyAuthService.AUTH_ENDPOINT
     ).create(
@@ -47,12 +51,7 @@ class NetworkModule {
     )
 }
 
-//@Module
-//@InstallIn(ServiceComponent::class)
-//class ServiceModule {
-//
-//}
-
+@Suppress("TooManyFunctions")
 @Module
 @InstallIn(ApplicationComponent::class)
 class DatabaseModule {
@@ -95,17 +94,17 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideServiceScope() = ServiceCoroutineScope(Job() + Dispatchers.IO)
+    fun provideServiceScope() = serviceCoroutineScope(Job() + Dispatchers.IO)
 
     @Provides
-    fun provideSharedPreferences(application: Application): SharedPreferences = application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
+    fun provideSharedPreferences(application: Application): SharedPreferences =
+        application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
 }
 
 interface ServiceCoroutineScope : CoroutineScope
 
-fun ServiceCoroutineScope(
-        context: CoroutineContext
+fun serviceCoroutineScope(
+    context: CoroutineContext
 ): ServiceCoroutineScope = object : ServiceCoroutineScope {
     override val coroutineContext = context + Dispatchers.IO
 }
-

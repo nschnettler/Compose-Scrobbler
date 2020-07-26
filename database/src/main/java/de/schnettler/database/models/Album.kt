@@ -1,11 +1,16 @@
 package de.schnettler.database.models
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import de.schnettler.database.sumByLong
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @Entity(tableName = "albums")
 data class Album(
     override val name: String,
-    @PrimaryKey override val id: String = name.toLowerCase(),
+    @PrimaryKey override val id: String = name.toLowerCase(Locale.US),
     override val url: String,
     override val plays: Long = 0,
     override val userPlays: Long = 0,
@@ -14,7 +19,8 @@ data class Album(
     val artist: String?,
     val tags: List<String> = listOf(),
     val description: String? = null
-): LastFmStatsEntity {
+) : LastFmStatsEntity {
     fun getArtistOrThrow() = artist ?: throw Exception("Artist missing")
     @Ignore var tracks: List<Track> = listOf()
+    fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.duration })
 }

@@ -6,7 +6,7 @@ import de.schnettler.database.models.Album
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class AlbumDao: BaseRelationsDao<Album> {
+abstract class AlbumDao : BaseRelationsDao<Album> {
     @Query("SELECT * FROM albums WHERE id = :id and artist = :artistId")
     abstract fun getAlbum(id: String, artistId: String): Flow<Album?>
 

@@ -2,7 +2,7 @@ package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
 
-interface BaseArtistDto: ListingDto {
+interface BaseArtistDto : ListingDto {
     override val name: String
     override val mbid: String?
     override val url: String
@@ -15,14 +15,14 @@ data class ChartArtistDto(
     override val url: String,
     override val playcount: Long?,
     val listeners: Long?
-): BaseArtistDto
+) : BaseArtistDto
 
 data class UserArtistDto(
     override val name: String,
     override val mbid: String?,
     override val url: String,
     override val playcount: Long?
-): BaseArtistDto
+) : BaseArtistDto
 
 
 data class UserArtistResponse(
@@ -38,7 +38,7 @@ data class ArtistInfoDto(
     val similar: SimilarArtistsDto,
     val tags: TagsDto,
     val stats: StatsDto
-): ListingDto
+) : ListingDto
 
 data class TrackArtistDto(
     val name: String,

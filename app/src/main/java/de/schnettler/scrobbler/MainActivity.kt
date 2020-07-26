@@ -13,7 +13,12 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.isSystemInDarkTheme
 import androidx.ui.graphics.Color
 import androidx.ui.livedata.observeAsState
-import androidx.ui.material.*
+import androidx.ui.material.IconButton
+import androidx.ui.material.MaterialTheme
+import androidx.ui.material.Scaffold
+import androidx.ui.material.TopAppBar
+import androidx.ui.material.darkColorPalette
+import androidx.ui.material.lightColorPalette
 import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import com.koduok.compose.navigation.Router
@@ -21,21 +26,28 @@ import com.koduok.compose.navigation.core.backStackController
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LastFmStatsEntity
-import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobbler.components.BottomNavigationBar
-import de.schnettler.scrobbler.screens.*
+import de.schnettler.scrobbler.screens.ChartScreen
+import de.schnettler.scrobbler.screens.LocalScreen
+import de.schnettler.scrobbler.screens.LoginScreen
+import de.schnettler.scrobbler.screens.ProfileScreen
+import de.schnettler.scrobbler.screens.SearchScreen
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.openUrlInCustomTab
-import de.schnettler.scrobbler.viewmodels.*
+import de.schnettler.scrobbler.viewmodels.ChartsViewModel
+import de.schnettler.scrobbler.viewmodels.DetailViewModel
+import de.schnettler.scrobbler.viewmodels.LocalViewModel
+import de.schnettler.scrobbler.viewmodels.MainViewModel
+import de.schnettler.scrobbler.viewmodels.SearchViewModel
+import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    //ViewModels
+    // ViewModels
     private val model: MainViewModel by viewModels()
     private val chartsModel: ChartsViewModel by viewModels()
     private val detailsViewModel: DetailViewModel by viewModels()
@@ -47,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         openUrlInCustomTab(it.url)
     }
 
-    private val onTagClicked: (String) -> Unit = {tag ->
+    private val onTagClicked: (String) -> Unit = { tag ->
         val url = "https://www.last.fm/tag/$tag"
         openUrlInCustomTab(url)
     }
@@ -55,12 +67,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onListingClicked: (CommonEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
-            AppRoute.ChartRoute,
-            AppRoute.LocalRoute,
-            AppRoute.SearchRoute,
-            AppRoute.ProfileRoute(onFilterClicked = {
-                userViewModel.showDialog(true)
-            })
+        AppRoute.ChartRoute,
+        AppRoute.LocalRoute,
+        AppRoute.SearchRoute,
+        AppRoute.ProfileRoute(onFilterClicked = {
+            userViewModel.showDialog(true)
+        })
     )
 
     private val startScreen: AppRoute = AppRoute.LocalRoute
@@ -77,41 +89,23 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme(colors = colorPalette) {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
-                        when(it) {
-                            is LastFmEntity -> this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
+                        when (it) {
+                            is LastFmEntity -> this.push(
+                                AppRoute.DetailRoute(
+                                    item = it,
+                                    onOpenInBrowser = onOpenInBrowser
+                                )
+                            )
                         }
-
                     }
 
                     Scaffold(
-                        topBar = {
-                            TopAppBar(
-                                title = { Text(text = currentRoute.data.title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                                actions = {
-                                    currentRoute.data.menuActions.forEach {menuAction ->
-                                        Timber.d("MenuItem $menuAction")
-                                        IconButton(onClick = {
-                                            when(menuAction) {
-                                                is MenuAction.OpenInBrowser -> {
-                                                    menuAction.onClick.invoke((currentRoute.data as AppRoute.DetailRoute).item)
-                                                }
-                                                is MenuAction.Period -> menuAction.onClick.invoke()
-                                            }
-                                        }) {
-                                            Icon(vectorResource(id = menuAction.icon))
-                                        }
-                                    }
-                                },
-                                backgroundColor = MaterialTheme.colors.surface
-                            )
-                        },
-                        bodyContent = {
-                            AppContent(currentRoute.data)
-                        },
+                        topBar = { ToolBar(currentScreen = currentRoute.data) },
+                        bodyContent = { AppContent(currentRoute.data) },
                         bottomBar = {
                             BottomNavigationBar(
-                                    items = bottomNavDestinations,
-                                    currentScreen = currentRoute.data
+                                items = bottomNavDestinations,
+                                currentScreen = currentRoute.data
                             ) { newScreen ->
                                 replace(newScreen)
                             }
@@ -123,15 +117,50 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
+    fun ToolBar(currentScreen: AppRoute) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = currentScreen.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            actions = {
+                currentScreen.menuActions.forEach { menuAction ->
+                    Timber.d("MenuItem $menuAction")
+                    IconButton(onClick = {
+                        when (menuAction) {
+                            is MenuAction.OpenInBrowser -> {
+                                menuAction.onClick.invoke((currentScreen as AppRoute.DetailRoute).item)
+                            }
+                            is MenuAction.Period -> menuAction.onClick.invoke()
+                        }
+                    }) {
+                        Icon(vectorResource(id = menuAction.icon))
+                    }
+                }
+            },
+            backgroundColor = MaterialTheme.colors.surface
+        )
+    }
+
+    @Composable
     private fun AppContent(currentScreen: AppRoute) {
         val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
         Crossfade(currentScreen) { screen ->
-            when(screen) {
-                is AppRoute.ChartRoute -> ChartScreen(model = chartsModel, onListingSelected = onListingClicked)
-                is AppRoute.LocalRoute -> LocalScreen(localViewModel = localViewModel, onListingSelected = onListingClicked)
+            when (screen) {
+                is AppRoute.ChartRoute -> ChartScreen(
+                    model = chartsModel,
+                    onListingSelected = onListingClicked
+                )
+                is AppRoute.LocalRoute -> LocalScreen(
+                    localViewModel = localViewModel,
+                    onListingSelected = onListingClicked
+                )
                 is AppRoute.ProfileRoute -> {
-                    when(sessionStatus) {
+                    when (sessionStatus) {
                         is SessionState.LoggedOut -> LoginScreen(context = this)
                         is SessionState.LoggedIn -> {
                             ProfileScreen(userViewModel, onListingSelected = onListingClicked)
@@ -141,7 +170,11 @@ class MainActivity : AppCompatActivity() {
                 is AppRoute.SearchRoute -> SearchScreen(searchViewModel, onListingClicked)
                 is AppRoute.DetailRoute -> {
                     detailsViewModel.updateEntry(screen.item)
-                    DetailScreen(model = detailsViewModel, onListingSelected = onListingClicked, onTagClicked = onTagClicked)
+                    DetailScreen(
+                        model = detailsViewModel,
+                        onListingSelected = onListingClicked,
+                        onTagClicked = onTagClicked
+                    )
                 }
             }
         }
@@ -155,7 +188,7 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if ("${intent?.data?.scheme}://${intent?.data?.host}" == REDIRECT_URL) {
             //AuthResponse
-            intent?.data?.getQueryParameter("token")?.let {token ->
+            intent?.data?.getQueryParameter("token")?.let { token ->
                 Timber.i("TOKEN: $token")
                 model.onTokenReceived(token)
             }
@@ -166,7 +199,7 @@ class MainActivity : AppCompatActivity() {
 const val AUTH_ENDPOINT = "https://www.last.fm/api/auth/"
 const val REDIRECT_URL = "de.schnettler.scrobble://auth"
 
-val lightThemeColors  = lightColorPalette(
+val lightThemeColors = lightColorPalette(
     primary = Color(0xFF7E8ACD),
     primaryVariant = Color(0xFF7E8ACD),
     secondary = Color(0xFF7E8ACD),

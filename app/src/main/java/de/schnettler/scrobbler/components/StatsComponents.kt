@@ -5,13 +5,19 @@ import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
-import androidx.ui.layout.*
+import androidx.ui.layout.Arrangement
+import androidx.ui.layout.Column
+import androidx.ui.layout.Row
+import androidx.ui.layout.Spacer
+import androidx.ui.layout.fillMaxWidth
+import androidx.ui.layout.padding
+import androidx.ui.layout.width
 import androidx.ui.material.IconButton
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.LastFmStatsEntity
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.screens.formatter
+import de.schnettler.scrobbler.util.formatter
 
 @Composable
 fun StatsRow(
@@ -43,8 +49,10 @@ fun QuickActionsRow(items: List<Pair<Int, () -> Unit>>) {
 }
 
 @Composable
-fun ListeningStats(item: LastFmStatsEntity) = StatsRow(items = listOf(
-    R.drawable.ic_round_play_circle_outline_24 to item.plays,
-    R.drawable.ic_round_hearing_24 to item.userPlays,
-    R.drawable.ic_outline_account_circle_32 to item.listeners
-))
+fun ListeningStats(item: LastFmStatsEntity) = StatsRow(
+    items = listOf(
+        R.drawable.ic_round_play_circle_outline_24 to item.plays,
+        R.drawable.ic_round_hearing_24 to item.userPlays,
+        R.drawable.ic_outline_account_circle_32 to item.listeners
+    )
+)

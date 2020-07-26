@@ -14,9 +14,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MediaListenerService: NotificationListenerService(), MediaSessionManager.OnActiveSessionsChangedListener {
+class MediaListenerService : NotificationListenerService(),
+    MediaSessionManager.OnActiveSessionsChangedListener {
     private var controllers: List<MediaController>? = null
-    private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> = hashMapOf()
+    private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> =
+        hashMapOf()
     @Inject lateinit var tracker: PlayBackTracker
     @Inject lateinit var scope: ServiceCoroutineScope
 
@@ -24,13 +26,14 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
 
     companion object {
         fun isEnabled(context: Context) = NotificationManagerCompat
-                .getEnabledListenerPackages(context)
-                .contains(context.packageName)
+            .getEnabledListenerPackages(context)
+            .contains(context.packageName)
     }
 
     override fun onCreate() {
         super.onCreate()
-        val manager: MediaSessionManager = application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+        val manager: MediaSessionManager =
+            application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
         val componentName = ComponentName(this, this.javaClass)
         manager.addOnActiveSessionsChangedListener(this, componentName)
         Timber.i("Media Listener started")
@@ -43,35 +46,41 @@ class MediaListenerService: NotificationListenerService(), MediaSessionManager.O
     }
 
     override fun onActiveSessionsChanged(activeControllers: MutableList<MediaController>?) {
-        //Timber.d("Active Sessions changed ")
         controllers = activeControllers
         val tokens = hashSetOf<MediaSession.Token>()
         val packageNames = hashSetOf<String>()
-        controllers?.forEach {controller ->
+        controllers?.forEach { controller ->
             if (allowedControllers.contains(controller.packageName)) {
                 tokens.add(controller.sessionToken)
                 packageNames.add(controller.packageName)
-                //New Session
+                // New Session
                 if (!controllersMap.contains(controller.sessionToken)) {
-                    Timber.d("onActiveSessionsChanged [${controllers?.size}] + ${controller.packageName}")
-                    val callback = MediaControllerCallback(controller, tracker)
-                    controller.registerCallback(callback)
-                    val pair = controller to callback
-                    synchronized(controllersMap) {
-                        controllersMap.put(controller.sessionToken, pair)
-                    }
-
-                    //
-                    controller.playbackState?.let { state ->
-                        tracker.onStateChanged(packageName = controller.packageName, state = state)
-                    }
-                    controller.metadata?.let { metadata ->
-                        tracker.onMetadataChanged(packageName = controller.packageName, metadata = metadata)
-                    }
+                    addNewSession(controller)
                 }
             }
         }
         removeSessions(tokens)
+    }
+
+    private fun addNewSession(controller: MediaController) {
+        Timber.d("onActiveSessionsChanged [${controllers?.size}] + ${controller.packageName}")
+        val callback = MediaControllerCallback(controller, tracker)
+        controller.registerCallback(callback)
+        val pair = controller to callback
+        synchronized(controllersMap) {
+            controllersMap.put(controller.sessionToken, pair)
+        }
+
+        //
+        controller.playbackState?.let { state ->
+            tracker.onStateChanged(packageName = controller.packageName, state = state)
+        }
+        controller.metadata?.let { metadata ->
+            tracker.onMetadataChanged(
+                packageName = controller.packageName,
+                metadata = metadata
+            )
+        }
     }
 
     private fun removeSessions(tokens: HashSet<MediaSession.Token>) {

@@ -19,7 +19,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 class BaseDaoTest {
     @get:Rule
@@ -37,7 +36,6 @@ class BaseDaoTest {
 
     @After
     fun closeDatabase() = database.close()
-
 
     @Test
     fun forceInsertOverwritesData() = runBlockingTest {
@@ -92,11 +90,10 @@ class BaseDaoTest {
     }
 
     @Test
-    fun insertAllInsertsDataWithoutOverwrite() = runBlockingTest{
+    fun insertAllInsertsDataWithoutOverwrite() = runBlockingTest {
         // GIVEN - Database with one Artist
         val artist = Artist(name = "Artist1", url = "Url1")
         database.artistDao().insert(artist)
-
 
         // WHEN - A list of Artists is inserted and one has the same id as the database artist
         val artists = listOf(
@@ -116,11 +113,10 @@ class BaseDaoTest {
         }
     }
 
-    fun forceInsertAllInsertsDataWithOverwrite() = runBlockingTest{
+    fun forceInsertAllInsertsDataWithOverwrite() = runBlockingTest {
         // GIVEN - Database with one Artist
         val artist = Artist(name = "Artist1", url = "Url1")
         database.artistDao().insert(artist)
-
 
         // WHEN - A list of Artists is inserted and one has the same id as the database artist
         val artists = listOf(
@@ -132,7 +128,7 @@ class BaseDaoTest {
 
         // THAN - Only two Artists are inserted. One is ignored.
         expect(changedRows.size).toBe(artists.size)
-        changedRows.forEach {item ->
+        changedRows.forEach { item ->
             expect(item).isGreaterThanOrEqual(0L)
         }
     }

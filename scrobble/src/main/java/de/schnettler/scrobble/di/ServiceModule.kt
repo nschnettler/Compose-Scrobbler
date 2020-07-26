@@ -14,7 +14,7 @@ import dagger.hilt.android.components.ServiceComponent
 class ServiceModule {
     @Provides
     fun provideNotificationManager(service: Service) =
-            service.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        service.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     @Provides
     fun provideWorkManager(service: Service) = WorkManager.getInstance(service)

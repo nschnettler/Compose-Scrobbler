@@ -28,8 +28,8 @@ class TrackDaoTest {
     @Before
     fun initDatabase() {
         db = Room.inMemoryDatabaseBuilder(
-                ApplicationProvider.getApplicationContext(),
-                AppDatabase::class.java
+            ApplicationProvider.getApplicationContext(),
+            AppDatabase::class.java
         ).build()
         dao = db.trackDao()
     }
@@ -46,11 +46,10 @@ class TrackDaoTest {
         dao.insertOrUpdateStats(tracks)
 
         // THEN Tracks are inserted normally
-        tracks.forEach {track ->
-            dao.getTrack(track.id, track.artist).collectValue {loaded ->
+        tracks.forEach { track ->
+            dao.getTrack(track.id, track.artist).collectValue { loaded ->
                 expect(loaded?.track).toBe(track)
             }
-
         }
     }
 
@@ -62,7 +61,7 @@ class TrackDaoTest {
 
         // WHEN Artist Track with the same ids and artists are inserted
         val newTracks = tracks.mapIndexed { index, track ->
-            track.copy(url = "newUrl$index", plays = 100L+index, listeners = 200L+index)
+            track.copy(url = "newUrl$index", plays = 100L + index, listeners = 200L + index)
         }
         dao.insertOrUpdateStats(newTracks)
 
@@ -85,7 +84,15 @@ class TrackDaoTest {
 fun generateTracks(num: Int): List<Track> {
     val result = mutableListOf<Track>()
     for (i in 0..num) {
-        result.add(Track(name = "Track$i", plays = 10L+i, url = "url$i", artist = "artist", listeners = 100))
+        result.add(
+            Track(
+                name = "Track$i",
+                plays = 10L + i,
+                url = "url$i",
+                artist = "artist",
+                listeners = 100
+            )
+        )
     }
     return result
 }
