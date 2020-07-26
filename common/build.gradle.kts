@@ -7,6 +7,11 @@ plugins {
 android {
     compileSdkVersion(29)
 
+    defaultConfig {
+        minSdkVersion(24)
+        targetSdkVersion(29)
+    }
+
     val lastFmApiKey: String by project
     val lastFmSecret: String by project
     val spotifyClientId: String by project
