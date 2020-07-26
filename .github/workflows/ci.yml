@@ -27,7 +27,7 @@ jobs:
       - name: Gradle Cache
         uses: actions/cache@v2
         with:
-          patch:  ~/.gradle/caches
+          path:  ~/.gradle/caches
           key:  gradle-${{ runner.os }}-${{ hashFiles('**/build.gradle.kts') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           
       - name: "Detekt"
@@ -54,7 +54,7 @@ jobs:
       - name: Gradle Cache
         uses: actions/cache@v2
         with:
-          patch:  ~/.gradle/caches
+          path:  ~/.gradle/caches
           key:  gradle-${{ runner.os }}-${{ hashFiles('**/build.gradle.kts') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
           
       - name: Run Unit Tests
