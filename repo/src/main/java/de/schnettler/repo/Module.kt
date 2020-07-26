@@ -27,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 class NetworkModule {
     @Provides
     @Singleton
-    fun provideLastFmService() = provideRetrofit(
+    fun provideLastFmService(): LastFmService = provideRetrofit(
         provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
     ).create(
         LastFmService::class.java
@@ -35,7 +35,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideScrobblerService() = provideRetrofit(
+    fun provideScrobblerService(): ScrobblerService = provideRetrofit(
         provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
     ).create(
         ScrobblerService::class.java
@@ -43,7 +43,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun spotifyAuthService() = provideRetrofit(
+    fun spotifyAuthService(): SpotifyAuthService = provideRetrofit(
         provideOkHttpClient(SpotifyAuthInterceptor(), loggingInterceptor),
         SpotifyAuthService.AUTH_ENDPOINT
     ).create(

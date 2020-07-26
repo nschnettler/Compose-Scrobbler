@@ -20,11 +20,11 @@ class SpotifyAuthProvider @Inject constructor(
     suspend fun refreshToken() = spotifyTokenStore.fresh("")
 
     private val spotifyTokenStore = StoreBuilder.from(
-        fetcher = Fetcher.of { _: String ->
+        fetcher = Fetcher.of {
             SpotifyAuthMapper.map(service.login(SpotifyService.TYPE_CLIENT))
         },
         sourceOfTruth = SourceOfTruth.of(
-            reader = { _: String ->
+            reader = {
                 dao.getAuthToken(AuthTokenType.Spotify.value)
             },
             writer = { _: String, token ->

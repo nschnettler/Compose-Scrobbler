@@ -97,63 +97,87 @@ fun ListingCard(
     val subtitleTextsize = if (plays >= 0) 12.dp else 0.dp
     val width = height - 12.dp - titleTextSize - subtitleTextsize
 
-    Column(Modifier.preferredSize(width = width, height = height).padding(horizontal = PADDING_8.dp)) {
+    Column(
+        Modifier.preferredSize(width = width, height = height).padding(horizontal = PADDING_8.dp)
+    ) {
         Card(
             shape = RoundedCornerShape(CARD_CORNER_RADIUS.dp),
             modifier = Modifier.fillMaxSize().padding(bottom = PADDING_8.dp)
         ) {
             Column(modifier = Modifier.clickable(onClick = { onEntrySelected.invoke(data) })) {
+                CardBackdrop(width = width, imageUrl = data.imageUrl, placeholderText = data.name)
+                CardContent(
+                    name = data.name,
+                    plays = plays,
+                    suffix = hintSuffix,
+                    titleTextSize = titleTextSize,
+                    subtitleTextsize = subtitleTextsize
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CardBackdrop(width: Dp, imageUrl: String?, placeholderText: String) {
+    Box(
+        modifier = Modifier.preferredWidth(width).aspectRatio(1F).drawBackground(
+            colorResource(id = R.color.colorStroke)
+        )
+    ) {
+        when (imageUrl) {
+            null -> {
                 Box(
-                    modifier = Modifier.preferredWidth(width).aspectRatio(1F).drawBackground(
-                        colorResource(id = R.color.colorStroke)
-                    )
-                ) {
-                    when (val imageUrl = data.imageUrl) {
-                        null -> {
-                            Box(
-                                gravity = ContentGravity.Center,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                Text(
-                                    text = data.name.firstLetter(),
-                                    style = TextStyle(fontSize = width.div(2).value.sp)
-                                )
-                            }
-                        }
-                        else -> CoilImageWithCrossfade(
-                            data = imageUrl,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                }
-                // TODO: Replace dp -> sp with sp -> dp logic
-                Column(
-                    modifier = Modifier.padding(
-                        top = PADDING_4.dp,
-                        start = PADDING_8.dp,
-                        end = PADDING_8.dp,
-                        bottom = PADDING_8.dp
-                    )
+                    gravity = ContentGravity.Center,
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Text(
-                        data.name,
-                        style = TextStyle(
-                            fontSize = titleTextSize.value.sp
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        text = placeholderText.firstLetter(),
+                        style = TextStyle(fontSize = width.div(2).value.sp)
                     )
-                    if (plays >= 0) {
-                        Text(
-                            "${formatter.format(plays)} $hintSuffix",
-                            style = TextStyle(
-                                fontSize = subtitleTextsize.value.sp
-                            ), maxLines = 1, overflow = TextOverflow.Ellipsis
-                        )
-                    }
                 }
             }
+            else -> CoilImageWithCrossfade(
+                data = imageUrl,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    }
+}
+
+@Composable
+fun CardContent(
+    name: String,
+    plays: Long,
+    suffix: String,
+    titleTextSize: Dp,
+    subtitleTextsize: Dp
+) {
+    // TODO: Replace dp -> sp with sp -> dp logic
+    Column(
+        modifier = Modifier.padding(
+            top = PADDING_4.dp,
+            start = PADDING_8.dp,
+            end = PADDING_8.dp,
+            bottom = PADDING_8.dp
+        )
+    ) {
+        Text(
+            name,
+            style = TextStyle(
+                fontSize = titleTextSize.value.sp
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        if (plays >= 0) {
+            Text(
+                "${formatter.format(plays)} $suffix",
+                style = TextStyle(
+                    fontSize = subtitleTextsize.value.sp
+                ), maxLines = 1, overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

@@ -3,11 +3,12 @@ package de.schnettler.database.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import java.util.Locale
 
 @Entity(tableName = "artists")
 data class Artist(
     override val name: String,
-    @PrimaryKey override val id: String = name.toLowerCase(),
+    @PrimaryKey override val id: String = name.toLowerCase(Locale.US),
     override val url: String,
     override val plays: Long = 0,
     override val userPlays: Long = 0,

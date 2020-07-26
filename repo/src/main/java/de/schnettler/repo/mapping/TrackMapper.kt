@@ -49,7 +49,7 @@ fun TrackInfoDto.map() = Track(
     tags = this.toptags.tag.map { tag -> tag.name }
 )
 
-suspend fun AlbumTrack.map(albumName: String, index: Int) = Track(
+fun AlbumTrack.map(albumName: String, index: Int) = Track(
     name = name,
     url = url,
     duration = duration,

@@ -13,7 +13,7 @@ fun milliSecondsToMinSeconds(input: Long) = String.format(
         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(input))
 )
 
-fun Long.milliSecondsToDate() =
+fun Long.milliSecondsToDate(): String =
     DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault()).format(
         Date(this)
     )

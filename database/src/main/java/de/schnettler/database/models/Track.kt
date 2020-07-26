@@ -6,12 +6,13 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Entity(tableName = "tracks")
 data class Track(
     override val name: String,
-    @PrimaryKey override val id: String = name.toLowerCase(),
+    @PrimaryKey override val id: String = name.toLowerCase(Locale.US),
     override val url: String,
     override val duration: Long = 0,
     override val listeners: Long = 0,
@@ -35,7 +36,7 @@ data class TrackWithAlbum(
 
 data class TrackDomain(
     override val name: String,
-    @PrimaryKey override val id: String = name.toLowerCase(),
+    @PrimaryKey override val id: String = name.toLowerCase(Locale.US),
     override val url: String,
     val duration: Long = 0,
     override val listeners: Long = 0,
@@ -62,7 +63,7 @@ data class LocalTrack(
     override var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
     var trackingStart: Long = timestamp
 ) : StatusTrack {
-    @Ignore override val id: String = name.toLowerCase()
+    @Ignore override val id: String = name.toLowerCase(Locale.US)
     @Ignore override val url: String = "https://www.last.fm/music/$artist/_/$name"
     @Ignore override var imageUrl: String? = null
     private fun playedEnough() = amountPlayed >= (duration / 2)

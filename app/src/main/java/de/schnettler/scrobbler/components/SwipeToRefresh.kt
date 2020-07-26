@@ -116,6 +116,7 @@ fun SwipeRefreshPrograssIndicator() {
  * @param enabled whether or not this Draggable is enabled and should consume events
  */
 // TODO(malkov/tianliu) (figure our how to make it better and make public)
+@Suppress("LongParameterList", "LongMethod")
 internal fun <T> Modifier.stateDraggable(
     state: T,
     onStateChange: (T) -> Unit,

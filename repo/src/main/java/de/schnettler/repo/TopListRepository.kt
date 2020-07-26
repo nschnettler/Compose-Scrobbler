@@ -24,6 +24,7 @@ import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.mapping.mapToUserAlbum
 import de.schnettler.repo.util.provideSpotifyService
+import java.util.*
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
@@ -103,7 +104,7 @@ class TopListRepository @Inject constructor(
                     val loaded = trackDao.getSingletTrack(track.id, track.artist)
                     if (loaded?.imageUrl == null) {
                         loaded?.album?.let { album ->
-                            val url = albumDao.getImageUrl(album.toLowerCase())
+                            val url = albumDao.getImageUrl(album.toLowerCase(Locale.US))
                             url?.let { trackDao.updateImageUrl(it, track.id) }
                         }
                     }
@@ -117,9 +118,9 @@ class TopListRepository @Inject constructor(
             println("Refreshing ImageURl for ${listing.name}")
             val url: String? = when (listing) {
                 is Artist -> provideSpotifyService(
-                    spotifyAuthProvider,
-                    spotifyAuthenticator
-                ).searchArtist(listing.name).maxBy { item ->
+                                spotifyAuthProvider,
+                                spotifyAuthenticator
+                            ).searchArtist(listing.name).maxByOrNull { item ->
                     item.popularity
                 }?.images?.first()?.url
                 is Track -> null

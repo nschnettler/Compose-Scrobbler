@@ -157,9 +157,9 @@ class DetailRepository @Inject constructor(
             println("Refreshing ImageURl for ${listing.name}")
             val url: String? = when (listing) {
                 is Artist -> provideSpotifyService(
-                    spotifyAuthProvider,
-                    spotifyAuthenticator
-                ).searchArtist(listing.name).maxBy { item ->
+                                spotifyAuthProvider,
+                                spotifyAuthenticator
+                            ).searchArtist(listing.name).maxByOrNull { item ->
                     item.popularity
                 }?.images?.first()?.url
                 is Track -> ""
