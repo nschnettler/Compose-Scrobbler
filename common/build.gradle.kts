@@ -14,15 +14,13 @@ android {
 
     val lastFmApiKey: String by project
     val lastFmSecret: String by project
-    val spotifyClientId: String by project
-    val spotifyClientSecret: String by project
+    val spotifyAuthorization: String by project
 
     buildTypes {
         buildTypes.forEach {
             it.buildConfigField("String", "LASTFM_API_KEY", lastFmApiKey)
             it.buildConfigField("String", "LASTFM_SECRET", lastFmSecret)
-            it.buildConfigField("String", "SPOTIFY_CLIENT", spotifyClientId)
-            it.buildConfigField("String", "SPOTIFY_SECRET", spotifyClientSecret)
+            it.buildConfigField("String", "SPOTIFY_AUTH", spotifyAuthorization)
         }
     }
 }

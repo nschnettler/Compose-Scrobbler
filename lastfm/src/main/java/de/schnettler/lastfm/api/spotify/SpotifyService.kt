@@ -2,7 +2,6 @@ package de.schnettler.lastfm.api.spotify
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.BuildConfig
-import de.schnettler.lastfm.encodeBase64
 import de.schnettler.lastfm.models.SpotifyTokenDto
 import de.schnettler.lastfm.models.SpotifyArtist
 import retrofit2.http.Field
@@ -15,10 +14,8 @@ interface SpotifyService {
     companion object {
         const val ENDPOINT = "https://api.spotify.com/v1/"
 
-        private const val CLIENT_ID = BuildConfig.SPOTIFY_CLIENT
-        private const val CLIENT_SECRET = BuildConfig.SPOTIFY_SECRET
+        const val AUTH_BASE64 = BuildConfig.SPOTIFY_AUTH
         const val TYPE_CLIENT = "client_credentials"
-        val AUTH_BASE64 = "$CLIENT_ID:$CLIENT_SECRET".encodeBase64()
     }
 
     @GET("search?type=artist")
