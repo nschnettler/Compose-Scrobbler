@@ -6,6 +6,10 @@ import com.dropbox.android.external.store4.StoreResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import timber.log.Timber
 import de.schnettler.repo.Result
+import de.schnettler.repo.mapping.LastFmResponse
+import de.schnettler.repo.mapping.map
+import retrofit2.HttpException
+import java.net.UnknownHostException
 
 sealed class LoadingState<T>(open val data: T? = null) {
     class Initial<T> : LoadingState<T>()
@@ -60,9 +64,13 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
         is Result.Success -> RefreshableUiState.Success(
             data = result.data, loading = false
         )
-        is Result.Error -> RefreshableUiState.Error(
-            exception = result.exception, previousData = this.value.currentData
-        )
+        is Result.Error -> {
+            RefreshableUiState.Error(
+                exception = result.exception,
+                previousData = this.value.currentData,
+                errorMessage = extractErrorMessageFromException(result.exception)
+            )
+        }
         is Result.Loading -> RefreshableUiState.Success(
             data = this.value.currentData, loading = true
         )
@@ -75,7 +83,9 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
             data = result.value, loading = false
         )
         is StoreResponse.Error.Exception -> RefreshableUiState.Error(
-            exception = result.error, previousData = this.value.currentData
+            exception = result.error,
+            previousData = this.value.currentData,
+            errorMessage = extractErrorMessageFromException(result.error)
         ).also {
             Timber.e(it.exception)
         }
@@ -85,5 +95,17 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
         is StoreResponse.Loading -> RefreshableUiState.Success(
             data = this.value.currentData, loading = true
         )
+    }
+}
+
+private fun extractErrorMessageFromException(exception: Throwable): String? {
+    return when (exception) {
+        is HttpException -> {
+            (exception.response()?.map() as? LastFmResponse.ERROR)?.error?.title
+        }
+        is UnknownHostException -> {
+            "Network unavailable"
+        }
+        else -> null
     }
 }

@@ -105,14 +105,10 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) ->
                                 HistoryActionType.DELETE -> {
                                     // DELETE A TRACK
                                 }
-                                HistoryActionType.OPEN -> {
-                                    onListingSelected(track)
-                                }
+                                HistoryActionType.OPEN -> onListingSelected(track)
                             }
                         },
-                        onNowPlayingSelected = {
-                            Timber.d("Update NowPlaying")
-                        }
+                        onNowPlayingSelected = { }
                     )
                 }
             }
@@ -121,6 +117,8 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) ->
             showError = showSnackbarError,
             onErrorAction = { localViewModel.refresh() },
             onDismiss = { updateShowSnackbarError(false) },
+            state = recentTracksState,
+            fallBackMessage = "Unable to refresh history",
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
     }

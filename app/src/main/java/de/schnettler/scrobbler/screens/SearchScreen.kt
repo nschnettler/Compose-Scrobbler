@@ -77,7 +77,8 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit)
         ErrorSnackbar(
             showError = showSnackbarError,
             onErrorAction = { },
-            text = "Can't load search results",
+            state = searchResult,
+            fallBackMessage = "Unable to load search results",
             onDismiss = { updateShowSnackbarError(false) },
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
