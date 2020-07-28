@@ -4,30 +4,30 @@ import androidx.core.text.HtmlCompat
 import java.util.Locale
 
 const val PACKAGE_YT_MUSIC = "com.google.android.apps.youtube.music"
+const val GENERIC_FLAG_EMOJI = "U+1F38C"
 
-// https://stackoverflow.com/a/50963795/12743428
+/**
+ * Tries to generate a flag emoji based on a country name.
+ * The provided String has to be an ISO Country name.
+ * If no valid country name is supplied, a generic flag emoji will be returned.
+ *
+ * Based on
+ * https://stackoverflow.com/a/38588988/12743428
+ * https://stackoverflow.com/a/50963795/12743428
+ *
+ */
 fun String.toFlagEmoji(): String {
-    // 1. It first checks if the string consists of only 2 characters:
-    // ISO 3166-1 alpha-2 two-letter country codes (https://en.wikipedia.org/wiki/Regional_Indicator_Symbol).
-    if (this.length != 2) {
-        return ""
-    }
+    // 1. Get Country Code
+    val countryCode = Locale.getISOCountries().find {
+        Locale("", it).getDisplayCountry(Locale.ENGLISH) == this.capitalizeAll()
+    }?.toUpperCase() ?: return GENERIC_FLAG_EMOJI
 
-    val countryCodeCaps =
-        this.toUpperCase(Locale.US) // upper case is important because we are calculating offset
-    val firstLetter = Character.codePointAt(countryCodeCaps, 0) - 0x41 + 0x1F1E6
-    val secondLetter = Character.codePointAt(countryCodeCaps, 1) - 0x41 + 0x1F1E6
-
-    // 2. It then checks if both characters are alphabet
-    return if (!countryCodeCaps[0].isLetter() || !countryCodeCaps[1].isLetter()) {
-        this
-    } else String(Character.toChars(firstLetter)) + String(Character.toChars(secondLetter))
+    // 2. Generate Emoji
+    return String(Character.toChars(Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6)) +
+        String(Character.toChars(Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6))
 }
 
-// https://stackoverflow.com/a/38588988/12743428
-fun String.toCountryCode() = Locale.getISOCountries().find {
-    Locale("", it).getDisplayCountry(Locale.ENGLISH) == this
-}
+fun String.capitalizeAll(): String = split(" ").joinToString(" ") { it.capitalize() }
 
 fun String.firstLetter() = this.first { it.isLetter() }.toString()
 

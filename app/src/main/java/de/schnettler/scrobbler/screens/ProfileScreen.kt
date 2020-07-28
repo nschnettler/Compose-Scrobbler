@@ -39,7 +39,6 @@ import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
-import de.schnettler.scrobbler.util.toCountryCode
 import de.schnettler.scrobbler.util.toFlagEmoji
 
 import de.schnettler.scrobbler.viewmodels.UserViewModel
@@ -110,7 +109,7 @@ fun UserInfoComponent(user: User) {
         Column {
             ListItem(
                 text = {
-                    Text(text = "${user.name} ${user.countryCode.toCountryCode()?.toFlagEmoji()}")
+                    Text(text = "${user.name} ${user.countryCode.toFlagEmoji()}")
                 },
                 secondaryText = {
                     Text(
