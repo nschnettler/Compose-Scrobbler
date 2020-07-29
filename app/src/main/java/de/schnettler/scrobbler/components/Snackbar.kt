@@ -18,7 +18,7 @@ import kotlinx.coroutines.delay
 fun ErrorSnackbar(
     showError: Boolean,
     modifier: Modifier = Modifier,
-    state: RefreshableUiState<Any>,
+    state: RefreshableUiState<Any>?,
     fallBackMessage: String = "An unknown error has occurred",
     onErrorAction: () -> Unit = { },
     onDismiss: () -> Unit = { }

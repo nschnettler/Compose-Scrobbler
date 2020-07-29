@@ -38,12 +38,10 @@ import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ErrorSnackbar
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListScroller
-import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.toFlagEmoji
@@ -54,12 +52,15 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
-import timber.log.Timber
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Unit) {
 
-    val uiState by model.uiState.collectAsState()
+    val userState by model.userState.collectAsState()
+    val artistState by model.artistState.collectAsState()
+    val albumState by model.albumState.collectAsState()
+    val trackState by model.trackState.collectAsState()
+    val states = listOf(userState, artistState, albumState, trackState)
 
     val timePeriod by model.timePeriod.collectAsState()
     val showDialog by model.showFilterDialog.collectAsState()
@@ -73,49 +74,41 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Uni
         }, model = model)
     }
 
-    Timber.d("UISTATE $uiState")
-
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-        val (showSnackbarError, updateShowSnackbarError) = stateFor(uiState) {
-            uiState is RefreshableUiState.Error
+        val (showSnackbarError, updateShowSnackbarError) = stateFor(states) {
+            states.any { it.isError }
         }
-        if (uiState.isLoading) {
-            LiveDataLoadingComponent()
-        } else {
-            SwipeToRefreshLayout(
-                refreshingState = uiState.isRefreshing,
-                onRefresh = { model.refresh() },
-                refreshIndicator = { SwipeRefreshPrograssIndicator() }
-            ) {
-                uiState.currentData?.let { state ->
-                    ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
-                        state.user?.let {
-                            UserInfoComponent(it)
-                        }
-                        TopListScroller(
-                            title = "Top-Künstler (${timePeriod.niceName})",
-                            content = state.artists,
-                            onEntrySelected = onListingSelected
-                        )
-                        TopListScroller(
-                            title = "Top-Alben",
-                            content = state.albums,
-                            onEntrySelected = onListingSelected
-                        )
-                        TopListScroller(
-                            title = "Top-Titel",
-                            content = state.tracks,
-                            onEntrySelected = onListingSelected
-                        )
-                    })
-                }
-            }
+        SwipeToRefreshLayout(
+            refreshingState = states.any { it.isRefreshing },
+            onRefresh = { model.refresh() },
+            refreshIndicator = { SwipeRefreshPrograssIndicator() }
+        ) {
+                ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
+                    userState.currentData?.let {
+                        UserInfoComponent(it)
+                    }
+                    TopListScroller(
+                        title = "Top-Künstler (${timePeriod.niceName})",
+                        state = artistState,
+                        onEntrySelected = onListingSelected
+                    )
+                    TopListScroller(
+                        title = "Top-Alben",
+                        state = albumState,
+                        onEntrySelected = onListingSelected
+                    )
+                    TopListScroller(
+                        title = "Top-Titel",
+                        state = trackState,
+                        onEntrySelected = onListingSelected
+                    )
+                })
         }
         ErrorSnackbar(
             showError = showSnackbarError,
-            onErrorAction = {  },
+            onErrorAction = { model.refresh() },
             onDismiss = { updateShowSnackbarError(false) },
-            state = uiState,
+            state = states.firstOrNull { it.isError },
             fallBackMessage = "Unable to refresh history",
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )

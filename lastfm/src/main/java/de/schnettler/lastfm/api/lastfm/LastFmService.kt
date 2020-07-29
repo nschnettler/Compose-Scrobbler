@@ -8,8 +8,8 @@ import de.schnettler.lastfm.models.AlbumInfoDto
 import de.schnettler.lastfm.models.ArtistInfoDto
 import de.schnettler.lastfm.models.ArtistTracksDto
 import de.schnettler.lastfm.models.ChartArtistDto
-import de.schnettler.lastfm.models.LovedTracksResponse
 import de.schnettler.lastfm.models.RecentTracksDto
+import de.schnettler.lastfm.models.ResponseInfo
 import de.schnettler.lastfm.models.SearchResultDto
 import de.schnettler.lastfm.models.SessionDto
 import de.schnettler.lastfm.models.TrackInfoDto
@@ -73,11 +73,11 @@ interface LastFmService {
         @Query("sk") sessionKey: String
     ): UserArtistResponse
 
-    @GET("?method=$METHOD_USER_LOVED_TRACKS&limit=5")
-    @Wrapped(path = ["lovedtracks"])
-    suspend fun getUserLikedTracks(
+    @GET("?method=$METHOD_USER_LOVED_TRACKS&limit=1")
+    @Wrapped(path = ["lovedtracks", "@attr"])
+    suspend fun getUserLikedTracksAmount(
         @Query("sk") sessionKey: String
-    ): LovedTracksResponse
+    ): ResponseInfo
 
     @GET("?method=$METHOD_USER_TRACKS&limit=10")
     @Wrapped(path = ["toptracks", "track"])

@@ -32,14 +32,14 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmStatsEntity
 import de.schnettler.database.models.TopListEntryWithData
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.util.formatter
 import de.schnettler.scrobbler.util.CARD_CORNER_RADIUS
-import de.schnettler.scrobbler.util.LoadingState
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.PADDING_4
 import de.schnettler.scrobbler.util.PADDING_8
 import de.schnettler.scrobbler.util.PlaysStyle
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.firstLetter
+import de.schnettler.scrobbler.util.formatter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
@@ -186,13 +186,15 @@ fun CardContent(
 @Composable
 fun TopListScroller(
     title: String,
-    content: List<TopListEntryWithData>,
+    state: RefreshableUiState<List<TopListEntryWithData>>,
     height: Dp = 200.dp,
     onEntrySelected: (LastFmEntity) -> Unit
 ) {
     GenericHorizontalListingScrollerWithTitle(
-        items = content,
+        items = state.currentData,
         title = title,
+        showIndicator = true,
+        isLoading = state.isRefreshing,
         scrollerHeight = height
     ) { listing ->
         ListingCard(
