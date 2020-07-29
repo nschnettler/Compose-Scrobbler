@@ -98,6 +98,21 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
     }
 }
 
+fun <T, V> MutableStateFlow<RefreshableUiState<T>>.updateError(result: StoreResponse.Error<V>) {
+    value = when (result) {
+        is StoreResponse.Error.Exception -> RefreshableUiState.Error(
+            exception = result.error,
+            previousData = this.value.currentData,
+            errorMessage = extractErrorMessageFromException(result.error)
+        ).also {
+            Timber.e(it.exception)
+        }
+        is StoreResponse.Error.Message -> RefreshableUiState.Error(
+            errorMessage = result.message, previousData = this.value.currentData
+        )
+    }
+}
+
 private fun extractErrorMessageFromException(exception: Throwable): String? {
     return when (exception) {
         is HttpException -> {

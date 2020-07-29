@@ -3,7 +3,6 @@ package de.schnettler.repo
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
@@ -38,8 +37,8 @@ class TopListRepository @Inject constructor(
     private val spotifyAuthProvider: SpotifyAuthProvider,
     private val spotifyAuthenticator: AccessTokenAuthenticator
 ) {
-    fun getTopArtists(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = Fetcher.of {
+    val topArtistStore = StoreBuilder.from(
+        fetcher = Fetcher.of { timePeriod: TimePeriod ->
             val session = authProvider.getSessionOrThrow()
             val response = service.getUserTopArtists(timePeriod, session.key)
             val artists = response.artist.map { it.map() }
@@ -62,10 +61,10 @@ class TopListRepository @Inject constructor(
                 )
             }
         )
-    ).build().stream(StoreRequest.cached("", true))
+    ).build()
 
-    fun getTopAlbums(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = Fetcher.of {
+    val topAlbumStore = StoreBuilder.from(
+        fetcher = Fetcher.of { timePeriod: TimePeriod ->
             service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
                 .map { it.mapToUserAlbum() }
         },
@@ -82,10 +81,10 @@ class TopListRepository @Inject constructor(
                 )
             }
         )
-    ).build().stream(StoreRequest.cached("", true))
+    ).build()
 
-    fun getTopTracks(timePeriod: TimePeriod) = StoreBuilder.from(
-        fetcher = Fetcher.of {
+    val topTracksStore = StoreBuilder.from(
+        fetcher = Fetcher.of { timePeriod: TimePeriod ->
             service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
                 .map { it.map() }
         },
@@ -111,7 +110,7 @@ class TopListRepository @Inject constructor(
                 }
             }
         )
-    ).build().stream(StoreRequest.cached("", true))
+    ).build()
 
     private suspend fun refreshImageUrl(localImageUrl: String?, listing: LastFmEntity) {
         if (localImageUrl.isNullOrBlank()) {

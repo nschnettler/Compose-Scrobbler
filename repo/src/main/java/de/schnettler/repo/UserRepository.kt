@@ -6,7 +6,6 @@ import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.daos.UserDao
-import de.schnettler.database.models.Session
 import de.schnettler.database.models.Track
 import de.schnettler.database.models.User
 import de.schnettler.lastfm.api.lastfm.LastFmService
@@ -21,16 +20,16 @@ class UserRepository @Inject constructor(
     private val service: LastFmService,
     private val authProvider: LastFmAuthProvider
 ) {
-    private val userStore = StoreBuilder.from(
-        fetcher = Fetcher.of { session: Session ->
-            UserMapper.map(service.getUserInfo(session.key))
+    val userStore = StoreBuilder.from(
+        fetcher = Fetcher.of {
+            UserMapper.map(service.getUserInfo(authProvider.getSessionKeyOrThrow()))
         },
         sourceOfTruth = SourceOfTruth.of(
-            reader = { session: Session ->
-                userDao.getUser(session.name)
+            reader = {
+                userDao.getUser(authProvider.getSessionOrThrow().name)
             },
-            writer = { session: Session, user: User ->
-                val oldUser = userDao.getUserOnce(session.name)
+            writer = { _: Any, user: User ->
+                val oldUser = userDao.getUserOnce(authProvider.getSessionOrThrow().name)
                 oldUser?.let {
                     user.artistCount = it.artistCount
                     user.lovedTracksCount = it.lovedTracksCount
@@ -39,10 +38,6 @@ class UserRepository @Inject constructor(
             }
         )
     ).build()
-
-    fun getUserInfo(): Flow<StoreResponse<User>> {
-        return userStore.stream(StoreRequest.cached(authProvider.session!!, true))
-    }
 
     fun getUserLovedTracks(): Flow<StoreResponse<List<Track>>> {
         return StoreBuilder.from(

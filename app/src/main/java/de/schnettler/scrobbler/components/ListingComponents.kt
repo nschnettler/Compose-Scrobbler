@@ -186,16 +186,14 @@ fun CardContent(
 @Composable
 fun TopListScroller(
     title: String,
-    content: LoadingState<List<TopListEntryWithData>>,
+    content: List<TopListEntryWithData>,
     height: Dp = 200.dp,
     onEntrySelected: (LastFmEntity) -> Unit
 ) {
     GenericHorizontalListingScrollerWithTitle(
-        items = content.data,
+        items = content,
         title = title,
-        showIndicator = true,
-        scrollerHeight = height,
-        isLoading = content is LoadingState.Loading
+        scrollerHeight = height
     ) { listing ->
         ListingCard(
             name = listing.data.name,
