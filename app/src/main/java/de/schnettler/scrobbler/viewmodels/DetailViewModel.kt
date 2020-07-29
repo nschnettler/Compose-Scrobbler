@@ -16,6 +16,7 @@ import de.schnettler.repo.DetailRepository
 import de.schnettler.repo.Result
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
+import de.schnettler.scrobbler.util.updateValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect

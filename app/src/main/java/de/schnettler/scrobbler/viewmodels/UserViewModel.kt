@@ -3,16 +3,18 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.fresh
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.TopListEntryWithData
+import de.schnettler.database.models.TopListAlbum
+import de.schnettler.database.models.TopListArtist
+import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
-import de.schnettler.repo.Result
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.update
+import de.schnettler.scrobbler.util.freshFrom
+import de.schnettler.scrobbler.util.refreshStateFlowFromStore
+import de.schnettler.scrobbler.util.streamFrom
+import de.schnettler.scrobbler.util.updateValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,19 +28,19 @@ class UserViewModel @ViewModelInject constructor(
     val timePeriod: StateFlow<TimePeriod>
         get() = _timePeriod
 
-    private val _albumState: MutableStateFlow<RefreshableUiState<List<TopListEntryWithData>>> =
+    private val _albumState: MutableStateFlow<RefreshableUiState<List<TopListAlbum>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val albumState: StateFlow<RefreshableUiState<List<TopListEntryWithData>>>
+    val albumState: StateFlow<RefreshableUiState<List<TopListAlbum>>>
         get() = _albumState
 
-    private val _artistState: MutableStateFlow<RefreshableUiState<List<TopListEntryWithData>>> =
+    private val _artistState: MutableStateFlow<RefreshableUiState<List<TopListArtist>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val artistState: StateFlow<RefreshableUiState<List<TopListEntryWithData>>>
+    val artistState: StateFlow<RefreshableUiState<List<TopListArtist>>>
         get() = _artistState
 
-    private val _trackState: MutableStateFlow<RefreshableUiState<List<TopListEntryWithData>>> =
+    private val _trackState: MutableStateFlow<RefreshableUiState<List<TopListTrack>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val trackState: StateFlow<RefreshableUiState<List<TopListEntryWithData>>>
+    val trackState: StateFlow<RefreshableUiState<List<TopListTrack>>>
         get() = _trackState
 
     private val _userState: MutableStateFlow<RefreshableUiState<User>> =
@@ -52,80 +54,27 @@ class UserViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch {
-            launch {
-                userRepo.userStore.stream(StoreRequest.cached("", true)).collectLatest {
-                    _userState.update(it)
-                }
-            }
-            launch { userRepo.lovedTracksStore.stream(StoreRequest.fresh("")) }
+            launch { _userState.streamFrom(userRepo.userStore, "") }
+            launch { refreshStateFlowFromStore(null, userRepo.lovedTracksStore, "") }
             timePeriod.collectLatest { period ->
-                launch {
-                    topListRepo.topArtistStore.stream(StoreRequest.cached(period, true)).collectLatest {
-                        _artistState.update(it)
-                    }
-                }
-                launch {
-                    topListRepo.topAlbumStore.stream(StoreRequest.cached(period, true)).collectLatest {
-                        _albumState.update(it)
-                    }
-                }
-                launch {
-                    topListRepo.topTracksStore.stream(StoreRequest.cached(period, true)).collectLatest {
-                        _trackState.update(it)
-                    }
-                }
+                launch { _artistState.streamFrom(topListRepo.topArtistStore, period) }
+                launch { _albumState.streamFrom(topListRepo.topAlbumStore, period) }
+                launch { _trackState.streamFrom(topListRepo.topTracksStore, period) }
             }
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     fun refresh() {
         viewModelScope.apply {
-            launch {
-                _artistState.update(Result.Loading)
-                try {
-                    topListRepo.topArtistStore.fresh(timePeriod.value)
-                } catch (e: Exception) {
-                    _artistState.update(Result.Error(e))
-                }
-            }
-            launch {
-                _albumState.update(Result.Loading)
-                try {
-                    topListRepo.topAlbumStore.fresh(timePeriod.value)
-                } catch (e: Exception) {
-                    _albumState.update(Result.Error(e))
-                }
-            }
-            launch {
-                _trackState.update(Result.Loading)
-                try {
-                    topListRepo.topTracksStore.fresh(timePeriod.value)
-                } catch (e: Exception) {
-                    _trackState.update(Result.Error(e))
-                }
-            }
-            launch {
-                _userState.update(Result.Loading)
-                try {
-                    userRepo.userStore.fresh("")
-                    userRepo.lovedTracksStore.fresh("")
-                } catch (e: Exception) {
-                    _userState.update(Result.Error(e))
-                }
-            }
+            launch { _artistState.freshFrom(topListRepo.topArtistStore, timePeriod.value) }
+            launch { _albumState.freshFrom(topListRepo.topAlbumStore, timePeriod.value) }
+            launch { _trackState.freshFrom(topListRepo.topTracksStore, timePeriod.value) }
+            launch { _userState.freshFrom(userRepo.userStore, "") }
+            launch { refreshStateFlowFromStore(null, userRepo.lovedTracksStore, "") }
         }
     }
 
     fun updatePeriod(period: TimePeriod) = _timePeriod.updateValue(period)
 
     fun showDialog(show: Boolean) = _showFilterDialog.updateValue(show)
-}
-
-fun <T> MutableStateFlow<T>.updateValue(newValue: T): Boolean {
-    if (value != newValue) {
-        value = newValue
-        return true
-    }
-    return false
 }
