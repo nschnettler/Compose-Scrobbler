@@ -86,11 +86,12 @@ fun <T> GenericHorizontalListingScrollerWithTitle(
 
 @Composable
 fun ListingCard(
-    data: LastFmEntity,
-    height: Dp = 200.dp,
+    name: String,
     plays: Long = -1,
+    imageUrl: String? = null,
+    height: Dp = 200.dp,
     hintSuffix: String = "Wiedergaben",
-    onEntrySelected: (LastFmEntity) -> Unit
+    onEntrySelected: () -> Unit
 ) {
 
     val titleTextSize = 14.dp
@@ -104,10 +105,10 @@ fun ListingCard(
             shape = RoundedCornerShape(CARD_CORNER_RADIUS.dp),
             modifier = Modifier.fillMaxSize().padding(bottom = PADDING_8.dp)
         ) {
-            Column(modifier = Modifier.clickable(onClick = { onEntrySelected.invoke(data) })) {
-                CardBackdrop(width = width, imageUrl = data.imageUrl, placeholderText = data.name)
+            Column(modifier = Modifier.clickable(onClick = { onEntrySelected() })) {
+                CardBackdrop(width = width, imageUrl = imageUrl, placeholderText = name)
                 CardContent(
-                    name = data.name,
+                    name = name,
                     plays = plays,
                     suffix = hintSuffix,
                     titleTextSize = titleTextSize,
@@ -197,10 +198,11 @@ fun TopListScroller(
         isLoading = content is LoadingState.Loading
     ) { listing ->
         ListingCard(
-            data = listing.data,
-            onEntrySelected = onEntrySelected,
-            height = height,
-            plays = listing.topListEntry.count
+            name = listing.data.name,
+            plays = listing.topListEntry.count,
+            imageUrl = listing.data.imageUrl,
+            onEntrySelected = { onEntrySelected(listing.data) },
+            height = height
         )
     }
 }
@@ -213,21 +215,21 @@ fun ListingScroller(
     playsStyle: PlaysStyle,
     onEntrySelected: (LastFmEntity) -> Unit
 ) {
-
     GenericHorizontalListingScrollerWithTitle(
         items = content,
         title = title,
         scrollerHeight = height
     ) { listing ->
         ListingCard(
-            data = listing,
-            onEntrySelected = onEntrySelected,
-            height = height,
+            name = listing.name,
             plays = when (playsStyle) {
                 PlaysStyle.PUBLIC_PLAYS -> listing.plays
                 PlaysStyle.USER_PLAYS -> listing.userPlays
                 PlaysStyle.NO_PLAYS -> -1
-            }
+            },
+            imageUrl = listing.imageUrl,
+            onEntrySelected = { onEntrySelected(listing) },
+            height = height
         )
     }
 }

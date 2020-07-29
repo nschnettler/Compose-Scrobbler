@@ -20,12 +20,16 @@ fun ListingCardPreview() {
                 plays = 20)
             ListingCard(
                 onEntrySelected = {},
-                data = artist,
-                plays = 10)
+                plays = 10,
+                name = artist.name,
+                imageUrl = null
+            )
             ListingCard(
                 onEntrySelected = {},
-                data = artist,
-                plays = -1)
+                plays = -1,
+                name = artist.name,
+                imageUrl = null
+            )
         }
 }
 
@@ -51,6 +55,6 @@ fun HorizontalListingScrollerPreview() {
         height = 200.dp,
         orientation = Orientation.Horizontal
     ) { listing ->
-        ListingCard(data = listing, onEntrySelected = {})
+        ListingCard(name = listing.name) {}
     }
 }

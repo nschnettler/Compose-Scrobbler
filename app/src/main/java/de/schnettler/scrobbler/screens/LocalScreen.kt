@@ -42,7 +42,6 @@ import androidx.ui.tooling.preview.PreviewParameter
 import androidx.ui.unit.dp
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.StatusTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ErrorSnackbar
@@ -60,6 +59,7 @@ import de.schnettler.scrobbler.util.milliSecondsToMinSeconds
 import de.schnettler.scrobbler.util.packageNameToAppName
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
+import kotlin.math.roundToInt
 
 @Composable
 fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
@@ -196,11 +196,11 @@ private fun TrackEditDialog(
 }
 
 @Composable
-fun <T : StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
+fun NowPlayingTrack(name: String, artist: String, onClick: () -> Unit) {
     Card(modifier = Modifier.padding(16.dp)) {
         ListItem(
-            text = { Text(track.name) },
-            secondaryText = { Text(track.artist) },
+            text = { Text(name) },
+            secondaryText = { Text(artist) },
             icon = {
                 PlainListIconBackground(color = R.color.colorAccent) {
                     Icon(
@@ -209,13 +209,13 @@ fun <T : StatusTrack> NowPlayingTrack(track: T, onClick: (T) -> Unit) {
                     )
                 }
             },
-            onClick = { onClick.invoke(track) }
+            onClick = { onClick() }
         )
     }
 }
 
 @Composable
-fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
+fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
     var expanded by state { false }
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -227,10 +227,15 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -
                     overflow = TextOverflow.Ellipsis
                 )
                 if (expanded) {
-                    if (track.isLocal()) ComposeAdditionalInformation(track)
+                    if (track.isLocal()) ComposeAdditionalInformation(
+                        playedBy = track.playedBy,
+                        amountPlayed = track.amountPlayed,
+                        duration = track.duration,
+                        timestamp = track.timestamp
+                    )
                     else Spacer(modifier = Modifier.preferredHeight(16.dp))
                     Divider()
-                    ComposeQuickActions(track, onClick)
+                    ComposeQuickActions(track.isCached(), onClick)
                 }
             }
         },
@@ -238,9 +243,9 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -
         onClick = { expanded = !expanded },
         trailing = {
             track.timestampToRelativeTime()?.let {
-                Column() {
+                Column {
                     Text(text = it)
-                    Row() {
+                    Row {
                         if (track.isCached()) {
                             Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
                             Spacer(modifier = Modifier.preferredWidth(8.dp))
@@ -255,38 +260,35 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -
 }
 
 @Composable
-fun ComposeAdditionalInformation(track: LocalTrack) {
+fun ComposeAdditionalInformation(
+    playedBy: String,
+    amountPlayed: Long,
+    duration: Long,
+    timestamp: Long
+) {
     Spacer(modifier = Modifier.preferredHeight(8.dp))
-    Text(text = "Source: ${packageNameToAppName(track.playedBy)}")
+    Text(text = "Source: ${packageNameToAppName(playedBy)}")
     Text(
-        text = "Runtime: ${milliSecondsToMinSeconds(track.amountPlayed)}/${
-            milliSecondsToMinSeconds(
-                track.duration
-            )
-        } (${track.playPercent()}%)"
+        text = "Runtime: ${milliSecondsToMinSeconds(amountPlayed)}/${
+            milliSecondsToMinSeconds(duration)
+        } (${(amountPlayed.toFloat() / duration * 100).roundToInt()}%)"
     )
-    Text(text = "Timestamp: ${(track.timestamp * 1000).milliSecondsToDate()}")
+    Text(text = "Timestamp: ${(timestamp * 1000).milliSecondsToDate()}")
     Spacer(modifier = Modifier.preferredHeight(8.dp))
 }
 
 @Composable
-fun ComposeQuickActions(track: LocalTrack, onClick: (LocalTrack, HistoryActionType) -> Unit) {
+fun ComposeQuickActions(isCached: Boolean, onClick: (HistoryActionType) -> Unit) {
     val actions = mutableListOf<Pair<@androidx.annotation.DrawableRes Int, () -> Unit>>()
-    if (track.isCached()) {
+    if (isCached) {
         actions.add(R.drawable.ic_outline_edit_32 to {
-            onClick.invoke(
-                track,
-                HistoryActionType.EDIT
-            )
+            onClick.invoke(HistoryActionType.EDIT)
         })
         actions.add(R.drawable.ic_round_delete_outline_32 to {
-            onClick.invoke(
-                track,
-                HistoryActionType.DELETE
-            )
+            onClick.invoke(HistoryActionType.DELETE)
         })
     }
-    actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(track, HistoryActionType.OPEN) })
+    actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(HistoryActionType.OPEN) })
     QuickActionsRow(items = actions)
 }
 
@@ -294,11 +296,11 @@ fun ComposeQuickActions(track: LocalTrack, onClick: (LocalTrack, HistoryActionTy
 @Composable
 fun HistoryTrack(
     @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
-    onTrackSelected: (LocalTrack, HistoryActionType) -> Unit = { t1, t2 -> },
-    onNowPlayingSelected: (LocalTrack) -> Unit = { }
+    onTrackSelected: (HistoryActionType) -> Unit = { },
+    onNowPlayingSelected: () -> Unit = { }
 ) {
     if (track.isPlaying()) {
-        NowPlayingTrack(track = track, onClick = onNowPlayingSelected)
+        NowPlayingTrack(name = track.name, artist = track.artist, onClick = onNowPlayingSelected)
     } else {
         ScrobbledTrack(track = track, onClick = onTrackSelected)
     }
@@ -314,8 +316,8 @@ fun HistoryTrackList(
     LazyColumnItems(items = tracks, modifier = modifier) { track ->
         HistoryTrack(
             track = track,
-            onTrackSelected = onTrackSelected,
-            onNowPlayingSelected = onNowPlayingSelected
+            onTrackSelected = { onTrackSelected(track, it) },
+            onNowPlayingSelected = { onNowPlayingSelected(track) }
         )
     }
 }

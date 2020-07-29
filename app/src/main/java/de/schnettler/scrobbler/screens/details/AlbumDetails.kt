@@ -40,65 +40,78 @@ fun AlbumDetailScreen(
     onTagClicked: (String) -> Unit
 ) {
     ScrollableColumn {
-        Column {
-            Row(modifier = Modifier.padding(16.dp)) {
-                Card(
-                    modifier = Modifier.preferredWidth(182.dp)
-                        .aspectRatio(1F),
-                    shape = RoundedCornerShape(cardCornerRadius)
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize().drawBackground(
-                            colorResource(id = R.color.colorStroke)
-                        )
-                    ) {
-                        album.imageUrl?.let { url ->
-                            CoilImage(data = url, modifier = Modifier.fillMaxSize())
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.preferredWidth(16.dp))
-                Column(Modifier.padding(top = 8.dp)) {
-                    Text(
-                        text = album.name,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.h5
-                    )
-                    Text(
-                        text = "von ${album.artist}",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                    Text(
-                        text = "${album.tracks.size} Songs ⦁ ${album.getLength()} Minuten",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.subtitle2
-                    )
-                }
+        Row(modifier = Modifier.padding(16.dp)) {
+            AlbumArtwork(url = album.imageUrl)
+            Spacer(modifier = Modifier.preferredWidth(16.dp))
+            AlbumInfo(
+                name = album.name,
+                artist = album.artist,
+                tracks = album.tracks.size,
+                duration = album.getLength()
+            )
+        }
+        ChipRow(items = album.tags, onChipClicked = onTagClicked)
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        ListeningStats(item = album)
+        AlbumDescription(album.description)
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        TrackList(tracks = album.tracks, onListingSelected = onListingSelected)
+    }
+}
+
+@Composable
+fun AlbumArtwork(url: String?) {
+    Card(
+        modifier = Modifier.preferredWidth(182.dp)
+            .aspectRatio(1F),
+        shape = RoundedCornerShape(cardCornerRadius)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize().drawBackground(
+                colorResource(id = R.color.colorStroke)
+            )
+        ) {
+            url?.let { url ->
+                CoilImage(data = url, modifier = Modifier.fillMaxSize())
             }
-            ChipRow(items = album.tags, onChipClicked = onTagClicked)
+        }
+    }
+}
 
-            Spacer(modifier = Modifier.preferredHeight(16.dp))
+@Composable
+fun AlbumInfo(name: String, artist: String?, tracks: Int, duration: Long) {
+    Column(Modifier.padding(top = 8.dp)) {
+        Text(
+            text = name,
+            maxLines = 3,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h5
+        )
+        Text(
+            text = "von $artist",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.subtitle1
+        )
+        Text(
+            text = "$tracks Songs ⦁ $duration Minuten",
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.subtitle2
+        )
+    }
+}
 
-            ListeningStats(item = album)
-
-            album.description?.let {
-                Card(
-                    shape = RoundedCornerShape(cardCornerRadius),
-                    modifier = Modifier.padding(16.dp).fillMaxSize(),
-                    elevation = 0.dp,
-                    border = Border(1.dp, colorResource(id = R.color.colorStroke))
-                ) {
-                    ExpandingSummary(it.fromHtmlLastFm(), modifier = Modifier.padding(16.dp))
-                }
-            }
-
-            Spacer(modifier = Modifier.preferredHeight(16.dp))
-
-            TrackList(tracks = album.tracks, onListingSelected = onListingSelected)
+@Composable
+fun AlbumDescription(description: String?) {
+    description?.let {
+        Card(
+            shape = RoundedCornerShape(cardCornerRadius),
+            modifier = Modifier.padding(16.dp).fillMaxSize(),
+            elevation = 0.dp,
+            border = Border(1.dp, colorResource(id = R.color.colorStroke))
+        ) {
+            ExpandingSummary(it.fromHtmlLastFm(), modifier = Modifier.padding(16.dp))
         }
     }
 }
