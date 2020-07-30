@@ -43,7 +43,9 @@ class TopListRepository @Inject constructor(
             val session = authProvider.getSessionOrThrow()
             val response = service.getUserTopArtists(timePeriod, session.key)
             val artists = response.artist.map { it.map() }
-            userDao.updateArtistCount(session.name, response.info.total)
+            if (timePeriod == TimePeriod.OVERALL) {
+                userDao.updateArtistCount(session.name, response.info.total)
+            }
             artists.forEach { artist ->
                 refreshImageUrl(artistDao.getArtistImageUrl(artist.id), artist)
                 artist.imageUrl?.let { artistDao.updateArtistImageUrl(it, artist.id) }
