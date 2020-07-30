@@ -5,7 +5,8 @@ import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.compose.setValue
 import androidx.compose.state
-import androidx.ui.core.ContextAmbient
+import androidx.compose.stateFor
+import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.core.tag
 import androidx.ui.foundation.Box
@@ -16,6 +17,7 @@ import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
+import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -35,12 +37,14 @@ import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.StatsRow
+import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.util.cardCornerRadius
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.toFlagEmoji
-
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import org.threeten.bp.Instant
@@ -53,10 +57,11 @@ import org.threeten.bp.format.FormatStyle
 fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Unit) {
 
     val userState by model.userState.collectAsState()
-
     val artistState by model.artistState.collectAsState()
     val albumState by model.albumState.collectAsState()
     val trackState by model.trackState.collectAsState()
+    val states = listOf(userState, artistState, albumState, trackState)
+
     val timePeriod by model.timePeriod.collectAsState()
     val showDialog by model.showFilterDialog.collectAsState()
 
@@ -69,29 +74,45 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Uni
         }, model = model)
     }
 
-    userState.handleIfError(ContextAmbient.current)
-
-    ScrollableColumn(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize(), children = {
-        userState.data?.let {
-            UserInfoComponent(it)
+    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
+        val (showSnackbarError, updateShowSnackbarError) = stateFor(states) {
+            states.any { it.isError }
         }
-        TopListScroller(
-            title = "Top-Künstler (${timePeriod.niceName})",
-            content = artistState,
-            onEntrySelected =
-            onListingSelected
+        SwipeToRefreshLayout(
+            refreshingState = states.any { it.isRefreshing },
+            onRefresh = { model.refresh() },
+            refreshIndicator = { SwipeRefreshPrograssIndicator() }
+        ) {
+                ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
+                    userState.currentData?.let {
+                        UserInfoComponent(it)
+                    }
+                    TopListScroller(
+                        title = "Top-Künstler (${timePeriod.niceName})",
+                        state = artistState,
+                        onEntrySelected = onListingSelected
+                    )
+                    TopListScroller(
+                        title = "Top-Alben",
+                        state = albumState,
+                        onEntrySelected = onListingSelected
+                    )
+                    TopListScroller(
+                        title = "Top-Titel",
+                        state = trackState,
+                        onEntrySelected = onListingSelected
+                    )
+                })
+        }
+        ErrorSnackbar(
+            showError = showSnackbarError,
+            onErrorAction = { model.refresh() },
+            onDismiss = { updateShowSnackbarError(false) },
+            state = states.firstOrNull { it.isError },
+            fallBackMessage = "Unable to refresh history",
+            modifier = Modifier.gravity(Alignment.BottomCenter)
         )
-        TopListScroller(
-            title = "Top-Alben",
-            content = albumState,
-            onEntrySelected = onListingSelected
-        )
-        TopListScroller(
-            title = "Top-Titel",
-            content = trackState,
-            onEntrySelected = onListingSelected
-        )
-    })
+    }
 }
 
 @Composable

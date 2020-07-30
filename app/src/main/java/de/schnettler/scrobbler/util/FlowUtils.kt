@@ -1,62 +1,49 @@
 package de.schnettler.scrobbler.util
 
-import android.content.Context
-import com.dropbox.android.external.store4.ResponseOrigin
+import com.dropbox.android.external.store4.Store
+import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
-import kotlinx.coroutines.flow.MutableStateFlow
-import timber.log.Timber
+import com.dropbox.android.external.store4.fresh
 import de.schnettler.repo.Result
 import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.repo.mapping.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException
+import timber.log.Timber
 import java.net.UnknownHostException
 
-sealed class LoadingState<T>(open val data: T? = null) {
-    class Initial<T> : LoadingState<T>()
-    data class Loading<T>(
-        val origin: ResponseOrigin,
-        val oldData: T? = null
-    ) : LoadingState<T>(oldData)
+@Suppress("TooGenericExceptionCaught")
+suspend fun <K : Any, V : Any> MutableStateFlow<RefreshableUiState<V>>.freshFrom(
+    store: Store<K, V>,
+    key: K
+) = refreshStateFlowFromStore(this, store, key)
 
-    data class Data<T>(
-        val origin: ResponseOrigin,
-        val newData: T
-    ) : LoadingState<T>(newData)
+suspend fun <K : Any, V : Any> MutableStateFlow<RefreshableUiState<V>>.streamFrom(
+    store: Store<K, V>,
+    key: K
+) = store.stream(StoreRequest.cached(key, true)).collectLatest { update(it) }
 
-    data class Error<T>(
-        val errorMsg: String?,
-        val exception: Throwable? = null,
-        val oldData: T? = null
-    ) : LoadingState<T>(oldData)
-
-    fun handleIfError(ctx: Context) {
-        if (this is Error) {
-            errorMsg?.let { ctx.toast(it) }
-            exception?.let { Timber.e(it) }
-        }
+@Suppress("TooGenericExceptionCaught")
+suspend inline fun <K : Any, V : Any> refreshStateFlowFromStore(
+    flow: MutableStateFlow<RefreshableUiState<V>>?,
+    store: Store<K, V>,
+    key: K
+) {
+    flow?.update(Result.Loading)
+    try {
+        store.fresh(key)
+    } catch (e: Exception) {
+        flow?.update(Result.Error(e))
     }
 }
 
-fun <T> MutableStateFlow<LoadingState<T>>.updateState(response: StoreResponse<T>) {
-    value = when (response) {
-        is StoreResponse.Data -> LoadingState.Data(
-            origin = response.origin,
-            newData = response.value
-        )
-        is StoreResponse.Loading -> LoadingState.Loading(
-            origin = response.origin,
-            oldData = value.data
-        )
-        is StoreResponse.Error.Message -> LoadingState.Error(
-            errorMsg = response.errorMessageOrNull(),
-            oldData = value.data
-        )
-        is StoreResponse.Error.Exception -> LoadingState.Error(
-            errorMsg = response.errorMessageOrNull(),
-            exception = response.error,
-            oldData = value.data
-        )
+fun <T> MutableStateFlow<T>.updateValue(newValue: T): Boolean {
+    if (value != newValue) {
+        value = newValue
+        return true
     }
+    return false
 }
 
 fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {

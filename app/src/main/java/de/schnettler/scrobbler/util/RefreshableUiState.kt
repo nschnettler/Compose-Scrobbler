@@ -23,6 +23,9 @@ sealed class RefreshableUiState<out T> {
     val isRefreshing: Boolean
         get() = this is Success && this.loading && this.data != null
 
+    val isError: Boolean
+        get() = this is Error
+
     val currentData: T?
         get() = when (this) {
             is Success -> this.data
