@@ -14,7 +14,6 @@ import de.schnettler.lastfm.models.ChartArtistDto
 import de.schnettler.lastfm.models.MinimalListing
 import de.schnettler.lastfm.models.SessionDto
 import de.schnettler.lastfm.models.SpotifyTokenDto
-import de.schnettler.lastfm.models.UserArtistDto
 import de.schnettler.lastfm.models.UserDto
 
 fun ChartArtistDto.map(): Artist = Artist(
@@ -22,12 +21,6 @@ fun ChartArtistDto.map(): Artist = Artist(
     url = this.url,
     plays = this.playcount ?: 0,
     listeners = this.listeners ?: 0
-)
-
-fun UserArtistDto.map() = Artist(
-    name = this.name,
-    url = this.url,
-    userPlays = this.playcount ?: 0
 )
 
 fun MinimalListing.mapToArtist() = Artist(
@@ -69,18 +62,16 @@ object SessionMapper : Mapper<SessionDto, Session> {
 }
 
 object UserMapper : Mapper<UserDto, User> {
-    override suspend fun map(from: UserDto): User {
-        return User(
-            name = from.name,
-            playcount = from.playcount,
-            url = from.url,
-            countryCode = from.country,
-            age = from.age,
-            realname = from.realname,
-            registerDate = from.registerDate.unixtime,
-            imageUrl = from.image[3].url
-        )
-    }
+    override suspend fun map(from: UserDto) = User(
+        name = from.name,
+        playcount = from.playcount,
+        url = from.url,
+        countryCode = from.country,
+        age = from.age,
+        realname = from.realname,
+        registerDate = from.registerDate.unixtime,
+        imageUrl = from.image[3].url
+    )
 }
 
 object SpotifyAuthMapper : Mapper<SpotifyTokenDto, AuthToken> {

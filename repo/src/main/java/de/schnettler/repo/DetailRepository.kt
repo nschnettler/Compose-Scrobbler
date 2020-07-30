@@ -17,6 +17,8 @@ import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
+import de.schnettler.repo.mapping.AlbumInfoMapper
+import de.schnettler.repo.mapping.AlbumMapper
 import de.schnettler.repo.mapping.RelationMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.map
@@ -32,6 +34,8 @@ class DetailRepository @Inject constructor(
     private val albumDao: AlbumDao,
     private val trackDao: TrackDao,
     private val relationDao: RelationshipDao,
+    private val albumInfoMapper: AlbumInfoMapper,
+    private val albumMapper: AlbumMapper,
     private val service: LastFmService,
     private val lastFmAuthProvider: LastFmAuthProvider,
     private val spotifyAuthProvider: SpotifyAuthProvider,
@@ -42,7 +46,7 @@ class DetailRepository @Inject constructor(
             val response = service.getArtistInfo(key, lastFmAuthProvider.getSessionKeyOrThrow())
             val artist = response.map()
             refreshImageUrl(artistDao.getArtistImageUrl(key), artist)
-            artist.topAlbums = service.getArtistAlbums(key).map { it.mapToAlbum() }
+            artist.topAlbums = albumMapper.forLists()(service.getArtistAlbums(key))
             artist.topTracks = service.getArtistTracks(key).map { it.map() }
             artist.similarArtists = response.similar.artist.map { it.mapToArtist() }
             artist
@@ -124,10 +128,11 @@ class DetailRepository @Inject constructor(
 
     val albumStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Album ->
-            service.getAlbumInfo(
+            val albumInfo = service.getAlbumInfo(
                 artistName = key.getArtistOrThrow(),
                 albumName = key.id, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()
-            ).map()
+            )
+            albumInfoMapper.map(albumInfo)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key ->

@@ -7,16 +7,7 @@ import de.schnettler.lastfm.models.AlbumTrack
 import de.schnettler.lastfm.models.ArtistTracksDto
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.TrackInfoDto
-import de.schnettler.lastfm.models.UserTrackDto
 import de.schnettler.repo.util.toBoolean
-
-fun UserTrackDto.map() = Track(
-    name = this.name,
-    url = this.url,
-    duration = this.duration,
-    artist = this.artist.name,
-    userPlays = this.playcount
-)
 
 fun ArtistTracksDto.map() = Track(
     name = this.name,

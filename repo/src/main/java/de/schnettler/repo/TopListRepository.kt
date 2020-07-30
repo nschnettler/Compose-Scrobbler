@@ -19,9 +19,10 @@ import de.schnettler.repo.authentication.AccessTokenAuthenticator
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
 import de.schnettler.repo.mapping.TopListMapper
+import de.schnettler.repo.mapping.UserAlbumMapper
+import de.schnettler.repo.mapping.UserArtistMapper
+import de.schnettler.repo.mapping.UserTrackMapper
 import de.schnettler.repo.mapping.forLists
-import de.schnettler.repo.mapping.map
-import de.schnettler.repo.mapping.mapToUserAlbum
 import de.schnettler.repo.util.provideSpotifyService
 import java.util.Locale
 import javax.inject.Inject
@@ -33,6 +34,9 @@ class TopListRepository @Inject constructor(
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
     private val service: LastFmService,
+    private val albumMapper: UserAlbumMapper,
+    private val artistMapper: UserArtistMapper,
+    private val trackMapper: UserTrackMapper,
     private val authProvider: LastFmAuthProvider,
     private val spotifyAuthProvider: SpotifyAuthProvider,
     private val spotifyAuthenticator: AccessTokenAuthenticator
@@ -41,7 +45,7 @@ class TopListRepository @Inject constructor(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
             val session = authProvider.getSessionOrThrow()
             val response = service.getUserTopArtists(timePeriod, session.key)
-            val artists = response.artist.map { it.map() }
+            val artists = artistMapper.forLists()(response.artist)
             if (timePeriod == TimePeriod.OVERALL) {
                 userDao.updateArtistCount(session.name, response.info.total)
             }
@@ -67,8 +71,8 @@ class TopListRepository @Inject constructor(
 
     val topAlbumStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
-                .map { it.mapToUserAlbum() }
+            val albums = service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
+            albumMapper.forLists()(albums)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {
@@ -87,8 +91,8 @@ class TopListRepository @Inject constructor(
 
     val topTracksStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
-                .map { it.map() }
+            val tracks = service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
+            trackMapper.forLists()(tracks)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {

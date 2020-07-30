@@ -3,35 +3,28 @@ package de.schnettler.repo.mapping
 import de.schnettler.database.models.Album
 import de.schnettler.lastfm.models.AlbumDto
 import de.schnettler.lastfm.models.AlbumInfoDto
+import javax.inject.Inject
 
-suspend fun AlbumInfoDto.map() = Album(
-    name = name,
-    url = url,
-    plays = playcount,
-    userPlays = userplaycount,
-    imageUrl = image[3].url,
-    listeners = listeners,
-    artist = artist,
-    tags = tags.tag.map { tag -> tag.name },
-    description = wiki?.summary
-).apply {
-    tracks = this@map.tracks.track.mapIndexed { index, track ->
-        track.map(this@map.name, index)
-    }
+class AlbumInfoMapper @Inject constructor() : Mapper<AlbumInfoDto, Album> {
+    override suspend fun map(from: AlbumInfoDto) = Album(
+        name = from.name,
+        url = from.url,
+        plays = from.playcount,
+        userPlays = from.userplaycount,
+        imageUrl = from.image[3].url,
+        listeners = from.listeners,
+        artist = from.artist,
+        tags = from.tags.tag.map { tag -> tag.name },
+        description = from.wiki?.summary
+    )
 }
 
-fun AlbumDto.mapToUserAlbum() = Album(
-    name = this.name,
-    artist = this.artist.name,
-    userPlays = this.playcount,
-    url = this.url,
-    imageUrl = this.images[3].url
-)
-
-fun AlbumDto.mapToAlbum() = Album(
-    name = this.name,
-    artist = this.artist.name,
-    plays = this.playcount,
-    url = this.url,
-    imageUrl = this.images[3].url
-)
+class AlbumMapper @Inject constructor() : Mapper<AlbumDto, Album> {
+    override suspend fun map(from: AlbumDto) = Album(
+        name = from.name,
+        artist = from.artist.name,
+        plays = from.playcount,
+        url = from.url,
+        imageUrl = from.images[3].url
+    )
+}
