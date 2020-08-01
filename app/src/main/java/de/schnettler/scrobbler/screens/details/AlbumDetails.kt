@@ -22,8 +22,8 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
-import de.schnettler.database.models.Album
-import de.schnettler.database.models.CommonEntity
+import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingSummary
@@ -35,27 +35,28 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 @OptIn(ExperimentalLayout::class)
 @Composable
 fun AlbumDetailScreen(
-    album: Album,
-    onListingSelected: (CommonEntity) -> Unit,
+    albumInfo: AlbumWithStatsAndInfo,
+    onListingSelected: (LastFmEntity) -> Unit,
     onTagClicked: (String) -> Unit
 ) {
+    val (album, stats, info) = albumInfo
     ScrollableColumn {
         Row(modifier = Modifier.padding(16.dp)) {
-            AlbumArtwork(url = album.imageUrl)
+            // TODO: AlbumArtwork(url = album.imageUrl)
             Spacer(modifier = Modifier.preferredWidth(16.dp))
             AlbumInfo(
                 name = album.name,
                 artist = album.artist,
-                tracks = album.tracks.size,
-                duration = album.getLength()
+                tracks = 10, // TODO: album.tracks.size()
+                duration = 10, // TODO: albumInfo.getLength()
             )
         }
-        ChipRow(items = album.tags, onChipClicked = onTagClicked)
+        ChipRow(items = albumInfo.info.tags, onChipClicked = onTagClicked)
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        ListeningStats(item = album)
-        AlbumDescription(album.description)
+        ListeningStats(item = stats)
+        AlbumDescription(info.wiki)
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        TrackList(tracks = album.tracks, onListingSelected = onListingSelected)
+        // TODO: TrackList(tracks = albumInfo.tracks, onListingSelected = onListingSelected)
     }
 }
 
@@ -104,14 +105,14 @@ fun AlbumInfo(name: String, artist: String?, tracks: Int, duration: Long) {
 
 @Composable
 fun AlbumDescription(description: String?) {
-    description?.let {
+    if (!description.isNullOrBlank()) {
         Card(
             shape = RoundedCornerShape(cardCornerRadius),
             modifier = Modifier.padding(16.dp).fillMaxSize(),
             elevation = 0.dp,
             border = Border(1.dp, colorResource(id = R.color.colorStroke))
         ) {
-            ExpandingSummary(it.fromHtmlLastFm(), modifier = Modifier.padding(16.dp))
+            ExpandingSummary(description.fromHtmlLastFm(), modifier = Modifier.padding(16.dp))
         }
     }
 }

@@ -7,11 +7,12 @@ import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.fresh
-import de.schnettler.database.models.Album
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.CommonEntity
-import de.schnettler.database.models.CommonTrack
-import de.schnettler.database.models.LastFmStatsEntity
+import de.schnettler.database.models.EntityWithStatsAndInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.LastFmEntity.Album
+import de.schnettler.database.models.LastFmEntity.Artist
+import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.repo.DetailRepository
 import de.schnettler.repo.Result
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -23,15 +24,17 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class DetailViewModel @ViewModelInject constructor(
     private val repo: DetailRepository
 ) : ViewModel() {
-    private val entry: MutableStateFlow<CommonEntity?> = MutableStateFlow(null)
-    val state: MutableStateFlow<RefreshableUiState<LastFmStatsEntity>> =
+    private val entry: MutableStateFlow<LastFmEntity?> = MutableStateFlow(null)
+    val state: MutableStateFlow<RefreshableUiState<EntityWithStatsAndInfo>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
 
-    fun updateEntry(new: CommonEntity) {
+    fun updateEntry(new: LastFmEntity) {
+        Timber.d("Entry updated $new")
         if (entry.updateValue(new)) {
             state.value = RefreshableUiState.Success(data = null, loading = true)
         }
@@ -42,18 +45,12 @@ class DetailViewModel @ViewModelInject constructor(
             entry.flatMapLatest { listing ->
                 when (listing) {
                     is Artist ->
-                        repo.artistStore.stream(StoreRequest.cached(listing.id, true))
-                    is CommonTrack ->
+                        repo.artistStore.stream(StoreRequest.cached(listing, true))
+                    is Track ->
                         repo.trackStore.stream(StoreRequest.cached(listing, true))
                     is Album ->
                         repo.albumStore.stream(StoreRequest.cached(listing, true))
-                    else ->
-                        flowOf(
-                            StoreResponse.Error.Message(
-                                "Not implemented yet",
-                                ResponseOrigin.Cache
-                            )
-                        )
+                    null -> TODO()
                 }
             }.collect { response ->
                 state.update(response)
@@ -67,10 +64,10 @@ class DetailViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val current = state.value.currentData
             try {
-                when (current) {
-                    is Artist -> repo.artistStore.fresh(current.id)
-                    is CommonTrack -> repo.trackStore.fresh(current)
-                    is Album -> repo.albumStore.fresh(current)
+                when (val entity = current?.entity) {
+                    is Artist -> repo.artistStore.fresh(entity)
+                    is Track -> repo.trackStore.fresh(entity)
+                    is Album -> repo.albumStore.fresh(entity)
                 }
             } catch (e: Exception) {
                 state.update(Result.Error(e))

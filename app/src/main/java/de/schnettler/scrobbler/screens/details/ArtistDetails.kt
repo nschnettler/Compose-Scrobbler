@@ -11,7 +11,6 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Stack
-import androidx.ui.layout.aspectRatio
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -22,9 +21,9 @@ import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.CommonEntity
-import de.schnettler.database.models.Track
+import de.schnettler.database.models.EntityWithStats.TrackWithStats
+import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.ListeningStats
@@ -38,12 +37,13 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun ArtistDetailScreen(
-    artist: Artist,
-    onListingSelected: (CommonEntity) -> Unit,
+    artistInfo: ArtistWithStatsAndInfo,
+    onListingSelected: (LastFmEntity) -> Unit,
     onTagClicked: (String) -> Unit
 ) {
+    val (artist, stats, info) = artistInfo
     ScrollableColumn {
-        Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
+        // TODO: Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f))
 
         Card(
             border = Border(1.dp, colorResource(id = R.color.colorStroke)),
@@ -54,19 +54,19 @@ fun ArtistDetailScreen(
                 cardCornerRadius
             )
         ) {
-            ExpandingSummary(artist.bio, modifier = Modifier.padding(defaultSpacerSize))
+            ExpandingSummary(info.wiki, modifier = Modifier.padding(defaultSpacerSize))
         }
 
-        ListeningStats(item = artist)
+        ListeningStats(item = stats)
 
-        TagCategory(tags = artist.tags, onTagClicked = onTagClicked)
+        TagCategory(tags = info.tags, onTagClicked = onTagClicked)
 
         TitleComponent(title = "Top Tracks")
-        TrackList(tracks = artist.topTracks, onListingSelected = onListingSelected)
+        TrackList(tracks = artistInfo.topTracks, onListingSelected = onListingSelected)
 
         ListingScroller(
             title = "Top Albums",
-            content = artist.topAlbums.sortedByDescending { it.plays },
+            content = artistInfo.topAlbums,
             height = 160.dp,
             playsStyle = PlaysStyle.PUBLIC_PLAYS,
             onEntrySelected = onListingSelected
@@ -74,7 +74,7 @@ fun ArtistDetailScreen(
 
         ListingScroller(
             title = "Ähnliche Künstler",
-            content = artist.similarArtists,
+            content = artistInfo.similarArtists,
             height = 136.dp,
             playsStyle = PlaysStyle.NO_PLAYS,
             onEntrySelected = onListingSelected
@@ -83,12 +83,12 @@ fun ArtistDetailScreen(
 }
 
 @Composable
-fun TrackList(tracks: List<Track>, onListingSelected: (CommonEntity) -> Unit) {
-    tracks.forEachIndexed { index, track ->
+fun TrackList(tracks: List<TrackWithStats>, onListingSelected: (LastFmEntity) -> Unit) {
+    tracks.forEachIndexed { index, (track, stats) ->
         ListItem(
             text = { Text(track.name) },
             secondaryText = {
-                Text(formatter.format(track.listeners).toString() + " Hörer")
+                Text(formatter.format(stats.listeners).toString() + " Hörer")
             },
             icon = {
                 Surface(

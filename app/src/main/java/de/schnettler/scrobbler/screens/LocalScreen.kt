@@ -40,7 +40,7 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
 import androidx.ui.unit.dp
-import de.schnettler.database.models.CommonEntity
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
@@ -62,7 +62,7 @@ import timber.log.Timber
 import kotlin.math.roundToInt
 
 @Composable
-fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
+fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
     val context = ContextAmbient.current
     when (MediaListenerService.isEnabled(context)) {
         true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
@@ -76,7 +76,7 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (CommonEntity
 }
 
 @Composable
-fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) -> Unit) {
+fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
     val recentTracksState by localViewModel.recentTracksState.collectAsState()
     var showDialog by state { false }
     val selectedTrack: MutableState<LocalTrack?> = state { null }
@@ -105,7 +105,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (CommonEntity) ->
                                 HistoryActionType.DELETE -> {
                                     // DELETE A TRACK
                                 }
-                                HistoryActionType.OPEN -> onListingSelected(track)
+                                HistoryActionType.OPEN -> onListingSelected(track.asLastFmTrack())
                             }
                         },
                         onNowPlayingSelected = { }

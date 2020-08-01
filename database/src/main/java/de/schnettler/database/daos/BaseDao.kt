@@ -6,8 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Transaction
 import androidx.room.Update
-import de.schnettler.database.models.RelationEntity
-import de.schnettler.database.models.TopListEntry
 
 @Dao
 interface BaseDao<T> {
@@ -65,36 +63,9 @@ interface BaseDao<T> {
     @Transaction
     suspend fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
         val insertResult: List<Long> = insertAll(objList)
-        val updateList = objList.filterIndexed { index, value -> insertResult[index] == -1L }
+        val updateList = objList.filterIndexed { index, _ -> insertResult[index] == -1L }
         if (updateList.isNotEmpty()) {
             updateAll(updateList)
         }
-    }
-}
-
-@Dao
-interface BaseRelationsDao<T> : BaseDao<T> {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertRelations(relations: List<RelationEntity>)
-
-    @Transaction
-    suspend fun insertEntriesWithRelations(
-        entities: List<@JvmSuppressWildcards T>,
-        relations: List<RelationEntity>
-    ) {
-        insertAll(entities)
-        insertRelations(relations)
-    }
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTopListEntries(topListEntries: List<TopListEntry>)
-
-    @Transaction
-    suspend fun insertEntitiesWithTopListEntries(
-        entities: List<@JvmSuppressWildcards T>,
-        topListEntries: List<TopListEntry>
-    ) {
-        insertAll(entities)
-        insertTopListEntries(topListEntries)
     }
 }

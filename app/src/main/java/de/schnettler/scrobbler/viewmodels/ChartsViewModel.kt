@@ -9,7 +9,7 @@ import de.schnettler.repo.ChartRepository
 class ChartsViewModel @ViewModelInject constructor(
     private val repo: ChartRepository
 ) : ViewModel() {
-    val artistResponse by lazy {
-        repo.getArtistChart().asLiveData(viewModelScope.coroutineContext)
-    }
+//    val artistResponse by lazy {
+//        repo.getArtistChart().asLiveData(viewModelScope.coroutineContext)
+//    }
 }

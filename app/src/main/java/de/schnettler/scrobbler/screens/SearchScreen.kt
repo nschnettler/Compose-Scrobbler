@@ -23,11 +23,11 @@ import androidx.ui.material.ListItem
 import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
-import de.schnettler.database.models.Album
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.CommonEntity
-import de.schnettler.database.models.LastFmStatsEntity
-import de.schnettler.database.models.Track
+import de.schnettler.database.models.BaseEntity
+import de.schnettler.database.models.EntityWithStats
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.LastFmEntity.Album
+import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.Divider
 import de.schnettler.scrobbler.components.ErrorSnackbar
@@ -38,7 +38,7 @@ import de.schnettler.scrobbler.util.formatter
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable
-fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit) {
+fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit) {
     val searchResult by model.state.collectAsState()
     val searchQuery by model.searchQuery.collectAsState()
     val searchInputState = state { TextFieldValue(searchQuery.query) }
@@ -86,28 +86,28 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (CommonEntity) -> Unit)
 }
 
 @Composable
-fun SearchResults(results: List<LastFmStatsEntity>, onItemSelected: (CommonEntity) -> Unit) {
+fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> Unit) {
     LazyColumnItems(items = results) {
         when (it) {
-            is Artist -> {
+            is EntityWithStats -> {
                 ListItem(
-                    text = { Text(it.name) },
+                    text = { Text(it.entity.name) },
                     secondaryText = {
-                        Text("${formatter.format(it.listeners)} Listeners")
+                        Text("${formatter.format(it.stats.listeners)} Listeners")
                     },
                     icon = {
                         PlainListIconBackground {
                             Icon(vectorResource(id = R.drawable.ic_outline_account_circle_24))
                         }
                     },
-                    onClick = { onItemSelected(it) }
+                    onClick = { onItemSelected(it.entity) }
                 )
             }
             is Album -> {
                 ListItem(
                     text = { Text(it.name) },
                     secondaryText = {
-                        Text("${it.artist}")
+                        Text(it.artist)
                     },
                     icon = {
                         PlainListIconBackground {

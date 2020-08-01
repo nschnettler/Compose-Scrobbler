@@ -28,9 +28,11 @@ import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
+import de.schnettler.database.models.BaseEntity
+import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LastFmStatsEntity
-import de.schnettler.database.models.TopListEntryWithData
+import de.schnettler.database.models.TopListEntry
+import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.CARD_CORNER_RADIUS
 import de.schnettler.scrobbler.util.Orientation
@@ -41,6 +43,7 @@ import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.formatter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import timber.log.Timber
 
 @Composable
 fun <T> Recyclerview(
@@ -186,7 +189,7 @@ fun CardContent(
 @Composable
 fun TopListScroller(
     title: String,
-    state: RefreshableUiState<List<TopListEntryWithData>>,
+    state: RefreshableUiState<List<Toplist>>,
     height: Dp = 200.dp,
     onEntrySelected: (LastFmEntity) -> Unit
 ) {
@@ -198,10 +201,10 @@ fun TopListScroller(
         scrollerHeight = height
     ) { listing ->
         ListingCard(
-            name = listing.data.name,
-            plays = listing.topListEntry.count,
-            imageUrl = listing.data.imageUrl,
-            onEntrySelected = { onEntrySelected(listing.data) },
+            name = listing.value.name,
+            plays = listing.listing.count,
+            imageUrl = "", //TODO: listing.value.imageUrl,
+            onEntrySelected = { onEntrySelected(listing.value) },
             height = height
         )
     }
@@ -210,7 +213,7 @@ fun TopListScroller(
 @Composable
 fun ListingScroller(
     title: String,
-    content: List<LastFmStatsEntity>,
+    content: List<BaseEntity>,
     height: Dp,
     playsStyle: PlaysStyle,
     onEntrySelected: (LastFmEntity) -> Unit
@@ -220,17 +223,30 @@ fun ListingScroller(
         title = title,
         scrollerHeight = height
     ) { listing ->
-        ListingCard(
-            name = listing.name,
-            plays = when (playsStyle) {
-                PlaysStyle.PUBLIC_PLAYS -> listing.plays
-                PlaysStyle.USER_PLAYS -> listing.userPlays
-                PlaysStyle.NO_PLAYS -> -1
-            },
-            imageUrl = listing.imageUrl,
-            onEntrySelected = { onEntrySelected(listing) },
-            height = height
-        )
+        when (listing) {
+            is EntityWithStats -> {
+                ListingCard(
+                    name = listing.entity.name,
+                    plays = when (playsStyle) {
+                        PlaysStyle.PUBLIC_PLAYS -> listing.stats.plays
+                        PlaysStyle.USER_PLAYS -> listing.stats.userPlays
+                        else -> -1
+                    },
+                    imageUrl = "", // TODO: listing.imageUrl,
+                    onEntrySelected = { onEntrySelected(listing.entity) },
+                    height = height
+                )
+            }
+            is LastFmEntity -> {
+                ListingCard(
+                    name = listing.name,
+                    plays = -1,
+                    imageUrl = "", // TODO: listing.imageUrl,
+                    onEntrySelected = { onEntrySelected(listing) },
+                    height = height
+                )
+            }
+        }
     }
 }
 

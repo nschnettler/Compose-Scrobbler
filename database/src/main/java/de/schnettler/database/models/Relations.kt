@@ -3,14 +3,13 @@ package de.schnettler.database.models
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
+import de.schnettler.database.models.LastFmEntity.Artist
 
-@Entity(tableName = "relations", primaryKeys = ["sourceId", "sourceType", "targetType", "index"])
-data class RelationEntity(
-    val sourceId: String,
-    val sourceType: ListingType,
-    val index: Int,
-    val targetId: String,
-    val targetType: ListingType
+@Entity(tableName = "artist_relations", primaryKeys = ["artistId", "orderIndex"])
+data class RelatedArtistEntry(
+    val artistId: String,
+    val otherArtistId: String,
+    val orderIndex: Int
 )
 
 enum class ListingType(val id: Int) {
@@ -20,29 +19,8 @@ enum class ListingType(val id: Int) {
     TRACK(2)
 }
 
-data class RelatedAlbum(
-    @Embedded val relation: RelationEntity,
-    @Relation(
-        parentColumn = "targetId",
-        entityColumn = "id"
-    )
-    val album: Album
-)
-
-data class RelatedTrack(
-    @Embedded val relation: RelationEntity,
-    @Relation(
-        parentColumn = "targetId",
-        entityColumn = "id"
-    )
-    val track: Track
-)
-
 data class RelatedArtist(
-    @Embedded val relation: RelationEntity,
-    @Relation(
-        parentColumn = "targetId",
-        entityColumn = "id"
-    )
+    @Embedded val relation: RelatedArtistEntry,
+    @Relation(parentColumn = "otherArtistId", entityColumn = "id")
     val artist: Artist
 )

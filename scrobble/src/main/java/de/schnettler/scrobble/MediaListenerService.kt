@@ -8,7 +8,7 @@ import android.media.session.MediaSessionManager
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.repo.ServiceCoroutineScope
+import de.schnettler.repo.di.ServiceCoroutineScope
 import kotlinx.coroutines.cancel
 import timber.log.Timber
 import javax.inject.Inject

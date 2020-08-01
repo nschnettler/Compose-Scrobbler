@@ -1,21 +1,37 @@
 package de.schnettler.repo.mapping
 
+import de.schnettler.database.models.EntityInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.database.models.Track
-import de.schnettler.lastfm.models.AlbumTrack
-import de.schnettler.lastfm.models.ArtistTracksDto
+import de.schnettler.database.models.Stats
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.TrackInfoDto
-import de.schnettler.repo.util.toBoolean
+import javax.inject.Inject
 
-fun ArtistTracksDto.map() = Track(
-    name = this.name,
-    url = this.url,
-    listeners = this.listeners,
-    plays = this.playcount,
-    artist = this.artist.name
-)
+class TrackMapper @Inject constructor() : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
+    override suspend fun map(from: TrackInfoDto): TrackWithStatsAndInfo {
+        val track = Track(
+            name = from.name,
+            url = from.url,
+            artist = from.artist.name,
+            album = from.album?.title
+        )
+        val stats = Stats(
+            id = track.id,
+            plays = from.playcount,
+            listeners = from.listeners,
+            userPlays = from.userplaycount ?: 0
+        )
+        val info = EntityInfo(
+            id = track.id,
+            tags = from.toptags.tag.map { tag -> tag.name },
+            wiki = ""
+        )
+        return TrackWithStatsAndInfo(track, stats, info)
+    }
+}
 
 fun RecentTracksDto.mapToLocal() = LocalTrack(
     name = name,
@@ -25,26 +41,4 @@ fun RecentTracksDto.mapToLocal() = LocalTrack(
     timestamp = date?.uts ?: -1,
     playedBy = "external",
     status = if (date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
-)
-
-fun TrackInfoDto.map() = Track(
-    name = this.name,
-    url = this.url,
-    duration = this.duration,
-    listeners = this.listeners,
-    plays = this.playcount,
-    artist = this.artist.name,
-    album = this.album?.title,
-    userPlays = this.userplaycount ?: 0,
-    userLoved = this.userloved.toBoolean(),
-    tags = this.toptags.tag.map { tag -> tag.name }
-)
-
-fun AlbumTrack.map(albumName: String, index: Int) = Track(
-    name = name,
-    url = url,
-    duration = duration,
-    artist = artist.name,
-    album = albumName,
-    rank = index + 1
 )
