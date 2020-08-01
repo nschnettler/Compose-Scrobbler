@@ -12,13 +12,6 @@ data class RelatedArtistEntry(
     val orderIndex: Int
 )
 
-enum class ListingType(val id: Int) {
-    UNDEFINED(-1),
-    ALBUM(0),
-    ARTIST(1),
-    TRACK(2)
-}
-
 data class RelatedArtist(
     @Embedded val relation: RelatedArtistEntry,
     @Relation(parentColumn = "otherArtistId", entityColumn = "id")

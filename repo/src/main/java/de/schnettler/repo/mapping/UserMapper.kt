@@ -4,6 +4,7 @@ import de.schnettler.database.models.EntityType
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LastFmEntity.Track
+import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
@@ -21,7 +22,8 @@ class UserArtistMapper @Inject constructor() : IndexedMapper<UserArtistDto, TopL
         )
         val toplist = TopListEntry(
             id = artist.id,
-            type = EntityType.ARTIST,
+            entityType = EntityType.ARTIST,
+            listType = ListType.USER,
             index = index,
             count = from.playcount ?: 0
         )
@@ -38,7 +40,8 @@ class UserAlbumMapper @Inject constructor() : IndexedMapper<AlbumDto, TopListAlb
         )
         val toplist = TopListEntry(
             id = album.id,
-            type = EntityType.ALBUM,
+            entityType = EntityType.ALBUM,
+            listType = ListType.USER,
             index = index,
             count = from.playcount
         )
@@ -55,7 +58,8 @@ class UserTrackMapper @Inject constructor() : IndexedMapper<UserTrackDto, TopLis
         )
         val toplist = TopListEntry(
             id = track.id,
-            type = EntityType.TRACK,
+            entityType = EntityType.TRACK,
+            listType = ListType.USER,
             index = index,
             count = from.playcount
         )

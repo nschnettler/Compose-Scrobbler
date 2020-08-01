@@ -10,6 +10,7 @@ import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TopListDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
+import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
@@ -44,7 +45,7 @@ class TopListRepository @Inject constructor(
             artistMapper.forLists()(response.artist)
         },
         sourceOfTruth = SourceOfTruth.of(
-            reader = { chartDao.getTopArtists() },
+            reader = { chartDao.getTopArtists(listType = ListType.USER) },
             writer = { _: Any, entries: List<TopListArtist> ->
                 artistDao.insertAll(entries.map { it.value })
                 topListDao.forceInsertAll(entries.map { it.listing })

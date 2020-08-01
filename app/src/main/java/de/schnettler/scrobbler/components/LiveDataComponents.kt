@@ -19,6 +19,8 @@ import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.EntityWithStats.ArtistWithStats
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Track
+import de.schnettler.database.models.TopListArtist
+import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.formatter
 
@@ -33,12 +35,12 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 }
 
 @Composable
-fun GenericAdapterList(data: List<EntityWithStats>, onListingSelected: (LastFmEntity) -> Unit) {
+fun GenericAdapterList(data: List<Toplist>, onListingSelected: (LastFmEntity) -> Unit) {
     LazyColumnItems(items = data) { item ->
         when (item) {
-            is ArtistWithStats -> HistoryItem(
-                listing = item.entity,
-                subTitle = "${formatter.format(item.stats.listeners)} Listener ⦁ ${formatter.format(item.stats.plays)} Plays",
+            is TopListArtist -> HistoryItem(
+                listing = item.value,
+                subTitle = "${formatter.format(item.listing.count)} Listener",
                 onListingSelected = onListingSelected
             )
         }
