@@ -15,8 +15,6 @@ import androidx.ui.material.ListItem
 import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
-import de.schnettler.database.models.EntityWithStats
-import de.schnettler.database.models.EntityWithStats.ArtistWithStats
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.TopListArtist

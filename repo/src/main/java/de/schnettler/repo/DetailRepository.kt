@@ -116,16 +116,23 @@ class DetailRepository @Inject constructor(
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key ->
-                albumDao.getAlbumWithStatsAndInfo(id = key.id, artist = key.artist)
-                // TODO: Tracks
+                val details = albumDao.getAlbumWithStatsAndInfo(id = key.id, artist = key.artist)
+                val tracks = trackDao.getTracksFromAlbum(key.artist, key.name)
+                val result = combine(details, tracks) { albumDetails, albumTracks ->
+                    albumDetails.apply {
+                        this?.tracks = albumTracks
+                    }
+                    albumDetails
+                }
+                result
             },
-            writer = { _, (album, stats, info) ->
-                Timber.d("Preparing for Info insert")
-                Timber.d("Inserting Info $info")
+            writer = { _, albumDetails ->
+                val (album, stats, info) = albumDetails
                 albumDao.insert(album)
                 statsDao.insertOrUpdateStats(listOf(stats))
                 entityInfoDao.insert(info)
-                // TODO: Tracks
+                trackDao.forceInsertAll(albumDetails.tracks.map { it.entity }) // Have Images now
+                entityInfoDao.insertAll(albumDetails.tracks.map { it.info })
             }
         )
     ).build()

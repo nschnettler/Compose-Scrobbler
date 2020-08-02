@@ -8,6 +8,7 @@ import androidx.ui.foundation.Box
 import androidx.ui.foundation.ContentGravity
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
+import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.foundation.lazy.LazyRowItems
@@ -21,6 +22,7 @@ import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredSize
 import androidx.ui.layout.preferredWidth
 import androidx.ui.material.Card
+import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
@@ -31,7 +33,6 @@ import androidx.ui.unit.sp
 import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.CARD_CORNER_RADIUS
@@ -43,7 +44,6 @@ import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.formatter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
-import timber.log.Timber
 
 @Composable
 fun <T> Recyclerview(
@@ -126,7 +126,7 @@ fun ListingCard(
 fun CardBackdrop(width: Dp, imageUrl: String?, placeholderText: String) {
     Box(
         modifier = Modifier.preferredWidth(width).aspectRatio(1F).drawBackground(
-            colorResource(id = R.color.colorStroke)
+            MaterialTheme.colors.onSurface.copy(0.05F)
         )
     ) {
         when (imageUrl) {
@@ -137,7 +137,7 @@ fun CardBackdrop(width: Dp, imageUrl: String?, placeholderText: String) {
                 ) {
                     Text(
                         text = placeholderText.firstLetter(),
-                        style = TextStyle(fontSize = width.div(2).value.sp)
+                        style = TextStyle(fontSize = width.div(2).value.sp, color = contentColor().copy(alpha = 0.7F))
                     )
                 }
             }
