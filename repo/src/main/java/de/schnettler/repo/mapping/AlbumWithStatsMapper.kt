@@ -11,7 +11,8 @@ class AlbumWithStatsMapper @Inject constructor() : Mapper<AlbumDto, AlbumWithSta
         val album = Album(
             name = from.name,
             url = from.url,
-            artist = from.artist.name
+            artist = from.artist.name,
+            imageUrl = from.images.lastOrNull()?.url
         )
         return AlbumWithStats(
             entity = album,

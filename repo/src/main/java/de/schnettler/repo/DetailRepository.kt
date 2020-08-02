@@ -81,7 +81,7 @@ class DetailRepository @Inject constructor(
                 trackDao.insertAll(details.topTracks.map { it.entity })
                 statsDao.insertOrUpdateStats(details.topTracks.map { it.stats })
 
-                albumDao.insertAll(details.topAlbums.map { it.entity })
+                albumDao.forceInsertAll(details.topAlbums.map { it.entity })
                 statsDao.insertOrUpdateStats(details.topAlbums.map { it.stats })
 
                 artistDao.insertAll(details.similarArtists)
@@ -128,7 +128,7 @@ class DetailRepository @Inject constructor(
             },
             writer = { _, albumDetails ->
                 val (album, stats, info) = albumDetails
-                albumDao.insert(album)
+                albumDao.forceInsert(album)
                 statsDao.insertOrUpdateStats(listOf(stats))
                 entityInfoDao.insert(info)
                 trackDao.forceInsertAll(albumDetails.tracks.map { it.entity }) // Have Images now
