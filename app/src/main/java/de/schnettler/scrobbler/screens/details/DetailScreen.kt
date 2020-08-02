@@ -49,7 +49,11 @@ fun DetailScreen(
                         onListingSelected = onListingSelected,
                         onTagClicked = onTagClicked
                     )
-                    is TrackWithStatsAndInfo -> TrackDetailScreen(details, onTagClicked = onTagClicked)
+                    is TrackWithStatsAndInfo -> TrackDetailScreen(
+                        details,
+                        onTagClicked = onTagClicked,
+                        onListingSelected
+                    )
                     is AlbumWithStatsAndInfo -> AlbumDetailScreen(
                         albumDetails = details,
                         onListingSelected = onListingSelected,
@@ -69,7 +73,7 @@ fun TagCategory(tags: List<String>, onTagClicked: (String) -> Unit) {
 }
 
 @Composable
-fun AlbumCategory(album: String, artist: String) {
+fun AlbumCategory(album: String, artist: String, onAlbumSelected: (LastFmEntity.Album) -> Unit) {
     TitleComponent(title = "Aus dem Album")
     ListItem(
         text = {
@@ -93,6 +97,9 @@ fun AlbumCategory(album: String, artist: String) {
 //                    }
                 }
             }
+        },
+        onClick = {
+            onAlbumSelected(LastFmEntity.Album(name = album, url = "", artist = artist))
         }
     )
 }
