@@ -51,7 +51,7 @@ fun DetailScreen(
                     )
                     is TrackWithStatsAndInfo -> TrackDetailScreen(details, onTagClicked = onTagClicked)
                     is AlbumWithStatsAndInfo -> AlbumDetailScreen(
-                        albumInfo = details,
+                        albumDetails = details,
                         onListingSelected = onListingSelected,
                         onTagClicked = onTagClicked
                     )

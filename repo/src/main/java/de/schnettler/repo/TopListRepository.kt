@@ -62,7 +62,7 @@ class TopListRepository @Inject constructor(
         sourceOfTruth = SourceOfTruth.of(
             reader = { chartDao.getTopAlbums() },
             writer = { _: Any, entries: List<TopListAlbum> ->
-                albumDao.insertAll(entries.map { it.value })
+                albumDao.forceInsertAll(entries.map { it.value })
                 topListDao.forceInsertAll(entries.map { it.listing })
             }
         )

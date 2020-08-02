@@ -18,7 +18,8 @@ data class EntityInfo(
 sealed class LastFmEntity(
     @Ignore open val id: String,
     @Ignore open val name: String,
-    @Ignore open val url: String
+    @Ignore open val url: String,
+    @Ignore open val imageUrl: String?
 ) : BaseEntity {
 
     @Entity(tableName = "albums")
@@ -26,18 +27,17 @@ sealed class LastFmEntity(
         override val name: String,
         override val url: String,
         val artist: String,
-        @PrimaryKey override val id: String = "album_${name.toLowerCase(Locale.US)}:${artist.toLowerCase(Locale.US)}"
-    ) : LastFmEntity(id, name, url) {
-        @Ignore var tracks: List<Track> = listOf()
-//    fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.duration })
-    }
+        @PrimaryKey override val id: String = "album_${name.toLowerCase(Locale.US)}:${artist.toLowerCase(Locale.US)}",
+        override val imageUrl: String? = null
+    ) : LastFmEntity(id, name, url, imageUrl)
 
     @Entity(tableName = "artists")
     data class Artist(
         override val name: String,
         override val url: String,
-        @PrimaryKey override val id: String = "artist_$name"
-    ) : LastFmEntity(id, name, url)
+        @PrimaryKey override val id: String = "artist_$name",
+        override val imageUrl: String? = null
+    ) : LastFmEntity(id, name, url, imageUrl)
 
     @Entity(tableName = "tracks")
     data class Track(
@@ -45,6 +45,7 @@ sealed class LastFmEntity(
         override val url: String,
         val artist: String,
         val album: String? = null,
-        @PrimaryKey override val id: String = "track_$name:$artist"
-    ) : LastFmEntity(id, name, url)
+        @PrimaryKey override val id: String = "track_$name:$artist",
+        override val imageUrl: String? = null
+    ) : LastFmEntity(id, name, url, imageUrl)
 }

@@ -203,7 +203,7 @@ fun TopListScroller(
         ListingCard(
             name = listing.value.name,
             plays = listing.listing.count,
-            imageUrl = "", //TODO: listing.value.imageUrl,
+            imageUrl = listing.value.imageUrl,
             onEntrySelected = { onEntrySelected(listing.value) },
             height = height
         )
@@ -232,7 +232,7 @@ fun ListingScroller(
                         PlaysStyle.USER_PLAYS -> listing.stats.userPlays
                         else -> -1
                     },
-                    imageUrl = "", // TODO: listing.imageUrl,
+                    imageUrl = listing.entity.imageUrl,
                     onEntrySelected = { onEntrySelected(listing.entity) },
                     height = height
                 )
@@ -241,7 +241,7 @@ fun ListingScroller(
                 ListingCard(
                     name = listing.name,
                     plays = -1,
-                    imageUrl = "", // TODO: listing.imageUrl,
+                    imageUrl = listing.imageUrl,
                     onEntrySelected = { onEntrySelected(listing) },
                     height = height
                 )
@@ -266,7 +266,7 @@ fun NameListIcon(title: String) {
 @Composable
 fun PlainListIconBackground(
     @ColorRes color: Int = R.color.colorBackgroundElevated,
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     Surface(
         color = colorResource(id = color),

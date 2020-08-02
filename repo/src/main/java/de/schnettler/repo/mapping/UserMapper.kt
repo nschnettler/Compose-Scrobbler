@@ -5,9 +5,9 @@ import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.ListType
-import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
+import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.lastfm.models.AlbumDto
 import de.schnettler.lastfm.models.UserArtistDto
@@ -36,7 +36,8 @@ class UserAlbumMapper @Inject constructor() : IndexedMapper<AlbumDto, TopListAlb
         val album = Album(
             name = from.name,
             url = from.url,
-            artist = from.artist.name
+            artist = from.artist.name,
+            imageUrl = from.images.lastOrNull()?.url
         )
         val toplist = TopListEntry(
             id = album.id,
