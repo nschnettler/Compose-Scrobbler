@@ -39,7 +39,7 @@ import de.schnettler.database.models.User
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class
-    ], version = 44, exportSchema = false
+    ], version = 45, exportSchema = false
 )
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
