@@ -6,6 +6,7 @@ import androidx.ui.foundation.Border
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
@@ -50,7 +51,8 @@ fun AlbumDetailScreen(
                 name = album.name,
                 artist = album.artist,
                 tracks = albumDetails.tracks.size,
-                duration = albumDetails.getLength()
+                duration = albumDetails.getLength(),
+                onArtistSelected = onListingSelected
             )
         }
         ChipRow(items = albumDetails.info.tags, onChipClicked = onTagClicked)
@@ -58,7 +60,10 @@ fun AlbumDetailScreen(
         ListeningStats(item = stats)
         AlbumDescription(info.wiki.fromHtmlLastFm())
         Spacer(modifier = Modifier.preferredHeight(16.dp))
-        TrackList(tracks = albumDetails.tracks.map { it.entity }, onListingSelected = onListingSelected)
+        TrackList(
+            tracks = albumDetails.tracks.map { it.entity },
+            onListingSelected = onListingSelected
+        )
     }
 }
 
@@ -93,7 +98,13 @@ fun TrackList(tracks: List<LastFmEntity.Track>, onListingSelected: (LastFmEntity
 }
 
 @Composable
-fun AlbumInfo(name: String, artist: String?, tracks: Int, duration: Long) {
+fun AlbumInfo(
+    name: String,
+    artist: String,
+    tracks: Int,
+    duration: Long,
+    onArtistSelected: (LastFmEntity.Artist) -> Unit
+) {
     Column(Modifier.padding(top = 8.dp)) {
         Text(
             text = name,
@@ -105,7 +116,10 @@ fun AlbumInfo(name: String, artist: String?, tracks: Int, duration: Long) {
             text = "von $artist",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.subtitle1
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier.clickable(onClick = {
+                onArtistSelected(LastFmEntity.Artist(name = artist, url = ""))
+            })
         )
         Text(
             text = "$tracks Songs ⦁ $duration Minuten",
