@@ -37,5 +37,6 @@ data class AlbumTracksDto(
 
 data class WikiDto(
     val published: String,
-    val summary: String
+    val summary: String,
+    val content: String?
 )

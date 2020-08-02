@@ -27,7 +27,7 @@ class TrackMapper @Inject constructor() : Mapper<TrackInfoDto, TrackWithStatsAnd
         val info = EntityInfo(
             id = track.id,
             tags = from.toptags.tag.map { tag -> tag.name },
-            wiki = ""
+            wiki = from.wiki?.content ?: from.wiki?.summary
         )
         return TrackWithStatsAndInfo(track, stats, info)
     }

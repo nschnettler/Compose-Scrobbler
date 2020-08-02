@@ -3,7 +3,7 @@ package de.schnettler.database.models
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 
 interface BaseEntity
 
@@ -12,7 +12,7 @@ data class EntityInfo(
     @PrimaryKey val id: String,
     val tags: List<String> = listOf(),
     val duration: Long = 0,
-    val wiki: String
+    val wiki: String?
 )
 
 sealed class LastFmEntity(

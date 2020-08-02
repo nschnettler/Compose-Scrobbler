@@ -58,7 +58,7 @@ fun AlbumDetailScreen(
         ChipRow(items = albumDetails.info.tags, onChipClicked = onTagClicked)
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         ListeningStats(item = stats)
-        AlbumDescription(info.wiki.fromHtmlLastFm())
+        AlbumDescription(info.wiki?.fromHtmlLastFm())
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         TrackList(
             tracks = albumDetails.tracks.map { it.entity },

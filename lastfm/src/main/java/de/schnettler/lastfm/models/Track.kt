@@ -59,7 +59,8 @@ data class TrackInfoDto(
     val album: TrackAlbum?,
     val userplaycount: Long?,
     val userloved: Long,
-    val toptags: TagsDto
+    val toptags: TagsDto,
+    val wiki: WikiDto?
 ) : ListingDto
 
 data class TrackRelationDto(
