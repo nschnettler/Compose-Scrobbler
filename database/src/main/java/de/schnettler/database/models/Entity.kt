@@ -46,8 +46,9 @@ sealed class LastFmEntity(
         override val url: String,
         val artist: String,
         val album: String? = null,
+        val albumId: String? = null,
         @PrimaryKey
         override val id: String = "track_${name.toLowerCase(Locale.US)}:artist_${artist.toLowerCase(Locale.US)}",
-        override val imageUrl: String? = null
+        override val imageUrl: String? = null,
     ) : LastFmEntity(id, name, url, imageUrl)
 }

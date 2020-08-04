@@ -16,7 +16,7 @@ interface BaseDao<T> {
      * @param obj the object to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(obj: T): Long
+    suspend fun insert(obj: T?): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun forceInsert(obj: T)
@@ -27,7 +27,7 @@ interface BaseDao<T> {
      * @param obj the objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(obj: List<T>): List<Long>
+    suspend fun insertAll(obj: List<T?>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun forceInsertAll(obj: List<T>): List<Long>

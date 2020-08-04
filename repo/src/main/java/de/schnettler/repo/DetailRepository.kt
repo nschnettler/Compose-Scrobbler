@@ -94,12 +94,19 @@ class DetailRepository @Inject constructor(
 
     val trackStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Track ->
-            trackMapper.map(service.getTrackInfo(key.artist, key.name, lastFmAuthProvider.getSessionKeyOrThrow()))
+            trackMapper.map(
+                service.getTrackInfo(
+                    key.artist,
+                    key.name,
+                    lastFmAuthProvider.getSessionKeyOrThrow()
+                )
+            )
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key -> trackDao.getTrackWithMetadata(key.id, key.artist) },
-            writer = { _: Track, (track, stats, info) ->
-                trackDao.insertTrackOrUpdateAlbum(track) // Album property is loaded now
+            writer = { _: Track, (track, stats, info, album) ->
+                album?.let { albumDao.insert(album) }
+                trackDao.inserTrackOrUpdateMetadata(track) // Update Album, AlbumId, ImageUrl
                 entityInfoDao.insert(info)
                 statsDao.insertOrUpdateStats(listOf(stats))
             }
@@ -131,7 +138,7 @@ class DetailRepository @Inject constructor(
                 albumDao.forceInsert(album)
                 statsDao.insertOrUpdateStats(listOf(stats))
                 entityInfoDao.insert(info)
-                trackDao.forceInsertAll(albumDetails.tracks.map { it.entity }) // Have Images now
+                trackDao.forceInsertAll(albumDetails.tracks.map { it.entity }) // Update album, overrides albumid
                 entityInfoDao.insertAll(albumDetails.tracks.map { it.info })
             }
         )

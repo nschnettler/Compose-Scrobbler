@@ -10,16 +10,18 @@ import de.schnettler.scrobbler.components.ListeningStats
 fun TrackDetailScreen(
     trackDetails: TrackWithStatsAndInfo,
     onTagClicked: (String) -> Unit,
-    onAlbumClicked: (LastFmEntity.Album) -> Unit
+    onAlbumClicked: (LastFmEntity) -> Unit
 ) {
-    val (track, stats, info) = trackDetails
+    val (track, stats, info, album) = trackDetails
     ScrollableColumn(children = {
-        track.album?.let { album ->
-            AlbumCategory(album, track.artist, onAlbumClicked)
-        }
-        AlbumDescription(description = info.wiki)
+        AlbumCategory(
+            album = album,
+            artistPlaceholder = track.artist,
+            onAlbumSelected = onAlbumClicked
+        )
+        AlbumDescription(description = info?.wiki)
         ListeningStats(item = stats)
-        if (info.tags.isNotEmpty()) {
+        if (info?.tags?.isNotEmpty() == true) {
             TagCategory(tags = info.tags, onTagClicked = onTagClicked)
         }
     })

@@ -9,18 +9,15 @@ import java.util.concurrent.TimeUnit
 
 sealed class EntityWithStatsAndInfo(
     @Ignore open val entity: LastFmEntity,
-    @Ignore open val stats: Stats,
-    @Ignore open val info: EntityInfo,
-    @Ignore open val image: EntityInfo?
+    @Ignore open val stats: Stats?,
+    @Ignore open val info: EntityInfo?,
 ) : BaseEntity {
 
     data class AlbumWithStatsAndInfo(
         @Embedded override val entity: LastFmEntity.Album,
         @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats,
         @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo,
-        @Relation(parentColumn = "id", entityColumn = "id") override val image: EntityInfo? = null,
-        //  @Relation(parentColumn = "id", entityColumn = "album_id") val tracks: Track
-    ) : EntityWithStatsAndInfo(entity, stats, info, image) {
+    ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore var tracks: List<TrackWithInfo> = listOf()
         fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info.duration })
     }
@@ -28,9 +25,8 @@ sealed class EntityWithStatsAndInfo(
     data class ArtistWithStatsAndInfo(
         @Embedded override val entity: LastFmEntity.Artist,
         @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats,
-        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo,
-        @Relation(parentColumn = "id", entityColumn = "id") override val image: EntityInfo? = null
-    ) : EntityWithStatsAndInfo(entity, stats, info, image) {
+        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo
+    ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore
         var similarArtists: List<LastFmEntity.Artist> = listOf()
         @Ignore
@@ -41,8 +37,8 @@ sealed class EntityWithStatsAndInfo(
 
     data class TrackWithStatsAndInfo(
         @Embedded override val entity: LastFmEntity.Track,
-        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats,
-        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo,
-        @Relation(parentColumn = "id", entityColumn = "id") override val image: EntityInfo? = null
-    ) : EntityWithStatsAndInfo(entity, stats, info, image)
+        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats?,
+        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo?,
+        @Relation(parentColumn = "albumId", entityColumn = "id") val album: LastFmEntity.Album?
+    ) : EntityWithStatsAndInfo(entity, stats, info)
 }

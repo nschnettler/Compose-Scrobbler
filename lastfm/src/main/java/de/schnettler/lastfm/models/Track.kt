@@ -69,7 +69,10 @@ data class TrackRelationDto(
 )
 
 data class TrackAlbum(
-    val title: String
+    val title: String,
+    val artist: String,
+    val url: String,
+    val image: List<ImageDto>
 )
 
 data class ImageDto(

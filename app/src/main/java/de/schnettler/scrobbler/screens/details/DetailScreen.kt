@@ -3,11 +3,13 @@ package de.schnettler.scrobbler.screens.details
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
+import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.ExperimentalLayout
+import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
 import androidx.ui.material.ListItem
@@ -25,6 +27,7 @@ import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
+import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun DetailScreen(
@@ -73,14 +76,18 @@ fun TagCategory(tags: List<String>, onTagClicked: (String) -> Unit) {
 }
 
 @Composable
-fun AlbumCategory(album: String, artist: String, onAlbumSelected: (LastFmEntity.Album) -> Unit) {
+fun AlbumCategory(
+    album: LastFmEntity.Album?,
+    artistPlaceholder: String,
+    onAlbumSelected: (LastFmEntity) -> Unit
+) {
     TitleComponent(title = "Aus dem Album")
     ListItem(
         text = {
-            Text(album)
+            Text(album?.name ?: "Unknown Album")
         },
         secondaryText = {
-            Text(artist)
+            Text(album?.artist ?: artistPlaceholder)
         },
         icon = {
             Surface(
@@ -88,18 +95,18 @@ fun AlbumCategory(album: String, artist: String, onAlbumSelected: (LastFmEntity.
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Box(modifier = Modifier.preferredHeight(60.dp) + Modifier.preferredWidth(60.dp)) {
-//                    album.imageUrl?.let {
-//                        CoilImageWithCrossfade(
-//                            data = it,
-//                            contentScale = ContentScale.Crop,
-//                            modifier = Modifier.fillMaxSize()
-//                        )
-//                    }
+                    album?.imageUrl?.let {
+                        CoilImageWithCrossfade(
+                            data = it,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
             }
         },
         onClick = {
-            onAlbumSelected(LastFmEntity.Album(name = album, url = "", artist = artist))
+            onAlbumSelected(album ?: LastFmEntity.Artist(name = artistPlaceholder, url = ""))
         }
     )
 }

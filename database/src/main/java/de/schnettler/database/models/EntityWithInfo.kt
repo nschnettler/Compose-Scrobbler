@@ -17,7 +17,7 @@ sealed class EntityWithInfo(
         @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo
     ) : EntityWithInfo(entity, info) {
         @Ignore var tracks: List<TrackWithStatsAndInfo> = listOf()
-        fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info.duration })
+        fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info?.duration ?: 0 })
     }
 
     data class ArtistWithInfo(

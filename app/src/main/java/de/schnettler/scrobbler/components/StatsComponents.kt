@@ -21,16 +21,17 @@ import de.schnettler.scrobbler.util.formatter
 
 @Composable
 fun StatsRow(
-    items: List<Pair<Int, Long>>
+    items: List<Pair<Int, Long?>>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth() + Modifier.padding(bottom = 16.dp, top = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.forEach {
+            val count = it.second ?: 0
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                 Icon(asset = vectorResource(id = it.first))
-                Text(text = formatter.format(it.second))
+                Text(text = formatter.format(count))
             }
         }
     }
@@ -49,10 +50,10 @@ fun QuickActionsRow(items: List<Pair<Int, () -> Unit>>) {
 }
 
 @Composable
-fun ListeningStats(item: Stats) = StatsRow(
+fun ListeningStats(item: Stats?) = StatsRow(
     items = listOf(
-        R.drawable.ic_round_play_circle_outline_24 to item.plays,
-        R.drawable.ic_round_hearing_24 to item.userPlays,
-        R.drawable.ic_outline_account_circle_32 to item.listeners
+        R.drawable.ic_round_play_circle_outline_24 to item?.plays,
+        R.drawable.ic_round_hearing_24 to item?.userPlays,
+        R.drawable.ic_outline_account_circle_32 to item?.listeners
     )
 )

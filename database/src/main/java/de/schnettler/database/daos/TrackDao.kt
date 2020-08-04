@@ -27,17 +27,17 @@ abstract class TrackDao : BaseDao<Track> {
     @Query("SELECT * FROM tracks WHERE artist = :artist and album = :album")
     abstract fun getTracksFromAlbum(artist: String, album: String): Flow<List<EntityWithInfo.TrackWithInfo>>
 
-    @Query("UPDATE tracks SET album = :album WHERE id = :id")
-    abstract fun updateAlbum(id: String, album: String)
+    @Query("UPDATE tracks SET album = :album, albumId = :albumId, imageUrl = :imageUrl WHERE id = :id")
+    abstract fun updateAlbum(id: String, album: String?, albumId: String?, imageUrl: String?)
 
     @Query("UPDATE tracks SET imageUrl = :url WHERE id = :id")
     abstract suspend fun updateImageUrl(id: String, url: String): Int
 
     @Transaction
-    open fun insertTrackOrUpdateAlbum(track: Track) {
+    open suspend fun inserTrackOrUpdateMetadata(track: Track) {
         val result = insert(track)
-        if (result == -1L && track.album != null) {
-            updateAlbum(id = track.id, album = track.album)
+        if (result == -1L) {
+            updateAlbum(id = track.id, album = track.album, albumId = track.albumId, imageUrl = track.imageUrl)
         }
     }
 }
