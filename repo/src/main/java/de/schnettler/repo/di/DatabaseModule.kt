@@ -56,8 +56,4 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideRelationDao(database: AppDatabase) = database.relationDao()
-
-    @Provides
-    @Singleton
-    fun topListDao(database: AppDatabase) = database.topListDao()
 }

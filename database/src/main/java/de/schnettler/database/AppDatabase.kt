@@ -13,7 +13,6 @@ import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.EntityInfoDao
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.daos.StatsDao
-import de.schnettler.database.daos.TopListDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
@@ -41,7 +40,6 @@ import de.schnettler.database.models.User
         EntityInfo::class
     ], version = 46, exportSchema = false
 )
-@Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao
@@ -54,7 +52,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun statDao(): StatsDao
     abstract fun infoDao(): EntityInfoDao
     abstract fun relationDao(): ArtistRelationDao
-    abstract fun topListDao(): TopListDao
 }
 
 fun provideDatabase(context: Context) = Room.databaseBuilder(

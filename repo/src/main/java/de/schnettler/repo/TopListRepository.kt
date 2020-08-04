@@ -10,7 +10,6 @@ import de.schnettler.common.TimePeriod
 import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.TopListDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.ListType
@@ -32,7 +31,6 @@ class TopListRepository @Inject constructor(
     private val albumDao: AlbumDao,
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
-    private val topListDao: TopListDao,
     private val service: LastFmService,
     private val albumMapper: UserAlbumMapper,
     private val artistMapper: UserArtistMapper,
@@ -53,7 +51,7 @@ class TopListRepository @Inject constructor(
             reader = { chartDao.getTopArtists(listType = ListType.USER) },
             writer = { _: Any, entries: List<TopListArtist> ->
                 artistDao.insertAll(entries.map { it.value })
-                topListDao.forceInsertAll(entries.map { it.listing })
+                chartDao.forceInsertAll(entries.map { it.listing })
                 startSpotifyImageWorker()
             }
         )
@@ -69,7 +67,7 @@ class TopListRepository @Inject constructor(
             reader = { chartDao.getTopAlbums() },
             writer = { _: Any, entries: List<TopListAlbum> ->
                 albumDao.forceInsertAll(entries.map { it.value })
-                topListDao.forceInsertAll(entries.map { it.listing })
+                chartDao.forceInsertAll(entries.map { it.listing })
             }
         )
     ).build()
@@ -84,7 +82,7 @@ class TopListRepository @Inject constructor(
             reader = { chartDao.getTopTracks() },
             writer = { _: Any, entries: List<TopListTrack> ->
                 trackDao.insertAll(entries.map { it.value })
-                topListDao.forceInsertAll(entries.map { it.listing })
+                chartDao.forceInsertAll(entries.map { it.listing })
             }
         )
     ).build()
