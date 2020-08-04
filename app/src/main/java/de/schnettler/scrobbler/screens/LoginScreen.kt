@@ -11,8 +11,8 @@ import androidx.ui.foundation.Text
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.material.Button
 import de.schnettler.common.BuildConfig
-import de.schnettler.scrobbler.AUTH_ENDPOINT
-import de.schnettler.scrobbler.REDIRECT_URL
+import de.schnettler.scrobbler.util.AUTH_ENDPOINT
+import de.schnettler.scrobbler.util.REDIRECT_URL
 import timber.log.Timber
 
 @Composable
