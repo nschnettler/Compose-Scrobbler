@@ -3,6 +3,7 @@ package de.schnettler.repo.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.work.WorkManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +25,9 @@ class ApplicationModule {
     @Provides
     fun provideSharedPreferences(application: Application): SharedPreferences =
         application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
+
+    @Provides
+    fun provideWorkManager(application: Application) = WorkManager.getInstance(application)
 }
 
 interface ServiceCoroutineScope : CoroutineScope

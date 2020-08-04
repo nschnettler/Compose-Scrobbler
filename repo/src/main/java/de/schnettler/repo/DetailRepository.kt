@@ -40,10 +40,12 @@ class DetailRepository @Inject constructor(
     private val entityMapper: EntityMapper,
     private val albumWithStatsMapper: AlbumWithStatsMapper,
     private val lastFmAuthProvider: LastFmAuthProvider,
-    private val trackMapper: TrackMapper
+    private val trackMapper: TrackMapper,
+    private val imageRepo: ImageRepo
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { artist: Artist ->
+            if (artist.imageUrl == null) imageRepo.retrieveArtistImage(artist)
             val response =
                 service.getArtistInfo(artist.name, lastFmAuthProvider.getSessionKeyOrThrow())
             artistInfoMapper.map(response).apply {
@@ -58,7 +60,6 @@ class DetailRepository @Inject constructor(
                 val topTracks = trackDao.getTopTracksOfArtist(artist.name)
                 val topAlbums = albumDao.getTopAlbumsOfArtist(artist.name)
                 val similarArtists = artistDao.getRelatedArtists(artist.id)
-//                val info = entityInfoDao.getEntityInfo(artist.id)
                 combine(
                     artistStatsInfo,
                     topTracks,
