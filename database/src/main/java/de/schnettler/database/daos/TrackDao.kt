@@ -2,6 +2,7 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import de.schnettler.database.models.EntityWithInfo
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
@@ -25,4 +26,15 @@ abstract class TrackDao : BaseDao<Track> {
 
     @Query("SELECT * FROM tracks WHERE artist = :artist and album = :album")
     abstract fun getTracksFromAlbum(artist: String, album: String): Flow<List<EntityWithInfo.TrackWithInfo>>
+
+    @Query("UPDATE tracks SET album = :album WHERE id = :id")
+    abstract fun updateAlbum(id: String, album: String)
+
+    @Transaction
+    open fun insertTrackOrUpdateAlbum(track: Track) {
+        val result = insert(track)
+        if (result == -1L && track.album != null) {
+            updateAlbum(id = track.id, album = track.album)
+        }
+    }
 }

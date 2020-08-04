@@ -24,7 +24,6 @@ import de.schnettler.repo.mapping.EntityMapper
 import de.schnettler.repo.mapping.TrackMapper
 import de.schnettler.repo.mapping.forLists
 import kotlinx.coroutines.flow.combine
-import timber.log.Timber
 import javax.inject.Inject
 
 class DetailRepository @Inject constructor(
@@ -99,7 +98,7 @@ class DetailRepository @Inject constructor(
         sourceOfTruth = SourceOfTruth.of(
             reader = { key -> trackDao.getTrackWithMetadata(key.id, key.artist) },
             writer = { _: Track, (track, stats, info) ->
-                trackDao.forceInsert(track) // Album property is loaded now
+                trackDao.insertTrackOrUpdateAlbum(track) // Album property is loaded now
                 entityInfoDao.insert(info)
                 statsDao.insertOrUpdateStats(listOf(stats))
             }
