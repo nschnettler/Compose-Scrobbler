@@ -19,9 +19,9 @@ suspend fun <K : Any, V : Any> MutableStateFlow<RefreshableUiState<V>>.freshFrom
     key: K
 ) = refreshStateFlowFromStore(this, store, key)
 
-suspend fun <K : Any, V : Any> MutableStateFlow<RefreshableUiState<V>>.streamFrom(
-    store: Store<K, V>,
-    key: K
+suspend fun <Key : Any, StateType : Any, Output : StateType> MutableStateFlow<RefreshableUiState<StateType>>.streamFrom(
+    store: Store<Key, Output>,
+    key: Key
 ) = store.stream(StoreRequest.cached(key, true)).collectLatest { update(it) }
 
 @Suppress("TooGenericExceptionCaught")
