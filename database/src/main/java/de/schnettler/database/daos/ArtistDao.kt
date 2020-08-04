@@ -20,9 +20,6 @@ abstract class ArtistDao : BaseDao<Artist> {
     @Query("SELECT * FROM artists WHERE id = :id")
     abstract fun getArtistWithMetadata(id: String): Flow<ArtistWithStatsAndInfo?>
 
-    @Query("SELECT * FROM artists  WHERE imageUrl IS NULL")
-    abstract suspend fun getIdsOfMissingImages(): List<Artist>
-
     @Query("UPDATE artists SET imageUrl = :url WHERE id = :id")
     abstract suspend fun updateArtistImageUrl(id: String, url: String): Int
 

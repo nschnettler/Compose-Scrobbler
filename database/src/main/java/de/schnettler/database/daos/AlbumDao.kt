@@ -13,6 +13,9 @@ abstract class AlbumDao : BaseDao<Album> {
     @Query("SELECT * FROM albums WHERE id = :id and artist = :artistId")
     abstract fun getAlbum(id: String, artistId: String): Flow<Album?>
 
+    @Query("SELECT * FROM albums WHERE name = :name and artist = :artist")
+    abstract fun getAlbumByName(name: String, artist: String): Album?
+
     @Query("SELECT * FROM albums INNER JOIN stats ON albums.id = stats.id WHERE albums.artist = :artist ORDER BY stats.plays DESC LIMIT 5")
     abstract fun getTopAlbumsOfArtist(artist: String): Flow<List<AlbumWithStats>>
 

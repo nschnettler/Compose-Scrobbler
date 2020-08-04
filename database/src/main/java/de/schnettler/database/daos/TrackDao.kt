@@ -30,6 +30,9 @@ abstract class TrackDao : BaseDao<Track> {
     @Query("UPDATE tracks SET album = :album WHERE id = :id")
     abstract fun updateAlbum(id: String, album: String)
 
+    @Query("UPDATE tracks SET imageUrl = :url WHERE id = :id")
+    abstract suspend fun updateImageUrl(id: String, url: String): Int
+
     @Transaction
     open fun insertTrackOrUpdateAlbum(track: Track) {
         val result = insert(track)

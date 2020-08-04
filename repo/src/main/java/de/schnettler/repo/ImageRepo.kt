@@ -1,6 +1,9 @@
 package de.schnettler.repo
 
+import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
+import de.schnettler.database.daos.ChartDao
+import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.lastfm.api.spotify.SpotifyService
 import de.schnettler.repo.authentication.AccessTokenAuthenticator
@@ -12,16 +15,30 @@ import javax.inject.Inject
 const val GET_ARTIST_IMAGES_WORK = "get_artist_images"
 
 class ImageRepo @Inject constructor(
+    private val chartDao: ChartDao,
     private val artistDao: ArtistDao,
+    private val trackDao: TrackDao,
     private val authProvider: SpotifyAuthProvider,
     private val authenticator: AccessTokenAuthenticator,
+    private val albumDao: AlbumDao
 ) {
     suspend fun retrieveMissingArtistImages() {
-        val needsImage = artistDao.getIdsOfMissingImages()
+        val needsImage = chartDao.getArtistsWithoutImages()
         Timber.d("[Spotify] Requesting images for ${needsImage.size} artists")
         val service = provideSpotifyService(authProvider, authenticator)
         needsImage.forEach { artist ->
-            retrieveArtistImage(artist = artist, spotifyService = service)
+            retrieveArtistImage(artist = artist.value, spotifyService = service)
+        }
+
+        val trackNeedsImage = chartDao.getTracksWithoutImages()
+        Timber.d("[Spotify] Requesting images for ${trackNeedsImage.size} tracks")
+        trackNeedsImage.forEach { (_, track) ->
+            track.album?.let { albumName ->
+                val album = albumDao.getAlbumByName(name = albumName, artist = track.artist)
+                album?.imageUrl?.let {image ->
+                    trackDao.updateImageUrl(track.id, image)
+                }
+            }
         }
     }
 
