@@ -11,11 +11,11 @@ import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.scrobble.work.RESULT_COUNT
-import de.schnettler.scrobble.work.RESULT_DESCRIPTION
-import de.schnettler.scrobble.work.RESULT_TRACKS
-import de.schnettler.scrobble.work.SUBMIT_CACHED_SCROBBLES_WORK
-import de.schnettler.scrobble.work.ScrobbleWorker
+import de.schnettler.repo.work.RESULT_COUNT
+import de.schnettler.repo.work.RESULT_DESCRIPTION
+import de.schnettler.repo.work.RESULT_TRACKS
+import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.repo.work.ScrobbleWorker
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.UUID

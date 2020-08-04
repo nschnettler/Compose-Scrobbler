@@ -1,4 +1,4 @@
-package de.schnettler.scrobble.work
+package de.schnettler.repo.work
 
 import android.content.Context
 import androidx.hilt.Assisted
