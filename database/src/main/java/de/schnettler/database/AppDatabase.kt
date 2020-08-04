@@ -41,6 +41,7 @@ import de.schnettler.database.models.User
         EntityInfo::class
     ], version = 46, exportSchema = false
 )
+@Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao

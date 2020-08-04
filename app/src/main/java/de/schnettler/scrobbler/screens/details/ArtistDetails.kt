@@ -41,7 +41,11 @@ fun ArtistDetailScreen(
 ) {
     val (artist, stats, info) = artistInfo
     ScrollableColumn {
-        Backdrop(imageUrl = artist.imageUrl, modifier = Modifier.aspectRatio(16 / 10f), placeholder = artist.name)
+        Backdrop(
+            imageUrl = artist.imageUrl,
+            modifier = Modifier.aspectRatio(16 / 10f),
+            placeholder = artist.name
+        )
         AlbumDescription(description = info.wiki)
         ListeningStats(item = stats)
         TagCategory(tags = info.tags, onTagClicked = onTagClicked)
@@ -86,7 +90,11 @@ private fun Backdrop(
     placeholder: String,
     modifier: Modifier
 ) {
-    Box(modifier = modifier.fillMaxSize().drawBackground(MaterialTheme.colors.onSurface.copy(0.05F)), gravity = ContentGravity.Center) {
+    Box(
+        modifier = modifier.fillMaxSize()
+            .drawBackground(MaterialTheme.colors.onSurface.copy(0.05F)),
+        gravity = ContentGravity.Center
+    ) {
         imageUrl?.let {
             CoilImageWithCrossfade(
                 data = it,
