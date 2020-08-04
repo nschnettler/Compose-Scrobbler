@@ -71,7 +71,6 @@ dependencies {
     implementation(project(":repo"))
     implementation(project(":common"))
     implementation(project(":scrobble"))
-    implementation(project(":navigation"))
 
     // Kotlin
     implementation(Kotlin.stdlib.jdk8)
@@ -97,7 +96,7 @@ dependencies {
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.jakewharton.threetenabp", "threetenabp", "_")
-    // implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
+    implementation("com.github.zsoltk", "compose-router", "_")
     debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
 
     // Dagger

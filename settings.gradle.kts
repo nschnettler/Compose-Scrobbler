@@ -1,6 +1,5 @@
 import de.fayard.dependencies.bootstrapRefreshVersionsAndDependencies
 
-include(":navigation")
 include(":common")
 include(":repo")
 include(":lastfm")
