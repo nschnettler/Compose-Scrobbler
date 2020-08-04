@@ -1,5 +1,8 @@
 package de.schnettler.repo
 
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
@@ -20,6 +23,7 @@ import de.schnettler.repo.mapping.UserAlbumMapper
 import de.schnettler.repo.mapping.UserArtistMapper
 import de.schnettler.repo.mapping.UserTrackMapper
 import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.work.SpotifyWorker
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
@@ -33,7 +37,8 @@ class TopListRepository @Inject constructor(
     private val albumMapper: UserAlbumMapper,
     private val artistMapper: UserArtistMapper,
     private val trackMapper: UserTrackMapper,
-    private val authProvider: LastFmAuthProvider
+    private val authProvider: LastFmAuthProvider,
+    private val workManager: WorkManager,
 ) {
     val topArtistStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
@@ -49,6 +54,7 @@ class TopListRepository @Inject constructor(
             writer = { _: Any, entries: List<TopListArtist> ->
                 artistDao.insertAll(entries.map { it.value })
                 topListDao.forceInsertAll(entries.map { it.listing })
+                startSpotifyImageWorker()
             }
         )
     ).build()
@@ -82,4 +88,14 @@ class TopListRepository @Inject constructor(
             }
         )
     ).build()
+
+    fun startSpotifyImageWorker() {
+        val request = OneTimeWorkRequestBuilder<SpotifyWorker>()
+            .build()
+        workManager.enqueueUniqueWork(
+            GET_ARTIST_IMAGES_WORK,
+            ExistingWorkPolicy.KEEP,
+            request
+        )
+    }
 }
