@@ -21,7 +21,7 @@ class UserRepository @Inject constructor(
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {
-                userDao.getUser(authProvider.getSessionOrThrow().name)
+                userDao.getUser(authProvider.session?.name)
             },
             writer = { _: Any, user: User ->
                 val oldUser = userDao.getUserOnce(authProvider.getSessionOrThrow().name)
