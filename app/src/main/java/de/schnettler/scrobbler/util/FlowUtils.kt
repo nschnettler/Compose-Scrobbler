@@ -14,9 +14,9 @@ import timber.log.Timber
 import java.net.UnknownHostException
 
 @Suppress("TooGenericExceptionCaught")
-suspend fun <K : Any, V : Any> MutableStateFlow<RefreshableUiState<V>>.freshFrom(
-    store: Store<K, V>,
-    key: K
+suspend fun <Key : Any, StateType : Any, Output : StateType> MutableStateFlow<RefreshableUiState<StateType>>.freshFrom(
+    store: Store<Key, Output>,
+    key: Key
 ) = refreshStateFlowFromStore(this, store, key)
 
 suspend fun <Key : Any, StateType : Any, Output : StateType> MutableStateFlow<RefreshableUiState<StateType>>.streamFrom(
@@ -25,10 +25,10 @@ suspend fun <Key : Any, StateType : Any, Output : StateType> MutableStateFlow<Re
 ) = store.stream(StoreRequest.cached(key, true)).collectLatest { update(it) }
 
 @Suppress("TooGenericExceptionCaught")
-suspend inline fun <K : Any, V : Any> refreshStateFlowFromStore(
-    flow: MutableStateFlow<RefreshableUiState<V>>?,
-    store: Store<K, V>,
-    key: K
+suspend inline fun <Key : Any, StateType : Any, Output : StateType> refreshStateFlowFromStore(
+    flow: MutableStateFlow<RefreshableUiState<StateType>>?,
+    store: Store<Key, Output>,
+    key: Key
 ) {
     flow?.update(Result.Loading)
     try {
