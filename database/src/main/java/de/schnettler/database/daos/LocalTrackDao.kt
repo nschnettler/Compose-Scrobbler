@@ -8,6 +8,7 @@ import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("MaxLineLength")
 @Dao
 abstract class LocalTrackDao : BaseDao<LocalTrack> {
     @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC LIMIT :limit")
@@ -43,4 +44,7 @@ abstract class LocalTrackDao : BaseDao<LocalTrack> {
 
     @Query("DELETE FROM localTracks WHERE status = :include")
     abstract fun deleteByStatus(include: ScrobbleStatus = ScrobbleStatus.PLAYING)
+
+    @Query("UPDATE localTracks SET album = :album, artist = :artist, name = :track WHERE timestamp = :timestamp")
+    abstract suspend fun updateTrackData(timestamp: Long, track: String, artist: String, album: String)
 }
