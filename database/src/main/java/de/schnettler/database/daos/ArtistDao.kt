@@ -25,4 +25,7 @@ abstract class ArtistDao : BaseDao<Artist> {
 
     @Query("UPDATE artists SET imageUrl = :url WHERE id = :id")
     abstract suspend fun updateArtistImageUrl(id: String, url: String): Int
+
+    @Query("SELECT imageUrl FROM artists WHERE id = :id")
+    abstract fun getArtistImageUrl(id: String): String?
 }

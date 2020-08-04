@@ -11,7 +11,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.collectValue
-import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmEntity.Artist
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -44,7 +44,7 @@ class BaseDaoTest {
         database.artistDao().insert(artist)
 
         // WHEN - Artist data changes and is updated in db
-        val newArtist = artist.copy(url = "NewUrl", plays = 10)
+        val newArtist = artist.copy(url = "NewUrl")
         database.artistDao().forceInsert(newArtist)
         val loadedArtist = database.artistDao().getArtist(newArtist.id)
 
@@ -62,7 +62,7 @@ class BaseDaoTest {
         database.artistDao().insert(artist)
 
         // WHEN - Artist data changes and is updated in db
-        val newArtist = artist.copy(url = "NewUrl", plays = 10)
+        val newArtist = artist.copy(url = "NewUrl")
         database.artistDao().insert(newArtist)
         val loadedArtist = database.artistDao().getArtist(newArtist.id)
 
