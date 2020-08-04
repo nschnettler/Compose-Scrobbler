@@ -28,14 +28,14 @@ import androidx.ui.foundation.animation.fling
 import androidx.ui.foundation.gestures.draggable
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.layout.Stack
-import androidx.ui.layout.offset
+import androidx.ui.layout.offsetPx
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredSize
 import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Surface
 import androidx.ui.unit.dp
 import androidx.ui.util.fastFirstOrNull
-import kotlin.math.sign
+import androidx.ui.util.lerp
 
 private val SWIPE_DISTANCE_SIZE = 100.dp
 private const val SWIPE_DOWN_OFFSET = 1.2f
@@ -45,35 +45,31 @@ fun SwipeToRefreshLayout(
     refreshingState: Boolean,
     onRefresh: () -> Unit,
     refreshIndicator: @Composable() () -> Unit,
+    dragCoefficient: Float = 0.5f,
     content: @Composable() () -> Unit
 ) {
     val size = with(DensityAmbient.current) { SWIPE_DISTANCE_SIZE.toPx() }
     // min is below negative to hide
     val min = -size
     val max = size * SWIPE_DOWN_OFFSET
-    val dragPosition = state { 0f }
-    Box(
-        Modifier.stateDraggable(
-        state = refreshingState,
-        onStateChange = { shouldRefresh -> if (shouldRefresh) onRefresh() },
-        anchorsToState = listOf(min to false, max to true),
-        minValue = min,
-        maxValue = max,
-        animationSpec = TweenSpec(),
-        orientation = Orientation.Vertical,
-        onNewValue = { newValue ->
-            dragPosition.value = newValue
-        }
-    )) {
-        val dpOffset = with(DensityAmbient.current) {
-            (dragPosition.value * 0.5f).toDp()
-        }
-        Stack {
-            content()
-            Box(Modifier.gravity(Alignment.TopCenter).offset(0.dp, dpOffset)) {
-                if (dragPosition.value != min) {
-                    refreshIndicator()
-                }
+    val dragPosition = state { max }
+
+    Stack(
+        modifier = Modifier.stateDraggable(
+            state = refreshingState,
+            onStateChange = { shouldRefresh -> if (shouldRefresh) onRefresh() },
+            anchorsToState = listOf(min to false, max to true),
+            animationSpec = TweenSpec(),
+            orientation = Orientation.Vertical,
+            minValue = min,
+            maxValue = max,
+            onNewValue = { dragPosition.value = it * dragCoefficient }
+        )
+    ) {
+        content()
+        Box(Modifier.gravity(Alignment.TopCenter).offsetPx(y = dragPosition)) {
+            if (dragPosition.value != min) {
+                refreshIndicator()
             }
         }
     }
@@ -89,33 +85,36 @@ fun SwipeRefreshPrograssIndicator() {
 // Copied from ui/ui-material/src/main/java/androidx/ui/material/internal/StateDraggable.kt
 
 /**
- * Higher-level component that allows dragging around anchored positions binded to different states
+ * Enable automatic drag and animation between predefined states.
  *
- * Example might be a Switch which you can drag between two states (true or false).
+ * This can be used for example in a Switch to enable dragging between two states (true and
+ * false). Additionally, it will animate correctly when the value of the state parameter is changed.
  *
- * Additional features compared to regular [draggable] modifier:
- * 1. The AnimatedFloat hosted inside and its value will be in sync with call site state
+ * Additional features compared to [draggable]:
+ * 1. [onNewValue] provides the developer with the new value every time drag or animation (caused
+ * by fling or [state] change) occurs. The developer needs to hold this state on their own
  * 2. When the anchor is reached, [onStateChange] will be called with state mapped to this anchor
  * 3. When the anchor is reached and [onStateChange] with corresponding state is called, but
  * call site didn't update state to the reached one for some reason,
  * this component performs rollback to the previous (correct) state.
  * 4. When new [state] is provided, component will be animated to state's anchor
  *
- * children of this composable will receive [AnimatedFloat] class from which
- * they can read current value when they need or manually animate.
- *
  * @param T type with which state is represented
  * @param state current state to represent Float value with
  * @param onStateChange callback to update call site's state
  * @param anchorsToState pairs of anchors to states to map anchors to state and vise versa
- * @param animationBuilder animation which will be used for animations
- * @param dragDirection direction in which drag should be happening.
- * Either [DragDirection.Vertical] or [DragDirection.Horizontal]
+ * @param animationSpec animation which will be used for animations
+ * @param orientation orientation of the drag
+ * @param thresholds the thresholds between anchors that determine which anchor to fling to when
+ * dragging stops, represented as a lambda that takes a pair of anchors and returns a value
+ * between them (note that the order of the anchors matters as it indicates the drag direction)
+ * @param enabled whether or not this Draggable is enabled and should consume events
+ * @param reverseDirection reverse the direction of the scroll, so top to bottom scroll will
+ * behave like bottom to top and left to right will behave like right to left.
  * @param minValue lower bound for draggable value in this component
  * @param maxValue upper bound for draggable value in this component
- * @param enabled whether or not this Draggable is enabled and should consume events
+ * @param onNewValue callback to update state that the developer owns when animation or drag occurs
  */
-// TODO(malkov/tianliu) (figure our how to make it better and make public)
 @Suppress("LongParameterList", "LongMethod")
 internal fun <T> Modifier.stateDraggable(
     state: T,
@@ -148,7 +147,7 @@ internal fun <T> Modifier.stateDraggable(
         adjustTarget = { target ->
             // Find the two anchors the target lies between.
             val a = anchors.filter { it <= target }.maxOrNull()
-            val b = anchors.filter { it >= target }.minOrNull()
+            val b = anchors.filter { it >= target }.maxOrNull()
             // Compute which anchor to fling to.
             val adjusted: Float =
                 if (a == null && b == null) {
@@ -204,11 +203,6 @@ internal fun <T> Modifier.stateDraggable(
 }
 
 /**
- * Fixed anchors thresholds. Each threshold will be at an [offset] away from the first anchor.
- */
-internal fun fixedThresholds(offset: Float): (Float, Float) -> Float =
-    { fromAnchor, toAnchor -> fromAnchor + offset * sign(toAnchor - fromAnchor) }
-/**
  * Fractional thresholds. Each threshold will be at a [fraction] of the way between the two anchors.
  */
 internal fun fractionalThresholds(
@@ -225,6 +219,3 @@ private class NotificationBasedAnimatedFloat(
             field = value
         }
 }
-
-internal fun lerp(start: Float, stop: Float, fraction: Float) =
-    (start * (1 - fraction) + stop * fraction)
