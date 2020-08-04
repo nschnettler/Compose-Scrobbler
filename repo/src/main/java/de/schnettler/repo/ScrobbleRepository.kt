@@ -6,6 +6,7 @@ import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.util.createBody

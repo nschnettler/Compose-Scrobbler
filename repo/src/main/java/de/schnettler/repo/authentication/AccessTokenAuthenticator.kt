@@ -1,17 +1,16 @@
 package de.schnettler.repo.authentication
 
 import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class AccessTokenAuthenticator @Inject constructor(
-    private val provider: SpotifyAuthProvider,
-    private val context: CoroutineContext
+    private val provider: SpotifyAuthProvider
 ) : Authenticator {
 
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -23,11 +22,11 @@ class AccessTokenAuthenticator @Inject constructor(
         )) {
             false -> println("No Token to refresh")
             true -> {
-                var currentToken = runBlocking(context) { provider.getToken() }
+                var currentToken = runBlocking(GlobalScope.coroutineContext) { provider.getToken() }
 
                 if (currentToken.token == response.request.headers["Authorization"]?.removePrefix("Bearer ")) {
                     println("Request new Token")
-                    currentToken = runBlocking(context) { provider.refreshToken() }
+                    currentToken = runBlocking(GlobalScope.coroutineContext) { provider.refreshToken() }
                 }
 
                 val request = response.request

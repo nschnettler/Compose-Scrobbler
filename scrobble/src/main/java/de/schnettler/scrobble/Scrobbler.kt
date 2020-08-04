@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.ServiceCoroutineScope
+import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.scrobble.work.RESULT_COUNT
 import de.schnettler.scrobble.work.RESULT_DESCRIPTION

@@ -4,7 +4,7 @@ import androidx.compose.Composable
 import androidx.ui.layout.Column
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
-import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.components.ListingCard
 import de.schnettler.scrobbler.util.Orientation
@@ -15,9 +15,8 @@ fun ListingCardPreview() {
         Column {
             val artist = Artist(
                 name = "Dreamcatcher",
-                url = "Url",
-                userPlays = 10,
-                plays = 20)
+                url = "Url"
+            )
             ListingCard(
                 onEntrySelected = {},
                 plays = 10,
@@ -39,16 +38,11 @@ fun HorizontalListingScrollerPreview() {
     val artists = listOf(
         Artist(
             name = "Dreamcatcher",
-            url = "Url",
-            userPlays = 10,
-            plays = 20
+            url = "Url"
         ),
         Artist(
             name = "All time Low",
-            url = "Url",
-            userPlays = 10,
-            plays = 20
-        )
+            url = "Url")
     )
     Recyclerview(
         items = artists,

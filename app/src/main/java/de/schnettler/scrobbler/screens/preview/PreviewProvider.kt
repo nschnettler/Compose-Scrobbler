@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.screens.preview
 
 import androidx.ui.tooling.preview.PreviewParameterProvider
-import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 
@@ -28,8 +28,6 @@ class FakeTopListEntry : PreviewParameterProvider<Artist> {
 
     private fun generateArtist(): Artist {
         return Artist(name = "Dreamcatcher",
-            url = "Url",
-            userPlays = 10,
-            plays = 20)
+            url = "Url")
     }
 }

@@ -9,7 +9,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.AppDatabase
 import de.schnettler.database.collectValue
-import de.schnettler.database.models.Artist
+import de.schnettler.database.models.LastFmEntity.Artist
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before

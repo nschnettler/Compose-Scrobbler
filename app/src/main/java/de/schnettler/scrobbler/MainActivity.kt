@@ -24,7 +24,6 @@ import androidx.ui.text.style.TextOverflow
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.database.models.CommonEntity
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.ChartScreen
@@ -64,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         openUrlInCustomTab(url)
     }
 
-    private lateinit var onListingClicked: (CommonEntity) -> Unit
+    private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
         AppRoute.ChartRoute,
@@ -89,14 +88,7 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme(colors = colorPalette) {
                 Router(start = startScreen) { currentRoute ->
                     onListingClicked = {
-                        when (it) {
-                            is LastFmEntity -> this.push(
-                                AppRoute.DetailRoute(
-                                    item = it,
-                                    onOpenInBrowser = onOpenInBrowser
-                                )
-                            )
-                        }
+                        this.push(AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                     }
 
                     Scaffold(

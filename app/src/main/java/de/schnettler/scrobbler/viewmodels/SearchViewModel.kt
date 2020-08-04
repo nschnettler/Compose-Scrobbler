@@ -4,7 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreRequest
-import de.schnettler.database.models.LastFmStatsEntity
+import de.schnettler.database.models.BaseEntity
 import de.schnettler.repo.SearchQuery
 import de.schnettler.repo.SearchRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -23,7 +23,7 @@ class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepos
     private val _searchQuery: MutableStateFlow<SearchQuery> = MutableStateFlow(SearchQuery("", 0))
     val searchQuery: StateFlow<SearchQuery>
         get() = _searchQuery
-    val state: MutableStateFlow<RefreshableUiState<List<LastFmStatsEntity>>> =
+    val state: MutableStateFlow<RefreshableUiState<List<BaseEntity>>> =
         MutableStateFlow(RefreshableUiState.Success(null, true))
 
     fun updateQuery(new: String) {

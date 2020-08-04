@@ -15,9 +15,10 @@ import androidx.ui.material.ListItem
 import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
-import de.schnettler.database.models.Artist
-import de.schnettler.database.models.CommonEntity
-import de.schnettler.database.models.Track
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.database.models.LastFmEntity.Track
+import de.schnettler.database.models.TopListArtist
+import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.formatter
 
@@ -32,12 +33,12 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 }
 
 @Composable
-fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntity) -> Unit) {
+fun GenericAdapterList(data: List<Toplist>, onListingSelected: (LastFmEntity) -> Unit) {
     LazyColumnItems(items = data) { item ->
         when (item) {
-            is Artist -> HistoryItem(
-                listing = item,
-                subTitle = "${formatter.format(item.listeners)} Listener ⦁ ${formatter.format(item.plays)} Plays",
+            is TopListArtist -> HistoryItem(
+                listing = item.value,
+                subTitle = "${formatter.format(item.listing.count)} Listener",
                 onListingSelected = onListingSelected
             )
         }
@@ -47,9 +48,9 @@ fun GenericAdapterList(data: List<CommonEntity>, onListingSelected: (CommonEntit
 
 @Composable
 fun HistoryItem(
-    listing: CommonEntity,
+    listing: LastFmEntity,
     subTitle: String,
-    onListingSelected: (CommonEntity) -> Unit,
+    onListingSelected: (LastFmEntity) -> Unit,
     trailingText: String? = null
 ) {
     ListItem(

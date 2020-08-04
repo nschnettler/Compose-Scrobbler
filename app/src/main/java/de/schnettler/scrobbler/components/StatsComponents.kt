@@ -15,7 +15,7 @@ import androidx.ui.layout.width
 import androidx.ui.material.IconButton
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
-import de.schnettler.database.models.LastFmStatsEntity
+import de.schnettler.database.models.Stats
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.formatter
 
@@ -49,7 +49,7 @@ fun QuickActionsRow(items: List<Pair<Int, () -> Unit>>) {
 }
 
 @Composable
-fun ListeningStats(item: LastFmStatsEntity) = StatsRow(
+fun ListeningStats(item: Stats) = StatsRow(
     items = listOf(
         R.drawable.ic_round_play_circle_outline_24 to item.plays,
         R.drawable.ic_round_hearing_24 to item.userPlays,

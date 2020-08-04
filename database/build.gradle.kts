@@ -11,6 +11,12 @@ android {
         minSdkVersion(24)
         targetSdkVersion(29)
         testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.incremental"] = "true"
+            }
+        }
     }
 
     testOptions.unitTests {

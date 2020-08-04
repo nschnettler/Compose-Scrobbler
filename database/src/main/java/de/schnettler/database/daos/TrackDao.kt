@@ -2,37 +2,39 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.database.models.Track
-import de.schnettler.database.models.TrackWithAlbum
+import androidx.room.Transaction
+import de.schnettler.database.models.EntityWithInfo
+import de.schnettler.database.models.EntityWithStats.TrackWithStats
+import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.database.models.LastFmEntity.Track
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("MaxLineLength")
 @Dao
-abstract class TrackDao : BaseRelationsDao<Track> {
+abstract class TrackDao : BaseDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
-    abstract fun getTrack(id: String, artist: String): Flow<TrackWithAlbum?>
+    abstract fun getTrack(id: String, artist: String): Flow<Track?>
+
+    @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
+    abstract fun getTrackWithMetadata(id: String, artist: String): Flow<TrackWithStatsAndInfo?>
 
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract suspend fun getSingletTrack(id: String, artist: String): Track?
 
-    @Query("SELECT imageUrl FROM tracks WHERE id = :id")
-    abstract fun getTrackImageUrl(id: String): String?
+    @Query("SELECT * FROM tracks INNER JOIN stats ON tracks.id = stats.id WHERE tracks.artist = :artist ORDER BY stats.plays DESC LIMIT 5")
+    abstract fun getTopTracksOfArtist(artist: String): Flow<List<TrackWithStats>>
 
-    @Query("UPDATE tracks SET imageUrl = :url WHERE id = :id")
-    abstract fun updateImageUrl(url: String, id: String): Int
+    @Query("SELECT * FROM tracks WHERE artist = :artist and album = :album")
+    abstract fun getTracksFromAlbum(artist: String, album: String): Flow<List<EntityWithInfo.TrackWithInfo>>
 
-    @Query("UPDATE tracks SET plays = :plays, listeners = :listeners WHERE id = :trackId and artist = :artistId")
-    abstract fun updateStats(plays: Long, listeners: Long, trackId: String, artistId: String)
+    @Query("UPDATE tracks SET album = :album WHERE id = :id")
+    abstract fun updateAlbum(id: String, album: String)
 
-    @Query("SELECT * FROM tracks WHERE album = :album and artist = :artist ORDER BY rank ASC")
-    abstract fun getAlbumTracks(album: String, artist: String): Flow<List<Track>>
-
-    suspend fun insertOrUpdateStats(tracks: List<Track>) {
-        val result = insertAll(tracks)
-        result.forEachIndexed { index, value ->
-            if (value == -1L) {
-                val track = tracks[index]
-                updateStats(track.plays, track.listeners, track.id, track.artist)
-            }
+    @Transaction
+    open fun insertTrackOrUpdateAlbum(track: Track) {
+        val result = insert(track)
+        if (result == -1L && track.album != null) {
+            updateAlbum(id = track.id, album = track.album)
         }
     }
 }

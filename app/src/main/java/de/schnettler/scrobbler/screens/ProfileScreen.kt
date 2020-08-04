@@ -34,7 +34,7 @@ import androidx.ui.material.TextButton
 import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.CommonEntity
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ErrorSnackbar
@@ -54,7 +54,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onListingSelected: (CommonEntity) -> Unit) {
+fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Unit) {
 
     val userState by model.userState.collectAsState()
     val artistState by model.artistState.collectAsState()
