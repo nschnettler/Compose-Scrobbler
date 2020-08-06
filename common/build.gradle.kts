@@ -1,7 +1,6 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    id("net.saliman.properties")
 }
 
 android {
@@ -12,15 +11,15 @@ android {
         targetSdkVersion(29)
     }
 
-    val lastFmApiKey: String by project
-    val lastFmSecret: String by project
-    val spotifyAuthorization: String by project
+    val lastfmKey: String? by project
+    val lastFmSecret: String? by project
+    val spotifyAuth: String? by project
 
     buildTypes {
         buildTypes.forEach {
-            it.buildConfigField("String", "LASTFM_API_KEY", lastFmApiKey)
-            it.buildConfigField("String", "LASTFM_SECRET", lastFmSecret)
-            it.buildConfigField("String", "SPOTIFY_AUTH", spotifyAuthorization)
+            it.buildConfigField("String", "LASTFM_API_KEY", lastfmKey ?: "\"\"")
+            it.buildConfigField("String", "LASTFM_SECRET", lastFmSecret ?: "\"\"")
+            it.buildConfigField("String", "SPOTIFY_AUTH", spotifyAuth ?: "\"\"")
         }
     }
 }
