@@ -10,23 +10,21 @@ import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.wrapContentWidth
 import androidx.ui.material.CircularProgressIndicator
-import androidx.ui.material.Divider
 import androidx.ui.material.ListItem
-import androidx.ui.res.colorResource
+import androidx.ui.material.MaterialTheme
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.formatter
 
 @Composable
 fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
     Box(modifier = modifier, gravity = ContentGravity.Center) {
         CircularProgressIndicator(
-            color = colorResource(id = R.color.colorAccent),
+            color = MaterialTheme.colors.secondary,
             modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
         )
     }
@@ -42,7 +40,7 @@ fun GenericAdapterList(data: List<Toplist>, onListingSelected: (LastFmEntity) ->
                 onListingSelected = onListingSelected
             )
         }
-        Divider(color = colorResource(id = R.color.colorStroke))
+        CustomDivider()
     }
 }
 

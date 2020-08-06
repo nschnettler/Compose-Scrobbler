@@ -6,8 +6,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Providers
 import androidx.ui.core.setContent
-import androidx.ui.foundation.isSystemInDarkTheme
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
@@ -17,9 +15,8 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.AppContent
 import de.schnettler.scrobbler.screens.ToolBar
+import de.schnettler.scrobbler.theme.AppTheme
 import de.schnettler.scrobbler.util.REDIRECT_URL
-import de.schnettler.scrobbler.util.darkThemeColors
-import de.schnettler.scrobbler.util.lightThemeColors
 import de.schnettler.scrobbler.util.openUrlInCustomTab
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -70,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             Providers(
                 AmbientBackPressHandler provides backPressHandler
             ) {
-                MaterialTheme(colors = if (isSystemInDarkTheme()) darkThemeColors else lightThemeColors) {
+                AppTheme {
                     Router(defaultRouting = startScreen) { backstack ->
                         onListingClicked = {
                             backstack.push(

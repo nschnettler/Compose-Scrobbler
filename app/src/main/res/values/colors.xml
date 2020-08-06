@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFF</color>
     <color name="colorPrimaryDark">#b2b2b3</color>
-    <color name="colorAccent">#7E8ACD</color>
     <color name="colorBackground">#FFF</color>
-    <color name="colorBackgroundElevated">#F3F3F3</color>
-    <color name="colorStroke">#0d000000</color>
-    <color name="navigationBar">@color/colorBackground</color>
 </resources>

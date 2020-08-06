@@ -9,8 +9,7 @@ import androidx.ui.layout.padding
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Snackbar
 import androidx.ui.material.TextButton
-import androidx.ui.unit.dp
-import de.schnettler.scrobbler.util.PADDING_16
+import de.schnettler.scrobbler.theme.PADDING_16
 import de.schnettler.scrobbler.util.RefreshableUiState
 import kotlinx.coroutines.delay
 
@@ -31,7 +30,7 @@ fun ErrorSnackbar(
         }
 
         Snackbar(
-            modifier = modifier.padding(PADDING_16.dp),
+            modifier = modifier.padding(PADDING_16),
             text = { Text(text = state.errorMessage ?: state.exception?.message ?: fallBackMessage) },
             action = {
                 TextButton(

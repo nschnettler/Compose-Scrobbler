@@ -20,7 +20,6 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.material.FilledTextField
 import androidx.ui.material.ListItem
-import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.BaseEntity
@@ -29,10 +28,11 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.Divider
+import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
+import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.formatter
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
@@ -60,7 +60,8 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit)
                     imeAction = ImeAction.Search,
                     onImeActionPerformed = { _, controller ->
                         controller?.hideSoftwareKeyboard()
-                    }
+                    },
+                    backgroundColor = AppColor.BackgroundElevated
                 )
             }
             SelectableChipRow(
@@ -132,6 +133,6 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                 )
             }
         }
-        Divider(color = colorResource(id = R.color.colorStroke), startIndent = 72.dp)
+        CustomDivider(startIndent = 72.dp)
     }
 }

@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.components
 
-import androidx.annotation.ColorRes
 import androidx.compose.Composable
 import androidx.ui.core.ContentScale
 import androidx.ui.core.Modifier
@@ -13,7 +12,7 @@ import androidx.ui.foundation.drawBackground
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.foundation.lazy.LazyRowItems
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
+import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.aspectRatio
 import androidx.ui.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.ui.layout.preferredWidth
 import androidx.ui.material.Card
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
-import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.Dp
@@ -34,11 +32,10 @@ import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.util.CARD_CORNER_RADIUS
+import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.theme.PADDING_4
+import de.schnettler.scrobbler.theme.PADDING_8
 import de.schnettler.scrobbler.util.Orientation
-import de.schnettler.scrobbler.util.PADDING_4
-import de.schnettler.scrobbler.util.PADDING_8
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.firstLetter
@@ -102,12 +99,9 @@ fun ListingCard(
     val width = height - 12.dp - titleTextSize - subtitleTextsize
 
     Column(
-        Modifier.preferredSize(width = width, height = height).padding(horizontal = PADDING_8.dp)
+        Modifier.preferredSize(width = width, height = height).padding(horizontal = PADDING_8)
     ) {
-        Card(
-            shape = RoundedCornerShape(CARD_CORNER_RADIUS.dp),
-            modifier = Modifier.fillMaxSize().padding(bottom = PADDING_8.dp)
-        ) {
+        Card(modifier = Modifier.fillMaxSize().padding(bottom = PADDING_8)) {
             Column(modifier = Modifier.clickable(onClick = { onEntrySelected() })) {
                 CardBackdrop(width = width, imageUrl = imageUrl, placeholderText = name)
                 CardContent(
@@ -161,10 +155,10 @@ fun CardContent(
     // TODO: Replace dp -> sp with sp -> dp logic
     Column(
         modifier = Modifier.padding(
-            top = PADDING_4.dp,
-            start = PADDING_8.dp,
-            end = PADDING_8.dp,
-            bottom = PADDING_8.dp
+            top = PADDING_4,
+            start = PADDING_8,
+            end = PADDING_8,
+            bottom = PADDING_8
         )
     ) {
         Text(
@@ -265,11 +259,11 @@ fun NameListIcon(title: String) {
 
 @Composable
 fun PlainListIconBackground(
-    @ColorRes color: Int = R.color.colorBackgroundElevated,
+    color: Color = AppColor.BackgroundElevated,
     content: @Composable () -> Unit
 ) {
     Surface(
-        color = colorResource(id = color),
+        color = color,
         shape = CircleShape,
         modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)
     ) {

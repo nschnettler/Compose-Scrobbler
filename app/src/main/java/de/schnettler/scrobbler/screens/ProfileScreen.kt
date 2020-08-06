@@ -8,21 +8,18 @@ import androidx.compose.state
 import androidx.compose.stateFor
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
-import androidx.ui.core.tag
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.selection.selectable
 import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
+import androidx.ui.layout.preferredSize
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
@@ -31,7 +28,6 @@ import androidx.ui.material.RadioButton
 import androidx.ui.material.RadioGroup
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
-import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.LastFmEntity
@@ -42,7 +38,7 @@ import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListScroller
-import de.schnettler.scrobbler.util.cardCornerRadius
+import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
@@ -122,7 +118,7 @@ fun UserInfoComponent(user: User) {
             start = defaultSpacerSize,
             end = defaultSpacerSize,
             top = defaultSpacerSize
-        ), shape = RoundedCornerShape(cardCornerRadius)
+        )
     ) {
         val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
             .atZone(ZoneId.systemDefault())
@@ -142,12 +138,8 @@ fun UserInfoComponent(user: User) {
                     )
                 },
                 icon = {
-                    Surface(color = colorResource(id = R.color.colorStroke), shape = CircleShape) {
-                        Box(
-                            modifier = Modifier.tag("image").preferredHeight(56.dp).preferredWidth(
-                                56.dp
-                            )
-                        ) {
+                    Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
+                        Box(Modifier.preferredSize(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
                                 CoilImage(data = user.imageUrl, modifier = Modifier.fillMaxSize())
                             }

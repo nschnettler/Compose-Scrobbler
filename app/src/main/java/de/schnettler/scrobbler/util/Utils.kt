@@ -6,7 +6,6 @@ import androidx.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
 
 val defaultSpacerSize = 16.dp
-val cardCornerRadius = 12.dp
 
 fun LocalTrack.copyByState(
     trackState: State<TextFieldValue>,

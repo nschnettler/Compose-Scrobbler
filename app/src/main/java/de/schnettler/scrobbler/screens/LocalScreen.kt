@@ -28,13 +28,11 @@ import androidx.ui.layout.preferredWidth
 import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
 import androidx.ui.material.Card
-import androidx.ui.material.Divider
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.FilledTextField
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
-import androidx.ui.res.colorResource
 import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
@@ -44,6 +42,7 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.NameListIcon
@@ -202,7 +201,7 @@ fun NowPlayingTrack(name: String, artist: String, onClick: () -> Unit) {
             text = { Text(name) },
             secondaryText = { Text(artist) },
             icon = {
-                PlainListIconBackground(color = R.color.colorAccent) {
+                PlainListIconBackground(MaterialTheme.colors.secondary) {
                     Icon(
                         asset = vectorResource(id = R.drawable.ic_round_music_note_24),
                         tint = Color.White
@@ -234,7 +233,7 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
                         timestamp = track.timestamp
                     )
                     else Spacer(modifier = Modifier.preferredHeight(16.dp))
-                    Divider()
+                    CustomDivider()
                     ComposeQuickActions(track.isCached(), onClick)
                 }
             }
@@ -256,7 +255,7 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
             }
         }
     )
-    Divider(color = colorResource(id = R.color.colorStroke))
+    CustomDivider()
 }
 
 @Composable

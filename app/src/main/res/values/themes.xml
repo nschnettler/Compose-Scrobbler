@@ -1,7 +1,7 @@
 <resources>
     <style name="AppTheme" parent="BaseAppTheme"/>
 
-    <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:colorBackground">@color/colorBackground</item>
     </style>

@@ -90,9 +90,6 @@ dependencies {
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
 
-    // Google
-    implementation(Google.android.material)
-
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.jakewharton.threetenabp", "threetenabp", "_")

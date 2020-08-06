@@ -16,14 +16,12 @@ import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.EmphasisAmbient
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ProvideEmphasis
-import androidx.ui.res.colorResource
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontFamily
 import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import androidx.ui.unit.sp
-import de.schnettler.scrobbler.R
 
 @Composable
 fun TitleComponent(title: String) {
@@ -38,7 +36,7 @@ fun TitleWithLoadingIndicator(title: String, loading: Boolean) {
         TitleComponent(title = title)
         if (loading) {
             CircularProgressIndicator(
-                color = colorResource(id = R.color.colorAccent),
+                color = MaterialTheme.colors.secondary,
                 strokeWidth = 2.dp,
                 modifier = Modifier.size(24.dp) + Modifier.gravity(Alignment.CenterVertically))
         }

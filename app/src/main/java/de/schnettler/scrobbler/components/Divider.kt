@@ -10,15 +10,14 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
-import androidx.ui.material.MaterialTheme
 import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
-import de.schnettler.scrobbler.util.COLOR_NORMAL_ALPHA
+import de.schnettler.scrobbler.theme.AppColor
 
 @Composable
-fun Divider(
+fun CustomDivider(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.onSurface.copy(alpha = COLOR_NORMAL_ALPHA),
+    color: Color = AppColor.Divider,
     thickness: Dp = 1.dp,
     startIndent: Dp = 0.dp,
     vertical: Boolean = false

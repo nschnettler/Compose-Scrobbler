@@ -8,7 +8,6 @@ import androidx.ui.foundation.ScrollableColumn
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
 import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.Column
 import androidx.ui.layout.ExperimentalLayout
 import androidx.ui.layout.Row
@@ -21,17 +20,15 @@ import androidx.ui.layout.preferredWidth
 import androidx.ui.material.Card
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
-import androidx.ui.res.colorResource
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
-import de.schnettler.scrobbler.util.cardCornerRadius
+import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.fromHtmlLastFm
 import dev.chrisbanes.accompanist.coil.CoilImage
 
@@ -70,14 +67,10 @@ fun AlbumDetailScreen(
 @Composable
 fun AlbumArtwork(url: String?) {
     Card(
-        modifier = Modifier.preferredWidth(182.dp)
-            .aspectRatio(1F),
-        shape = RoundedCornerShape(cardCornerRadius)
+        modifier = Modifier.preferredWidth(182.dp).aspectRatio(1F)
     ) {
         Box(
-            modifier = Modifier.fillMaxSize().drawBackground(
-                colorResource(id = R.color.colorStroke)
-            )
+            modifier = Modifier.fillMaxSize().drawBackground(AppColor.BackgroundElevated)
         ) {
             url?.let { url ->
                 CoilImage(data = url, modifier = Modifier.fillMaxSize())
@@ -134,10 +127,9 @@ fun AlbumInfo(
 fun AlbumDescription(description: String?) {
     if (!description.isNullOrBlank()) {
         Card(
-            shape = RoundedCornerShape(cardCornerRadius),
             modifier = Modifier.padding(16.dp).fillMaxSize(),
             elevation = 0.dp,
-            border = Border(1.dp, colorResource(id = R.color.colorStroke))
+            border = Border(1.dp, AppColor.Divider)
         ) {
             ExpandingSummary(description, modifier = Modifier.padding(16.dp))
         }

@@ -18,18 +18,18 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Surface
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.unit.dp
-import de.schnettler.scrobbler.util.CHIP_CORNER_RADIUS
-import de.schnettler.scrobbler.util.COLOR_ACTIVATED_ALPHA
-import de.schnettler.scrobbler.util.COLOR_NORMAL_ALPHA
-import de.schnettler.scrobbler.util.PADDING_8
-import de.schnettler.scrobbler.util.DIVIDER_SIZE
-import de.schnettler.scrobbler.util.PADDING_16
+import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.theme.CHIP_CORNER_RADIUS
+import de.schnettler.scrobbler.theme.COLOR_ACTIVATED_ALPHA
+import de.schnettler.scrobbler.theme.DIVIDER_SIZE
+import de.schnettler.scrobbler.theme.PADDING_16
+import de.schnettler.scrobbler.theme.PADDING_8
 
 @OptIn(ExperimentalLayout::class)
 @Composable
 fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
-    Box(modifier = Modifier.padding(horizontal = PADDING_16.dp)) {
-        FlowRow(mainAxisSpacing = PADDING_8.dp, crossAxisSpacing = PADDING_16.dp) {
+    Box(modifier = Modifier.padding(horizontal = PADDING_16)) {
+        FlowRow(mainAxisSpacing = PADDING_8, crossAxisSpacing = PADDING_16) {
             items.forEach {
                 Chip(text = it, onSelected = { onChipClicked(it) })
             }
@@ -41,10 +41,10 @@ fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
 @Composable
 fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChanged: (Int) -> Unit) {
     Box(
-        modifier = Modifier.padding(horizontal = PADDING_16.dp).drawBorder(
-            size = DIVIDER_SIZE.dp,
-            color = MaterialTheme.colors.onSurface.copy(alpha = 0.12f),
-            shape = RoundedCornerShape(CHIP_CORNER_RADIUS.dp)
+        modifier = Modifier.padding(horizontal = PADDING_16).drawBorder(
+            size = DIVIDER_SIZE,
+            color = AppColor.Divider,
+            shape = RoundedCornerShape(CHIP_CORNER_RADIUS)
         )
     ) {
         Row() {
@@ -54,7 +54,7 @@ fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChange
                         onSelectionChanged(i)
                     }, colorNormal = Color.Transparent)
                     if (i < items.size - 1) {
-                        Divider(vertical = true, startIndent = 8.dp)
+                        CustomDivider(vertical = true, startIndent = 8.dp)
                     }
                 }
             }
@@ -67,12 +67,12 @@ fun Chip(
     text: String,
     selected: Boolean = false,
     colorSelected: Color = MaterialTheme.colors.secondary.copy(COLOR_ACTIVATED_ALPHA),
-    colorNormal: Color = MaterialTheme.colors.onSurface.copy(COLOR_NORMAL_ALPHA),
+    colorNormal: Color = AppColor.BackgroundElevated,
     onSelected: () -> Unit
 ) {
 
     Surface(
-        shape = RoundedCornerShape(CHIP_CORNER_RADIUS.dp),
+        shape = RoundedCornerShape(CHIP_CORNER_RADIUS),
         color = if (selected) colorSelected else colorNormal
     ) {
         Box(

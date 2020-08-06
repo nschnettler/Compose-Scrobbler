@@ -13,24 +13,22 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.layout.ExperimentalLayout
 import androidx.ui.layout.Stack
 import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
 import androidx.ui.layout.preferredHeight
 import androidx.ui.layout.preferredWidth
 import androidx.ui.material.ListItem
 import androidx.ui.material.Surface
-import androidx.ui.res.colorResource
 import androidx.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -109,7 +107,7 @@ fun AlbumCategory(
         },
         icon = {
             Surface(
-                color = colorResource(id = R.color.colorStroke),
+                color = AppColor.BackgroundElevated,
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Box(modifier = Modifier.preferredHeight(60.dp) + Modifier.preferredWidth(60.dp)) {
