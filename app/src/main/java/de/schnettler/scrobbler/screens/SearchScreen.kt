@@ -20,14 +20,16 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.material.FilledTextField
 import androidx.ui.material.ListItem
-import androidx.ui.res.vectorResource
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.outlined.Album
+import androidx.ui.material.icons.outlined.Face
+import androidx.ui.material.icons.rounded.MusicNote
 import androidx.ui.unit.dp
 import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.PlainListIconBackground
@@ -98,7 +100,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                     },
                     icon = {
                         PlainListIconBackground {
-                            Icon(vectorResource(id = R.drawable.ic_outline_account_circle_24))
+                            Icon(Icons.Outlined.Face)
                         }
                     },
                     onClick = { onItemSelected(it.entity) }
@@ -112,7 +114,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                     },
                     icon = {
                         PlainListIconBackground {
-                            Icon(vectorResource(id = R.drawable.ic_outline_album_24))
+                            Icon(Icons.Outlined.Album)
                         }
                     },
                     onClick = { onItemSelected(it) }
@@ -126,7 +128,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                     },
                     icon = {
                         PlainListIconBackground {
-                            Icon(vectorResource(id = R.drawable.ic_round_music_note_24))
+                            Icon(Icons.Rounded.MusicNote)
                         }
                     },
                     onClick = { onItemSelected(it) }

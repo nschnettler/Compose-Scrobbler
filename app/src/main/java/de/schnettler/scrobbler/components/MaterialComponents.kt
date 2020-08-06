@@ -6,7 +6,6 @@ import androidx.ui.foundation.Text
 import androidx.ui.material.BottomNavigation
 import androidx.ui.material.BottomNavigationItem
 import androidx.ui.material.MaterialTheme
-import androidx.ui.res.vectorResource
 import de.schnettler.scrobbler.AppRoute
 
 @Composable
@@ -20,7 +19,7 @@ fun BottomNavigationBar(
             items.forEach { screen ->
                 BottomNavigationItem(
                     icon = {
-                        Icon(asset = vectorResource(id = screen.icon))
+                        Icon(screen.icon)
                     },
                     text = {
                         Text(text = screen.title)

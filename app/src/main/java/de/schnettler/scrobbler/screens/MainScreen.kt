@@ -10,7 +10,6 @@ import androidx.ui.livedata.observeAsState
 import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
-import androidx.ui.res.vectorResource
 import androidx.ui.text.style.TextOverflow
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.AppRoute
@@ -46,7 +45,7 @@ fun ToolBar(currentScreen: AppRoute) {
                         is MenuAction.Period -> menuAction.onClick.invoke()
                     }
                 }) {
-                    Icon(vectorResource(id = menuAction.icon))
+                    Icon(menuAction.icon)
                 }
             }
         },

@@ -16,6 +16,7 @@ import androidx.ui.foundation.Text
 import androidx.ui.foundation.contentColor
 import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.graphics.Color
+import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.input.TextFieldValue
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
@@ -33,7 +34,12 @@ import androidx.ui.material.FilledTextField
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
-import androidx.ui.res.vectorResource
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.outlined.Delete
+import androidx.ui.material.icons.outlined.Edit
+import androidx.ui.material.icons.outlined.OpenInNew
+import androidx.ui.material.icons.rounded.CloudOff
+import androidx.ui.material.icons.rounded.MusicNote
 import androidx.ui.text.style.TextOverflow
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
@@ -41,7 +47,6 @@ import androidx.ui.unit.dp
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobble.MediaListenerService
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
@@ -203,7 +208,7 @@ fun NowPlayingTrack(name: String, artist: String, onClick: () -> Unit) {
             icon = {
                 PlainListIconBackground(MaterialTheme.colors.secondary) {
                     Icon(
-                        asset = vectorResource(id = R.drawable.ic_round_music_note_24),
+                        asset = Icons.Rounded.MusicNote,
                         tint = Color.White
                     )
                 }
@@ -246,7 +251,12 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
                     Text(text = it)
                     Row {
                         if (track.isCached()) {
-                            Icon(asset = vectorResource(id = R.drawable.ic_round_cloud_off_24))
+                            Icon(
+                                asset = Icons.Rounded.CloudOff.copy(
+                                    defaultWidth = 16.dp,
+                                    defaultHeight = 16.dp
+                                )
+                            )
                             Spacer(modifier = Modifier.preferredWidth(8.dp))
                         }
                         if (track.isLocal()) Text(text = "${track.playPercent()} %")
@@ -278,16 +288,16 @@ fun ComposeAdditionalInformation(
 
 @Composable
 fun ComposeQuickActions(isCached: Boolean, onClick: (HistoryActionType) -> Unit) {
-    val actions = mutableListOf<Pair<@androidx.annotation.DrawableRes Int, () -> Unit>>()
+    val actions = mutableListOf<Pair<VectorAsset, () -> Unit>>()
     if (isCached) {
-        actions.add(R.drawable.ic_outline_edit_32 to {
+        actions.add(Icons.Outlined.Edit to {
             onClick.invoke(HistoryActionType.EDIT)
         })
-        actions.add(R.drawable.ic_round_delete_outline_32 to {
+        actions.add(Icons.Outlined.Delete to {
             onClick.invoke(HistoryActionType.DELETE)
         })
     }
-    actions.add(R.drawable.ic_round_open_in_24 to { onClick.invoke(HistoryActionType.OPEN) })
+    actions.add(Icons.Outlined.OpenInNew to { onClick.invoke(HistoryActionType.OPEN) })
     QuickActionsRow(items = actions)
 }
 

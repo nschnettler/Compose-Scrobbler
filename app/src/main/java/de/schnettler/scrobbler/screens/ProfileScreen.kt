@@ -28,11 +28,14 @@ import androidx.ui.material.RadioButton
 import androidx.ui.material.RadioGroup
 import androidx.ui.material.Surface
 import androidx.ui.material.TextButton
+import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.outlined.Face
+import androidx.ui.material.icons.rounded.FavoriteBorder
+import androidx.ui.material.icons.rounded.PlayCircleOutline
 import androidx.ui.unit.dp
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.User
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
@@ -150,9 +153,9 @@ fun UserInfoComponent(user: User) {
 
             StatsRow(
                 items = listOf(
-                    R.drawable.ic_round_play_circle_outline_24 to user.playcount,
-                    R.drawable.account_music_outline to user.artistCount,
-                    R.drawable.ic_round_favorite_border_32 to user.lovedTracksCount
+                    Icons.Rounded.PlayCircleOutline to user.playcount,
+                    Icons.Outlined.Face to user.artistCount,
+                    Icons.Rounded.FavoriteBorder to user.lovedTracksCount
                 )
             )
         }
