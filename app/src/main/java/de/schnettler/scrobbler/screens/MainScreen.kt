@@ -94,6 +94,7 @@ fun AppContent(
                     onTagClicked = onTagClicked
                 )
             }
+            is AppRoute.SettingsRoute -> PreferenceScreen()
         }
     }
 }

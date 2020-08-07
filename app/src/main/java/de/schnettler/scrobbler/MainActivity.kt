@@ -5,12 +5,15 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Providers
+import androidx.preference.PreferenceManager
 import androidx.ui.core.setContent
 import androidx.ui.material.Scaffold
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
 import com.github.zsoltk.compose.backpress.BackPressHandler
 import com.github.zsoltk.compose.router.Router
+import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
+import de.schnettler.composepreferences.AmbientPreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.AppContent
@@ -54,7 +57,8 @@ class MainActivity : AppCompatActivity() {
         AppRoute.SearchRoute,
         AppRoute.ProfileRoute(onFilterClicked = {
             userViewModel.showDialog(true)
-        })
+        }),
+        AppRoute.SettingsRoute
     )
 
     private val startScreen: AppRoute = AppRoute.LocalRoute
@@ -65,7 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             Providers(
-                AmbientBackPressHandler provides backPressHandler
+                AmbientBackPressHandler provides backPressHandler,
+                AmbientPreferences provides FlowSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this))
             ) {
                 AppTheme {
                     Router(defaultRouting = startScreen) { backstack ->

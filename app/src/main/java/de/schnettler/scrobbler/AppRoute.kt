@@ -3,6 +3,7 @@ package de.schnettler.scrobbler
 import androidx.ui.graphics.vector.VectorAsset
 import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.outlined.AccountCircle
+import androidx.ui.material.icons.outlined.Settings
 import androidx.ui.material.icons.rounded.BarChart
 import androidx.ui.material.icons.rounded.History
 import androidx.ui.material.icons.rounded.Search
@@ -29,4 +30,6 @@ sealed class AppRoute(
     )
 
     object SearchRoute : AppRoute("Search", Icons.Rounded.Search)
+
+    object SettingsRoute : AppRoute("Settings", Icons.Outlined.Settings)
 }
