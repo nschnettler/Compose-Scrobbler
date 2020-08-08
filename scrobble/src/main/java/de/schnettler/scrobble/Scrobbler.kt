@@ -1,17 +1,13 @@
 package de.schnettler.scrobble
 
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.preferences.PreferenceConstants
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
@@ -19,25 +15,18 @@ import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION
 import de.schnettler.repo.work.RESULT_TRACKS
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
-import de.schnettler.repo.work.ScrobbleWorker
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.UUID
-import javax.inject.Inject
 
 class Scrobbler @Inject constructor(
-    private val workManager: WorkManager,
+    workManager: WorkManager,
     private val notificationManager: ScrobbleNotificationManager,
     private val repo: ScrobbleRepository,
     private val scope: ServiceCoroutineScope,
     private val authProvider: LastFmAuthProvider,
     private val prefs: FlowSharedPreferences
 ) {
-    private val constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.UNMETERED)
-        .setRequiresBatteryNotLow(true)
-        .build()
-
     init {
         workManager.getWorkInfosForUniqueWorkLiveData(SUBMIT_CACHED_SCROBBLES_WORK)
             .observeForever { workInfos ->
@@ -64,23 +53,11 @@ class Scrobbler @Inject constructor(
 
             // 2. Schedule Workmanager Work
             if (prefs.getBoolean(PreferenceConstants.AUTO_SCROBBLE_KEY, PreferenceConstants.AUTO_SCROBBLE_DEFAULT).get()) {
-                scheduleScrobble()
+                repo.scheduleScrobble()
             }
         } else {
             Timber.d("[Skip] $track")
         }
-    }
-
-    private fun scheduleScrobble(): UUID {
-        val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
-            .setConstraints(constraints)
-            .build()
-        workManager.enqueueUniqueWork(
-            SUBMIT_CACHED_SCROBBLES_WORK,
-            ExistingWorkPolicy.KEEP,
-            request
-        )
-        return request.id
     }
 
     fun notifyNowPlaying(track: LocalTrack?) {

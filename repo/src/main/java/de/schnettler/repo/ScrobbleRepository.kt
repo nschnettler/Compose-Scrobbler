@@ -1,5 +1,10 @@
 package de.schnettler.repo
 
+import androidx.work.Constraints
+import androidx.work.ExistingWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.lastfm.api.lastfm.LastFmService
@@ -11,6 +16,8 @@ import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.repo.mapping.map
 import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
+import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.repo.work.ScrobbleWorker
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,8 +25,14 @@ class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
     private val scope: ServiceCoroutineScope,
     private val service: ScrobblerService,
-    private val authProvider: LastFmAuthProvider
+    private val authProvider: LastFmAuthProvider,
+    private val workManager: WorkManager
 ) {
+    private val constraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.UNMETERED)
+        .setRequiresBatteryNotLow(true)
+        .build()
+
     fun saveTrack(track: LocalTrack) {
         scope.launch {
             localTrackDao.insertOrUpdatTrack(track)
@@ -91,6 +104,17 @@ class ScrobbleRepository @Inject constructor(
         result["format"] = "json"
 
         return service.submitMultipleScrobbles(createBody(result)).map()
+    }
+
+    fun scheduleScrobble() {
+        val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
+            .setConstraints(constraints)
+            .build()
+        workManager.enqueueUniqueWork(
+            SUBMIT_CACHED_SCROBBLES_WORK,
+            ExistingWorkPolicy.KEEP,
+            request
+        )
     }
 }
 
