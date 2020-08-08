@@ -16,6 +16,16 @@ import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
 import de.schnettler.composepreferences.SeekBarPreference
 import de.schnettler.composepreferences.SwitchPreference
+import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.components.CustomDivider
 
 @Composable
@@ -24,25 +34,25 @@ fun PreferenceScreen() {
         SwitchPreference(
             title = "Auto Scrobble",
             summary = "Automatically submit scrobbles",
-            key = "scrobble_auto",
+            key = AUTO_SCROBBLE_KEY,
             singleLineTitle = true,
             icon = Icons.Outlined.CloudUpload,
-            defaultValue = true
+            defaultValue = AUTO_SCROBBLE_DEFAULT
         )
 
         SwitchPreference(
             title = "Submit NowPlaying",
             summary = "Submit nowplaying track to last.fm",
-            key = "submit_nowplaying",
+            key = SUBMIT_NOWPLAYING_KEY,
             singleLineTitle = true,
             icon = Icons.Outlined.MusicNote,
-            defaultValue = true
+            defaultValue = SUBMIT_NOWPLAYING_DEFAULT
         )
 
         MultiSelectListPreference(
             title = "Scrobble Sources",
             summary = "Select media apps which should be scrobbled",
-            key = "scrobble_sources",
+            key = SCROBBLE_SOURCES_KEY,
             singleLineTitle = true,
             icon = Icons.Outlined.Speaker,
             entries = mapOf(
@@ -56,8 +66,8 @@ fun PreferenceScreen() {
         SeekBarPreference(
             title = "Scrobble point",
             summary = "Set the percentage of playback required for a track to scrobble",
-            key = "scrobble_point",
-            defaultValue = 50F,
+            key = SCROBBLE_POINT_KEY,
+            defaultValue = SCROBBLE_POINT_DEFAULT,
             singleLineTitle = true,
             icon = Icons.Outlined.Speed,
             steps = 4,
@@ -65,17 +75,17 @@ fun PreferenceScreen() {
         )
 
         val constraints = mapOf(
-            "unmetered_network" to "Unmetered Network",
-            "battery" to "Battery not low",
+            SCROBBLE_CONSTRAINTS_NETWORK to "Unmetered Network",
+            SCROBBLE_CONSTRAINTS_BATTERY to "Battery not low",
         )
         MultiSelectListPreference(
             title = "Scrobble Constraints",
             summary = "Set constraints which need to be met before submitting scrobbles to last.fm",
-            key = "scrobble_constraints",
+            key = SCROBBLE_CONSTRAINTS_KEY,
             singleLineTitle = true,
             icon = Icons.Outlined.SettingsOverscan,
             entries = constraints,
-            defaultValue = constraints.keys
+            defaultValue = setOf(SCROBBLE_CONSTRAINTS_BATTERY, SCROBBLE_CONSTRAINTS_NETWORK)
         )
 
         CustomDivider()
