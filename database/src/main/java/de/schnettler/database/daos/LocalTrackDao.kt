@@ -17,6 +17,9 @@ abstract class LocalTrackDao : BaseDao<LocalTrack> {
         limit: Int = 50
     ): Flow<List<LocalTrack>>
 
+    @Query("SELECT COUNT(timestamp) FROM localTracks WHERE status = :status")
+    abstract fun getNumberOfCachedScrobbles(status: ScrobbleStatus = ScrobbleStatus.LOCAL): Flow<Int>
+
     @Query("SELECT * FROM localTracks WHERE status = :include LIMIT 1")
     abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<LocalTrack?>
 

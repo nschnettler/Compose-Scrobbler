@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.Result
+import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
@@ -14,11 +15,16 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class LocalViewModel @ViewModelInject constructor(
-    private val repo: LocalRepository
+    private val repo: LocalRepository,
+    private val scrobbleRepo: ScrobbleRepository
 ) : ViewModel() {
 
     val recentTracksState: MutableStateFlow<RefreshableUiState<List<LocalTrack>>> =
             MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
+
+    val cachedScrobblesCOunt by lazy {
+        repo.getNumberOfCachedScrobbles()
+    }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,4 +45,6 @@ class LocalViewModel @ViewModelInject constructor(
             }
         }
     }
+
+    fun scheduleScrobbleSubmission() = scrobbleRepo.scheduleScrobble()
 }

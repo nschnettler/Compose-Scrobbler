@@ -30,11 +30,13 @@ import androidx.ui.material.AlertDialog
 import androidx.ui.material.Button
 import androidx.ui.material.Card
 import androidx.ui.material.EmphasisAmbient
+import androidx.ui.material.ExtendedFloatingActionButton
 import androidx.ui.material.FilledTextField
 import androidx.ui.material.ListItem
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TextButton
 import androidx.ui.material.icons.Icons
+import androidx.ui.material.icons.outlined.CloudUpload
 import androidx.ui.material.icons.outlined.Delete
 import androidx.ui.material.icons.outlined.Edit
 import androidx.ui.material.icons.outlined.OpenInNew
@@ -82,6 +84,7 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity
 @Composable
 fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
     val recentTracksState by localViewModel.recentTracksState.collectAsState()
+    val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showDialog by state { false }
     val selectedTrack: MutableState<LocalTrack?> = state { null }
     val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
@@ -125,6 +128,20 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
             fallBackMessage = "Unable to refresh history",
             modifier = Modifier.gravity(Alignment.BottomCenter)
         )
+        if (cachedNumber > 0) {
+            ExtendedFloatingActionButton(
+                text = {
+                    Text(text = "$cachedNumber Scrobbles")
+                }, onClick = {
+                    localViewModel.scheduleScrobbleSubmission()
+                },
+                icon = {
+                    Icon(asset = Icons.Outlined.CloudUpload)
+                },
+                contentColor = Color.White,
+                modifier = Modifier . gravity (Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+            )
+        }
     }
 
     if (showDialog) {

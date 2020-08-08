@@ -54,4 +54,6 @@ class LocalRepository @Inject constructor(
 
     fun getRecentTracks() = recentTracksStore.stream(StoreRequest.cached("", true))
     suspend fun refreshRecentTracks() = recentTracksStore.fresh("")
+
+    fun getNumberOfCachedScrobbles() = localTrackDao.getNumberOfCachedScrobbles()
 }
