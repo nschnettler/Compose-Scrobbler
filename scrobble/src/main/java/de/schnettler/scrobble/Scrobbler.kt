@@ -6,11 +6,15 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.preferences.PreferenceConstants
+import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION
 import de.schnettler.repo.work.RESULT_TRACKS
@@ -26,7 +30,8 @@ class Scrobbler @Inject constructor(
     private val notificationManager: ScrobbleNotificationManager,
     private val repo: ScrobbleRepository,
     private val scope: ServiceCoroutineScope,
-    private val authProvider: LastFmAuthProvider
+    private val authProvider: LastFmAuthProvider,
+    private val prefs: FlowSharedPreferences
 ) {
     private val constraints = Constraints.Builder()
         .setRequiredNetworkType(NetworkType.UNMETERED)
@@ -58,7 +63,9 @@ class Scrobbler @Inject constructor(
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
 
             // 2. Schedule Workmanager Work
-            scheduleScrobble()
+            if (prefs.getBoolean(PreferenceConstants.AUTO_SCROBBLE_KEY, PreferenceConstants.AUTO_SCROBBLE_DEFAULT).get()) {
+                scheduleScrobble()
+            }
         } else {
             Timber.d("[Skip] $track")
         }
@@ -79,7 +86,7 @@ class Scrobbler @Inject constructor(
     fun notifyNowPlaying(track: LocalTrack?) {
         updateNowPlayingNotification(track)
         Timber.d("[New] $track")
-        track?.let {
+        if (prefs.getBoolean(SUBMIT_NOWPLAYING_KEY, SUBMIT_NOWPLAYING_DEFAULT).get() && track != null) {
             scope.launch {
                 if (authProvider.loggedIn()) {
                     val result = repo.submitNowPlaying(track)
