@@ -1,13 +1,13 @@
 package de.schnettler.repo.di
 
 import android.app.Application
-import android.content.Context
-import android.content.SharedPreferences
 import androidx.work.WorkManager
+import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import de.schnettler.repo.util.defaultSharedPrefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -23,8 +23,10 @@ class ApplicationModule {
     fun provideServiceScope() = serviceCoroutineScope(Job() + Dispatchers.IO)
 
     @Provides
-    fun provideSharedPreferences(application: Application): SharedPreferences =
-        application.getSharedPreferences("sessionPreferences", Context.MODE_PRIVATE)
+    @Singleton
+    fun provideFlowSharedPrefs(application: Application): FlowSharedPreferences = FlowSharedPreferences(
+        application.defaultSharedPrefs()
+    )
 
     @Provides
     fun provideWorkManager(application: Application) = WorkManager.getInstance(application)

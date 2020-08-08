@@ -90,14 +90,12 @@ dependencies {
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
-    implementation(AndroidX.preferenceKtx)
 
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.jakewharton.threetenabp", "threetenabp", "_")
     implementation("com.github.zsoltk", "compose-router", "_")
     debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
-    implementation("com.github.tfcporciuncula", "flow-preferences", "_")
 
     // Dagger
     implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")

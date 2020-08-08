@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Providers
-import androidx.preference.PreferenceManager
 import androidx.ui.core.setContent
 import androidx.ui.material.Scaffold
 import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
@@ -28,6 +27,7 @@ import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -64,13 +64,15 @@ class MainActivity : AppCompatActivity() {
     private val startScreen: AppRoute = AppRoute.LocalRoute
     private val backPressHandler = BackPressHandler()
 
+    @Inject lateinit var sharedPrefs: FlowSharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             Providers(
                 AmbientBackPressHandler provides backPressHandler,
-                AmbientPreferences provides FlowSharedPreferences(PreferenceManager.getDefaultSharedPreferences(this))
+                AmbientPreferences provides sharedPrefs
             ) {
                 AppTheme {
                     Router(defaultRouting = startScreen) { backstack ->

@@ -34,4 +34,5 @@ dependencies {
     kapt("com.google.dagger", "hilt-android-compiler", "_")
     implementation("androidx.hilt", "hilt-work", "_")
     api("com.dropbox.mobile.store", "store4", "_")
+    api("com.github.tfcporciuncula", "flow-preferences", "_")
 }
