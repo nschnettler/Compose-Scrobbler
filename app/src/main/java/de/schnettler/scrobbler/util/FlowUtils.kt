@@ -82,6 +82,9 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
         is StoreResponse.Loading -> RefreshableUiState.Success(
             data = this.value.currentData, loading = true
         )
+        is StoreResponse.NoNewData -> RefreshableUiState.Success(
+            data = this.value.currentData, loading = false
+        )
     }
 }
 
