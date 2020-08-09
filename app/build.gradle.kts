@@ -38,6 +38,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -93,9 +94,9 @@ dependencies {
 
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("com.jakewharton.threetenabp", "threetenabp", "_")
     implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
     debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
+    coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
     // Dagger
     implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")

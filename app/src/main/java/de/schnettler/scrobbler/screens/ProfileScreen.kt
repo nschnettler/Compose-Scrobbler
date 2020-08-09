@@ -46,11 +46,11 @@ import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.FormatStyle
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @Composable
 fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Unit) {
