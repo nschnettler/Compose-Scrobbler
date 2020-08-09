@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
 
     defaultConfig {
         applicationId = "de.schnettler.scrobbler"
         minSdkVersion(24)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
