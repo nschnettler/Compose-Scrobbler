@@ -1,10 +1,10 @@
 package de.schnettler.scrobbler.util
 
 import androidx.annotation.StringRes
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.rounded.Event
-import androidx.ui.material.icons.rounded.OpenInBrowser
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Event
+import androidx.compose.material.icons.rounded.OpenInBrowser
+import androidx.compose.ui.graphics.vector.VectorAsset
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.R
 

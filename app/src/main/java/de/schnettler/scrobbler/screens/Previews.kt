@@ -1,12 +1,12 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.Composable
-import androidx.ui.layout.Column
+import androidx.compose.foundation.layout.Column
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import de.schnettler.database.models.LastFmEntity.Artist
-import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.components.ListingCard
+import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.util.Orientation
 
 @Preview

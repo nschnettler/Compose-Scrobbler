@@ -1,7 +1,8 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.Composable
-import androidx.compose.collectAsState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
 import de.schnettler.database.models.LastFmEntity
@@ -10,8 +11,6 @@ import de.schnettler.scrobbler.components.GenericAdapterList
 import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import timber.log.Timber
-import androidx.compose.getValue
-import androidx.compose.setValue
 
 @Composable
 fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Unit) {

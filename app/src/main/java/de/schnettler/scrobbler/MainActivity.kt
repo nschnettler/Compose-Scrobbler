@@ -4,9 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.Providers
-import androidx.ui.core.setContent
-import androidx.ui.material.Scaffold
+import androidx.compose.material.Scaffold
+import androidx.compose.runtime.Providers
+import androidx.compose.ui.platform.setContent
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences

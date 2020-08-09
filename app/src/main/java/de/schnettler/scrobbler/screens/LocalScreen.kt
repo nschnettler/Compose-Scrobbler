@@ -1,51 +1,51 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Intent
-import androidx.compose.Composable
-import androidx.compose.MutableState
-import androidx.compose.collectAsState
-import androidx.compose.getValue
-import androidx.compose.setValue
-import androidx.compose.state
-import androidx.compose.stateFor
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.contentColor
-import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.Stack
-import androidx.ui.layout.fillMaxSize
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredHeight
-import androidx.ui.layout.preferredWidth
-import androidx.ui.material.AlertDialog
-import androidx.ui.material.Button
-import androidx.ui.material.Card
-import androidx.ui.material.EmphasisAmbient
-import androidx.ui.material.ExtendedFloatingActionButton
-import androidx.ui.material.FilledTextField
-import androidx.ui.material.ListItem
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TextButton
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.CloudUpload
-import androidx.ui.material.icons.outlined.Delete
-import androidx.ui.material.icons.outlined.Edit
-import androidx.ui.material.icons.outlined.OpenInNew
-import androidx.ui.material.icons.rounded.CloudOff
-import androidx.ui.material.icons.rounded.MusicNote
-import androidx.ui.text.style.TextOverflow
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.Card
+import androidx.compose.material.EmphasisAmbient
+import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.FilledTextField
+import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.rounded.CloudOff
+import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.state
+import androidx.compose.runtime.stateFor
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
-import androidx.ui.unit.dp
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.scrobble.MediaListenerService
@@ -81,6 +81,7 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity
     Timber.i("Started Service")
 }
 
+@Suppress("LongMethod")
 @Composable
 fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
     val recentTracksState by localViewModel.recentTracksState.collectAsState()
@@ -139,7 +140,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
                     Icon(asset = Icons.Outlined.CloudUpload)
                 },
                 contentColor = Color.White,
-                modifier = Modifier . gravity (Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+                modifier = Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
             )
         }
     }

@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.screens.details
 
-import androidx.compose.Composable
-import androidx.ui.foundation.ScrollableColumn
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.runtime.Composable
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.ListeningStats

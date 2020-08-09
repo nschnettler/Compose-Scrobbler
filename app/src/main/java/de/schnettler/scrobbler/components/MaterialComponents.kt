@@ -1,11 +1,11 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.Composable
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.material.BottomNavigation
-import androidx.ui.material.BottomNavigationItem
-import androidx.ui.material.MaterialTheme
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 import de.schnettler.scrobbler.AppRoute
 
 @Composable
@@ -21,11 +21,11 @@ fun BottomNavigationBar(
                     icon = {
                         Icon(screen.icon)
                     },
-                    text = {
+                    label = {
                         Text(text = screen.title)
                     },
                     selected = currentScreen::class == screen::class,
-                    onSelected = { onDestinationSelected.invoke(screen) }
+                    onSelect = { onDestinationSelected.invoke(screen) }
                 )
             }
         }

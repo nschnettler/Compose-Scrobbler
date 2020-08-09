@@ -1,8 +1,8 @@
 package de.schnettler.scrobbler.util
 
-import androidx.compose.State
-import androidx.ui.input.TextFieldValue
-import androidx.ui.unit.dp
+import androidx.compose.runtime.State
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.LocalTrack
 
 val defaultSpacerSize = 16.dp

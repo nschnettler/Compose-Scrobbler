@@ -1,41 +1,41 @@
 package de.schnettler.scrobbler.components
 
-import androidx.animation.AnimatedFloat
-import androidx.animation.AnimationClockObservable
-import androidx.animation.AnimationEndReason
-import androidx.animation.AnimationSpec
-import androidx.animation.ExponentialDecay
-import androidx.animation.OnAnimationEnd
-import androidx.animation.Spring
-import androidx.animation.TargetAnimation
-import androidx.animation.TweenSpec
 import androidx.annotation.FloatRange
-import androidx.compose.Composable
-import androidx.compose.onCommit
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.animation.asDisposableClock
-import androidx.ui.core.Alignment
-import androidx.ui.core.AnimationClockAmbient
-import androidx.ui.core.DensityAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.composed
-import androidx.ui.core.gesture.scrollorientationlocking.Orientation
-import androidx.ui.foundation.Box
-import androidx.ui.foundation.InteractionState
-import androidx.ui.foundation.animation.FlingConfig
-import androidx.ui.foundation.animation.fling
-import androidx.ui.foundation.gestures.draggable
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.layout.Stack
-import androidx.ui.layout.offsetPx
-import androidx.ui.layout.padding
-import androidx.ui.layout.preferredSize
-import androidx.ui.material.CircularProgressIndicator
-import androidx.ui.material.Surface
-import androidx.ui.unit.dp
-import androidx.ui.util.fastFirstOrNull
-import androidx.ui.util.lerp
+import androidx.compose.animation.asDisposableClock
+import androidx.compose.animation.core.AnimatedFloat
+import androidx.compose.animation.core.AnimationClockObservable
+import androidx.compose.animation.core.AnimationEndReason
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.ExponentialDecay
+import androidx.compose.animation.core.OnAnimationEnd
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.TargetAnimation
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.fling
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.InteractionState
+import androidx.compose.foundation.animation.FlingConfig
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.offsetPx
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.onCommit
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.gesture.scrollorientationlocking.Orientation
+import androidx.compose.ui.platform.AnimationClockAmbient
+import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastFirstOrNull
+import androidx.compose.ui.util.lerp
 
 private val SWIPE_DISTANCE_SIZE = 100.dp
 private const val SWIPE_DOWN_OFFSET = 1.2f
@@ -78,7 +78,10 @@ fun SwipeToRefreshLayout(
 @Composable
 fun SwipeRefreshPrograssIndicator() {
     Surface(elevation = 10.dp, shape = CircleShape) {
-        CircularProgressIndicator(modifier = Modifier.preferredSize(40.dp).padding(6.dp), strokeWidth = 2.5.dp)
+        CircularProgressIndicator(
+            modifier = Modifier.preferredSize(40.dp).padding(6.dp),
+            strokeWidth = 2.5.dp
+        )
     }
 }
 
@@ -196,7 +199,14 @@ internal fun <T> Modifier.stateDraggable(
         reverseDirection = reverseDirection,
         startDragImmediately = position.isRunning,
         interactionState = interactionState,
-        onDragStopped = { position.fling(it, flingConfig, onAnimationEnd) }
+        onDragStopped = {
+            position.fling(
+                startVelocity = it,
+                decay = flingConfig.decayAnimation,
+                adjustTarget = flingConfig.adjustTarget,
+                onEnd = onAnimationEnd
+            )
+        }
     ) { delta ->
         position.snapTo(position.value + delta)
     }
@@ -208,6 +218,7 @@ internal fun <T> Modifier.stateDraggable(
 internal fun fractionalThresholds(
     @FloatRange(from = 0.0, to = 1.0) fraction: Float
 ): (Float, Float) -> Float = { fromAnchor, toAnchor -> lerp(fromAnchor, toAnchor, fraction) }
+
 private class NotificationBasedAnimatedFloat(
     initial: Float,
     clock: AnimationClockObservable,

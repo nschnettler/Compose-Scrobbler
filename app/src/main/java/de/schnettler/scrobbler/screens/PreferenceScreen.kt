@@ -1,16 +1,16 @@
 package de.schnettler.scrobbler.screens
 
 import android.app.Activity
-import androidx.compose.Composable
-import androidx.ui.core.ContextAmbient
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.CloudUpload
-import androidx.ui.material.icons.outlined.DeleteForever
-import androidx.ui.material.icons.outlined.MusicNote
-import androidx.ui.material.icons.outlined.SettingsOverscan
-import androidx.ui.material.icons.outlined.Speaker
-import androidx.ui.material.icons.outlined.Speed
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.SettingsOverscan
+import androidx.compose.material.icons.outlined.Speaker
+import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.ContextAmbient
 import de.schnettler.composepreferences.AmbientPreferences
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
@@ -28,6 +28,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFA
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.components.CustomDivider
 
+@Suppress("LongMethod")
 @Composable
 fun PreferenceScreen() {
     ScrollableColumn {

@@ -1,14 +1,14 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.Composable
-import androidx.compose.launchInComposition
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.contentColor
-import androidx.ui.layout.padding
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Snackbar
-import androidx.ui.material.TextButton
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.contentColor
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Snackbar
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.ui.Modifier
 import de.schnettler.scrobbler.theme.PADDING_16
 import de.schnettler.scrobbler.util.RefreshableUiState
 import kotlinx.coroutines.delay

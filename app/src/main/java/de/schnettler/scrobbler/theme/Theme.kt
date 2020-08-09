@@ -1,16 +1,16 @@
 package de.schnettler.scrobbler.theme
 
-import androidx.compose.Composable
-import androidx.ui.foundation.isSystemInDarkTheme
-import androidx.ui.graphics.Color
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.darkColorPalette
-import androidx.ui.material.lightColorPalette
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import de.schnettler.scrobbler.theme.AppColor.Blue200
 import de.schnettler.scrobbler.theme.AppColor.Blue400
 import de.schnettler.scrobbler.theme.AppColor.Jaguar
 
-private val LightThemeColors = lightColorPalette(
+private val LightThemeColors = lightColors(
     primary = Blue400,
     primaryVariant = Blue400,
     secondary = Blue400,
@@ -18,7 +18,7 @@ private val LightThemeColors = lightColorPalette(
     onPrimary = Color.Black
 )
 
-private val DarkThemeColors = darkColorPalette(
+private val DarkThemeColors = darkColors(
     primary = Blue200,
     primaryVariant = Blue200,
     secondary = Blue200,

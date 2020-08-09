@@ -1,16 +1,16 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.Composable
-import androidx.compose.getValue
-import androidx.ui.animation.Crossfade
-import androidx.ui.core.ContextAmbient
-import androidx.ui.foundation.Icon
-import androidx.ui.foundation.Text
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.TopAppBar
-import androidx.ui.text.style.TextOverflow
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Icon
+import androidx.compose.foundation.Text
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.screens.details.DetailScreen

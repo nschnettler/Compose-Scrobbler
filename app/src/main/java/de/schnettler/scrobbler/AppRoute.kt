@@ -1,12 +1,12 @@
 package de.schnettler.scrobbler
 
-import androidx.ui.graphics.vector.VectorAsset
-import androidx.ui.material.icons.Icons
-import androidx.ui.material.icons.outlined.AccountCircle
-import androidx.ui.material.icons.outlined.Settings
-import androidx.ui.material.icons.rounded.BarChart
-import androidx.ui.material.icons.rounded.History
-import androidx.ui.material.icons.rounded.Search
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.rounded.BarChart
+import androidx.compose.material.icons.rounded.History
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.ui.graphics.vector.VectorAsset
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.util.MenuAction
 
