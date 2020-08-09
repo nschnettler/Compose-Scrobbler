@@ -44,4 +44,9 @@
             tools:node="remove" />
     </application>
 
+    <queries>
+        <intent>
+            <action android:name="android.media.browse.MediaBrowserService" />
+        </intent>
+    </queries>
 </manifest>

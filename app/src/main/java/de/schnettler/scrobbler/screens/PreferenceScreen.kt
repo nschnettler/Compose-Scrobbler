@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.core.content.ContextCompat.startActivity
 import de.schnettler.composepreferences.AmbientPreferences
@@ -35,6 +37,17 @@ import de.schnettler.scrobbler.components.CustomDivider
 @Suppress("LongMethod")
 @Composable
 fun PreferenceScreen() {
+    val context = ContextAmbient.current
+
+    val mediaServices = remember {
+        context.packageManager.queryIntentServices(
+            Intent("android.media.browse.MediaBrowserService"),
+            PackageManager.GET_RESOLVED_FILTER
+        ).mapNotNull { it.serviceInfo }.associateBy({ it.packageName }, {
+            it.loadLabel(context.packageManager).toString()
+        })
+    }
+
     ScrollableColumn {
         SwitchPreference(
             title = "Auto Scrobble",
@@ -60,12 +73,7 @@ fun PreferenceScreen() {
             key = SCROBBLE_SOURCES_KEY,
             singleLineTitle = true,
             icon = Icons.Outlined.Speaker,
-            entries = mapOf(
-                "com.youtube.music" to "YoutubeMusic",
-                "com.google.music" to "PlayMusic",
-                "com.spotify" to "Spotify",
-                "com.deezer" to "Deezer"
-            )
+            entries = mediaServices
         )
 
         SeekBarPreference(
@@ -93,7 +101,6 @@ fun PreferenceScreen() {
             defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
         )
 
-        val context = ContextAmbient.current
         Preference(
             title = "Notifications",
             summary = "Change notification preferences",
