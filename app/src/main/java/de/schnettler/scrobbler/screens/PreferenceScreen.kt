@@ -1,16 +1,19 @@
 package de.schnettler.scrobbler.screens
 
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.core.content.ContextCompat.startActivity
 import de.schnettler.composepreferences.AmbientPreferences
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
@@ -90,10 +93,24 @@ fun PreferenceScreen() {
             defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
         )
 
+        val context = ContextAmbient.current
+        Preference(
+            title = "Notifications",
+            summary = "Change notification preferences",
+            key = "settings_notif",
+            singleLineTitle = true,
+            icon = Icons.Outlined.Notifications,
+            onClick = {
+                val intent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+                    .putExtra("app_package", context.packageName) // Android 5-7
+                    .putExtra("app_uid", context.applicationInfo.uid)
+                    .putExtra("android.provider.extra.APP_PACKAGE", context.packageName) // Android 8+
+                startActivity(context, intent, null)
+            }
+        )
         CustomDivider()
 
         val prefs = AmbientPreferences.current
-        val context = ContextAmbient.current
         Preference(
             title = "Reset Preferences",
             summary = "Reset app settings to factory state",
