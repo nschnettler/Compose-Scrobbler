@@ -5,6 +5,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.LocalTrack
 import de.schnettler.lastfm.api.lastfm.LastFmService
@@ -14,6 +15,10 @@ import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.repo.mapping.map
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
@@ -26,13 +31,9 @@ class ScrobbleRepository @Inject constructor(
     private val scope: ServiceCoroutineScope,
     private val service: ScrobblerService,
     private val authProvider: LastFmAuthProvider,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val prefs: FlowSharedPreferences
 ) {
-    private val constraints = Constraints.Builder()
-        .setRequiredNetworkType(NetworkType.UNMETERED)
-        .setRequiresBatteryNotLow(true)
-        .build()
-
     fun saveTrack(track: LocalTrack) {
         scope.launch {
             localTrackDao.insertOrUpdatTrack(track)
@@ -107,9 +108,13 @@ class ScrobbleRepository @Inject constructor(
     }
 
     fun scheduleScrobble() {
-        val request = OneTimeWorkRequestBuilder<ScrobbleWorker>()
-            .setConstraints(constraints)
-            .build()
+        val constraints = Constraints.Builder().apply {
+            val constraintSet =
+                prefs.getStringSet(SCROBBLE_CONSTRAINTS_KEY, SCROBBLE_CONSTRAINTS_DEFAULT).get()
+            if (constraintSet.contains(SCROBBLE_CONSTRAINTS_BATTERY)) setRequiresBatteryNotLow(true)
+            if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(NetworkType.UNMETERED)
+        }.build()
+        val request = OneTimeWorkRequestBuilder<ScrobbleWorker>().setConstraints(constraints).build()
         workManager.enqueueUniqueWork(
             SUBMIT_CACHED_SCROBBLES_WORK,
             ExistingWorkPolicy.KEEP,

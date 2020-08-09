@@ -19,6 +19,7 @@ import de.schnettler.composepreferences.SwitchPreference
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
@@ -86,7 +87,7 @@ fun PreferenceScreen() {
             singleLineTitle = true,
             icon = Icons.Outlined.SettingsOverscan,
             entries = constraints,
-            defaultValue = setOf(SCROBBLE_CONSTRAINTS_BATTERY, SCROBBLE_CONSTRAINTS_NETWORK)
+            defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
         )
 
         CustomDivider()

@@ -1,6 +1,6 @@
 package de.schnettler.repo.preferences
 
-object PreferenceConstants  {
+object PreferenceConstants {
     const val AUTO_SCROBBLE_KEY = "scrobble_auto"
     const val AUTO_SCROBBLE_DEFAULT = true
 
@@ -15,4 +15,6 @@ object PreferenceConstants  {
     const val SCROBBLE_CONSTRAINTS_KEY = "scrobble_constraints"
     const val SCROBBLE_CONSTRAINTS_NETWORK = "unmetered_network"
     const val SCROBBLE_CONSTRAINTS_BATTERY = "battery"
+    val SCROBBLE_CONSTRAINTS_DEFAULT =
+        setOf(SCROBBLE_CONSTRAINTS_BATTERY, SCROBBLE_CONSTRAINTS_NETWORK)
 }
