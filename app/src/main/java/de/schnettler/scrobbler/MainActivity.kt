@@ -7,9 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Providers
 import androidx.ui.core.setContent
 import androidx.ui.material.Scaffold
-import com.github.zsoltk.compose.backpress.AmbientBackPressHandler
-import com.github.zsoltk.compose.backpress.BackPressHandler
-import com.github.zsoltk.compose.router.Router
+import com.koduok.compose.navigation.Router
+import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.AmbientPreferences
@@ -62,7 +61,6 @@ class MainActivity : AppCompatActivity() {
     )
 
     private val startScreen: AppRoute = AppRoute.LocalRoute
-    private val backPressHandler = BackPressHandler()
 
     @Inject lateinit var sharedPrefs: FlowSharedPreferences
 
@@ -70,23 +68,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Providers(
-                AmbientBackPressHandler provides backPressHandler,
-                AmbientPreferences provides sharedPrefs
-            ) {
+            Providers(AmbientPreferences provides sharedPrefs) {
                 AppTheme {
-                    Router(defaultRouting = startScreen) { backstack ->
+                    Router(start = startScreen) { currentRoute ->
                         onListingClicked = {
-                            backstack.push(
+                            this.push(
                                 AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
                             )
                         }
 
                         Scaffold(
-                            topBar = { ToolBar(currentScreen = backstack.last()) },
+                            topBar = { ToolBar(currentScreen = currentRoute.data) },
                             bodyContent = {
                                 AppContent(
-                                    backstack.last(),
+                                    currentRoute.data,
                                     model,
                                     chartsModel,
                                     detailsViewModel,
@@ -100,8 +95,8 @@ class MainActivity : AppCompatActivity() {
                             bottomBar = {
                                 BottomNavigationBar(
                                     items = bottomNavDestinations,
-                                    currentScreen = backstack.last()
-                                ) { newScreen -> backstack.replace(newScreen) }
+                                    currentScreen = currentRoute.data
+                                ) { newScreen -> replace(newScreen) }
                             }
                         )
                     }
@@ -111,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (!backPressHandler.handle()) super.onBackPressed()
+        if (!backStackController.pop()) super.onBackPressed()
     }
 
     override fun onNewIntent(intent: Intent?) {

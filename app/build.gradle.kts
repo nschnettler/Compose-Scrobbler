@@ -94,7 +94,7 @@ dependencies {
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.jakewharton.threetenabp", "threetenabp", "_")
-    implementation("com.github.zsoltk", "compose-router", "_")
+    implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
     debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
 
     // Dagger
