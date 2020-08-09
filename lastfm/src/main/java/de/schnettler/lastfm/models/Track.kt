@@ -35,9 +35,7 @@ data class AttributesDto(
 
 data class TrackDateDto(
     val uts: Long
-) {
-    fun asMs() = uts * 1000
-}
+)
 
 data class ArtistTracksDto(
     override val name: String,
@@ -78,11 +76,6 @@ data class TrackAlbum(
 data class ImageDto(
     val size: String,
     @Json(name = "#text") val url: String
-)
-
-data class LovedTracksResponse(
-    val track: List<UserTrackDto>,
-    @Json(name = "@attr") val info: ResponseInfo
 )
 
 data class MutlipleScrobblesResponse(

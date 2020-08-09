@@ -7,8 +7,8 @@ import timber.log.Timber
 class PlaybackController(
     private val scrobbler: Scrobbler
 ) {
-    var nowPlaying: LocalTrack? = null
-    var lastPlaybackState: Int? = null
+    private var nowPlaying: LocalTrack? = null
+    private var lastPlaybackState: Int? = null
 
     fun updateTrack(track: LocalTrack) {
         val wasPlaying = nowPlaying?.isPlaying() ?: true

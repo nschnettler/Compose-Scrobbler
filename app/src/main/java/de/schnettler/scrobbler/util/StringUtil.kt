@@ -20,14 +20,14 @@ fun String.toFlagEmoji(): String {
     // 1. Get Country Code
     val countryCode = Locale.getISOCountries().find {
         Locale("", it).getDisplayCountry(Locale.ENGLISH) == this.capitalizeAll()
-    }?.toUpperCase() ?: return GENERIC_FLAG_EMOJI
+    }?.toUpperCase(Locale.ROOT) ?: return GENERIC_FLAG_EMOJI
 
     // 2. Generate Emoji
     return String(Character.toChars(Character.codePointAt(countryCode, 0) - 0x41 + 0x1F1E6)) +
         String(Character.toChars(Character.codePointAt(countryCode, 1) - 0x41 + 0x1F1E6))
 }
 
-fun String.capitalizeAll(): String = split(" ").joinToString(" ") { it.capitalize() }
+private fun String.capitalizeAll(): String = split(" ").joinToString(" ") { it.capitalize(Locale.ROOT) }
 
 fun String.firstLetter() = this.first { it.isLetter() }.toString()
 

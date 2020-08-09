@@ -20,21 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Stats
-import de.schnettler.scrobbler.util.formatter
+import de.schnettler.scrobbler.util.abbreviate
 
 @Composable
 fun StatsRow(
     items: List<Pair<VectorAsset, Long?>>
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth() + Modifier.padding(bottom = 16.dp, top = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.forEach {
             val count = it.second ?: 0
             Column(horizontalGravity = Alignment.CenterHorizontally) {
                 Icon(asset = it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
-                Text(text = formatter.format(count))
+                Text(text = count.abbreviate())
             }
         }
     }

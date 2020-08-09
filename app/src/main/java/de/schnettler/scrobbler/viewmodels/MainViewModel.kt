@@ -22,7 +22,7 @@ class MainViewModel @ViewModelInject constructor(
     val sessionStatus: LiveData<SessionState> = Transformations.map(sessionResponse) { response ->
         when (response == null) {
             true -> SessionState.LoggedOut
-            false -> SessionState.LoggedIn(response)
+            false -> SessionState.LoggedIn
         }
     }
 

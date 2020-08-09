@@ -3,9 +3,9 @@ package de.schnettler.scrobbler.components
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.contentColor
-import androidx.compose.foundation.drawBackground
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,8 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.LazyColumnItems
-import androidx.compose.foundation.lazy.LazyRowItems
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyRowFor
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -38,8 +38,8 @@ import de.schnettler.scrobbler.theme.PADDING_8
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
-import de.schnettler.scrobbler.util.formatter
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
@@ -47,14 +47,14 @@ fun <T> Recyclerview(
     items: List<T>,
     height: Dp = 100.dp,
     orientation: Orientation = Orientation.Vertical,
-    childView: @Composable() (listing: T) -> Unit
+    childView: @Composable (listing: T) -> Unit
 ) {
     if (orientation == Orientation.Horizontal) {
-        LazyRowItems(items = items, modifier = Modifier.preferredHeight(height)) {
+        LazyRowFor(items = items, modifier = Modifier.preferredHeight(height)) {
             childView(it)
         }
     } else {
-        LazyColumnItems(items = items) {
+        LazyColumnFor(items = items) {
             childView(it)
         }
     }
@@ -67,7 +67,7 @@ fun <T> GenericHorizontalListingScrollerWithTitle(
     showIndicator: Boolean = false,
     isLoading: Boolean = false,
     scrollerHeight: Dp,
-    childView: @Composable() (listing: T) -> Unit
+    childView: @Composable (listing: T) -> Unit
 ) {
     when (showIndicator) {
         true -> TitleWithLoadingIndicator(title = title, loading = isLoading)
@@ -119,7 +119,7 @@ fun ListingCard(
 @Composable
 fun CardBackdrop(width: Dp, imageUrl: String?, placeholderText: String) {
     Box(
-        modifier = Modifier.preferredWidth(width).aspectRatio(1F).drawBackground(
+        modifier = Modifier.preferredWidth(width).aspectRatio(1F).background(
             MaterialTheme.colors.onSurface.copy(0.05F)
         )
     ) {
@@ -171,7 +171,7 @@ fun CardContent(
         )
         if (plays >= 0) {
             Text(
-                "${formatter.format(plays)} $suffix",
+                "${plays.abbreviate()} $suffix",
                 style = TextStyle(
                     fontSize = subtitleTextsize.value.sp
                 ), maxLines = 1, overflow = TextOverflow.Ellipsis
@@ -265,7 +265,7 @@ fun PlainListIconBackground(
     Surface(
         color = color,
         shape = CircleShape,
-        modifier = Modifier.preferredHeight(40.dp) + Modifier.preferredWidth(40.dp)
+        modifier = Modifier.preferredSize(40.dp)
     ) {
         Box(gravity = ContentGravity.Center) {
             content()

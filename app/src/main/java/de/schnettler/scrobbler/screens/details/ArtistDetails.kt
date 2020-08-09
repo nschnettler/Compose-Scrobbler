@@ -4,7 +4,7 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.drawBackground
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ListItem
@@ -22,7 +22,7 @@ import de.schnettler.scrobbler.components.LiveDataLoadingComponent
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.PlaysStyle
-import de.schnettler.scrobbler.util.formatter
+import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
@@ -68,7 +68,7 @@ fun TrackListWithStats(tracks: List<TrackWithStats>, onListingSelected: (LastFmE
         ListItem(
             text = { Text(track.name) },
             secondaryText = {
-                Text(formatter.format(stats.listeners).toString() + " Hörer")
+                Text("${stats.listeners.abbreviate()} Hörer")
             },
             icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
             onClick = { onListingSelected.invoke(track) }
@@ -84,7 +84,7 @@ private fun Backdrop(
 ) {
     Box(
         modifier = modifier.fillMaxSize()
-            .drawBackground(MaterialTheme.colors.onSurface.copy(0.05F)),
+            .background(MaterialTheme.colors.onSurface.copy(0.05F)),
         gravity = ContentGravity.Center
     ) {
         imageUrl?.let {

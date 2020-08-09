@@ -12,16 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
-import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.FilledTextField
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.Delete
@@ -178,17 +178,17 @@ private fun TrackEditDialog(
             title = { Text(text = "Scrobble bearbeiten") },
             text = {
                 Column {
-                    FilledTextField(
+                    TextField(
                         value = trackState.value,
                         onValueChange = { trackState.value = it },
                         label = { Text("Song") })
                     Spacer(modifier = Modifier.preferredHeight(16.dp))
-                    FilledTextField(
+                    TextField(
                         value = artistState.value,
                         onValueChange = { artistState.value = it },
                         label = { Text("Künstler") })
                     Spacer(modifier = Modifier.preferredHeight(16.dp))
-                    FilledTextField(
+                    TextField(
                         value = albumState.value,
                         onValueChange = { albumState.value = it },
                         label = { Text("Album") })
@@ -340,7 +340,7 @@ fun HistoryTrackList(
     onNowPlayingSelected: (LocalTrack) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumnItems(items = tracks, modifier = modifier) { track ->
+    LazyColumnFor(items = tracks, modifier = modifier) { track ->
         HistoryTrack(
             track = track,
             onTrackSelected = { onTrackSelected(track, it) },

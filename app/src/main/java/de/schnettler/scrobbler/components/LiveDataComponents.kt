@@ -5,7 +5,7 @@ import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumnItems
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -18,7 +18,7 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.util.formatter
+import de.schnettler.scrobbler.util.abbreviate
 
 @Composable
 fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
@@ -32,11 +32,11 @@ fun LiveDataLoadingComponent(modifier: Modifier = Modifier.fillMaxSize()) {
 
 @Composable
 fun GenericAdapterList(data: List<Toplist>, onListingSelected: (LastFmEntity) -> Unit) {
-    LazyColumnItems(items = data) { item ->
+    LazyColumnFor(items = data) { item ->
         when (item) {
             is TopListArtist -> HistoryItem(
                 listing = item.value,
-                subTitle = "${formatter.format(item.listing.count)} Listener",
+                subTitle = "${item.listing.count.abbreviate()} Listener",
                 onListingSelected = onListingSelected
             )
         }

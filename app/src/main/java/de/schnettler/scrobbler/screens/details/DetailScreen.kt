@@ -5,8 +5,7 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ListItem
 import androidx.compose.material.Surface
@@ -110,7 +109,7 @@ fun AlbumCategory(
                 color = AppColor.BackgroundElevated,
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Box(modifier = Modifier.preferredHeight(60.dp) + Modifier.preferredWidth(60.dp)) {
+                Box(modifier = Modifier.preferredSize(60.dp)) {
                     album?.imageUrl?.let {
                         CoilImageWithCrossfade(
                             data = it,

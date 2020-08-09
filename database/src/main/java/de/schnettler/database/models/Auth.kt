@@ -12,10 +12,7 @@ data class AuthToken(
     val token: String,
     val type: String,
     val validTill: Long
-) {
-    fun isValid() = remainingMinutes() > 0
-    fun remainingMinutes() = (validTill - System.currentTimeMillis()) / 60000
-}
+)
 
 enum class AuthTokenType(val value: String) {
     Spotify("spotify_token")

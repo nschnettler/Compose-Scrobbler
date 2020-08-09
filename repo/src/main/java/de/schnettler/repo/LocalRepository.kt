@@ -42,7 +42,7 @@ class LocalRepository @Inject constructor(
                     changedRows[index] == -1L
                 }.forEach { localTrackDao.updateTrackData(it.timestamp, it.name, it.artist, it.album) }
                 Timber.d("Found: $notInserted")
-                val nowPlaying = value.firstOrNull() { it.status == ScrobbleStatus.PLAYING }
+                val nowPlaying = value.firstOrNull { it.status == ScrobbleStatus.PLAYING }
                 if (nowPlaying != null) {
                     localTrackDao.forceInsert(nowPlaying)
                 } else {

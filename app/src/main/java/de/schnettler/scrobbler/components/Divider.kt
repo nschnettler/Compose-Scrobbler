@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.Box
-import androidx.compose.foundation.drawBackground
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,8 +28,8 @@ fun CustomDivider(
         Modifier
     }
     if (vertical) {
-        Box(modifier.plus(indentMod).fillMaxHeight().preferredWidth(thickness).drawBackground(color))
+        Box(modifier.then(indentMod).fillMaxHeight().preferredWidth(thickness).background(color))
     } else {
-        Box(modifier.plus(indentMod).fillMaxWidth().preferredHeight(thickness).drawBackground(color))
+        Box(modifier.then(indentMod).fillMaxWidth().preferredHeight(thickness).background(color))
     }
 }

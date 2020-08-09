@@ -32,8 +32,6 @@ fun createBody(params: MutableMap<String, String>): String {
     return signature.toString()
 }
 
-fun Long.toBoolean() = this == 1L
-
 suspend fun provideSpotifyService(
     authProvider: SpotifyAuthProvider,
     authenticator: AccessTokenAuthenticator

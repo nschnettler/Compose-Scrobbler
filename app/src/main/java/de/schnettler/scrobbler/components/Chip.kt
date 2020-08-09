@@ -47,7 +47,7 @@ fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChange
             shape = RoundedCornerShape(CHIP_CORNER_RADIUS)
         )
     ) {
-        Row() {
+        Row {
             items.forEachIndexed { i, text ->
                 Row(Modifier.preferredHeight(32.dp)) {
                     Chip(text = text, selected = i == selectedIndex, onSelected = {

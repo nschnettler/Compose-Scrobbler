@@ -117,7 +117,7 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Uni
 @Composable
 fun UserInfoComponent(user: User) {
     Card(
-        modifier = Modifier.fillMaxWidth() + Modifier.padding(
+        modifier = Modifier.fillMaxWidth().padding(
             start = defaultSpacerSize,
             end = defaultSpacerSize,
             top = defaultSpacerSize

@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnItems
-import androidx.compose.material.FilledTextField
+import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.ListItem
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.Face
@@ -36,7 +36,7 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.formatter
+import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable
@@ -51,7 +51,7 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit)
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
         Column {
             Box(modifier = Modifier.padding(16.dp)) {
-                FilledTextField(
+                TextField(
                     value = searchInputState.value,
                     onValueChange = {
                         searchInputState.value = it
@@ -90,13 +90,13 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit)
 
 @Composable
 fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> Unit) {
-    LazyColumnItems(items = results) {
+    LazyColumnFor(items = results) {
         when (it) {
             is EntityWithStats -> {
                 ListItem(
                     text = { Text(it.entity.name) },
                     secondaryText = {
-                        Text("${formatter.format(it.stats.listeners)} Listeners")
+                        Text("${it.stats.listeners.abbreviate()} Listeners")
                     },
                     icon = {
                         PlainListIconBackground {

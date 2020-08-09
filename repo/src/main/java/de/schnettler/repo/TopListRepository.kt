@@ -87,7 +87,7 @@ class TopListRepository @Inject constructor(
         )
     ).build()
 
-    fun startSpotifyImageWorker() {
+    private fun startSpotifyImageWorker() {
         val request = OneTimeWorkRequestBuilder<SpotifyWorker>()
             .build()
         workManager.enqueueUniqueWork(

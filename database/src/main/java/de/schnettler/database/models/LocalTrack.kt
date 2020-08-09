@@ -40,7 +40,7 @@ data class LocalTrack(
             ).toString()
         } else null
     fun isTheSameAs(track: LocalTrack?) = name == track?.name && artist == track.artist
-    fun canBeScrobbled() = duration > 30000
+    private fun canBeScrobbled() = duration > 30000
 
     fun pause() {
         updateAmountPlayed()

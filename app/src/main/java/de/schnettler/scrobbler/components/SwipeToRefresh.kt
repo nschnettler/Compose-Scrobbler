@@ -44,9 +44,9 @@ private const val SWIPE_DOWN_OFFSET = 1.2f
 fun SwipeToRefreshLayout(
     refreshingState: Boolean,
     onRefresh: () -> Unit,
-    refreshIndicator: @Composable() () -> Unit,
+    refreshIndicator: @Composable () -> Unit,
     dragCoefficient: Float = 0.5f,
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     val size = with(DensityAmbient.current) { SWIPE_DISTANCE_SIZE.toPx() }
     // min is below negative to hide
@@ -222,7 +222,7 @@ internal fun fractionalThresholds(
 private class NotificationBasedAnimatedFloat(
     initial: Float,
     clock: AnimationClockObservable,
-    internal var onNewValue: (Float) -> Unit
+    var onNewValue: (Float) -> Unit
 ) : AnimatedFloat(clock, Spring.DefaultDisplacementThreshold) {
     override var value = initial
         set(value) {

@@ -28,5 +28,6 @@ fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Uni
         is StoreResponse.Error.Message -> {
             Timber.d((artistResponse as StoreResponse.Error.Message<List<TopListArtist>>).message)
         }
+        is StoreResponse.NoNewData -> { }
     }
 }
