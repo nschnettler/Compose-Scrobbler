@@ -2,6 +2,7 @@ package de.schnettler.scrobble
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.SharedPreferences
 import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
@@ -9,20 +10,21 @@ import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.repo.di.ServiceCoroutineScope
+import de.schnettler.repo.preferences.PreferenceConstants
+import de.schnettler.repo.util.defaultSharedPrefs
 import kotlinx.coroutines.cancel
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaListenerService : NotificationListenerService(),
-    MediaSessionManager.OnActiveSessionsChangedListener {
+    MediaSessionManager.OnActiveSessionsChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private var controllers: List<MediaController>? = null
     private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> =
         hashMapOf()
     @Inject lateinit var tracker: PlayBackTracker
     @Inject lateinit var scope: ServiceCoroutineScope
-
-    private val allowedControllers = listOf("com.google.android.apps.youtube.music")
+    lateinit var prefs: SharedPreferences
 
     companion object {
         fun isEnabled(context: Context) = NotificationManagerCompat
@@ -32,6 +34,8 @@ class MediaListenerService : NotificationListenerService(),
 
     override fun onCreate() {
         super.onCreate()
+        prefs = application.defaultSharedPrefs()
+        prefs.registerOnSharedPreferenceChangeListener(this)
         val manager: MediaSessionManager =
             application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
         val componentName = ComponentName(this, this.javaClass)
@@ -45,12 +49,13 @@ class MediaListenerService : NotificationListenerService(),
         super.onDestroy()
     }
 
-    override fun onActiveSessionsChanged(activeControllers: MutableList<MediaController>?) {
+    override fun onActiveSessionsChanged(activeControllers: List<MediaController>?) {
         controllers = activeControllers
         val tokens = hashSetOf<MediaSession.Token>()
         val packageNames = hashSetOf<String>()
+        val allowedControllers = prefs.getStringSet(PreferenceConstants.SCROBBLE_SOURCES_KEY, emptySet())
         controllers?.forEach { controller ->
-            if (allowedControllers.contains(controller.packageName)) {
+            if (allowedControllers?.contains(controller.packageName) == true) {
                 tokens.add(controller.sessionToken)
                 packageNames.add(controller.packageName)
                 // New Session
@@ -63,7 +68,7 @@ class MediaListenerService : NotificationListenerService(),
     }
 
     private fun addNewSession(controller: MediaController) {
-        Timber.d("onActiveSessionsChanged [${controllers?.size}] + ${controller.packageName}")
+        Timber.d("onActiveSessionsChanged [Added] + ${controller.packageName}")
         val callback = MediaControllerCallback(controller, tracker)
         controller.registerCallback(callback)
         val pair = controller to callback
@@ -94,8 +99,22 @@ class MediaListenerService : NotificationListenerService(),
             }
         }
         toBeRemoved.forEach {
-            Timber.d("onActiveSessionsChanged [${controllers?.size}] - ${controllersMap[it]?.first?.packageName}")
+            Timber.d("onActiveSessionsChanged [Removed] - ${controllersMap[it]?.first?.packageName}")
             controllersMap.remove(it)
+        }
+    }
+
+    override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
+        if (key == PreferenceConstants.SCROBBLE_SOURCES_KEY) {
+            val enabledPlayers = prefs?.getStringSet(PreferenceConstants.SCROBBLE_SOURCES_KEY, emptySet()) ?: emptySet()
+
+            controllersMap.filter {
+                !enabledPlayers.contains(it.value.first.packageName)
+            }.forEach { token, (controller, callback) ->
+                controller.unregisterCallback(callback)
+                controllersMap.remove(token)
+            }
+            onActiveSessionsChanged(controllers)
         }
     }
 }
