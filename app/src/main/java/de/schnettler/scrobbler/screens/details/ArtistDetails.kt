@@ -16,11 +16,12 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.components.ExpandingInfoCard
+import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.ListingScroller
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.PlainListIconBackground
-import de.schnettler.scrobbler.components.TitleComponent
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -38,10 +39,10 @@ fun ArtistDetailScreen(
             modifier = Modifier.aspectRatio(16 / 10f),
             placeholder = artist.name
         )
-        AlbumDescription(description = info.wiki)
+        ExpandingInfoCard(info = info.wiki)
         ListeningStats(item = stats)
         TagCategory(tags = info.tags, onTagClicked = onTagClicked)
-        TitleComponent(title = "Top Tracks")
+        ListTitle(title = "Top Tracks")
         TrackListWithStats(tracks = artistInfo.topTracks, onListingSelected = onListingSelected)
 
         ListingScroller(
@@ -92,7 +93,7 @@ private fun Backdrop(
                 data = it,
                 contentScale = ContentScale.Crop,
                 loading = {
-                    LiveDataLoadingComponent()
+                    LoadingScreen()
                 },
                 modifier = Modifier.fillMaxSize()
             )

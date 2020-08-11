@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import de.schnettler.database.models.LastFmEntity.Artist
-import de.schnettler.scrobbler.components.ListingCard
+import de.schnettler.scrobbler.components.MediaCard
 import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.util.Orientation
 
@@ -17,13 +17,13 @@ fun ListingCardPreview() {
                 name = "Dreamcatcher",
                 url = "Url"
             )
-            ListingCard(
+            MediaCard(
                 onEntrySelected = {},
                 plays = 10,
                 name = artist.name,
                 imageUrl = null
             )
-            ListingCard(
+            MediaCard(
                 onEntrySelected = {},
                 plays = -1,
                 name = artist.name,
@@ -49,6 +49,6 @@ fun HorizontalListingScrollerPreview() {
         height = 200.dp,
         orientation = Orientation.Horizontal
     ) { listing ->
-        ListingCard(name = listing.name) {}
+        MediaCard(name = listing.name) {}
     }
 }

@@ -5,8 +5,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CloudOff
@@ -14,13 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.state
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.NameListIcon
-import de.schnettler.scrobbler.components.QuickActionsRow
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.milliSecondsToDate
 import de.schnettler.scrobbler.util.milliSecondsToMinSeconds
@@ -56,19 +59,11 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
         onClick = { expanded = !expanded },
         trailing = {
             track.timestampToRelativeTime()?.let {
-                Column {
+                Column(horizontalGravity = Alignment.End) {
                     Text(text = it)
-                    Row {
-                        if (track.isCached()) {
-                            Icon(
-                                asset = Icons.Rounded.CloudOff.copy(
-                                    defaultWidth = 16.dp,
-                                    defaultHeight = 16.dp
-                                )
-                            )
-                            Spacer(modifier = Modifier.preferredWidth(8.dp))
-                        }
-                        if (track.isLocal()) Text(text = "${track.playPercent()} %")
+                    if (track.isCached()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Icon(asset = Icons.Rounded.CloudOff.copy(defaultWidth = 16.dp, defaultHeight = 16.dp))
                     }
                 }
             }
@@ -101,4 +96,16 @@ fun QuickActions(isCached: Boolean, onActionClicked: (ScrobbleAction) -> Unit) {
     if (isCached) { actions.addAll(listOf(ScrobbleAction.EDIT, ScrobbleAction.DELETE, ScrobbleAction.SUBMIT)) }
     actions.add(ScrobbleAction.OPEN)
     QuickActionsRow(items = actions, onSelect = onActionClicked)
+}
+
+@Composable
+private fun QuickActionsRow(items: List<ScrobbleAction>, onSelect: (ScrobbleAction) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        items.forEach {
+            IconButton(onClick = { onSelect(it) }) {
+                Icon(asset = it.asset)
+            }
+            Spacer(modifier = Modifier.width(24.dp))
+        }
+    }
 }

@@ -23,10 +23,10 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInf
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.components.TitleComponent
+import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -44,7 +44,7 @@ fun DetailScreen(
     }
     Stack(modifier = Modifier.fillMaxSize()) {
         if (detailState.isLoading) {
-            LiveDataLoadingComponent()
+            LoadingScreen()
         } else {
             SwipeToRefreshLayout(
                 refreshingState = detailState.isRefreshing,
@@ -86,7 +86,7 @@ fun DetailScreen(
 @OptIn(ExperimentalLayout::class)
 @Composable
 fun TagCategory(tags: List<String>, onTagClicked: (String) -> Unit) {
-    TitleComponent(title = "Tags")
+    ListTitle(title = "Tags")
     ChipRow(items = tags, onChipClicked = onTagClicked)
 }
 
@@ -96,7 +96,7 @@ fun AlbumCategory(
     artistPlaceholder: String,
     onAlbumSelected: (LastFmEntity) -> Unit
 ) {
-    TitleComponent(title = "Aus dem Album")
+    ListTitle(title = "Aus dem Album")
     ListItem(
         text = {
             Text(album?.name ?: "Unknown Album")

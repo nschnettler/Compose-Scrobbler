@@ -27,7 +27,7 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.components.ErrorSnackbar
-import de.schnettler.scrobbler.components.LiveDataLoadingComponent
+import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.local.ConfirmDialog
@@ -70,7 +70,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-        if (recentTracksState.isLoading) { LiveDataLoadingComponent() } else {
+        if (recentTracksState.isLoading) { LoadingScreen() } else {
             SwipeToRefreshLayout(
                 refreshingState = recentTracksState.isRefreshing,
                 onRefresh = { localViewModel.refresh() },

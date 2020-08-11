@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens.details
 
-import androidx.compose.foundation.Border
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
@@ -24,8 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ChipRow
-import de.schnettler.scrobbler.components.ExpandingSummary
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.theme.AppColor
@@ -55,7 +54,7 @@ fun AlbumDetailScreen(
         ChipRow(items = albumDetails.info.tags, onChipClicked = onTagClicked)
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         ListeningStats(item = stats)
-        AlbumDescription(info.wiki?.fromHtmlLastFm())
+        ExpandingInfoCard(info.wiki?.fromHtmlLastFm())
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         TrackList(
             tracks = albumDetails.tracks.map { it.entity },
@@ -120,18 +119,5 @@ fun AlbumInfo(
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.subtitle2
         )
-    }
-}
-
-@Composable
-fun AlbumDescription(description: String?) {
-    if (!description.isNullOrBlank()) {
-        Card(
-            modifier = Modifier.padding(16.dp).fillMaxSize(),
-            elevation = 0.dp,
-            border = Border(1.dp, AppColor.Divider)
-        ) {
-            ExpandingSummary(description, modifier = Modifier.padding(16.dp))
-        }
     }
 }

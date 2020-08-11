@@ -4,6 +4,7 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.runtime.Composable
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
 
 @Composable
@@ -19,7 +20,7 @@ fun TrackDetailScreen(
             artistPlaceholder = track.artist,
             onAlbumSelected = onAlbumClicked
         )
-        AlbumDescription(description = info?.wiki)
+        ExpandingInfoCard(info = info?.wiki)
         ListeningStats(item = stats)
         if (info?.tags?.isNotEmpty() == true) {
             TagCategory(tags = info.tags, onTagClicked = onTagClicked)
