@@ -4,7 +4,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
@@ -24,8 +24,8 @@ data class Scrobble(
 ) {
     @Ignore val id: String = name.toLowerCase(Locale.US)
     @Ignore val url: String = "https://www.last.fm/music/$artist/_/$name"
-    private fun playedEnough() = amountPlayed >= (duration / 2)
-    fun readyToScrobble() = canBeScrobbled() && playedEnough()
+    private fun playedEnough(threshold: Float) = amountPlayed >= (duration * threshold)
+    fun readyToScrobble(threshold: Float) = canBeScrobbled() && playedEnough(threshold) // threshold between 0.5..1
     fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
     fun timeStampString() = timestamp.toString()
     fun durationUnix() = (duration / 1000).toString()

@@ -9,6 +9,8 @@ import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.preferences.PreferenceConstants
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.repo.work.RESULT_COUNT
@@ -46,7 +48,8 @@ class Scrobbler @Inject constructor(
     }
 
     fun submitScrobble(track: Scrobble) {
-        if (track.readyToScrobble()) {
+        val scrobbleThreshold = prefs.getFloat(SCROBBLE_POINT_KEY, SCROBBLE_POINT_DEFAULT).get()
+        if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             Timber.d("[Cache] $track")
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
