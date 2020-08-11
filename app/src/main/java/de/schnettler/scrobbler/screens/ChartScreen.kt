@@ -27,7 +27,7 @@ import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
 @Composable
 fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Unit) {
-    val chartState by model.chartState.collectAsState()
+    val chartState by model.state.collectAsState()
     val (showSnackbarError, updateShowSnackbarError) = stateFor(chartState) {
         chartState is RefreshableUiState.Error
     }

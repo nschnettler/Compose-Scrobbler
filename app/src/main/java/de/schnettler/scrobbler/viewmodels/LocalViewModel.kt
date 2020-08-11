@@ -1,44 +1,21 @@
 package de.schnettler.scrobbler.viewmodels
 
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.Scrobble
 import de.schnettler.repo.LocalRepository
-import de.schnettler.repo.Result
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.mapping.LastFmResponse
-import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.freshFrom
-import de.schnettler.scrobbler.util.streamFrom
-import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class LocalViewModel @ViewModelInject constructor(
-    private val repo: LocalRepository,
+    repo: LocalRepository,
     private val scrobbleRepo: ScrobbleRepository
-) : ViewModel() {
-
-    val recentTracksState: MutableStateFlow<RefreshableUiState<List<Scrobble>>> =
-            MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
+) : RefreshableStateViewModel<String, List<Scrobble>, List<Scrobble>>(store = repo.recentTracksStore, "") {
 
     val cachedScrobblesCOunt by lazy {
         repo.getNumberOfCachedScrobbles()
-    }
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            recentTracksState.streamFrom(repo.recentTracksStore, "")
-        }
-    }
-
-    fun refresh() {
-        recentTracksState.update(Result.Loading)
-        viewModelScope.launch {
-            recentTracksState.freshFrom(repo.recentTracksStore, "")
-        }
     }
 
     fun scheduleScrobbleSubmission() = scrobbleRepo.scheduleScrobble()
