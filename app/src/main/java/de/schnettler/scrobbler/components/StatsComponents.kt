@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Stats
+import de.schnettler.scrobbler.screens.ScrobbleAction
 import de.schnettler.scrobbler.util.abbreviate
 
 @Composable
@@ -41,11 +42,11 @@ fun StatsRow(
 }
 
 @Composable
-fun QuickActionsRow(items: List<Pair<VectorAsset, () -> Unit>>) {
+fun QuickActionsRow(items: List<ScrobbleAction>, onSelect: (ScrobbleAction) -> Unit) {
     Row(modifier = Modifier.fillMaxWidth()) {
         items.forEach {
-            IconButton(onClick = { it.second.invoke() }) {
-                Icon(asset = it.first)
+            IconButton(onClick = { onSelect(it) }) {
+                Icon(asset = it.asset)
             }
             Spacer(modifier = Modifier.width(24.dp))
         }

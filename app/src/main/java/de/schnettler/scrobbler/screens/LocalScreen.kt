@@ -57,6 +57,10 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.QuickActionsRow
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
+import de.schnettler.scrobbler.screens.ScrobbleAction.DELETE
+import de.schnettler.scrobbler.screens.ScrobbleAction.EDIT
+import de.schnettler.scrobbler.screens.ScrobbleAction.OPEN
+import de.schnettler.scrobbler.screens.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.copyByState
@@ -104,16 +108,17 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
                 recentTracksState.currentData?.let { list ->
                     HistoryTrackList(
                         tracks = list,
-                        onTrackSelected = { track, actionType ->
+                        onActionClicked = { track, actionType ->
                             when (actionType) {
-                                HistoryActionType.EDIT -> {
+                                EDIT -> {
                                     selectedTrack.value = track
                                     showDialog = true
                                 }
-                                HistoryActionType.DELETE -> {
+                                DELETE -> {
                                     // DELETE A TRACK
                                 }
-                                HistoryActionType.OPEN -> onListingSelected(track.asLastFmTrack())
+                                OPEN -> onListingSelected(track.asLastFmTrack())
+                                SUBMIT -> localViewModel.submitScrobble(track)
                             }
                         },
                         onNowPlayingSelected = { }
@@ -237,7 +242,7 @@ fun NowPlayingTrack(name: String, artist: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
+fun ScrobbledTrack(track: LocalTrack, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by state { false }
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -257,7 +262,7 @@ fun ScrobbledTrack(track: LocalTrack, onClick: (HistoryActionType) -> Unit) {
                     )
                     else Spacer(modifier = Modifier.preferredHeight(16.dp))
                     CustomDivider()
-                    ComposeQuickActions(track.isCached(), onClick)
+                    ComposeQuickActions(track.isCached(), onActionClicked)
                 }
             }
         },
@@ -305,52 +310,46 @@ fun ComposeAdditionalInformation(
 }
 
 @Composable
-fun ComposeQuickActions(isCached: Boolean, onClick: (HistoryActionType) -> Unit) {
-    val actions = mutableListOf<Pair<VectorAsset, () -> Unit>>()
-    if (isCached) {
-        actions.add(Icons.Outlined.Edit to {
-            onClick.invoke(HistoryActionType.EDIT)
-        })
-        actions.add(Icons.Outlined.Delete to {
-            onClick.invoke(HistoryActionType.DELETE)
-        })
-    }
-    actions.add(Icons.Outlined.OpenInNew to { onClick.invoke(HistoryActionType.OPEN) })
-    QuickActionsRow(items = actions)
+fun ComposeQuickActions(isCached: Boolean, onActionClicked: (ScrobbleAction) -> Unit) {
+    val actions = mutableListOf<ScrobbleAction>()
+    if (isCached) { actions.addAll(listOf(EDIT, DELETE, SUBMIT)) }
+    actions.add(OPEN)
+    QuickActionsRow(items = actions, onSelect = onActionClicked)
 }
 
 @Preview
 @Composable
 fun HistoryTrack(
     @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
-    onTrackSelected: (HistoryActionType) -> Unit = { },
+    onActionClicked: (ScrobbleAction) -> Unit = { },
     onNowPlayingSelected: () -> Unit = { }
 ) {
     if (track.isPlaying()) {
         NowPlayingTrack(name = track.name, artist = track.artist, onClick = onNowPlayingSelected)
     } else {
-        ScrobbledTrack(track = track, onClick = onTrackSelected)
+        ScrobbledTrack(track = track, onActionClicked = onActionClicked)
     }
 }
 
 @Composable
 fun HistoryTrackList(
     tracks: List<LocalTrack>,
-    onTrackSelected: (LocalTrack, HistoryActionType) -> Unit,
+    onActionClicked: (LocalTrack, ScrobbleAction) -> Unit,
     onNowPlayingSelected: (LocalTrack) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumnFor(items = tracks, modifier = modifier) { track ->
         HistoryTrack(
             track = track,
-            onTrackSelected = { onTrackSelected(track, it) },
+            onActionClicked = { onActionClicked(track, it) },
             onNowPlayingSelected = { onNowPlayingSelected(track) }
         )
     }
 }
 
-enum class HistoryActionType {
-    EDIT,
-    DELETE,
-    OPEN
+enum class ScrobbleAction(val asset: VectorAsset) {
+    EDIT(Icons.Outlined.Edit),
+    DELETE(Icons.Outlined.Delete),
+    OPEN(Icons.Outlined.OpenInNew),
+    SUBMIT(Icons.Outlined.CloudUpload)
 }

@@ -7,6 +7,7 @@ import de.schnettler.database.models.LocalTrack
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.Result
 import de.schnettler.repo.ScrobbleRepository
+import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
@@ -47,4 +48,13 @@ class LocalViewModel @ViewModelInject constructor(
     }
 
     fun scheduleScrobbleSubmission() = scrobbleRepo.scheduleScrobble()
+
+    fun submitScrobble(track: LocalTrack) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val response = scrobbleRepo.submitScrobble(track)
+            if (response is LastFmResponse.SUCCESS) {
+                scrobbleRepo.markScrobblesAsSubmitted(listOf(track))
+            }
+        }
+    }
 }
