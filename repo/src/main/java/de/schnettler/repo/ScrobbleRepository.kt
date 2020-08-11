@@ -7,7 +7,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.daos.LocalTrackDao
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.ScrobblerService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
@@ -34,13 +34,13 @@ class ScrobbleRepository @Inject constructor(
     private val workManager: WorkManager,
     private val prefs: FlowSharedPreferences
 ) {
-    fun saveTrack(track: LocalTrack) {
+    fun saveTrack(track: Scrobble) {
         scope.launch {
             localTrackDao.insertOrUpdatTrack(track)
         }
     }
 
-    suspend fun submitScrobble(track: LocalTrack) = service.submitScrobble(
+    suspend fun submitScrobble(track: Scrobble) = service.submitScrobble(
         method = LastFmService.METHOD_SCROBBLE,
         artist = track.artist,
         track = track.name,
@@ -61,7 +61,7 @@ class ScrobbleRepository @Inject constructor(
         )
     ).map()
 
-    suspend fun submitNowPlaying(track: LocalTrack) = service.submitNowPlaying(
+    suspend fun submitNowPlaying(track: Scrobble) = service.submitNowPlaying(
         method = LastFmService.METHOD_NOWPLAYING,
         artist = track.artist,
         track = track.name,
@@ -82,7 +82,7 @@ class ScrobbleRepository @Inject constructor(
 
     suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
 
-    suspend fun submitScrobbles(tracks: List<LocalTrack>): LastFmResponse<MutlipleScrobblesResponse> {
+    suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
         val result: MutableMap<String, String> = mutableMapOf(
             "method" to LastFmService.METHOD_SCROBBLE,
             "sk" to authProvider.getSessionKeyOrThrow()
@@ -107,11 +107,11 @@ class ScrobbleRepository @Inject constructor(
         return service.submitMultipleScrobbles(createBody(result)).map()
     }
 
-    suspend fun markScrobblesAsSubmitted(tracks: List<LocalTrack>) {
+    suspend fun markScrobblesAsSubmitted(tracks: List<Scrobble>) {
         localTrackDao.updateScrobbleStatus(tracks.map { it.timestamp })
     }
 
-    suspend fun deleteScrobble(scrobble: LocalTrack) = localTrackDao.delete(scrobble)
+    suspend fun deleteScrobble(scrobble: Scrobble) = localTrackDao.delete(scrobble)
 
     fun scheduleScrobble() {
         val constraints = Constraints.Builder().apply {

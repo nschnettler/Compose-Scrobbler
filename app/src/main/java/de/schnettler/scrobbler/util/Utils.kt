@@ -3,11 +3,11 @@ package de.schnettler.scrobbler.util
 import androidx.compose.runtime.State
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 
 val defaultSpacerSize = 16.dp
 
-fun LocalTrack.copyByState(
+fun Scrobble.copyByState(
     trackState: State<TextFieldValue>,
     artistState: State<TextFieldValue>,
     albumState: State<TextFieldValue>

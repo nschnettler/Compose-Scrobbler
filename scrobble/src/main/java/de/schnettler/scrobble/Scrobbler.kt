@@ -3,7 +3,7 @@ package de.schnettler.scrobble
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.tfcporciuncula.flow.FlowSharedPreferences
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
@@ -15,9 +15,9 @@ import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION
 import de.schnettler.repo.work.RESULT_TRACKS
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
-import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 class Scrobbler @Inject constructor(
     workManager: WorkManager,
@@ -45,14 +45,16 @@ class Scrobbler @Inject constructor(
             }
     }
 
-    fun submitScrobble(track: LocalTrack) {
+    fun submitScrobble(track: Scrobble) {
         if (track.readyToScrobble()) {
             // 1. Cache Scrobble
             Timber.d("[Cache] $track")
             repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
 
             // 2. Schedule Workmanager Work
-            if (prefs.getBoolean(PreferenceConstants.AUTO_SCROBBLE_KEY, PreferenceConstants.AUTO_SCROBBLE_DEFAULT).get()) {
+            if (prefs.getBoolean(
+                    PreferenceConstants.AUTO_SCROBBLE_KEY, PreferenceConstants.AUTO_SCROBBLE_DEFAULT
+                ).get()) {
                 repo.scheduleScrobble()
             }
         } else {
@@ -60,7 +62,7 @@ class Scrobbler @Inject constructor(
         }
     }
 
-    fun notifyNowPlaying(track: LocalTrack?) {
+    fun notifyNowPlaying(track: Scrobble?) {
         updateNowPlayingNotification(track)
         Timber.d("[New] $track")
         if (prefs.getBoolean(SUBMIT_NOWPLAYING_KEY, SUBMIT_NOWPLAYING_DEFAULT).get() && track != null) {
@@ -73,7 +75,7 @@ class Scrobbler @Inject constructor(
         }
     }
 
-    fun updateNowPlayingNotification(current: LocalTrack?) {
+    fun updateNowPlayingNotification(current: Scrobble?) {
         if (current == null) {
             notificationManager.cancelNotifications(NOW_PLAYING_ID)
         } else {

@@ -1,16 +1,16 @@
 package de.schnettler.scrobble
 
 import android.media.session.PlaybackState
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import timber.log.Timber
 
 class PlaybackController(
     private val scrobbler: Scrobbler
 ) {
-    private var nowPlaying: LocalTrack? = null
+    private var nowPlaying: Scrobble? = null
     private var lastPlaybackState: Int? = null
 
-    fun updateTrack(track: LocalTrack) {
+    fun updateTrack(track: Scrobble) {
         val wasPlaying = nowPlaying?.isPlaying() ?: true
 
         when (track.isTheSameAs(nowPlaying)) {

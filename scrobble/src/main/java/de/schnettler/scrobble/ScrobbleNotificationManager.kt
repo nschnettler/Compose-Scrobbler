@@ -7,7 +7,7 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import javax.inject.Inject
 
 const val NOW_PLAYING_ID = 0
@@ -96,7 +96,7 @@ class ScrobbleNotificationManager @Inject constructor(
         }
     }
 
-    fun updateNowPlayingNotification(track: LocalTrack) {
+    fun updateNowPlayingNotification(track: Scrobble) {
         sendNotification(
             channelId = R.string.np_notification_channel_id,
             title = R.string.np_notification_channel_name,

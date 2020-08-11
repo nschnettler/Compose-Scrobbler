@@ -9,7 +9,7 @@ import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 @Entity(tableName = "localTracks")
-data class LocalTrack(
+data class Scrobble(
     val name: String,
     val artist: String,
     val album: String,
@@ -39,7 +39,7 @@ data class LocalTrack(
                     .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL
             ).toString()
         } else null
-    fun isTheSameAs(track: LocalTrack?) = name == track?.name && artist == track.artist
+    fun isTheSameAs(track: Scrobble?) = name == track?.name && artist == track.artist
     private fun canBeScrobbled() = duration > 30000
 
     fun pause() {

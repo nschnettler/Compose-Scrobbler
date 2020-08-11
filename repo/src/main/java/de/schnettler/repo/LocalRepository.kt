@@ -6,7 +6,7 @@ import com.dropbox.android.external.store4.StoreBuilder
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.fresh
 import de.schnettler.database.daos.LocalTrackDao
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
@@ -36,7 +36,7 @@ class LocalRepository @Inject constructor(
                     }
                 }
             },
-            writer = { _: String, value: List<LocalTrack> ->
+            writer = { _: String, value: List<Scrobble> ->
                 val changedRows = localTrackDao.insertAll(value)
                 val notInserted = value.filterIndexed { index, _ ->
                     changedRows[index] == -1L

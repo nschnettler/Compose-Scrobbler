@@ -24,9 +24,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material.icons.rounded.CloudOff
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
@@ -39,7 +36,6 @@ import androidx.compose.runtime.stateFor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.tooling.preview.PreviewParameter
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
@@ -57,12 +53,13 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.QuickActionsRow
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.screens.ScrobbleAction.DELETE
-import de.schnettler.scrobbler.screens.ScrobbleAction.EDIT
-import de.schnettler.scrobbler.screens.ScrobbleAction.OPEN
-import de.schnettler.scrobbler.screens.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.screens.preview.FakeHistoryTrackProvider
 import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.ScrobbleAction
+import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
+import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
+import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
+import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.util.copyByState
 import de.schnettler.scrobbler.util.milliSecondsToDate
 import de.schnettler.scrobbler.util.milliSecondsToMinSeconds
@@ -92,7 +89,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by state { false }
     var showConfirmDialog by state { false }
-    val selectedTrack: MutableState<LocalTrack?> = state { null }
+    val selectedTrack: MutableState<Scrobble?> = state { null }
     val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
         recentTracksState is RefreshableUiState.Error
     }
@@ -161,7 +158,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
     if (showConfirmDialog) {
         ConfirmDialog(
             title = "Delete Scrobble",
-            description = "Are you sure you want to delete the selected scrobble?") {confirmed ->
+            description = "Are you sure you want to delete the selected scrobble?") { confirmed ->
             if (confirmed && selectedTrack.value != null) {
                 selectedTrack.value?.let { localViewModel.deleteScrobble(it) }
             }
@@ -172,8 +169,8 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
 
 @Composable
 private fun TrackEditDialog(
-    track: LocalTrack?,
-    onSelect: (selected: LocalTrack?) -> Unit,
+    track: Scrobble?,
+    onSelect: (selected: Scrobble?) -> Unit,
     onDismiss: () -> Unit
 ) {
     if (track != null) {
@@ -278,7 +275,7 @@ fun NowPlayingTrack(name: String, artist: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun ScrobbledTrack(track: LocalTrack, onActionClicked: (ScrobbleAction) -> Unit) {
+fun ScrobbledTrack(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by state { false }
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
@@ -356,7 +353,7 @@ fun ComposeQuickActions(isCached: Boolean, onActionClicked: (ScrobbleAction) -> 
 @Preview
 @Composable
 fun HistoryTrack(
-    @PreviewParameter(FakeHistoryTrackProvider::class) track: LocalTrack,
+    @PreviewParameter(FakeHistoryTrackProvider::class) track: Scrobble,
     onActionClicked: (ScrobbleAction) -> Unit = { },
     onNowPlayingSelected: () -> Unit = { }
 ) {
@@ -369,9 +366,9 @@ fun HistoryTrack(
 
 @Composable
 fun HistoryTrackList(
-    tracks: List<LocalTrack>,
-    onActionClicked: (LocalTrack, ScrobbleAction) -> Unit,
-    onNowPlayingSelected: (LocalTrack) -> Unit,
+    tracks: List<Scrobble>,
+    onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
+    onNowPlayingSelected: (Scrobble) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumnFor(items = tracks, modifier = modifier) { track ->
@@ -381,11 +378,4 @@ fun HistoryTrackList(
             onNowPlayingSelected = { onNowPlayingSelected(track) }
         )
     }
-}
-
-enum class ScrobbleAction(val asset: VectorAsset) {
-    EDIT(Icons.Outlined.Edit),
-    DELETE(Icons.Outlined.Delete),
-    OPEN(Icons.Outlined.OpenInNew),
-    SUBMIT(Icons.Outlined.CloudUpload)
 }

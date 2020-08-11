@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Stats
-import de.schnettler.scrobbler.screens.ScrobbleAction
+import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.abbreviate
 
 @Composable

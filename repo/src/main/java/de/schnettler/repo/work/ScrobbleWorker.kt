@@ -6,7 +6,7 @@ import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.GeneralScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
@@ -28,7 +28,7 @@ class ScrobbleWorker @WorkerInject constructor(
     private val repo: ScrobbleRepository
 ) : CoroutineWorker(appContext, workerParams) {
 
-    private val scrobbledTracks = mutableListOf<LocalTrack>()
+    private val scrobbledTracks = mutableListOf<Scrobble>()
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         scrobbledTracks.clear()
@@ -83,13 +83,13 @@ class ScrobbleWorker @WorkerInject constructor(
         }
     }
 
-    private suspend fun markTracksAsSubmitted(tracks: List<LocalTrack>) {
+    private suspend fun markTracksAsSubmitted(tracks: List<Scrobble>) {
         scrobbledTracks.addAll(tracks)
         repo.markScrobblesAsSubmitted(tracks)
     }
 
     private suspend fun <T : GeneralScrobbleResponse> handleResponse(
-        input: List<LocalTrack>,
+        input: List<Scrobble>,
         response: LastFmResponse<T>
     ): Result {
         return when (response) {

@@ -4,33 +4,33 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("MaxLineLength")
+@Suppress("MaxLineLength", "TooManyFunctions")
 @Dao
-abstract class LocalTrackDao : BaseDao<LocalTrack> {
+abstract class LocalTrackDao : BaseDao<Scrobble> {
     @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC LIMIT :limit")
     abstract fun getLocalTracks(
         exclude: ScrobbleStatus = ScrobbleStatus.PLAYING,
         limit: Int = 50
-    ): Flow<List<LocalTrack>>
+    ): Flow<List<Scrobble>>
 
     @Query("SELECT COUNT(timestamp) FROM localTracks WHERE status = :status")
     abstract fun getNumberOfCachedScrobbles(status: ScrobbleStatus = ScrobbleStatus.LOCAL): Flow<Int>
 
     @Query("SELECT * FROM localTracks WHERE status = :include LIMIT 1")
-    abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<LocalTrack?>
+    abstract fun getNowPlaying(include: ScrobbleStatus = ScrobbleStatus.PLAYING): Flow<Scrobble?>
 
     @Query("SELECT * FROM localTracks WHERE status = :status ORDER BY timestamp DESC")
-    abstract suspend fun getCachedTracks(status: ScrobbleStatus = ScrobbleStatus.LOCAL): List<LocalTrack>
+    abstract suspend fun getCachedTracks(status: ScrobbleStatus = ScrobbleStatus.LOCAL): List<Scrobble>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertTrack(track: LocalTrack): Long
+    abstract suspend fun insertTrack(track: Scrobble): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertOrUpdatTrack(track: LocalTrack): Long
+    abstract fun insertOrUpdatTrack(track: Scrobble): Long
 
     @Query("UPDATE localTracks SET status = :status WHERE timestamp = :startTime AND playedBy = :packageName")
     abstract suspend fun updateTrackStatus(
@@ -40,7 +40,7 @@ abstract class LocalTrackDao : BaseDao<LocalTrack> {
     )
 
     @Query("SELECT * FROM localTracks ORDER BY timestamp DESC LIMIT 1")
-    abstract fun getCurrentTrack(): Flow<LocalTrack>
+    abstract fun getCurrentTrack(): Flow<Scrobble>
 
     @Query("UPDATE localTracks SET album = :album WHERE timestamp = :startTime AND playedBy = :packageName")
     abstract suspend fun updateAlbum(album: String, startTime: Long, packageName: String)

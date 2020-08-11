@@ -3,7 +3,7 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.Result
 import de.schnettler.repo.ScrobbleRepository
@@ -20,7 +20,7 @@ class LocalViewModel @ViewModelInject constructor(
     private val scrobbleRepo: ScrobbleRepository
 ) : ViewModel() {
 
-    val recentTracksState: MutableStateFlow<RefreshableUiState<List<LocalTrack>>> =
+    val recentTracksState: MutableStateFlow<RefreshableUiState<List<Scrobble>>> =
             MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
 
     val cachedScrobblesCOunt by lazy {
@@ -49,7 +49,7 @@ class LocalViewModel @ViewModelInject constructor(
 
     fun scheduleScrobbleSubmission() = scrobbleRepo.scheduleScrobble()
 
-    fun submitScrobble(track: LocalTrack) {
+    fun submitScrobble(track: Scrobble) {
         viewModelScope.launch(Dispatchers.IO) {
             val response = scrobbleRepo.submitScrobble(track)
             if (response is LastFmResponse.SUCCESS) {
@@ -58,7 +58,7 @@ class LocalViewModel @ViewModelInject constructor(
         }
     }
 
-    fun deleteScrobble(scrobble: LocalTrack) {
+    fun deleteScrobble(scrobble: Scrobble) {
         viewModelScope.launch(Dispatchers.IO) {
             scrobbleRepo.deleteScrobble(scrobble)
         }

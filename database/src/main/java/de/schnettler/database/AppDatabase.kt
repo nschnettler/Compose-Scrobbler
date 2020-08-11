@@ -18,7 +18,7 @@ import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.database.models.Session
 import de.schnettler.database.models.Stats
@@ -34,7 +34,7 @@ import de.schnettler.database.models.User
         TopListEntry::class,
         AuthToken::class,
         User::class,
-        LocalTrack::class,
+        Scrobble::class,
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class

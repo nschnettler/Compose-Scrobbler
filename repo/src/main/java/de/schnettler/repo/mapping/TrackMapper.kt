@@ -4,7 +4,7 @@ import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Track
-import de.schnettler.database.models.LocalTrack
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.database.models.Stats
 import de.schnettler.lastfm.models.RecentTracksDto
@@ -45,7 +45,7 @@ class TrackMapper @Inject constructor() : Mapper<TrackInfoDto, TrackWithStatsAnd
     }
 }
 
-fun RecentTracksDto.mapToLocal() = LocalTrack(
+fun RecentTracksDto.mapToLocal() = Scrobble(
     name = name,
     artist = artist.name,
     album = album.name,
