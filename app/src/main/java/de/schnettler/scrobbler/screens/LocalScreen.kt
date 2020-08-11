@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onActive
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.state
 import androidx.compose.runtime.stateFor
@@ -60,6 +61,7 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity
 @Suppress("LongMethod")
 @Composable
 fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+    onActive { localViewModel.startStream() }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by state { false }

@@ -8,6 +8,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.onActive
 import androidx.compose.runtime.stateFor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
 @Composable
 fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+    onActive { model.startStream() }
     val chartState by model.state.collectAsState()
     val (showSnackbarError, updateShowSnackbarError) = stateFor(chartState) {
         chartState is RefreshableUiState.Error

@@ -18,15 +18,26 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
     }
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            state.streamFrom(store, key)
-        }
-    }
+    private var streaming: Boolean = false
 
+    /**
+     * Refreshes Data
+     */
     fun refresh() {
         viewModelScope.launch(Dispatchers.IO) {
             state.freshFrom(store, key)
+        }
+    }
+
+    /**
+     * Starts to stream data, if not streaming yet.
+     */
+    fun startStream() {
+        if (!streaming) {
+            streaming = true
+            viewModelScope.launch(Dispatchers.IO) {
+                state.streamFrom(store, key)
+            }
         }
     }
 }
