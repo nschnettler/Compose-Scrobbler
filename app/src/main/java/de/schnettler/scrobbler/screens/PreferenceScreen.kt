@@ -33,6 +33,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.components.CustomDivider
+import kotlin.math.roundToInt
 
 @Suppress("LongMethod")
 @Composable
@@ -84,7 +85,8 @@ fun PreferenceScreen() {
             singleLineTitle = true,
             icon = Icons.Outlined.Speed,
             steps = 4,
-            valueRange = 50F..100F
+            valueRange = 0.5F..1F,
+            valueRepresentation = { "${(it * 100).roundToInt()} %" }
         )
 
         val constraints = mapOf(

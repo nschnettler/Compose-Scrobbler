@@ -10,7 +10,7 @@ object PreferenceConstants {
     const val SCROBBLE_SOURCES_KEY = "scrobble_sources"
 
     const val SCROBBLE_POINT_KEY = "scrobble_point"
-    const val SCROBBLE_POINT_DEFAULT = 50F
+    const val SCROBBLE_POINT_DEFAULT = 0.5F
 
     const val SCROBBLE_CONSTRAINTS_KEY = "scrobble_constraints"
     const val SCROBBLE_CONSTRAINTS_NETWORK = "unmetered_network"
