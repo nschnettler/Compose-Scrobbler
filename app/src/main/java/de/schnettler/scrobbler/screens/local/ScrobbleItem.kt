@@ -2,17 +2,20 @@ package de.schnettler.scrobbler.screens.local
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CloudOff
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -59,11 +62,16 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
         onClick = { expanded = !expanded },
         trailing = {
             track.timestampToRelativeTime()?.let {
-                Column(horizontalGravity = Alignment.End) {
+                Column(verticalArrangement = Arrangement.Center) {
                     Text(text = it)
                     if (track.isCached()) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Icon(asset = Icons.Rounded.CloudOff.copy(defaultWidth = 16.dp, defaultHeight = 16.dp))
+                        Surface(
+                            color = MaterialTheme.colors.secondary,
+                            shape = CircleShape,
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).preferredSize(8.dp).gravity(
+                                Alignment.End
+                            )
+                        ) { }
                     }
                 }
             }
