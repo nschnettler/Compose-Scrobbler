@@ -41,7 +41,7 @@ interface BaseDao<T> {
     fun update(obj: T)
 
     @Update
-    fun updateAll(obj: List<T>)
+    suspend fun updateAll(obj: List<T>)
 
     /**
      * Delete an object from the database
@@ -49,7 +49,7 @@ interface BaseDao<T> {
      * @param obj the object to be deleted
      */
     @Delete
-    fun delete(obj: T)
+    suspend fun delete(obj: T)
 
     @Transaction
     suspend fun upsert(obj: T) {

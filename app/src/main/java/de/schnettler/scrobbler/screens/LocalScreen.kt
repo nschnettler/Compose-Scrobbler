@@ -90,7 +90,8 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity
 fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
     val recentTracksState by localViewModel.recentTracksState.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
-    var showDialog by state { false }
+    var showEditDialog by state { false }
+    var showConfirmDialog by state { false }
     val selectedTrack: MutableState<LocalTrack?> = state { null }
     val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
         recentTracksState is RefreshableUiState.Error
@@ -109,14 +110,10 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
                     HistoryTrackList(
                         tracks = list,
                         onActionClicked = { track, actionType ->
+                            selectedTrack.value = track
                             when (actionType) {
-                                EDIT -> {
-                                    selectedTrack.value = track
-                                    showDialog = true
-                                }
-                                DELETE -> {
-                                    // DELETE A TRACK
-                                }
+                                EDIT -> showEditDialog = true
+                                DELETE -> showConfirmDialog = true
                                 OPEN -> onListingSelected(track.asLastFmTrack())
                                 SUBMIT -> localViewModel.submitScrobble(track)
                             }
@@ -150,16 +147,26 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
         }
     }
 
-    if (showDialog) {
+    if (showEditDialog) {
         TrackEditDialog(onSelect = { track ->
-            showDialog = false
+            showEditDialog = false
             track?.let { updatedTrack ->
                 Timber.d("[LocalEdit - Old]${selectedTrack.value}")
                 Timber.d("[LocalEdit - New]$updatedTrack")
             }
         }, onDismiss = {
-            showDialog = false
+            showEditDialog = false
         }, track = selectedTrack.value)
+    }
+    if (showConfirmDialog) {
+        ConfirmDialog(
+            title = "Delete Scrobble",
+            description = "Are you sure you want to delete the selected scrobble?") {confirmed ->
+            if (confirmed && selectedTrack.value != null) {
+                selectedTrack.value?.let { localViewModel.deleteScrobble(it) }
+            }
+            showConfirmDialog = false
+        }
     }
 }
 
@@ -220,6 +227,35 @@ private fun TrackEditDialog(
             }
         )
     }
+}
+
+@Composable
+private fun ConfirmDialog(
+    title: String,
+    description: String = "Are you sure?",
+    onDismiss: (Boolean) -> Unit
+) {
+    AlertDialog(
+        onCloseRequest = { onDismiss(false) },
+        title = { Text(text = title) },
+        text = { Text(text = description) },
+        confirmButton = {
+            TextButton(
+                onClick = { onDismiss(true) },
+                contentColor = MaterialTheme.colors.secondary
+            ) {
+                Text(text = "Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = { onDismiss(false) },
+                contentColor = EmphasisAmbient.current.medium.applyEmphasis(contentColor())
+            ) {
+                Text(text = "Cancel")
+            }
+        }
+    )
 }
 
 @Composable

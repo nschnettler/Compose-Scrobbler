@@ -111,6 +111,8 @@ class ScrobbleRepository @Inject constructor(
         localTrackDao.updateScrobbleStatus(tracks.map { it.timestamp })
     }
 
+    suspend fun deleteScrobble(scrobble: LocalTrack) = localTrackDao.delete(scrobble)
+
     fun scheduleScrobble() {
         val constraints = Constraints.Builder().apply {
             val constraintSet =

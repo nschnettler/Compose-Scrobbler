@@ -57,4 +57,10 @@ class LocalViewModel @ViewModelInject constructor(
             }
         }
     }
+
+    fun deleteScrobble(scrobble: LocalTrack) {
+        viewModelScope.launch(Dispatchers.IO) {
+            scrobbleRepo.deleteScrobble(scrobble)
+        }
+    }
 }
