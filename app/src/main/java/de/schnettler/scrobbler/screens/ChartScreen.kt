@@ -1,42 +1,60 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.stateFor
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import com.dropbox.android.external.store4.ResponseOrigin
-import com.dropbox.android.external.store4.StoreResponse
+import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.TopListArtist
 import de.schnettler.scrobbler.components.CustomDivider
+import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.components.Recyclerview
+import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeToRefreshLayout
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
-import timber.log.Timber
 
 @Composable
 fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Unit) {
-    val artistResponse by model.artistResponse.collectAsState(StoreResponse.Loading(ResponseOrigin.Fetcher))
+    val chartState by model.chartState.collectAsState()
+    val (showSnackbarError, updateShowSnackbarError) = stateFor(chartState) {
+        chartState is RefreshableUiState.Error
+    }
 
-    when (artistResponse) {
-        is StoreResponse.Loading -> LoadingScreen()
-        is StoreResponse.Data -> {
-            Recyclerview(items = (artistResponse as StoreResponse.Data<List<TopListArtist>>).value) { (entry, artist) ->
-                ChartListItem(artist.name, entry.count) { onListingSelected(artist) }
-                CustomDivider()
+    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
+        if (chartState.isLoading) { LoadingScreen() } else {
+            SwipeToRefreshLayout(
+                refreshingState = chartState.isRefreshing,
+                onRefresh = { model.refresh() },
+                refreshIndicator = { SwipeRefreshPrograssIndicator() }
+            ) {
+                chartState.currentData?.let { charts ->
+                    Recyclerview(items = charts) { (entry, artist) ->
+                        ChartListItem(artist.name, entry.count) { onListingSelected(artist) }
+                        CustomDivider()
+                    }
+                }
             }
         }
-        is StoreResponse.Error.Exception -> {
-            Timber.d((artistResponse as StoreResponse.Error.Exception<List<TopListArtist>>).errorMessageOrNull())
-        }
-        is StoreResponse.Error.Message -> {
-            Timber.d((artistResponse as StoreResponse.Error.Message<List<TopListArtist>>).message)
-        }
-        is StoreResponse.NoNewData -> { }
+        ErrorSnackbar(
+            showError = showSnackbarError,
+            onErrorAction = { model.refresh() },
+            onDismiss = { updateShowSnackbarError(false) },
+            state = chartState,
+            fallBackMessage = "Unable to refresh charts",
+            modifier = Modifier.gravity(Alignment.BottomCenter)
+        )
     }
 }
 
