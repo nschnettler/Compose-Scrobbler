@@ -9,10 +9,11 @@ import de.schnettler.repo.Result
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.mapping.LastFmResponse
 import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.util.freshFrom
+import de.schnettler.scrobbler.util.streamFrom
 import de.schnettler.scrobbler.util.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class LocalViewModel @ViewModelInject constructor(
@@ -29,21 +30,14 @@ class LocalViewModel @ViewModelInject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getRecentTracks().collect {
-                recentTracksState.update(it)
-            }
+            recentTracksState.streamFrom(repo.recentTracksStore, "")
         }
     }
 
-    @Suppress("TooGenericExceptionCaught")
     fun refresh() {
         recentTracksState.update(Result.Loading)
         viewModelScope.launch {
-            try {
-                repo.refreshRecentTracks()
-            } catch (e: Exception) {
-                recentTracksState.update(Result.Error(e))
-            }
+            recentTracksState.freshFrom(repo.recentTracksStore, "")
         }
     }
 

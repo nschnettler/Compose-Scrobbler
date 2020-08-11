@@ -3,8 +3,6 @@ package de.schnettler.repo
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
-import com.dropbox.android.external.store4.StoreRequest
-import com.dropbox.android.external.store4.fresh
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
@@ -20,7 +18,7 @@ class LocalRepository @Inject constructor(
     private val service: LastFmService,
     private val authProvider: LastFmAuthProvider
 ) {
-    private val recentTracksStore = StoreBuilder.from(
+    val recentTracksStore = StoreBuilder.from(
         fetcher = Fetcher.of { _: String ->
             service.getUserRecentTrack(authProvider.getSessionKeyOrThrow()).map { it.mapToLocal() }
         },
@@ -51,9 +49,6 @@ class LocalRepository @Inject constructor(
             }
         )
     ).build()
-
-    fun getRecentTracks() = recentTracksStore.stream(StoreRequest.cached("", true))
-    suspend fun refreshRecentTracks() = recentTracksStore.fresh("")
 
     fun getNumberOfCachedScrobbles() = localTrackDao.getNumberOfCachedScrobbles()
 }
