@@ -40,7 +40,7 @@ class ScrobbleRepository @Inject constructor(
         }
     }
 
-    suspend fun createAndSubmitScrobble(track: LocalTrack) = service.submitScrobble(
+    suspend fun submitScrobble(track: LocalTrack) = service.submitScrobble(
         method = LastFmService.METHOD_SCROBBLE,
         artist = track.artist,
         track = track.name,
@@ -105,6 +105,10 @@ class ScrobbleRepository @Inject constructor(
         result["format"] = "json"
 
         return service.submitMultipleScrobbles(createBody(result)).map()
+    }
+
+    suspend fun markScrobblesAsSubmitted(tracks: List<LocalTrack>) {
+        localTrackDao.updateScrobbleStatus(tracks.map { it.timestamp })
     }
 
     fun scheduleScrobble() {

@@ -50,4 +50,7 @@ abstract class LocalTrackDao : BaseDao<LocalTrack> {
 
     @Query("UPDATE localTracks SET album = :album, artist = :artist, name = :track WHERE timestamp = :timestamp")
     abstract suspend fun updateTrackData(timestamp: Long, track: String, artist: String, album: String)
+
+    @Query("UPDATE localTracks SET status = :status WHERE timestamp in (:timestamps)")
+    abstract suspend fun updateScrobbleStatus(timestamps: List<Long>, status: ScrobbleStatus = ScrobbleStatus.SCROBBLED)
 }

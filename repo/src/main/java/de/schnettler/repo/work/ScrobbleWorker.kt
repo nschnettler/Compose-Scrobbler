@@ -7,7 +7,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import de.schnettler.database.models.LocalTrack
-import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.GeneralScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
@@ -41,7 +40,7 @@ class ScrobbleWorker @WorkerInject constructor(
         when (cachedTracks.size == 1) {
             true -> {
                 val input = cachedTracks.first()
-                val result = handleResponse(listOf(input), repo.createAndSubmitScrobble(input))
+                val result = handleResponse(listOf(input), repo.submitScrobble(input))
                 if (result !is Result.Success) return@withContext result
             }
             false -> {
@@ -84,14 +83,12 @@ class ScrobbleWorker @WorkerInject constructor(
         }
     }
 
-    private fun markTracksAsSubmitted(tracks: List<LocalTrack>) {
+    private suspend fun markTracksAsSubmitted(tracks: List<LocalTrack>) {
         scrobbledTracks.addAll(tracks)
-        tracks.forEach {
-            repo.saveTrack(it.copy(status = ScrobbleStatus.SCROBBLED))
-        }
+        repo.markScrobblesAsSubmitted(tracks)
     }
 
-    private fun <T : GeneralScrobbleResponse> handleResponse(
+    private suspend fun <T : GeneralScrobbleResponse> handleResponse(
         input: List<LocalTrack>,
         response: LastFmResponse<T>
     ): Result {
@@ -102,7 +99,7 @@ class ScrobbleWorker @WorkerInject constructor(
                 if (accepted == input.size) {
                     markTracksAsSubmitted(input)
                 } else {
-                    // Filter accepted tracks, ignore other
+                    // TODO: Filter accepted tracks, ignore other
                 }
                 Result.success()
             }
