@@ -32,7 +32,23 @@ object DataGenerator {
         )
     }
 
+    fun generateArtistWithStatsAndInfo(count: Int) = List(count) {
+        val artist = generateArtist(it)
+        EntityWithStatsAndInfo.ArtistWithStatsAndInfo(
+            artist,
+            generateStats(artist.id),
+            generateInfo(artist.id)
+        )
+    }
+
     private fun generateStats(forId: String) = Stats(forId, Random.nextLong(10))
 
     private fun generateInfo(forId: String) = EntityInfo(forId, emptyList(), 10, "wiki")
+
+    fun generateArtists(number: Int, prefix: String = "artist") = List(number) {
+        generateArtist(it, prefix)
+    }
+
+    private fun generateArtist(current: Int = 0, prefix: String = "artist") =
+        LastFmEntity.Artist("$prefix$current", "url$current")
 }
