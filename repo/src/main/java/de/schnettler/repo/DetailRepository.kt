@@ -59,7 +59,7 @@ class DetailRepository @Inject constructor(
                 val artistStatsInfo = artistDao.getArtistWithMetadata(artist.id)
                 val topTracks = trackDao.getTopTracksOfArtist(artist.name)
                 val topAlbums = albumDao.getTopAlbumsOfArtist(artist.name)
-                val similarArtists = artistDao.getRelatedArtists(artist.id)
+                val similarArtists = relationDao.getRelatedArtists(artist.id)
                 combine(
                     artistStatsInfo,
                     topTracks,
