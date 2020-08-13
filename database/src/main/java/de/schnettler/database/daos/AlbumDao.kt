@@ -10,9 +10,6 @@ import kotlinx.coroutines.flow.Flow
 @Suppress("MaxLineLength")
 @Dao
 abstract class AlbumDao : BaseDao<Album> {
-    @Query("SELECT * FROM albums WHERE id = :id and artist = :artistId")
-    abstract fun getAlbum(id: String, artistId: String): Flow<Album?>
-
     @Query("SELECT * FROM albums WHERE name = :name and artist = :artist")
     abstract fun getAlbumByName(name: String, artist: String): Album?
 
