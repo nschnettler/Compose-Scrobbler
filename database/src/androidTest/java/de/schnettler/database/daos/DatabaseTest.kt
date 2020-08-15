@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 
+@Suppress("UnnecessaryAbstractClass")
 @RunWith(AndroidJUnit4::class)
 abstract class DatabaseTest {
     @get:Rule
