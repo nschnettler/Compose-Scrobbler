@@ -85,9 +85,11 @@ class DetailRepository @Inject constructor(
                 statsDao.insertOrUpdateStats(details.topAlbums.map { it.stats })
 
                 artistDao.insertAll(details.similarArtists)
-                relationDao.forceInsertAll(details.similarArtists.mapIndexed { index, related ->
-                    RelatedArtistEntry(artistId = details.info.id, related.id, index)
-                })
+                details.info?.let { info ->
+                    relationDao.forceInsertAll(details.similarArtists.mapIndexed { index, related ->
+                        RelatedArtistEntry(artistId = info.id, related.id, index)
+                    })
+                }
             }
         )
     ).build()

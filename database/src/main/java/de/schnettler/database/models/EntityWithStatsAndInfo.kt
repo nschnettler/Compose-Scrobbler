@@ -15,8 +15,8 @@ sealed class EntityWithStatsAndInfo(
 
     data class AlbumWithStatsAndInfo(
         @Embedded override val entity: LastFmEntity.Album,
-        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats,
-        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo,
+        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats?,
+        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo?,
     ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore var tracks: List<TrackWithInfo> = listOf()
         fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info.duration })
@@ -24,8 +24,8 @@ sealed class EntityWithStatsAndInfo(
 
     data class ArtistWithStatsAndInfo(
         @Embedded override val entity: LastFmEntity.Artist,
-        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats,
-        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo
+        @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats?,
+        @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo?
     ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore
         var similarArtists: List<LastFmEntity.Artist> = listOf()

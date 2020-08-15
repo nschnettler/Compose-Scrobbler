@@ -39,9 +39,9 @@ fun ArtistDetailScreen(
             modifier = Modifier.aspectRatio(16 / 10f),
             placeholder = artist.name
         )
-        ExpandingInfoCard(info = info.wiki)
+        ExpandingInfoCard(info = info?.wiki)
         ListeningStats(item = stats)
-        TagCategory(tags = info.tags, onTagClicked = onTagClicked)
+        info?.tags?.let { TagCategory(tags = it, onTagClicked = onTagClicked) }
         ListTitle(title = "Top Tracks")
         TrackListWithStats(tracks = artistInfo.topTracks, onListingSelected = onListingSelected)
 

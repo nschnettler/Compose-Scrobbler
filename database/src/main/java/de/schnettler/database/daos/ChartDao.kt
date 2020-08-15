@@ -20,8 +20,8 @@ abstract class ChartDao : BaseDao<TopListEntry> {
     @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopTracks(type: EntityType = EntityType.TRACK, listType: ListType = ListType.USER): Flow<List<TopListTrack>>
 
-    @Query("SELECT * FROM toplist WHERE entityType = :type ORDER BY `index` ASC")
-    abstract fun getTopAlbums(type: EntityType = EntityType.ALBUM): Flow<List<TopListAlbum>>
+    @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopAlbums(type: EntityType = EntityType.ALBUM, listType: ListType = ListType.USER): Flow<List<TopListAlbum>>
 
     @Query("SELECT * FROM artists INNER JOIN toplist ON artists.id = toplist.id WHERE listType = 'USER' AND imageUrl is NULL ")
     abstract suspend fun getArtistsWithoutImages(): List<LastFmEntity.Artist>

@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ChipRow
+import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.theme.AppColor
@@ -51,10 +51,10 @@ fun AlbumDetailScreen(
                 onArtistSelected = onListingSelected
             )
         }
-        ChipRow(items = albumDetails.info.tags, onChipClicked = onTagClicked)
+        albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = onTagClicked) }
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         ListeningStats(item = stats)
-        ExpandingInfoCard(info.wiki?.fromHtmlLastFm())
+        ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         TrackList(
             tracks = albumDetails.tracks.map { it.entity },
