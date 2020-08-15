@@ -80,7 +80,7 @@ dependencies {
     implementation(AndroidX.activityKtx)
     implementation("androidx.compose.foundation", "foundation-layout", "_")
     implementation("androidx.compose.material", "material", "_")
-    implementation("androidx.ui", "ui-tooling", "_")
+    implementation(AndroidX.ui.tooling)
     implementation("androidx.compose.runtime", "runtime-livedata", "_")
     implementation("androidx.compose.material", "material-icons-extended", "_")
     implementation(AndroidX.lifecycle.extensions)
@@ -88,11 +88,11 @@ dependencies {
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
+    debugImplementation(Square.leakCanary.android)
 
     implementation("io.coil-kt", "coil", "_")
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
-    debugImplementation("com.squareup.leakcanary", "leakcanary-android", "_")
     coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
     // Dagger
