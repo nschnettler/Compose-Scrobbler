@@ -36,7 +36,7 @@ class ScrobbleRepository @Inject constructor(
 ) {
     fun saveTrack(track: Scrobble) {
         scope.launch {
-            localTrackDao.insertOrUpdatTrack(track)
+            localTrackDao.forceInsert(track)
         }
     }
 

@@ -1,8 +1,6 @@
 package de.schnettler.database.daos
 
 import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
@@ -25,25 +23,6 @@ abstract class LocalTrackDao : BaseDao<Scrobble> {
 
     @Query("SELECT * FROM localTracks WHERE status = :status ORDER BY timestamp DESC")
     abstract suspend fun getCachedTracks(status: ScrobbleStatus = ScrobbleStatus.LOCAL): List<Scrobble>
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insertTrack(track: Scrobble): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertOrUpdatTrack(track: Scrobble): Long
-
-    @Query("UPDATE localTracks SET status = :status WHERE timestamp = :startTime AND playedBy = :packageName")
-    abstract suspend fun updateTrackStatus(
-        startTime: Long,
-        packageName: String,
-        status: ScrobbleStatus
-    )
-
-    @Query("SELECT * FROM localTracks ORDER BY timestamp DESC LIMIT 1")
-    abstract fun getCurrentTrack(): Flow<Scrobble>
-
-    @Query("UPDATE localTracks SET album = :album WHERE timestamp = :startTime AND playedBy = :packageName")
-    abstract suspend fun updateAlbum(album: String, startTime: Long, packageName: String)
 
     @Query("DELETE FROM localTracks WHERE status = :include")
     abstract fun deleteByStatus(include: ScrobbleStatus = ScrobbleStatus.PLAYING)
