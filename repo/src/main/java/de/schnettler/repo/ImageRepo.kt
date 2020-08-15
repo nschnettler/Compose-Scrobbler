@@ -27,12 +27,12 @@ class ImageRepo @Inject constructor(
         Timber.d("[Spotify] Requesting images for ${needsImage.size} artists")
         val service = provideSpotifyService(authProvider, authenticator)
         needsImage.forEach { artist ->
-            retrieveArtistImage(artist = artist.value, spotifyService = service)
+            retrieveArtistImage(artist = artist, spotifyService = service)
         }
 
         val trackNeedsImage = chartDao.getTracksWithoutImages()
         Timber.d("[Spotify] Requesting images for ${trackNeedsImage.size} tracks")
-        trackNeedsImage.forEach { (_, track) ->
+        trackNeedsImage.forEach { track ->
             track.album?.let { albumName ->
                 val album = albumDao.getAlbumByName(name = albumName, artist = track.artist)
                 album?.imageUrl?.let {image ->

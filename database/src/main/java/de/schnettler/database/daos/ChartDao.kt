@@ -3,6 +3,7 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.database.models.EntityType
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
@@ -16,15 +17,15 @@ abstract class ChartDao : BaseDao<TopListEntry> {
     @Query("SELECT * FROM toplist WHERE entityType = :entityType AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopArtists(entityType: EntityType = EntityType.ARTIST, listType: ListType): Flow<List<TopListArtist>>
 
-    @Query("SELECT * FROM toplist WHERE entityType = :type ORDER BY `index` ASC")
-    abstract fun getTopTracks(type: EntityType = EntityType.TRACK): Flow<List<TopListTrack>>
+    @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopTracks(type: EntityType = EntityType.TRACK, listType: ListType = ListType.USER): Flow<List<TopListTrack>>
 
     @Query("SELECT * FROM toplist WHERE entityType = :type ORDER BY `index` ASC")
     abstract fun getTopAlbums(type: EntityType = EntityType.ALBUM): Flow<List<TopListAlbum>>
 
     @Query("SELECT * FROM artists INNER JOIN toplist ON artists.id = toplist.id WHERE listType = 'USER' AND imageUrl is NULL ")
-    abstract suspend fun getArtistsWithoutImages(): List<TopListArtist>
+    abstract suspend fun getArtistsWithoutImages(): List<LastFmEntity.Artist>
 
     @Query("SELECT * FROM tracks INNER JOIN toplist ON tracks.id = toplist.id WHERE listType = 'USER' AND imageUrl is NULL ")
-    abstract suspend fun getTracksWithoutImages(): List<TopListTrack>
+    abstract suspend fun getTracksWithoutImages(): List<LastFmEntity.Track>
 }

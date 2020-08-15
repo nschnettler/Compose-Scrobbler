@@ -12,14 +12,15 @@ import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.EntityInfoDao
 import de.schnettler.database.daos.LocalTrackDao
+import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.RelatedArtistEntry
+import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.Session
 import de.schnettler.database.models.Stats
 import de.schnettler.database.models.TopListEntry
@@ -52,6 +53,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun statDao(): StatsDao
     abstract fun infoDao(): EntityInfoDao
     abstract fun relationDao(): ArtistRelationDao
+    abstract fun sessionDao(): SessionDao
 }
 
 fun provideDatabase(context: Context) = Room.databaseBuilder(

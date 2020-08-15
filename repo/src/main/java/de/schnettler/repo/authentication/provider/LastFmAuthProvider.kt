@@ -1,6 +1,6 @@
 package de.schnettler.repo.authentication.provider
 
-import de.schnettler.database.daos.AuthDao
+import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.models.Session
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.LastFmService.Companion.METHOD_AUTH_SESSION
@@ -16,7 +16,7 @@ class NoSessionFoundException(message: String) : Exception(message)
 
 class LastFmAuthProvider @Inject constructor(
     private val service: LastFmService,
-    private val dao: AuthDao
+    private val dao: SessionDao
 ) {
     var session: Session? = null
     val sessionLive = dao.getSession()
@@ -25,7 +25,7 @@ class LastFmAuthProvider @Inject constructor(
         val params = mutableMapOf("token" to token, "method" to METHOD_AUTH_SESSION)
         val signature = createSignature(params)
         val session = SessionMapper.map(service.getSession(token, signature))
-        dao.insertSession(session)
+        dao.forceInsert(session)
         return session
     }
 

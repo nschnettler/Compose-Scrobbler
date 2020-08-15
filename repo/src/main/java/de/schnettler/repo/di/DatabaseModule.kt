@@ -56,4 +56,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideRelationDao(database: AppDatabase) = database.relationDao()
+
+    @Provides
+    @Singleton
+    fun provideSessionDao(database: AppDatabase) = database.sessionDao()
 }
