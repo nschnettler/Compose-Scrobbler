@@ -44,11 +44,9 @@ dependencies {
     kapt(AndroidX.room.compiler)
 
     androidTestImplementation(Testing.junit4)
-    androidTestImplementation(Testing.mockito.core)
     androidTestImplementation(KotlinX.coroutines.test)
-    androidTestImplementation(AndroidX.test.ext.junit)
+    androidTestImplementation(AndroidX.test.ext.junitKtx)
     androidTestImplementation(AndroidX.archCore.testing)
-    androidTestImplementation(AndroidX.test.espresso.core)
-    androidTestImplementation("com.linkedin.dexmaker", "dexmaker-mockito", "_")
+    androidTestImplementation(AndroidX.test.rules)
     androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }
