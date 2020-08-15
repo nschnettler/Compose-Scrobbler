@@ -25,8 +25,5 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
-
-    implementation(Kotlin.stdlib.jdk7)
     api(JakeWharton.timber)
 }

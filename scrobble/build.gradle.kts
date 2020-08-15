@@ -23,7 +23,6 @@ dependencies {
     implementation(project(":common"))
     api(project(":repo"))
 
-    implementation(Kotlin.stdlib.jdk8)
     implementation(KotlinX.coroutines.core)
 
     // Dagger

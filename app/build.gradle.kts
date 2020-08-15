@@ -73,9 +73,6 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":scrobble"))
 
-    // Kotlin
-    implementation(Kotlin.stdlib.jdk8)
-
     // AndroidX
     implementation(AndroidX.browser)
     implementation(AndroidX.coreKtx)

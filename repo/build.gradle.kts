@@ -27,7 +27,6 @@ dependencies {
     implementation(Square.okHttp3.okHttp)
     implementation(AndroidX.work.runtimeKtx)
 
-    implementation("org.jetbrains.kotlin", "kotlin-stdlib", "1.3.72")
     implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")
     kapt("androidx.hilt", "hilt-compiler", "_")
     implementation("com.google.dagger", "hilt-android", "_")

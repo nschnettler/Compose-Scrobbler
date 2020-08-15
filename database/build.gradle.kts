@@ -38,7 +38,6 @@ android {
 }
 
 dependencies {
-    implementation(Kotlin.stdlib.jdk8)
     implementation(AndroidX.room.ktx)
     api(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
