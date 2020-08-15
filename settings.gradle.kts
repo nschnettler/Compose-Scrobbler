@@ -1,4 +1,4 @@
-import de.fayard.dependencies.bootstrapRefreshVersionsAndDependencies
+import de.fayard.refreshVersions.bootstrapRefreshVersions
 
 include(":common")
 include(":repo")
@@ -9,8 +9,11 @@ include(":app")
 rootProject.name = "Scrobbler"
 
 buildscript {
-    repositories { gradlePluginPortal() }
-    dependencies.classpath("de.fayard:dependencies:0.5.7")
+    repositories {
+        gradlePluginPortal()
+        maven(url = "https://dl.bintray.com/jmfayard/maven")
+    }
+    dependencies.classpath("de.fayard.refreshVersions:refreshVersions:0.9.5-dev-009")
 }
 
-bootstrapRefreshVersionsAndDependencies()
+bootstrapRefreshVersions()
