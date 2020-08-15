@@ -6,6 +6,9 @@ import de.schnettler.database.models.Stats
 
 @Dao
 abstract class StatsDao : BaseDao<Stats> {
+    @Query("SELECT * FROM stats WHERE id = :id")
+    abstract suspend fun getStat(id: String): Stats?
+
     suspend fun insertOrUpdateStats(stats: List<Stats?>) {
         val result = insertAll(stats)
         result.forEachIndexed { index, value ->
@@ -19,8 +22,8 @@ abstract class StatsDao : BaseDao<Stats> {
     }
 
     @Query("UPDATE stats SET plays = :plays, listeners = :listeners WHERE id = :id")
-    abstract fun updatePublicStats(id: String, plays: Long, listeners: Long)
+    abstract fun updatePublicStats(id: String, plays: Long, listeners: Long): Int
 
     @Query("UPDATE stats SET userPlays = :userPlays WHERE id = :id")
-    abstract fun updateUserStats(id: String, userPlays: Long)
+    abstract fun updateUserStats(id: String, userPlays: Long): Int
 }

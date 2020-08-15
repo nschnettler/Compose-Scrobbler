@@ -11,7 +11,6 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.TopListTrack
-import kotlin.random.Random
 
 object DataGenerator {
     fun generateAlbums(number: Int, artistName: String? = null) = List(number) {
@@ -25,7 +24,7 @@ object DataGenerator {
         val album = generateAlbum(it, artist)
         EntityWithStats.AlbumWithStats(
             album,
-            generateStats(album.id)
+            generateStat(album.id, it)
         )
     }
 
@@ -33,7 +32,7 @@ object DataGenerator {
         val album = generateAlbum(it, artist)
         EntityWithStatsAndInfo.AlbumWithStatsAndInfo(
             album,
-            generateStats(album.id),
+            generateStat(album.id, it),
             generateInfo(album.id)
         )
     }
@@ -42,7 +41,7 @@ object DataGenerator {
         val artist = generateArtist(it)
         EntityWithStatsAndInfo.ArtistWithStatsAndInfo(
             artist,
-            generateStats(artist.id),
+            generateStat(artist.id, it),
             generateInfo(artist.id)
         )
     }
@@ -71,7 +70,11 @@ object DataGenerator {
         )
     }
 
-    private fun generateStats(forId: String) = Stats(forId, Random.nextLong(10))
+    fun generateStats(count: Int, prefix: String = "stat") = List(count) {
+        generateStat("$prefix$it", it)
+    }
+
+    private fun generateStat(forId: String, number: Int) = Stats(forId, 10L * number, 20L * number, 30L * number)
 
     private fun generateInfo(forId: String) = EntityInfo(forId, emptyList(), 10, "wiki")
 
