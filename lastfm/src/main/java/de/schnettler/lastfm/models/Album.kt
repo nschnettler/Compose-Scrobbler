@@ -1,7 +1,9 @@
 package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class AlbumDto(
     override val name: String,
     override val mbid: String?,
@@ -11,6 +13,7 @@ data class AlbumDto(
     @Json(name = "image") val images: List<ImageDto>
 ) : ListingDto
 
+@JsonClass(generateAdapter = true)
 data class SearchResultDto(
     val name: String,
     val artist: String = "Unknown Artist",
@@ -18,6 +21,7 @@ data class SearchResultDto(
     val listeners: Long = 0
 )
 
+@JsonClass(generateAdapter = true)
 data class AlbumInfoDto(
     val name: String,
     val artist: String,
@@ -31,10 +35,12 @@ data class AlbumInfoDto(
     val wiki: WikiDto?
 )
 
+@JsonClass(generateAdapter = true)
 data class AlbumTracksDto(
     val track: List<AlbumTrack>
 )
 
+@JsonClass(generateAdapter = true)
 data class WikiDto(
     val published: String,
     val summary: String,

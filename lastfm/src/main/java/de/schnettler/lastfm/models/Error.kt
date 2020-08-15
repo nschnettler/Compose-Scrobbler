@@ -1,5 +1,8 @@
 package de.schnettler.lastfm.models
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class ErrorResponse(
     val error: Int,
     val message: String

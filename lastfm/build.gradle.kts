@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
+    kotlin("kapt")
 }
 
 android {
@@ -26,6 +27,7 @@ dependencies {
     implementation(Square.okHttp3.okHttp)
     api(Square.okHttp3.loggingInterceptor)
 
-    implementation("com.squareup.moshi", "moshi-kotlin", "_")
+    kapt(Square.moshi.kotlinCodegen)
+    implementation(Square.moshi.kotlinReflect)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 }

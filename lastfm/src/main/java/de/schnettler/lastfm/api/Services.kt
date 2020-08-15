@@ -2,7 +2,6 @@ package de.schnettler.lastfm.api
 
 import com.serjltt.moshi.adapters.Wrapped
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.schnettler.lastfm.api.spotify.SpotifyService
 import okhttp3.Authenticator
 import okhttp3.Interceptor
@@ -40,7 +39,6 @@ fun provideRetrofit(okHttpClient: OkHttpClient, endpoint: String): Retrofit = Re
         MoshiConverterFactory.create(
             Moshi.Builder()
                 .add(Wrapped.ADAPTER_FACTORY)
-                .add(KotlinJsonAdapterFactory())
                 .build()
         )
     )

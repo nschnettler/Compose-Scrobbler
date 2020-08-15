@@ -1,7 +1,9 @@
 package de.schnettler.lastfm.models
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class UserDto(
     override val name: String,
     override val mbid: String? = null,
@@ -14,6 +16,7 @@ data class UserDto(
     val image: List<ImageDto>
 ) : ListingDto
 
+@JsonClass(generateAdapter = true)
 data class DateDto(
     @Json(name = "#text") val unixtime: Long
 )
