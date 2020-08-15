@@ -4,7 +4,6 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.fluent.en_GB.toThrow
 import ch.tutteli.atrium.api.verbs.expect
 import org.junit.Test
-import kotlin.math.exp
 
 class StringUtilTest {
     @Test
@@ -46,7 +45,6 @@ class StringUtilTest {
         expect(uk).toBe("\uD83C\uDDEC\uD83C\uDDE7")
     }
 
-
     @Test
     fun `capitalizeAll returns a string with all words capitalized`() {
         val simple = "word1".capitalizeAll()
@@ -61,13 +59,12 @@ class StringUtilTest {
         val onlyLetters = "simple"
         val startsWithNumber = "5imple"
 
-
         expect(onlyLetters.firstLetter()).toBe("s")
         expect(startsWithNumber.firstLetter()).toBe("i")
     }
 
     @Test
-    fun  `firstLetter throws exception on empty and number only strings`() {
+    fun `firstLetter throws exception on empty and number only strings`() {
         val blank = " "
         val onlyNumbers = "1960"
 
