@@ -1,5 +1,7 @@
 package de.schnettler.database.daos
 
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactlyElementsOf
+import ch.tutteli.atrium.api.fluent.en_GB.hasSize
 import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
@@ -60,7 +62,7 @@ class AlbumDaoTest : DatabaseTest() {
         // Then - Returns the right AlbumWithStats
         val expected = listOf(EntityWithStats.AlbumWithStats(album, stats))
         result.collectValue {
-            expect(it).toBe(expected)
+            expect(it).notToBeNull().containsExactlyElementsOf(expected)
         }
     }
 
@@ -87,7 +89,7 @@ class AlbumDaoTest : DatabaseTest() {
             EntityWithStats.AlbumWithStats(album[1], stats[1])
         )
         result.collectValue {
-            expect(it).toBe(expected)
+            expect(it).notToBeNull().containsExactlyElementsOf(expected)
         }
     }
 
@@ -104,10 +106,9 @@ class AlbumDaoTest : DatabaseTest() {
 
         // Then - Returns the Top Albums, sorted by plays Desc
         result.collectValue {
-            expect(it?.size).toBe(5)
+            expect(it).notToBeNull().hasSize(5)
         }
     }
-
 
     @Test
     fun getTopAlbumsOfArtist_ignoreAlbumsWithoutStats() = runBlockingTest {
@@ -124,7 +125,7 @@ class AlbumDaoTest : DatabaseTest() {
 
         // Then - Doesn't return the album w/ stats
         result.collectValue {
-            expect(it?.size).toBe(albumWithStats.size)
+            expect(it).notToBeNull().hasSize(albumWithStats.size)
         }
     }
 

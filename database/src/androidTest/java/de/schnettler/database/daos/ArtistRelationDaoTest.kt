@@ -1,6 +1,9 @@
 package de.schnettler.database.daos
 
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactlyElementsOf
+import ch.tutteli.atrium.api.fluent.en_GB.hasSize
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.DataGenerator
 import de.schnettler.database.collectValue
@@ -30,8 +33,8 @@ class ArtistRelationDaoTest : DatabaseTest() {
 
         // THEN - Returns correct number of related Artists, sorted by orderIndex ASC
         relatedArtists.collectValue { result ->
-            expect(result?.size).toBe(3)
-            expect(result?.map { it.relation }).toBe(testedRelations)
+            expect(result).notToBeNull().hasSize(3)
+            expect(result?.map { it.relation }).notToBeNull().containsExactlyElementsOf(testedRelations)
         }
     }
 
@@ -53,7 +56,7 @@ class ArtistRelationDaoTest : DatabaseTest() {
 
         // THEN - Returns an empty list
         relatedArtists.collectValue { result ->
-            expect(result?.size).toBe(0)
+            expect(result).notToBeNull().isEmpty()
         }
     }
 }
