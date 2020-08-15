@@ -59,6 +59,11 @@ jobs:
           
       - name: Run Unit Tests
         run: ./gradlew testDebugUnitTest
+      
+      - name: Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }}
+
   instrumented-test:
     name: Instrumented tests
     runs-on: macos-latest
