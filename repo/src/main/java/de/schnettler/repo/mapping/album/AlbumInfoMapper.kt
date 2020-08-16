@@ -5,12 +5,11 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInf
 import de.schnettler.lastfm.models.AlbumInfoDto
 import de.schnettler.repo.mapping.AlbumMapper
 import de.schnettler.repo.mapping.InfoMapper
+import de.schnettler.repo.mapping.Mapper
 import de.schnettler.repo.mapping.StatMapper
 import de.schnettler.repo.mapping.TrackMapper
-import de.schnettler.repo.mapping.Mapper
-import javax.inject.Inject
 
-class AlbumInfoMapper @Inject constructor() : Mapper<AlbumInfoDto, AlbumWithStatsAndInfo> {
+object AlbumInfoMapper : Mapper<AlbumInfoDto, AlbumWithStatsAndInfo> {
     override suspend fun map(from: AlbumInfoDto): AlbumWithStatsAndInfo {
         val album = AlbumMapper.map(from)
         val info = InfoMapper.map(from, album.id)

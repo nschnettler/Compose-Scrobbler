@@ -4,11 +4,10 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndIn
 import de.schnettler.lastfm.models.ArtistInfoDto
 import de.schnettler.repo.mapping.ArtistMapper
 import de.schnettler.repo.mapping.InfoMapper
-import de.schnettler.repo.mapping.StatMapper
 import de.schnettler.repo.mapping.Mapper
-import javax.inject.Inject
+import de.schnettler.repo.mapping.StatMapper
 
-class ArtistInfoMapper @Inject constructor() : Mapper<ArtistInfoDto, ArtistWithStatsAndInfo> {
+object ArtistInfoMapper : Mapper<ArtistInfoDto, ArtistWithStatsAndInfo> {
     override suspend fun map(from: ArtistInfoDto): ArtistWithStatsAndInfo {
         val artist = ArtistMapper.map(from)
         val stats = StatMapper.map(from.stats, artist.id)

@@ -7,12 +7,11 @@ import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.TrackInfoDto
 import de.schnettler.repo.mapping.AlbumMapper
 import de.schnettler.repo.mapping.InfoMapper
+import de.schnettler.repo.mapping.Mapper
 import de.schnettler.repo.mapping.StatMapper
 import de.schnettler.repo.mapping.TrackMapper
-import de.schnettler.repo.mapping.Mapper
-import javax.inject.Inject
 
-class TrackInfoMapper @Inject constructor() : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
+object TrackInfoMapper : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
     override suspend fun map(from: TrackInfoDto): TrackWithStatsAndInfo {
         val album = from.album?.let { album -> AlbumMapper.map(album) }
         val track = TrackMapper.map(from, album)

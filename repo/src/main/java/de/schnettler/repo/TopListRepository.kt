@@ -18,10 +18,10 @@ import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.album.UserAlbumMapper
-import de.schnettler.repo.mapping.artist.UserArtistMapper
+import de.schnettler.repo.mapping.album.TopUserAlbumMapper
+import de.schnettler.repo.mapping.artist.TopUserArtistMapper
 import de.schnettler.repo.mapping.forLists
-import de.schnettler.repo.mapping.track.UserTrackMapper
+import de.schnettler.repo.mapping.track.TopUserTrackMapper
 import de.schnettler.repo.work.SpotifyWorker
 import javax.inject.Inject
 
@@ -32,9 +32,6 @@ class TopListRepository @Inject constructor(
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
     private val service: LastFmService,
-    private val albumMapper: UserAlbumMapper,
-    private val artistMapper: UserArtistMapper,
-    private val trackMapper: UserTrackMapper,
     private val authProvider: LastFmAuthProvider,
     private val workManager: WorkManager,
 ) {
@@ -45,7 +42,7 @@ class TopListRepository @Inject constructor(
             if (timePeriod == TimePeriod.OVERALL) {
                 userDao.updateArtistCount(session.name, response.info.total)
             }
-            artistMapper.forLists()(response.artist)
+            TopUserArtistMapper.forLists()(response.artist)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { chartDao.getTopArtists(listType = ListType.USER) },
@@ -59,7 +56,7 @@ class TopListRepository @Inject constructor(
 
     val topAlbumStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            albumMapper.forLists()(
+            TopUserAlbumMapper.forLists()(
                 service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
             )
         },
@@ -74,7 +71,7 @@ class TopListRepository @Inject constructor(
 
     val topTracksStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            trackMapper.forLists()(
+            TopUserTrackMapper.forLists()(
                 service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
             )
         },

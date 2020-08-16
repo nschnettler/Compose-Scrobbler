@@ -16,11 +16,11 @@ import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.mapping.ArtistMapper
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
 import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
-import de.schnettler.repo.mapping.artist.MinimalArtistMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.TrackInfoMapper
 import kotlinx.coroutines.flow.combine
@@ -33,14 +33,8 @@ class DetailRepository @Inject constructor(
     private val statsDao: StatsDao,
     private val entityInfoDao: EntityInfoDao,
     private val relationDao: ArtistRelationDao,
-    private val albumInfoMapper: AlbumInfoMapper,
     private val service: LastFmService,
-    private val artistInfoMapper: ArtistInfoMapper,
-    private val artistTrackMapper: ArtistTrackMapper,
-    private val minArtistMapper: MinimalArtistMapper,
-    private val albumWithStatsMapper: AlbumWithStatsMapper,
     private val lastFmAuthProvider: LastFmAuthProvider,
-    private val trackMapper: TrackInfoMapper,
     private val imageRepo: ImageRepo
 ) {
     val artistStore = StoreBuilder.from(
@@ -48,10 +42,10 @@ class DetailRepository @Inject constructor(
             if (artist.imageUrl == null) imageRepo.retrieveArtistImage(artist)
             val response =
                 service.getArtistInfo(artist.name, lastFmAuthProvider.getSessionKeyOrThrow())
-            artistInfoMapper.map(response).apply {
-                topAlbums = albumWithStatsMapper.forLists()(service.getArtistAlbums(artist.name))
-                topTracks = artistTrackMapper.forLists()(service.getArtistTracks(artist.name))
-                similarArtists = minArtistMapper.forLists()(response.similar.artist)
+            ArtistInfoMapper.map(response).apply {
+                topAlbums = AlbumWithStatsMapper.forLists()(service.getArtistAlbums(artist.name))
+                topTracks = ArtistTrackMapper.forLists()(service.getArtistTracks(artist.name))
+                similarArtists = ArtistMapper.forLists()(response.similar.artist)
             }
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -96,7 +90,7 @@ class DetailRepository @Inject constructor(
 
     val trackStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Track ->
-            trackMapper.map(
+            TrackInfoMapper.map(
                 service.getTrackInfo(
                     key.artist,
                     key.name,
@@ -121,7 +115,7 @@ class DetailRepository @Inject constructor(
                 artistName = key.artist,
                 albumName = key.name, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()
             )
-            albumInfoMapper.map(albumInfo)
+            AlbumInfoMapper.map(albumInfo)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key ->

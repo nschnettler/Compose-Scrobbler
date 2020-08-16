@@ -14,12 +14,11 @@ import javax.inject.Inject
 class ChartRepository @Inject constructor(
     private val chartDao: ChartDao,
     private val artistDao: ArtistDao,
-    private val service: LastFmService,
-    private val artistMapper: ChartArtistMapper
+    private val service: LastFmService
 ) {
     val chartArtistsStore = StoreBuilder.from(
         fetcher = Fetcher.of {
-            artistMapper.forLists()(service.getTopArtists())
+            ChartArtistMapper.forLists()(service.getTopArtists())
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { chartDao.getTopArtists(listType = ListType.CHART) },
