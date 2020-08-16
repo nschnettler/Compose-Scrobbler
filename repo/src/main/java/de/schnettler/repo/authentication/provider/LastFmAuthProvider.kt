@@ -4,7 +4,7 @@ import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.models.Session
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.LastFmService.Companion.METHOD_AUTH_SESSION
-import de.schnettler.repo.mapping.SessionMapper
+import de.schnettler.repo.mapping.auth.SessionMapper
 import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

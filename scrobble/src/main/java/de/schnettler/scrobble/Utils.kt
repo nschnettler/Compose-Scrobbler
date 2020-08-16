@@ -1,7 +1,7 @@
 package de.schnettler.scrobble
 
 import android.media.session.PlaybackState
-import de.schnettler.repo.mapping.LastFmResponse
+import de.schnettler.repo.mapping.response.LastFmResponse
 import timber.log.Timber
 
 fun PlaybackState.isPlaying() = state == PlaybackState.STATE_PLAYING

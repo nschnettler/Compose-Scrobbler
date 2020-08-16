@@ -9,7 +9,7 @@ import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.models.AuthTokenType
 import de.schnettler.lastfm.api.spotify.SpotifyAuthService
 import de.schnettler.lastfm.api.spotify.SpotifyService
-import de.schnettler.repo.mapping.SpotifyAuthMapper
+import de.schnettler.repo.mapping.auth.SpotifyAuthMapper
 import javax.inject.Inject
 
 class SpotifyAuthProvider @Inject constructor(

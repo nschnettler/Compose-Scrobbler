@@ -8,7 +8,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.mapToLocal
+import de.schnettler.repo.mapping.track.mapToLocal
 import kotlinx.coroutines.flow.combine
 import timber.log.Timber
 import javax.inject.Inject

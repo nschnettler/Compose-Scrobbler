@@ -18,10 +18,10 @@ import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.UserAlbumMapper
-import de.schnettler.repo.mapping.UserArtistMapper
-import de.schnettler.repo.mapping.UserTrackMapper
+import de.schnettler.repo.mapping.album.UserAlbumMapper
+import de.schnettler.repo.mapping.artist.UserArtistMapper
 import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.track.UserTrackMapper
 import de.schnettler.repo.work.SpotifyWorker
 import javax.inject.Inject
 

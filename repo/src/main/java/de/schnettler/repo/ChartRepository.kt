@@ -7,7 +7,7 @@ import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.models.ListType
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.repo.mapping.ChartArtistMapper
+import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.forLists
 import javax.inject.Inject
 

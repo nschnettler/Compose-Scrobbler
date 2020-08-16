@@ -1,39 +1,27 @@
-package de.schnettler.repo.mapping
+package de.schnettler.repo.mapping.album
 
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityWithInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
-import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LastFmEntity.Album
-import de.schnettler.database.models.Stats
 import de.schnettler.lastfm.models.AlbumInfoDto
+import de.schnettler.repo.mapping.BaseAlbumMapper
+import de.schnettler.repo.mapping.BaseStatMapper
+import de.schnettler.repo.mapping.BaseTrackMapper
+import de.schnettler.repo.mapping.Mapper
 import javax.inject.Inject
 
 class AlbumInfoMapper @Inject constructor() : Mapper<AlbumInfoDto, AlbumWithStatsAndInfo> {
     override suspend fun map(from: AlbumInfoDto): AlbumWithStatsAndInfo {
-        val album = Album(
-            name = from.name,
-            url = from.url,
-            artist = from.artist,
-            imageUrl = from.image.lastOrNull()?.url
-        )
+        val album = BaseAlbumMapper.map(from)
         val info = EntityInfo(
             id = album.id,
             tags = from.tags.tag.map { tag -> tag.name },
             wiki = from.wiki?.summary ?: ""
         )
-        val stats = Stats(
-            id = album.id,
-            plays = from.playcount,
-            listeners = from.listeners,
-            userPlays = from.userplaycount
-        )
+        val stats = BaseStatMapper.map(from).copy(id = album.id)
         val result = AlbumWithStatsAndInfo(entity = album, stats = stats, info = info)
         val tracks = from.tracks.track.map {
-            val track = LastFmEntity.Track(
-                name = it.name,
-                url = it.url,
-                artist = it.artist.name,
+            val track = BaseTrackMapper.map(it).copy(
                 album = album.name,
                 imageUrl = album.imageUrl
             )

@@ -16,13 +16,13 @@ import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.AlbumInfoMapper
-import de.schnettler.repo.mapping.AlbumWithStatsMapper
-import de.schnettler.repo.mapping.ArtistInfoMapper
-import de.schnettler.repo.mapping.ArtistTrackMapper
-import de.schnettler.repo.mapping.EntityMapper
-import de.schnettler.repo.mapping.TrackMapper
+import de.schnettler.repo.mapping.album.AlbumInfoMapper
+import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
+import de.schnettler.repo.mapping.artist.ArtistInfoMapper
+import de.schnettler.repo.mapping.artist.ArtistTrackMapper
+import de.schnettler.repo.mapping.artist.MinimalArtistMapper
 import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.track.TrackMapper
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class DetailRepository @Inject constructor(
     private val service: LastFmService,
     private val artistInfoMapper: ArtistInfoMapper,
     private val artistTrackMapper: ArtistTrackMapper,
-    private val entityMapper: EntityMapper,
+    private val minArtistMapper: MinimalArtistMapper,
     private val albumWithStatsMapper: AlbumWithStatsMapper,
     private val lastFmAuthProvider: LastFmAuthProvider,
     private val trackMapper: TrackMapper,
@@ -51,7 +51,7 @@ class DetailRepository @Inject constructor(
             artistInfoMapper.map(response).apply {
                 topAlbums = albumWithStatsMapper.forLists()(service.getArtistAlbums(artist.name))
                 topTracks = artistTrackMapper.forLists()(service.getArtistTracks(artist.name))
-                similarArtists = entityMapper.forLists()(response.similar.artist)
+                similarArtists = minArtistMapper.forLists()(response.similar.artist)
             }
         },
         sourceOfTruth = SourceOfTruth.of(

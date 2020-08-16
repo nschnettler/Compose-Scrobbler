@@ -1,41 +1,23 @@
-package de.schnettler.repo.mapping
+package de.schnettler.repo.mapping.track
 
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.database.models.Stats
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.TrackInfoDto
+import de.schnettler.repo.mapping.BaseAlbumMapper
+import de.schnettler.repo.mapping.BaseStatMapper
+import de.schnettler.repo.mapping.BaseTrackMapper
+import de.schnettler.repo.mapping.Mapper
 import javax.inject.Inject
 
 class TrackMapper @Inject constructor() : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
     override suspend fun map(from: TrackInfoDto): TrackWithStatsAndInfo {
         val imageUrl = from.album?.image?.lastOrNull()?.url
-        val album = from.album?.let { album ->
-            LastFmEntity.Album(
-                name = album.title,
-                url = album.url,
-                artist = album.artist,
-                imageUrl = imageUrl
-            )
-        }
-        val track = Track(
-            name = from.name,
-            url = from.url,
-            artist = from.artist.name,
-            album = from.album?.title,
-            albumId = album?.id,
-            imageUrl = imageUrl
-        )
-        val stats = Stats(
-            id = track.id,
-            plays = from.playcount,
-            listeners = from.listeners,
-            userPlays = from.userplaycount ?: 0
-        )
+        val album = from.album?.let { album -> BaseAlbumMapper.map(album) }
+        val track = BaseTrackMapper.map(from).copy(albumId = album?.id, imageUrl = imageUrl)
+        val stats = BaseStatMapper.map(from).copy(id = track.id)
         val info = EntityInfo(
             id = track.id,
             tags = from.toptags.tag.map { tag -> tag.name },

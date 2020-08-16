@@ -5,8 +5,8 @@ import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.fresh
 import de.schnettler.repo.Result
-import de.schnettler.repo.mapping.LastFmResponse
-import de.schnettler.repo.mapping.map
+import de.schnettler.repo.mapping.response.LastFmResponse
+import de.schnettler.repo.mapping.response.map
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import retrofit2.HttpException

@@ -3,46 +3,54 @@ package de.schnettler.lastfm.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+interface BaseAlbumDto {
+    val name: String
+    val url: String
+    val artist: String
+    val image: List<ImageDto>
+}
+
+open class BaseAlbumDtoImpl(
+    override val name: String,
+    override val url: String,
+    override val artist: String,
+    override val image: List<ImageDto>,
+) : BaseAlbumDto
+
 @JsonClass(generateAdapter = true)
 data class AlbumDto(
     override val name: String,
-    override val mbid: String?,
     override val url: String,
-    val playcount: Long,
-    val artist: MinimalListing,
-    @Json(name = "image") val images: List<ImageDto>
-) : ListingDto
 
-@JsonClass(generateAdapter = true)
-data class SearchResultDto(
-    val name: String,
-    val artist: String = "Unknown Artist",
-    val url: String,
-    val listeners: Long = 0
-)
+    override val playcount: Long,
+    override val listeners: Long = 0,
+    override val userplaycount: Long = 0,
+
+    val mbid: String?,
+    @Json(name = "artist") val artistEntity: MinimalArtist,
+    @Json(name = "image") val images: List<ImageDto>
+) : BaseAlbumDtoImpl(name, artistEntity.name, url, images), BaseStatsDto
 
 @JsonClass(generateAdapter = true)
 data class AlbumInfoDto(
-    val name: String,
-    val artist: String,
-    val url: String,
-    val image: List<ImageDto>,
-    val listeners: Long,
-    val playcount: Long,
-    val userplaycount: Long = 0,
+    override val name: String,
+    override val artist: String,
+    override val url: String,
+    override val image: List<ImageDto>,
+
+    override val listeners: Long,
+    override val playcount: Long,
+    override val userplaycount: Long = 0,
+
     val tracks: AlbumTracksDto,
     val tags: TagsDto,
     val wiki: WikiDto?
-)
+) : BaseAlbumDto, BaseStatsDto
 
 @JsonClass(generateAdapter = true)
-data class AlbumTracksDto(
-    val track: List<AlbumTrack>
-)
-
-@JsonClass(generateAdapter = true)
-data class WikiDto(
-    val published: String,
-    val summary: String,
-    val content: String?
-)
+data class TrackAlbum(
+    @Json(name = "title") override val name: String,
+    override val artist: String,
+    override val url: String,
+    override val image: List<ImageDto>
+) : BaseAlbumDto

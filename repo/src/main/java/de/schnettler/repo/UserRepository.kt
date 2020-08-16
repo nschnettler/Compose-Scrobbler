@@ -7,7 +7,7 @@ import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.User
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.UserMapper
+import de.schnettler.repo.mapping.user.UserMapper
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(

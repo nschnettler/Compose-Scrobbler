@@ -3,9 +3,9 @@ package de.schnettler.repo
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.repo.mapping.mapToAlbum
-import de.schnettler.repo.mapping.mapToArtist
-import de.schnettler.repo.mapping.mapToTrack
+import de.schnettler.repo.mapping.search.mapToAlbum
+import de.schnettler.repo.mapping.search.mapToArtist
+import de.schnettler.repo.mapping.search.mapToTrack
 import javax.inject.Inject
 
 class SearchRepository @Inject constructor(

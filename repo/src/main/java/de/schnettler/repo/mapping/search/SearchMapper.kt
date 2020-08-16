@@ -1,4 +1,4 @@
-package de.schnettler.repo.mapping
+package de.schnettler.repo.mapping.search
 
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity.Album

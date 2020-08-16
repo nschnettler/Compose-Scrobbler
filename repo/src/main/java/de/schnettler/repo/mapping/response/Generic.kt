@@ -1,4 +1,4 @@
-package de.schnettler.repo.mapping
+package de.schnettler.repo.mapping.response
 
 import de.schnettler.lastfm.models.ErrorResponse
 import de.schnettler.lastfm.models.Errors

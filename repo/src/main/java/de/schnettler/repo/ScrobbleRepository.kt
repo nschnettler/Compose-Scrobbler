@@ -13,8 +13,8 @@ import de.schnettler.lastfm.api.lastfm.ScrobblerService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.di.ServiceCoroutineScope
-import de.schnettler.repo.mapping.LastFmResponse
-import de.schnettler.repo.mapping.map
+import de.schnettler.repo.mapping.response.LastFmResponse
+import de.schnettler.repo.mapping.response.map
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY

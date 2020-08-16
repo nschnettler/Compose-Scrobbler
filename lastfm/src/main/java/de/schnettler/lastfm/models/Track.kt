@@ -3,15 +3,23 @@ package de.schnettler.lastfm.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+open class BaseTrackDto(
+    open val name: String,
+    open val url: String,
+    open val artist: MinimalArtist,
+    open val album: TrackAlbum?
+)
+
 @JsonClass(generateAdapter = true)
 data class UserTrackDto(
     override val name: String,
-    override val mbid: String?,
     override val url: String,
+    override val artist: MinimalArtist,
+
+    val mbid: String?,
     val duration: Long,
-    val artist: MinimalListing,
     val playcount: Long
-) : ListingDto
+) : BaseTrackDto(name, url, artist, null)
 
 @JsonClass(generateAdapter = true)
 data class RecentTracksDto(
@@ -27,11 +35,12 @@ data class RecentTracksDto(
 @JsonClass(generateAdapter = true)
 data class AlbumTrack(
     override val name: String,
-    override val mbid: String?,
     override val url: String,
+    override val artist: MinimalArtist,
+
+    val mbid: String?,
     val duration: Long,
-    val artist: TrackArtistDto
-) : ListingDto
+) : BaseTrackDto(name, url, artist, null)
 
 @JsonClass(generateAdapter = true)
 data class AttributesDto(
@@ -46,28 +55,33 @@ data class TrackDateDto(
 @JsonClass(generateAdapter = true)
 data class ArtistTracksDto(
     override val name: String,
-    override val mbid: String?,
     override val url: String,
-    val listeners: Long,
-    val playcount: Long,
-    val artist: MinimalListing
-) : ListingDto
+    override val artist: MinimalArtist,
+
+    override val listeners: Long,
+    override val playcount: Long,
+    override val userplaycount: Long = 0,
+
+    val mbid: String?,
+) : BaseTrackDto(name, url, artist, null), BaseStatsDto
 
 @JsonClass(generateAdapter = true)
 data class TrackInfoDto(
     override val name: String,
-    override val mbid: String?,
     override val url: String,
+    override val artist: MinimalArtist,
+    override val album: TrackAlbum?,
+
+    override val listeners: Long,
+    override val playcount: Long,
+    override val userplaycount: Long = 0,
+
+    val mbid: String?,
     val duration: Long,
-    val listeners: Long,
-    val playcount: Long,
-    val artist: MinimalListing,
-    val album: TrackAlbum?,
-    val userplaycount: Long?,
     val userloved: Long,
     val toptags: TagsDto,
     val wiki: WikiDto?
-) : ListingDto
+) : BaseTrackDto(name, url, artist, album), BaseStatsDto
 
 @JsonClass(generateAdapter = true)
 data class TrackRelationDto(
@@ -76,58 +90,6 @@ data class TrackRelationDto(
 )
 
 @JsonClass(generateAdapter = true)
-data class TrackAlbum(
-    val title: String,
-    val artist: String,
-    val url: String,
-    val image: List<ImageDto>
-)
-
-@JsonClass(generateAdapter = true)
-data class ImageDto(
-    val size: String,
-    @Json(name = "#text") val url: String
-)
-
-@JsonClass(generateAdapter = true)
-data class MutlipleScrobblesResponse(
-    @Json(name = "@attr") override val status: StatusResponse,
-    val scrobble: List<ScrobbleResponse>
-) : GeneralScrobbleResponse
-
-@JsonClass(generateAdapter = true)
-data class SingleScrobbleResponse(
-    @Json(name = "@attr") override val status: StatusResponse,
-    val scrobble: ScrobbleResponse
-) : GeneralScrobbleResponse
-
-interface GeneralScrobbleResponse {
-    val status: StatusResponse
-}
-
-@JsonClass(generateAdapter = true)
-data class StatusResponse(
-    val accepted: Int,
-    val ignored: Int
-)
-
-@JsonClass(generateAdapter = true)
-data class ScrobbleResponse(
-    val artist: CorrectionResponse,
-    val album: CorrectionResponse,
-    val albumArtist: CorrectionResponse,
-    val track: CorrectionResponse,
-    val ignoredMessage: IgnoredResponse
-)
-
-@JsonClass(generateAdapter = true)
-data class CorrectionResponse(
-    val corrected: String,
-    @Json(name = "#text") val correctValue: String
-)
-
-@JsonClass(generateAdapter = true)
-data class IgnoredResponse(
-    val code: Long,
-    @Json(name = "#text") val reason: String
+data class AlbumTracksDto(
+    val track: List<AlbumTrack>
 )

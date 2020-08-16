@@ -10,7 +10,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.GeneralScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.mapping.LastFmResponse
+import de.schnettler.repo.mapping.response.LastFmResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
