@@ -10,7 +10,7 @@ import javax.inject.Inject
 class AlbumWithStatsMapper @Inject constructor() : Mapper<AlbumDto, AlbumWithStats> {
     override suspend fun map(from: AlbumDto): AlbumWithStats {
         val album = BaseAlbumMapper.map(from)
-        val stats = BaseStatMapper.map(from).copy(id = album.id)
+        val stats = BaseStatMapper.map(from, album.id)
         return AlbumWithStats(entity = album, stats = stats)
     }
 }

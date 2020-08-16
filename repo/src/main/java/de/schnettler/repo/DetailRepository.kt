@@ -22,7 +22,7 @@ import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.artist.MinimalArtistMapper
 import de.schnettler.repo.mapping.forLists
-import de.schnettler.repo.mapping.track.TrackMapper
+import de.schnettler.repo.mapping.track.TrackInfoMapper
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class DetailRepository @Inject constructor(
     private val minArtistMapper: MinimalArtistMapper,
     private val albumWithStatsMapper: AlbumWithStatsMapper,
     private val lastFmAuthProvider: LastFmAuthProvider,
-    private val trackMapper: TrackMapper,
+    private val trackMapper: TrackInfoMapper,
     private val imageRepo: ImageRepo
 ) {
     val artistStore = StoreBuilder.from(

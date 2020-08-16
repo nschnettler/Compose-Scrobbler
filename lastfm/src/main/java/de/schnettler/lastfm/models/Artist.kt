@@ -8,6 +8,7 @@ interface BaseArtistDto {
     val url: String
 }
 
+@JsonClass(generateAdapter = true)
 data class MinimalArtist(
     override val name: String,
     override val url: String
@@ -43,12 +44,13 @@ data class ArtistInfoDto(
     override val name: String,
     override val url: String,
 
+    override val tags: TagsDto,
+    @Json(name = "bio") override val wiki: WikiDto,
+
     val mbid: String?,
-    val bio: WikiDto,
     val similar: SimilarArtistsDto,
-    val tags: TagsDto,
     val stats: StatsDto
-) : BaseArtistDto
+) : BaseArtistDto, BaseInfoDto
 
 @JsonClass(generateAdapter = true)
 data class SimilarArtistsDto(

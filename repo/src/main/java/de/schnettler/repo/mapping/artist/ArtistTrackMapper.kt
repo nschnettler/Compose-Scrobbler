@@ -9,8 +9,8 @@ import javax.inject.Inject
 
 class ArtistTrackMapper @Inject constructor() : Mapper<ArtistTracksDto, TrackWithStats> {
     override suspend fun map(from: ArtistTracksDto): TrackWithStats {
-        val track = BaseTrackMapper.map(from)
-        val stats = BaseStatMapper.map(from).copy(id = track.id)
+        val track = BaseTrackMapper.map(from, null)
+        val stats = BaseStatMapper.map(from, track.id)
         return TrackWithStats(entity = track, stats = stats)
     }
 }

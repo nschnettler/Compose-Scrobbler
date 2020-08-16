@@ -3,6 +3,7 @@ package de.schnettler.lastfm.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 open class BaseTrackDto(
     open val name: String,
     open val url: String,
@@ -38,9 +39,10 @@ data class AlbumTrack(
     override val url: String,
     override val artist: MinimalArtist,
 
+    override val duration: Long,
+
     val mbid: String?,
-    val duration: Long,
-) : BaseTrackDto(name, url, artist, null)
+) : BaseTrackDto(name, url, artist, null), BaseInfoDto
 
 @JsonClass(generateAdapter = true)
 data class AttributesDto(
@@ -76,12 +78,13 @@ data class TrackInfoDto(
     override val playcount: Long,
     override val userplaycount: Long = 0,
 
+    override val duration: Long,
+    override val wiki: WikiDto?,
+
     val mbid: String?,
-    val duration: Long,
     val userloved: Long,
     val toptags: TagsDto,
-    val wiki: WikiDto?
-) : BaseTrackDto(name, url, artist, album), BaseStatsDto
+) : BaseTrackDto(name, url, artist, album), BaseStatsDto, BaseInfoDto
 
 @JsonClass(generateAdapter = true)
 data class TrackRelationDto(

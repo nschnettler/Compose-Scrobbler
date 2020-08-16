@@ -21,6 +21,10 @@ interface Mapper<F, T> {
     suspend fun map(from: F): T
 }
 
+interface ParameterMapper<F, T, P> {
+    suspend fun map(from: F, parameter: P): T
+}
+
 interface IndexedMapper<F, T> {
     suspend fun map(index: Int, from: F): T
 }

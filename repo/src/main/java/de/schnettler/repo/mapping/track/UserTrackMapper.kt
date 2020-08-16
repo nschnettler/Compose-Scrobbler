@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class UserTrackMapper @Inject constructor() : IndexedMapper<UserTrackDto, TopListTrack> {
     override suspend fun map(index: Int, from: UserTrackDto): TopListTrack {
-        val track = BaseTrackMapper.map(from)
+        val track = BaseTrackMapper.map(from, null)
         val top = createTopListEntry(track.id, EntityType.TRACK, ListType.USER, index, from.playcount)
         return TopListTrack(top, track)
     }
