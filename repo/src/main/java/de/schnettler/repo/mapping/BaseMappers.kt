@@ -12,7 +12,7 @@ import de.schnettler.lastfm.models.BaseInfoDto
 import de.schnettler.lastfm.models.BaseStatsDto
 import de.schnettler.lastfm.models.BaseTrackDto
 
-object BaseAlbumMapper : Mapper<BaseAlbumDto, LastFmEntity.Album> {
+object AlbumMapper : Mapper<BaseAlbumDto, LastFmEntity.Album> {
     override suspend fun map(from: BaseAlbumDto) = LastFmEntity.Album(
         name = from.name,
         url = from.url,
@@ -21,14 +21,14 @@ object BaseAlbumMapper : Mapper<BaseAlbumDto, LastFmEntity.Album> {
     )
 }
 
-object BaseArtistMapper : Mapper<BaseArtistDto, LastFmEntity.Artist> {
+object ArtistMapper : Mapper<BaseArtistDto, LastFmEntity.Artist> {
     override suspend fun map(from: BaseArtistDto) = LastFmEntity.Artist(
         name = from.name,
         url = from.url
     )
 }
 
-object BaseTrackMapper : ParameterMapper<BaseTrackDto, LastFmEntity.Track, LastFmEntity.Album?> {
+object TrackMapper : ParameterMapper<BaseTrackDto, LastFmEntity.Track, LastFmEntity.Album?> {
     override suspend fun map(from: BaseTrackDto, album: LastFmEntity.Album?): LastFmEntity.Track =
         LastFmEntity.Track(
             name = from.name,
@@ -40,7 +40,7 @@ object BaseTrackMapper : ParameterMapper<BaseTrackDto, LastFmEntity.Track, LastF
         )
 }
 
-object BaseStatMapper : ParameterMapper<BaseStatsDto, Stats, String> {
+object StatMapper : ParameterMapper<BaseStatsDto, Stats, String> {
     override suspend fun map(from: BaseStatsDto, parameter: String) = Stats(
         id = parameter,
         plays = from.playcount,
@@ -49,7 +49,7 @@ object BaseStatMapper : ParameterMapper<BaseStatsDto, Stats, String> {
     )
 }
 
-object BaseInfoMapper : ParameterMapper<BaseInfoDto, EntityInfo, String> {
+object InfoMapper : ParameterMapper<BaseInfoDto, EntityInfo, String> {
     override suspend fun map(from: BaseInfoDto, id: String) = EntityInfo(
         id = id,
         tags = from.tags?.tag?.map { tag -> tag.name } ?: emptyList(),
