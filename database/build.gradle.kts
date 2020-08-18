@@ -12,11 +12,16 @@ android {
         targetSdkVersion(30)
         testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["room.incremental"] = "true"
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+                arg("room.incremental", true)
             }
         }
+    }
+
+    sourceSets {
+        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
     }
 
     testOptions.unitTests {

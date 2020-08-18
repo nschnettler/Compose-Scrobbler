@@ -16,6 +16,7 @@ import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
+import de.schnettler.database.migration.MIGRATION_47_48
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
@@ -39,7 +40,7 @@ import de.schnettler.database.models.User
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class
-    ], version = 47, exportSchema = false
+    ], version = 47
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
