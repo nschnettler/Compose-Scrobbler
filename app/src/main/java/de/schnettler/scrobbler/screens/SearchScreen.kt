@@ -27,9 +27,10 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
-import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.PlainListIconBackground
@@ -40,7 +41,7 @@ import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable
-fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit) {
+fun SearchScreen(model: SearchViewModel, actionHandler: (UIAction) -> Unit) {
     val searchResult by model.state.collectAsState()
     val searchQuery by model.searchQuery.collectAsState()
     val searchInputState = state { TextFieldValue(searchQuery.query) }
@@ -74,7 +75,7 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit)
             }
 
             searchResult.currentData?.let { results ->
-                SearchResults(results = results, onItemSelected = onItemSelected)
+                SearchResults(results = results, actionHandler = actionHandler)
             }
         }
         ErrorSnackbar(
@@ -89,7 +90,7 @@ fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit)
 }
 
 @Composable
-fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> Unit) {
+fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) {
     LazyColumnFor(items = results) {
         when (it) {
             is EntityWithStats -> {
@@ -103,7 +104,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Outlined.Face)
                         }
                     },
-                    onClick = { onItemSelected(it.entity) }
+                    onClick = { actionHandler(ListingSelected(it.entity)) }
                 )
             }
             is Album -> {
@@ -117,7 +118,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Outlined.Album)
                         }
                     },
-                    onClick = { onItemSelected(it) }
+                    onClick = { actionHandler(ListingSelected(it)) }
                 )
             }
             is Track -> {
@@ -131,7 +132,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Rounded.MusicNote)
                         }
                     },
-                    onClick = { onItemSelected(it) }
+                    onClick = { actionHandler(ListingSelected(it)) }
                 )
             }
         }

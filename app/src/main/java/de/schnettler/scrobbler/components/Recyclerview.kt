@@ -11,6 +11,8 @@ import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -62,7 +64,7 @@ fun TopListScroller(
     title: String,
     state: RefreshableUiState<List<Toplist>>,
     height: Dp = 200.dp,
-    onEntrySelected: (LastFmEntity) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     GenericHorizontalListingScrollerWithTitle(
         items = state.currentData,
@@ -75,7 +77,7 @@ fun TopListScroller(
             name = listing.value.name,
             plays = listing.listing.count,
             imageUrl = listing.value.imageUrl,
-            onEntrySelected = { onEntrySelected(listing.value) },
+            onEntrySelected = { actionHandler(ListingSelected(listing.value)) },
             height = height
         )
     }
@@ -87,7 +89,7 @@ fun ListingScroller(
     content: List<BaseEntity>,
     height: Dp,
     playsStyle: PlaysStyle,
-    onEntrySelected: (LastFmEntity) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     GenericHorizontalListingScrollerWithTitle(
         items = content,
@@ -104,7 +106,7 @@ fun ListingScroller(
                         else -> -1
                     },
                     imageUrl = listing.entity.imageUrl,
-                    onEntrySelected = { onEntrySelected(listing.entity) },
+                    onEntrySelected = { actionHandler(ListingSelected(listing.entity)) },
                     height = height
                 )
             }
@@ -113,7 +115,7 @@ fun ListingScroller(
                     name = listing.name,
                     plays = -1,
                     imageUrl = listing.imageUrl,
-                    onEntrySelected = { onEntrySelected(listing) },
+                    onEntrySelected = { actionHandler(ListingSelected(listing)) },
                     height = height
                 )
             }

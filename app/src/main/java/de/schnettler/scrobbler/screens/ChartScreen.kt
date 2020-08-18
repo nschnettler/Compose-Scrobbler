@@ -14,7 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
@@ -27,7 +28,7 @@ import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
 @Composable
-fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+fun ChartScreen(model: ChartsViewModel, actionHandler: (UIAction) -> Unit) {
     onActive { model.startStream() }
     val chartState by model.state.collectAsState()
     val (showSnackbarError, updateShowSnackbarError) = stateFor(chartState) {
@@ -43,7 +44,7 @@ fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Uni
             ) {
                 chartState.currentData?.let { charts ->
                     Recyclerview(items = charts) { (entry, artist) ->
-                        ChartListItem(artist.name, entry.count) { onListingSelected(artist) }
+                        ChartListItem(artist.name, entry.count) { actionHandler(ListingSelected(artist)) }
                         CustomDivider()
                     }
                 }

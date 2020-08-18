@@ -14,15 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
 
 @Composable
 fun TrackDetailScreen(
     trackDetails: TrackWithStatsAndInfo,
-    onTagClicked: (String) -> Unit,
-    onAlbumClicked: (LastFmEntity) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     val (track, stats, info, album) = trackDetails
     Stack(Modifier.fillMaxSize()) {
@@ -30,12 +29,12 @@ fun TrackDetailScreen(
             AlbumCategory(
                 album = album,
                 artistPlaceholder = track.artist,
-                onAlbumSelected = onAlbumClicked
+                actionHandler = actionHandler
             )
             ExpandingInfoCard(info = info?.wiki)
             ListeningStats(item = stats)
             if (info?.tags?.isNotEmpty() == true) {
-                TagCategory(tags = info.tags, onTagClicked = onTagClicked)
+                TagCategory(tags = info.tags, actionHandler = actionHandler)
             }
         })
         FloatingActionButton(

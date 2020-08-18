@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.style.TextOverflow
-import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.screens.details.DetailScreen
 import de.schnettler.scrobbler.util.MenuAction
@@ -62,8 +62,7 @@ fun AppContent(
     userViewModel: UserViewModel,
     localViewModel: LocalViewModel,
     searchViewModel: SearchViewModel,
-    onListingClicked: (LastFmEntity) -> Unit,
-    onTagClicked: (String) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
@@ -71,27 +70,26 @@ fun AppContent(
         when (screen) {
             is AppRoute.ChartRoute -> ChartScreen(
                 model = chartsModel,
-                onListingSelected = onListingClicked
+                actionHandler = actionHandler
             )
             is AppRoute.LocalRoute -> LocalScreen(
                 localViewModel = localViewModel,
-                onListingSelected = onListingClicked
+                actionHandler = actionHandler
             )
             is AppRoute.ProfileRoute -> {
                 when (sessionStatus) {
                     is SessionState.LoggedOut -> LoginScreen(ContextAmbient.current)
                     is SessionState.LoggedIn -> {
-                        ProfileScreen(userViewModel, onListingSelected = onListingClicked)
+                        ProfileScreen(userViewModel, actionHandler = actionHandler)
                     }
                 }
             }
-            is AppRoute.SearchRoute -> SearchScreen(searchViewModel, onListingClicked)
+            is AppRoute.SearchRoute -> SearchScreen(searchViewModel, actionHandler)
             is AppRoute.DetailRoute -> {
                 detailsViewModel.updateEntry(screen.item)
                 DetailScreen(
                     model = detailsViewModel,
-                    onListingSelected = onListingClicked,
-                    onTagClicked = onTagClicked
+                    actionHandler = actionHandler
                 )
             }
             is AppRoute.SettingsRoute -> PreferenceScreen()
