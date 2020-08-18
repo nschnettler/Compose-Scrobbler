@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.Flow
 @Suppress("MaxLineLength")
 @Dao
 abstract class TrackDao : BaseDao<Track> {
+    @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
+    abstract fun getTrack(id: String, artist: String): Track?
 
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract fun getTrackWithMetadata(id: String, artist: String): Flow<TrackWithStatsAndInfo?>

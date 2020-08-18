@@ -11,6 +11,7 @@ import de.schnettler.lastfm.models.BaseArtistDto
 import de.schnettler.lastfm.models.BaseInfoDto
 import de.schnettler.lastfm.models.BaseStatsDto
 import de.schnettler.lastfm.models.BaseTrackDto
+import de.schnettler.repo.util.toBoolean
 
 object AlbumMapper : Mapper<BaseAlbumDto, LastFmEntity.Album> {
     override suspend fun map(from: BaseAlbumDto) = LastFmEntity.Album(
@@ -54,7 +55,8 @@ object InfoMapper : ParameterMapper<BaseInfoDto, EntityInfo, String> {
         id = id,
         tags = from.tags?.tag?.map { tag -> tag.name } ?: emptyList(),
         duration = from.duration,
-        wiki = from.wiki?.summary
+        wiki = from.wiki?.summary,
+        loved = from.userloved.toBoolean()
     )
 }
 

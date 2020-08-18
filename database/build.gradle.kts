@@ -52,5 +52,6 @@ dependencies {
     androidTestImplementation(AndroidX.test.ext.junitKtx)
     androidTestImplementation(AndroidX.archCore.testing)
     androidTestImplementation(AndroidX.test.rules)
+    androidTestImplementation(AndroidX.Room.testing)
     androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

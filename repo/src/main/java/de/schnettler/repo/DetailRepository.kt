@@ -110,7 +110,7 @@ class DetailRepository @Inject constructor(
             writer = { _: Track, (track, stats, info, album) ->
                 album?.let { albumDao.insert(album) }
                 trackDao.inserTrackOrUpdateMetadata(track) // Update Album, AlbumId, ImageUrl
-                entityInfoDao.insert(info)
+                entityInfoDao.forceInsert(info)
                 statsDao.insertOrUpdateStats(listOf(stats))
             }
         )

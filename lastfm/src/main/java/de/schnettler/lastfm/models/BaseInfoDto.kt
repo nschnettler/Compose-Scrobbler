@@ -7,4 +7,6 @@ interface BaseInfoDto {
         get() = null
     val duration: Long
         get() = 0
+    val userloved: Long
+        get() = 0
 }
