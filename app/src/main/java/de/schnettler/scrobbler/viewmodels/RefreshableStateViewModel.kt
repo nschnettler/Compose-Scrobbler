@@ -14,7 +14,7 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
     private val store: Store<Key, Output>,
     private val key: Key
 ) : ViewModel() {
-    val state: MutableStateFlow<RefreshableUiState<Output>> by lazy {
+    val state: MutableStateFlow<RefreshableUiState<StateType>> by lazy {
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
     }
 
