@@ -16,13 +16,14 @@ import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.ArtistMapper
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
 import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.TrackInfoMapper
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
@@ -40,12 +41,18 @@ class DetailRepository @Inject constructor(
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { artist: Artist ->
             if (artist.imageUrl == null) imageRepo.retrieveArtistImage(artist)
-            val response =
-                service.getArtistInfo(artist.name, lastFmAuthProvider.getSessionKeyOrThrow())
-            ArtistInfoMapper.map(response).apply {
-                topAlbums = AlbumWithStatsMapper.forLists()(service.getArtistAlbums(artist.name))
-                topTracks = ArtistTrackMapper.forLists()(service.getArtistTracks(artist.name))
-                similarArtists = ArtistMapper.forLists()(response.similar.artist)
+            coroutineScope {
+                val infoResult = async {
+                    service.getArtistInfo(artist.name, lastFmAuthProvider.getSessionKeyOrThrow())
+                }
+                val albums = async { service.getArtistAlbums(artist.name) }
+                val tracks = async { service.getArtistTracks(artist.name) }
+
+                val info = infoResult.await()
+                ArtistInfoMapper.map(info).apply {
+                    topAlbums = AlbumWithStatsMapper.forLists()(albums.await())
+                    topTracks = ArtistTrackMapper.forLists()(tracks.await())
+                }
             }
         },
         sourceOfTruth = SourceOfTruth.of(
