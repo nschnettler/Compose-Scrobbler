@@ -17,6 +17,7 @@ import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.migration.MIGRATION_47_48
+import de.schnettler.database.migration.MIGRATION_48_49
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
@@ -40,7 +41,7 @@ import de.schnettler.database.models.User
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class
-    ], version = 47
+    ], version = 49
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
@@ -58,8 +59,10 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
 }
 
-fun provideDatabase(context: Context) = Room.databaseBuilder(
-    context,
-    AppDatabase::class.java,
-    "lastfm"
-).fallbackToDestructiveMigration().build()
+fun provideDatabase(context: Context) = Room
+    .databaseBuilder(context, AppDatabase::class.java, "lastfm")
+    .addMigrations(
+        MIGRATION_47_48, // Add loved to track
+        MIGRATION_48_49, // Remove loved from track, add loved to Info
+    )
+    .build()
