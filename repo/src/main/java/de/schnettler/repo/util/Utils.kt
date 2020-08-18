@@ -46,3 +46,5 @@ fun String.md5(): String {
         "%02x".format(it)
     }
 }
+
+fun Long.toBoolean() = this == 1L

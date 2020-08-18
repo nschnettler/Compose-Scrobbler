@@ -17,6 +17,7 @@ import androidx.compose.foundation.InteractionState
 import androidx.compose.foundation.animation.FlingConfig
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
@@ -64,7 +65,7 @@ fun SwipeToRefreshLayout(
             minValue = min,
             maxValue = max,
             onNewValue = { dragPosition.value = it * dragCoefficient }
-        )
+        ).fillMaxSize()
     ) {
         content()
         Box(Modifier.gravity(Alignment.TopCenter).offsetPx(y = dragPosition)) {

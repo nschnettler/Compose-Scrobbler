@@ -12,7 +12,8 @@ data class EntityInfo(
     @PrimaryKey val id: String,
     val tags: List<String> = listOf(),
     val duration: Long = 0,
-    val wiki: String?
+    val wiki: String?,
+    val loved: Boolean = false
 )
 
 sealed class LastFmEntity(

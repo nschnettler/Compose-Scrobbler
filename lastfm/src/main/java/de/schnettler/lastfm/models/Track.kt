@@ -82,7 +82,7 @@ data class TrackInfoDto(
     override val wiki: WikiDto?,
 
     val mbid: String?,
-    val userloved: Long,
+    override val userloved: Long,
     val toptags: TagsDto,
 ) : BaseTrackDto(name, url, artist, album), BaseStatsDto, BaseInfoDto
 
