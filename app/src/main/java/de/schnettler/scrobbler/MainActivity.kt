@@ -92,7 +92,10 @@ class MainActivity : AppCompatActivity() {
                                     when (action) {
                                         is UIAction.ListingSelected -> onListingClicked(action.listing)
                                         is UIAction.TagSelected -> onTagClicked(action.id)
-                                        is UIAction.TrackLiked -> TODO()
+                                        is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(
+                                            action.track,
+                                            action.info
+                                        )
                                     }
                                 }
                             },

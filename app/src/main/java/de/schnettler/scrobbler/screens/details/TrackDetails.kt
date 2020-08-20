@@ -37,14 +37,18 @@ fun TrackDetailScreen(
                 TagCategory(tags = info.tags, actionHandler = actionHandler)
             }
         })
-        FloatingActionButton(
-            onClick = { },
-            Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
-        ) {
-            if (info?.loved == true) {
-                Icon(asset = Icons.Rounded.Favorite)
-            } else {
-                Icon(asset = Icons.Rounded.FavoriteBorder)
+        info?.let {
+            FloatingActionButton(
+                onClick = {
+                    actionHandler(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
+                },
+                Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+            ) {
+                if (info.loved) {
+                    Icon(asset = Icons.Rounded.Favorite)
+                } else {
+                    Icon(asset = Icons.Rounded.FavoriteBorder)
+                }
             }
         }
     }
