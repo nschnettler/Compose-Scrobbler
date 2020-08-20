@@ -26,7 +26,7 @@ import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -50,7 +50,7 @@ fun DetailScreen(
             SwipeToRefreshLayout(
                 refreshingState = detailState.isRefreshing,
                 onRefresh = { model.refresh() },
-                refreshIndicator = { SwipeRefreshPrograssIndicator() }
+                refreshIndicator = { SwipeRefreshProgressIndicator() }
             ) {
                 detailState.currentData.let { details ->
                     when (details) {

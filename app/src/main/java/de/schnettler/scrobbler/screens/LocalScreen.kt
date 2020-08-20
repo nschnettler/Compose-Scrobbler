@@ -29,7 +29,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.local.ConfirmDialog
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
@@ -76,7 +76,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
             SwipeToRefreshLayout(
                 refreshingState = recentTracksState.isRefreshing,
                 onRefresh = { localViewModel.refresh() },
-                refreshIndicator = { SwipeRefreshPrograssIndicator() }
+                refreshIndicator = { SwipeRefreshProgressIndicator() }
             ) {
                 recentTracksState.currentData?.let { list ->
                     HistoryTrackList(

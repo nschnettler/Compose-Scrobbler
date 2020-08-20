@@ -63,10 +63,10 @@ fun SwipeToRefreshLayout(
 }
 
 @Composable
-fun SwipeRefreshPrograssIndicator() {
-    Surface(elevation = 10.dp, shape = CircleShape) {
+fun SwipeRefreshProgressIndicator() {
+    Surface(elevation = 10.dp, shape = CircleShape, modifier = Modifier.preferredSize(40.dp)) {
         CircularProgressIndicator(
-            modifier = Modifier.preferredSize(40.dp).padding(6.dp),
+            modifier = Modifier.size(20.dp),
             strokeWidth = 2.5.dp
         )
     }

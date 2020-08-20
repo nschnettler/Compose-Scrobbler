@@ -21,7 +21,7 @@ import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.components.Recyclerview
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.abbreviate
@@ -40,7 +40,7 @@ fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Uni
             SwipeToRefreshLayout(
                 refreshingState = chartState.isRefreshing,
                 onRefresh = { model.refresh() },
-                refreshIndicator = { SwipeRefreshPrograssIndicator() }
+                refreshIndicator = { SwipeRefreshProgressIndicator() }
             ) {
                 chartState.currentData?.let { charts ->
                     Recyclerview(items = charts) { (entry, artist) ->

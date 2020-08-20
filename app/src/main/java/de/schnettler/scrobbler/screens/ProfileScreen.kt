@@ -37,7 +37,7 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.StatsRow
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
+import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListScroller
 import de.schnettler.scrobbler.theme.AppColor
@@ -79,7 +79,7 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Uni
         SwipeToRefreshLayout(
             refreshingState = states.any { it.isRefreshing },
             onRefresh = { model.refresh() },
-            refreshIndicator = { SwipeRefreshPrograssIndicator() }
+            refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
                 ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
                     userState.currentData?.let {
