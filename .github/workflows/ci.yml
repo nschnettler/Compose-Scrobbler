@@ -87,6 +87,7 @@ jobs:
         if: always()
         run: |
           mkdir -p instrumented
+          find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec sh -c 'x="{}"; mv "$x" "${x// /}"' \;
           find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec cp {} instrumented/ \;
           
       - name: Upload Test Results
