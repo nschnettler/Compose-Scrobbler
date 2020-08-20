@@ -7,7 +7,7 @@ import dagger.hilt.android.components.ApplicationComponent
 import de.schnettler.lastfm.api.LastFMInterceptor
 import de.schnettler.lastfm.api.SpotifyAuthInterceptor
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.lastfm.api.lastfm.ScrobblerService
+import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.api.loggingInterceptor
 import de.schnettler.lastfm.api.provideOkHttpClient
 import de.schnettler.lastfm.api.provideRetrofit
@@ -27,10 +27,10 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideScrobblerService(): ScrobblerService = provideRetrofit(
+    fun provideScrobblerService(): PostService = provideRetrofit(
         provideOkHttpClient(loggingInterceptor), LastFmService.ENDPOINT
     ).create(
-        ScrobblerService::class.java
+        PostService::class.java
     )
 
     @Provides

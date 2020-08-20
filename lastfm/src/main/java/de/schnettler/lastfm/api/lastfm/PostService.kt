@@ -11,7 +11,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-interface ScrobblerService {
+interface PostService {
     @POST(LastFmService.ENDPOINT)
     @FormUrlEncoded
     @Wrapped(path = ["scrobbles"])
@@ -48,4 +48,16 @@ interface ScrobblerService {
     suspend fun submitMultipleScrobbles(
         @Body body: String
     ): Response<MutlipleScrobblesResponse>
+
+    @POST(LastFmService.ENDPOINT)
+    @FormUrlEncoded
+    suspend fun toggleTrackLoveStatus(
+        @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
+        @Field("method") method: String = LastFmService.METHOD_LOVE,
+        @Field("track") track: String,
+        @Field("artist") artist: String,
+        @Field("sk") sessionKey: String,
+        @Field("api_sig") signature: String,
+        @Field("format") format: String = "json"
+    ): Response<Any>
 }

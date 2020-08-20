@@ -16,7 +16,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
-import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.ListeningStats
@@ -30,8 +31,7 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 @Composable
 fun ArtistDetailScreen(
     artistInfo: ArtistWithStatsAndInfo,
-    onListingSelected: (LastFmEntity) -> Unit,
-    onTagClicked: (String) -> Unit
+    actionHandler: (UIAction) -> Unit,
 ) {
     val (artist, stats, info) = artistInfo
     ScrollableColumn {
@@ -42,16 +42,16 @@ fun ArtistDetailScreen(
         )
         ExpandingInfoCard(info = info?.wiki)
         ListeningStats(item = stats)
-        info?.tags?.let { TagCategory(tags = it, onTagClicked = onTagClicked) }
+        info?.tags?.let { TagCategory(tags = it, actionHandler = actionHandler) }
         ListTitle(title = "Top Tracks")
-        TrackListWithStats(tracks = artistInfo.topTracks, onListingSelected = onListingSelected)
+        TrackListWithStats(tracks = artistInfo.topTracks, actionHandler = actionHandler)
 
         ListingScroller(
             title = "Top Albums",
             content = artistInfo.topAlbums,
             height = 160.dp,
             playsStyle = PlaysStyle.PUBLIC_PLAYS,
-            onEntrySelected = onListingSelected
+            actionHandler = actionHandler
         )
 
         ListingScroller(
@@ -59,13 +59,13 @@ fun ArtistDetailScreen(
             content = artistInfo.similarArtists,
             height = 136.dp,
             playsStyle = PlaysStyle.NO_PLAYS,
-            onEntrySelected = onListingSelected
+            actionHandler = actionHandler
         )
     }
 }
 
 @Composable
-fun TrackListWithStats(tracks: List<TrackWithStats>, onListingSelected: (LastFmEntity) -> Unit) {
+fun TrackListWithStats(tracks: List<TrackWithStats>, actionHandler: (UIAction) -> Unit) {
     tracks.forEachIndexed { index, (track, stats) ->
         ListItem(
             text = { Text(track.name) },
@@ -73,7 +73,7 @@ fun TrackListWithStats(tracks: List<TrackWithStats>, onListingSelected: (LastFmE
                 Text("${stats.listeners.abbreviate()} Hörer")
             },
             icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
-            modifier = Modifier.clickable(onClick = { onListingSelected.invoke(track) })
+            modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
         )
     }
 }

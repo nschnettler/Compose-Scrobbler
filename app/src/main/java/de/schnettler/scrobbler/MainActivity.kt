@@ -87,10 +87,17 @@ class MainActivity : AppCompatActivity() {
                                     detailsViewModel,
                                     userViewModel,
                                     localViewModel,
-                                    searchViewModel,
-                                    onListingClicked,
-                                    onTagClicked
-                                )
+                                    searchViewModel
+                                ) { action ->
+                                    when (action) {
+                                        is UIAction.ListingSelected -> onListingClicked(action.listing)
+                                        is UIAction.TagSelected -> onTagClicked(action.id)
+                                        is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(
+                                            action.track,
+                                            action.info
+                                        )
+                                    }
+                                }
                             },
                             bottomBar = {
                                 BottomNavigationBar(

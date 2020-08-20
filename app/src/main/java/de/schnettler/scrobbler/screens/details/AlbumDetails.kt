@@ -23,6 +23,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
+import de.schnettler.scrobbler.UIAction.TagSelected
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
@@ -35,8 +38,7 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 @Composable
 fun AlbumDetailScreen(
     albumDetails: AlbumWithStatsAndInfo,
-    onListingSelected: (LastFmEntity) -> Unit,
-    onTagClicked: (String) -> Unit
+    actionHandler: (UIAction) -> Unit,
 ) {
     val (album, stats, info) = albumDetails
     ScrollableColumn {
@@ -48,17 +50,17 @@ fun AlbumDetailScreen(
                 artist = album.artist,
                 tracks = albumDetails.tracks.size,
                 duration = albumDetails.getLength(),
-                onArtistSelected = onListingSelected
+                onArtistSelected = { actionHandler(ListingSelected(it)) }
             )
         }
-        albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = onTagClicked) }
+        albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = { tag -> actionHandler(TagSelected(tag)) }) }
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         ListeningStats(item = stats)
         ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
         Spacer(modifier = Modifier.preferredHeight(16.dp))
         TrackList(
             tracks = albumDetails.tracks.map { it.entity },
-            onListingSelected = onListingSelected
+            onListingSelected = { actionHandler(ListingSelected(it)) }
         )
     }
 }

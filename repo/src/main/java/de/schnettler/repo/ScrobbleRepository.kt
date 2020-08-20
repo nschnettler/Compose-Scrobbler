@@ -9,7 +9,7 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.lastfm.api.lastfm.ScrobblerService
+import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.di.ServiceCoroutineScope
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
     private val scope: ServiceCoroutineScope,
-    private val service: ScrobblerService,
+    private val service: PostService,
     private val authProvider: LastFmAuthProvider,
     private val workManager: WorkManager,
     private val prefs: FlowSharedPreferences

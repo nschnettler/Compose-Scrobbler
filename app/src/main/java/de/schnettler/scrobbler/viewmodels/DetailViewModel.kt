@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.LastFmEntity.Album
@@ -51,6 +52,12 @@ class DetailViewModel @ViewModelInject constructor(
                 is Track -> state.freshFrom(repo.trackStore, entity)
                 is Album -> state.freshFrom(repo.albumStore, entity)
             }
+        }
+    }
+
+    fun onToggleLoveTrackClicked(track: Track, info: EntityInfo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.toggleTrackLikeStatus(track, info)
         }
     }
 }

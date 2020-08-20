@@ -24,9 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
@@ -45,10 +46,10 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
 @Composable
-fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+fun LocalScreen(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
     val context = ContextAmbient.current
     when (MediaListenerService.isEnabled(context)) {
-        true -> Content(localViewModel = localViewModel, onListingSelected = onListingSelected)
+        true -> Content(localViewModel = localViewModel, actionHandler = actionHandler)
         false -> Button(onClick = {
             context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
         }) {
@@ -60,7 +61,7 @@ fun LocalScreen(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity
 
 @Suppress("LongMethod")
 @Composable
-fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+fun Content(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
     onActive { localViewModel.startStream() }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
@@ -86,7 +87,7 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
                             when (actionType) {
                                 EDIT -> showEditDialog = true
                                 DELETE -> showConfirmDialog = true
-                                OPEN -> onListingSelected(track.asLastFmTrack())
+                                OPEN -> actionHandler(ListingSelected(track.asLastFmTrack()))
                                 SUBMIT -> localViewModel.submitScrobble(track)
                             }
                         },

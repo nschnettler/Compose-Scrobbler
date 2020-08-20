@@ -23,6 +23,8 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInf
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.ListTitle
@@ -37,8 +39,7 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 @Composable
 fun DetailScreen(
     model: DetailViewModel,
-    onListingSelected: (LastFmEntity) -> Unit,
-    onTagClicked: (String) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     val detailState by model.state.collectAsState()
     val (showSnackbarError, updateShowSnackbarError) = remember(detailState) {
@@ -57,18 +58,15 @@ fun DetailScreen(
                     when (details) {
                         is ArtistWithStatsAndInfo -> ArtistDetailScreen(
                             artistInfo = details,
-                            onListingSelected = onListingSelected,
-                            onTagClicked = onTagClicked
+                            actionHandler = actionHandler
                         )
                         is TrackWithStatsAndInfo -> TrackDetailScreen(
                             details,
-                            onTagClicked = onTagClicked,
-                            onListingSelected
+                            actionHandler
                         )
                         is AlbumWithStatsAndInfo -> AlbumDetailScreen(
                             albumDetails = details,
-                            onListingSelected = onListingSelected,
-                            onTagClicked = onTagClicked
+                            actionHandler
                         )
                     }
                 }
@@ -87,16 +85,16 @@ fun DetailScreen(
 
 @OptIn(ExperimentalLayout::class)
 @Composable
-fun TagCategory(tags: List<String>, onTagClicked: (String) -> Unit) {
+fun TagCategory(tags: List<String>, actionHandler: (UIAction) -> Unit) {
     ListTitle(title = "Tags")
-    ChipRow(items = tags, onChipClicked = onTagClicked)
+    ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
 }
 
 @Composable
 fun AlbumCategory(
     album: LastFmEntity.Album?,
     artistPlaceholder: String,
-    onAlbumSelected: (LastFmEntity) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     ListTitle(title = "Aus dem Album")
     ListItem(
@@ -123,7 +121,7 @@ fun AlbumCategory(
             }
         },
         modifier = Modifier.clickable(onClick = {
-            onAlbumSelected(album ?: LastFmEntity.Artist(name = artistPlaceholder, url = ""))
+            actionHandler(ListingSelected(album ?: LastFmEntity.Artist(name = artistPlaceholder, url = "")))
         })
     )
 }

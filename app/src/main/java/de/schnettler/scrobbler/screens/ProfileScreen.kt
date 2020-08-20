@@ -33,8 +33,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.User
+import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
@@ -52,7 +52,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Unit) {
+fun ProfileScreen(model: UserViewModel, actionHandler: (UIAction) -> Unit) {
 
     val userState by model.userState.collectAsState()
     val artistState by model.artistState.collectAsState()
@@ -88,17 +88,17 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Uni
                     TopListScroller(
                         title = "Top-Künstler (${timePeriod.niceName})",
                         state = artistState,
-                        onEntrySelected = onListingSelected
+                        actionHandler = actionHandler
                     )
                     TopListScroller(
                         title = "Top-Alben",
                         state = albumState,
-                        onEntrySelected = onListingSelected
+                        actionHandler = actionHandler
                     )
                     TopListScroller(
                         title = "Top-Titel",
                         state = trackState,
-                        onEntrySelected = onListingSelected
+                        actionHandler = actionHandler
                     )
                 })
         }

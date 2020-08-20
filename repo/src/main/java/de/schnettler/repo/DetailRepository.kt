@@ -9,12 +9,14 @@ import de.schnettler.database.daos.ArtistRelationDao
 import de.schnettler.database.daos.EntityInfoDao
 import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
+import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
@@ -22,6 +24,7 @@ import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.TrackInfoMapper
+import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
@@ -36,7 +39,9 @@ class DetailRepository @Inject constructor(
     private val relationDao: ArtistRelationDao,
     private val service: LastFmService,
     private val lastFmAuthProvider: LastFmAuthProvider,
-    private val imageRepo: ImageRepo
+    private val imageRepo: ImageRepo,
+    private val authProvider: LastFmAuthProvider,
+    private val postService: PostService,
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { artist: Artist ->
@@ -146,4 +151,24 @@ class DetailRepository @Inject constructor(
             }
         )
     ).build()
+
+    suspend fun toggleTrackLikeStatus(track: Track, info: EntityInfo) {
+        val method = if (info.loved) LastFmService.METHOD_LOVE else LastFmService.METHOD_UNLOVE
+        val sig = createSignature(mutableMapOf(
+            "method" to method,
+            "track" to track.name,
+            "artist" to track.artist,
+            "sk" to authProvider.getSessionKeyOrThrow()
+        ))
+        val result = postService.toggleTrackLoveStatus(
+            method = method,
+            track = track.name,
+            artist = track.artist,
+            sessionKey = authProvider.getSessionKeyOrThrow(),
+            signature = sig
+        )
+        if (result.isSuccessful) {
+            entityInfoDao.update(info)
+        }
+    }
 }
