@@ -35,7 +35,7 @@ class ImageRepo @Inject constructor(
         trackNeedsImage.forEach { track ->
             track.album?.let { albumName ->
                 val album = albumDao.getAlbumByName(name = albumName, artist = track.artist)
-                album?.imageUrl?.let {image ->
+                album?.imageUrl?.let { image ->
                     trackDao.updateImageUrl(track.id, image)
                 }
             }

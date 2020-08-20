@@ -165,6 +165,4 @@ class AlbumDaoTest : DatabaseTest() {
             expect(it?.info).toBe(null)
         }
     }
-
-
 }

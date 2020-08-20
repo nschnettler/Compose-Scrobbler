@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.util
 
 import androidx.core.text.HtmlCompat
-import java.util.*
+import java.util.Locale
 
 const val PACKAGE_YT_MUSIC = "com.google.android.apps.youtube.music"
 const val GENERIC_FLAG_EMOJI = "U+1F38C"

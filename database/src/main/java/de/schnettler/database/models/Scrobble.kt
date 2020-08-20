@@ -4,7 +4,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
