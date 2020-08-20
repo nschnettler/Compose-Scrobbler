@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.screens
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +19,8 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.state
-import androidx.compose.runtime.stateFor
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -44,9 +45,9 @@ import de.schnettler.scrobbler.viewmodels.SearchViewModel
 fun SearchScreen(model: SearchViewModel, actionHandler: (UIAction) -> Unit) {
     val searchResult by model.state.collectAsState()
     val searchQuery by model.searchQuery.collectAsState()
-    val searchInputState = state { TextFieldValue(searchQuery.query) }
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(searchResult) {
-        searchResult is RefreshableUiState.Error
+    val searchInputState = remember { mutableStateOf(TextFieldValue(searchQuery.query)) }
+    val (showSnackbarError, updateShowSnackbarError) = remember(searchResult) {
+        mutableStateOf(searchResult is RefreshableUiState.Error)
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
@@ -104,7 +105,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                             Icon(Icons.Outlined.Face)
                         }
                     },
-                    onClick = { actionHandler(ListingSelected(it.entity)) }
+                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it.entity)) })
                 )
             }
             is Album -> {
@@ -118,7 +119,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                             Icon(Icons.Outlined.Album)
                         }
                     },
-                    onClick = { actionHandler(ListingSelected(it)) }
+                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
                 )
             }
             is Track -> {
@@ -132,7 +133,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                             Icon(Icons.Rounded.MusicNote)
                         }
                     },
-                    onClick = { actionHandler(ListingSelected(it)) }
+                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
                 )
             }
         }

@@ -26,12 +26,11 @@ dependencies {
     implementation(KotlinX.coroutines.core)
     implementation(Square.okHttp3.okHttp)
     implementation(AndroidX.work.runtimeKtx)
+    implementation(AndroidX.hilt.work)
+    implementation(Google.dagger.hilt.android.core)
+    kapt(AndroidX.hilt.compiler)
+    kapt(Google.dagger.hilt.android.compiler)
 
-    implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")
-    kapt("androidx.hilt", "hilt-compiler", "_")
-    implementation("com.google.dagger", "hilt-android", "_")
-    kapt("com.google.dagger", "hilt-android-compiler", "_")
-    implementation("androidx.hilt", "hilt-work", "_")
     api("com.dropbox.mobile.store", "store4", "_")
     api("com.github.tfcporciuncula", "flow-preferences", "_")
 }
