@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens.local
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -59,7 +60,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
             }
         },
         icon = { NameListIcon(title = track.name) },
-        onClick = { expanded = !expanded },
+        modifier = Modifier.clickable(onClick = { expanded = !expanded }),
         trailing = {
             track.timestampToRelativeTime()?.let {
                 Column(verticalArrangement = Arrangement.Center) {

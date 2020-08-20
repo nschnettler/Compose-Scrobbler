@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +24,10 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInf
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
+import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -120,8 +121,8 @@ fun AlbumCategory(
                 }
             }
         },
-        onClick = {
+        modifier = Modifier.clickable(onClick = {
             onAlbumSelected(album ?: LastFmEntity.Artist(name = artistPlaceholder, url = ""))
-        }
+        })
     )
 }

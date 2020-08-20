@@ -17,7 +17,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioGroup
 import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -27,8 +26,8 @@ import androidx.compose.material.icons.rounded.PlayCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.runtime.stateFor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -168,36 +167,32 @@ private fun PeriodSelectDialog(
     onDismiss: () -> Unit,
     model: UserViewModel
 ) {
-    var selected by state { model.timePeriod.value }
+    var selected by mutableStateOf(model.timePeriod.value)
     val radioGroupOptions = TimePeriod.values().asList()
     AlertDialog(
-        onCloseRequest = { onDismiss() },
+        onDismissRequest = { onDismiss() },
         title = { Text(text = "Zeitrahmen") },
         text = {
-            RadioGroup {
-                radioGroupOptions.forEach {
-                    val isSelected = selected == it
-                    val onSelected = {
-                        selected = it
+            Column {
+                radioGroupOptions.forEach { current ->
+                    Row(Modifier
+                        .fillMaxWidth()
+                        .selectable(
+                            selected = (current == selected),
+                            onClick = { selected = current }
+                        )
+                        .padding(16.dp)
+                    ) {
+                        RadioButton(
+                            selected = (current == selected),
+                            onClick = { selected = current }
+                        )
+                        Text(
+                            text = current.niceName,
+                            style = MaterialTheme.typography.body1.merge(),
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
                     }
-                    Box(
-                        modifier = Modifier.selectable(
-                            selected = isSelected,
-                            onClick = { if (!isSelected) onSelected() }
-                        ),
-                        children = {
-                            Box {
-                                Row(Modifier.fillMaxWidth().padding(16.dp)) {
-                                    RadioButton(selected = isSelected, onClick = onSelected)
-                                    Text(
-                                        text = it.niceName,
-                                        style = MaterialTheme.typography.body1.merge(),
-                                        modifier = Modifier.padding(start = 16.dp)
-                                    )
-                                }
-                            }
-                        }
-                    )
                 }
             }
         },

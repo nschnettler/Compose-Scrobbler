@@ -30,7 +30,7 @@ fun TrackEditDialog(
         val albumState = state { TextFieldValue(track.album) }
 
         AlertDialog(
-            onCloseRequest = {
+            onDismissRequest = {
                 if (track.copyByState(trackState, artistState, albumState) == track) {
                     onDismiss()
                 }
@@ -84,7 +84,7 @@ fun ConfirmDialog(
     onDismiss: (Boolean) -> Unit
 ) {
     AlertDialog(
-        onCloseRequest = { onDismiss(false) },
+        onDismissRequest = { onDismiss(false) },
         title = { Text(text = title) },
         text = { Text(text = description) },
         confirmButton = {

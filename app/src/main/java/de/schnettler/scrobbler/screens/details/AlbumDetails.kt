@@ -84,7 +84,7 @@ fun TrackList(tracks: List<LastFmEntity.Track>, onListingSelected: (LastFmEntity
         ListItem(
             text = { Text(track.name) },
             icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
-            onClick = { onListingSelected.invoke(track) }
+            modifier = Modifier.clickable(onClick = { onListingSelected(track) })
         )
     }
 }

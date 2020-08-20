@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.screens
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -103,7 +104,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Outlined.Face)
                         }
                     },
-                    onClick = { onItemSelected(it.entity) }
+                    modifier = Modifier.clickable(onClick = { onItemSelected(it.entity) })
                 )
             }
             is Album -> {
@@ -117,7 +118,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Outlined.Album)
                         }
                     },
-                    onClick = { onItemSelected(it) }
+                    modifier = Modifier.clickable(onClick = { onItemSelected(it) })
                 )
             }
             is Track -> {
@@ -131,7 +132,7 @@ fun SearchResults(results: List<BaseEntity>, onItemSelected: (LastFmEntity) -> U
                             Icon(Icons.Rounded.MusicNote)
                         }
                     },
-                    onClick = { onItemSelected(it) }
+                    modifier = Modifier.clickable(onClick = { onItemSelected(it) })
                 )
             }
         }

@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -64,9 +65,13 @@ fun ChartScreen(model: ChartsViewModel, onListingSelected: (LastFmEntity) -> Uni
 private fun ChartListItem(name: String, listener: Long, onClicked: () -> Unit) {
     ListItem(
         text = { Text(text = name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-        secondaryText = { Text(text = "${listener.abbreviate()} Listener", maxLines = 1, overflow = TextOverflow
-            .Ellipsis) },
+        secondaryText = {
+            Text(
+                text = "${listener.abbreviate()} Listener", maxLines = 1, overflow = TextOverflow
+                    .Ellipsis
+            )
+        },
         icon = { NameListIcon(title = name) },
-        onClick = { onClicked() }
+        modifier = Modifier.clickable(onClick = { onClicked() })
     )
 }
