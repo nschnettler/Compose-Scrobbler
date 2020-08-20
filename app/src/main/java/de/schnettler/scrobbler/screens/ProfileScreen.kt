@@ -27,8 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.stateFor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -73,8 +73,8 @@ fun ProfileScreen(model: UserViewModel, onListingSelected: (LastFmEntity) -> Uni
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-        val (showSnackbarError, updateShowSnackbarError) = stateFor(states) {
-            states.any { it.isError }
+        val (showSnackbarError, updateShowSnackbarError) = remember(states) {
+            mutableStateOf(states.any { it.isError })
         }
         SwipeToRefreshLayout(
             refreshingState = states.any { it.isRefreshing },

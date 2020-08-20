@@ -2,8 +2,8 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.drawBorder
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -41,8 +41,8 @@ fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
 @Composable
 fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChanged: (Int) -> Unit) {
     Box(
-        modifier = Modifier.padding(horizontal = PADDING_16).drawBorder(
-            size = DIVIDER_SIZE,
+        modifier = Modifier.padding(horizontal = PADDING_16).border(
+            width = DIVIDER_SIZE,
             color = AppColor.Divider,
             shape = RoundedCornerShape(CHIP_CORNER_RADIUS)
         )

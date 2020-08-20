@@ -19,8 +19,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,7 +37,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
-    var expanded by state { false }
+    var expanded by remember { mutableStateOf(false) }
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {

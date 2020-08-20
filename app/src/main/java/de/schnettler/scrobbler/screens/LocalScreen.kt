@@ -15,10 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
-import androidx.compose.runtime.stateFor
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,11 +64,11 @@ fun Content(localViewModel: LocalViewModel, onListingSelected: (LastFmEntity) ->
     onActive { localViewModel.startStream() }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
-    var showEditDialog by state { false }
-    var showConfirmDialog by state { false }
-    val selectedTrack: MutableState<Scrobble?> = state { null }
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(recentTracksState) {
-        recentTracksState is RefreshableUiState.Error
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
+    val (showSnackbarError, updateShowSnackbarError) = remember(recentTracksState) {
+        mutableStateOf(recentTracksState is RefreshableUiState.Error)
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {

@@ -13,7 +13,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.stateFor
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -40,8 +41,8 @@ fun DetailScreen(
     onTagClicked: (String) -> Unit
 ) {
     val detailState by model.state.collectAsState()
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(detailState) {
-        detailState is RefreshableUiState.Error
+    val (showSnackbarError, updateShowSnackbarError) = remember(detailState) {
+        mutableStateOf(detailState is RefreshableUiState.Error)
     }
     Stack(modifier = Modifier.fillMaxSize()) {
         if (detailState.isLoading) {

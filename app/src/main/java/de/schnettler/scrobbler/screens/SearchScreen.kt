@@ -19,8 +19,8 @@ import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.state
-import androidx.compose.runtime.stateFor
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
@@ -44,9 +44,9 @@ import de.schnettler.scrobbler.viewmodels.SearchViewModel
 fun SearchScreen(model: SearchViewModel, onItemSelected: (LastFmEntity) -> Unit) {
     val searchResult by model.state.collectAsState()
     val searchQuery by model.searchQuery.collectAsState()
-    val searchInputState = state { TextFieldValue(searchQuery.query) }
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(searchResult) {
-        searchResult is RefreshableUiState.Error
+    val searchInputState = remember { mutableStateOf(TextFieldValue(searchQuery.query)) }
+    val (showSnackbarError, updateShowSnackbarError) = remember(searchResult) {
+        mutableStateOf(searchResult is RefreshableUiState.Error)
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
