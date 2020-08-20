@@ -40,6 +40,8 @@ interface LastFmService {
         const val METHOD_ALBUM_INFO = "album.getInfo"
         const val METHOD_SCROBBLE = "track.scrobble"
         const val METHOD_NOWPLAYING = "track.updateNowPlaying"
+        const val METHOD_LOVE = "track.love"
+        const val METHOD_UNLOVE = "track.unlove"
     }
 
     @GET("?method=chart.gettopartists")
