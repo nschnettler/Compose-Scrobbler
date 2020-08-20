@@ -1,3 +1,7 @@
+plugins {
+    id("com.autonomousapps.dependency-analysis") version "0.56.0"
+}
+
 buildscript {
     repositories {
         google()
