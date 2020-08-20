@@ -1,6 +1,6 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -12,8 +12,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.state
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,7 +26,7 @@ fun ExpandingInfoCard(info: String?) {
         Card(
             modifier = Modifier.padding(16.dp).fillMaxSize(),
             elevation = 0.dp,
-            border = Border(1.dp, AppColor.Divider)
+            border = BorderStroke(1.dp, AppColor.Divider)
         ) {
             ExpandingSummary(info, modifier = Modifier.padding(16.dp))
         }
@@ -42,7 +42,7 @@ private fun ExpandingSummary(
     expandedMaxLines: Int = Int.MAX_VALUE,
     modifier: Modifier = Modifier
 ) {
-    var expanded by state { false }
+    var expanded by mutableStateOf(false)
     Box(modifier = Modifier.clickable(onClick = { expanded = !expanded }, enabled = expandable)) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(

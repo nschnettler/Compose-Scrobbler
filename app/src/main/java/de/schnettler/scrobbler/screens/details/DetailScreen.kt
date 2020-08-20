@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +13,8 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.stateFor
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,10 +25,10 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInf
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ErrorSnackbar
-import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.SwipeRefreshPrograssIndicator
-import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.ListTitle
+import de.schnettler.scrobbler.components.LoadingScreen
+import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
+import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -39,8 +41,8 @@ fun DetailScreen(
     onTagClicked: (String) -> Unit
 ) {
     val detailState by model.state.collectAsState()
-    val (showSnackbarError, updateShowSnackbarError) = stateFor(detailState) {
-        detailState is RefreshableUiState.Error
+    val (showSnackbarError, updateShowSnackbarError) = remember(detailState) {
+        mutableStateOf(detailState is RefreshableUiState.Error)
     }
     Stack(modifier = Modifier.fillMaxSize()) {
         if (detailState.isLoading) {
@@ -49,7 +51,7 @@ fun DetailScreen(
             SwipeToRefreshLayout(
                 refreshingState = detailState.isRefreshing,
                 onRefresh = { model.refresh() },
-                refreshIndicator = { SwipeRefreshPrograssIndicator() }
+                refreshIndicator = { SwipeRefreshProgressIndicator() }
             ) {
                 detailState.currentData.let { details ->
                     when (details) {
@@ -120,8 +122,8 @@ fun AlbumCategory(
                 }
             }
         },
-        onClick = {
+        modifier = Modifier.clickable(onClick = {
             onAlbumSelected(album ?: LastFmEntity.Artist(name = artistPlaceholder, url = ""))
-        }
+        })
     )
 }

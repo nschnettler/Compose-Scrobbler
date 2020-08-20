@@ -5,6 +5,7 @@ import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ListItem
@@ -72,7 +73,7 @@ fun TrackListWithStats(tracks: List<TrackWithStats>, onListingSelected: (LastFmE
                 Text("${stats.listeners.abbreviate()} Hörer")
             },
             icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
-            onClick = { onListingSelected.invoke(track) }
+            modifier = Modifier.clickable(onClick = { onListingSelected.invoke(track) })
         )
     }
 }
