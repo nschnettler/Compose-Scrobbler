@@ -75,33 +75,33 @@ dependencies {
 
     // AndroidX
     implementation(AndroidX.browser)
-    implementation(AndroidX.coreKtx)
+    implementation(AndroidX.core)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.activityKtx)
-    implementation("androidx.compose.foundation", "foundation-layout", "_")
-    implementation("androidx.compose.material", "material", "_")
+    implementation(AndroidX.compose.foundation.layout)
+    implementation(AndroidX.compose.runtime.liveData)
     implementation(AndroidX.ui.tooling)
-    implementation("androidx.compose.runtime", "runtime-livedata", "_")
-    implementation("androidx.compose.material", "material-icons-extended", "_")
-    implementation(AndroidX.lifecycle.extensions)
+    implementation(AndroidX.Compose.Material.material)
+    implementation(AndroidX.Compose.Material.icons.extended)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
-    debugImplementation(Square.leakCanary.android)
+    implementation(AndroidX.hilt.lifecycleViewModel)
+    implementation(AndroidX.hilt.work)
+    kapt(AndroidX.hilt.compiler)
 
-    implementation("io.coil-kt", "coil", "_")
+    // Dagger
+    implementation(Google.Dagger.hilt.android.core)
+    kapt(Google.dagger.hilt.android.compiler)
+
+    // Other
+    debugImplementation(Square.leakCanary.android)
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
     coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
-    // Dagger
-    implementation("androidx.hilt", "hilt-lifecycle-viewmodel", "_")
-    implementation("androidx.hilt", "hilt-work", "_")
-    implementation("com.google.dagger", "hilt-android", "_")
-    kapt("androidx.hilt", "hilt-compiler", "_")
-    kapt("com.google.dagger", "hilt-android-compiler", "_")
-
+    // Testing
     testImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
     androidTestImplementation(AndroidX.test.ext.junit)
