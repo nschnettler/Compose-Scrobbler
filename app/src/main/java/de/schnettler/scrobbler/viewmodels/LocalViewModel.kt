@@ -34,4 +34,10 @@ class LocalViewModel @ViewModelInject constructor(
             scrobbleRepo.deleteScrobble(scrobble)
         }
     }
+
+    fun editCachedScrobble(scrobble: Scrobble) {
+        viewModelScope.launch(Dispatchers.IO) {
+            scrobbleRepo.submitScrobbleEdit(scrobble)
+        }
+    }
 }

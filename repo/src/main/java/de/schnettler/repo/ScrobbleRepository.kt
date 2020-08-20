@@ -127,6 +127,10 @@ class ScrobbleRepository @Inject constructor(
             request
         )
     }
+
+    suspend fun submitScrobbleEdit(scrobble: Scrobble) {
+        localTrackDao.updateTrackData(scrobble.timestamp, scrobble.name, scrobble.artist, scrobble.album)
+    }
 }
 
 fun listToMap(list: List<String>, key: String) =

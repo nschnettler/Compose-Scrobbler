@@ -118,10 +118,7 @@ fun Content(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
     if (showEditDialog) {
         TrackEditDialog(onSelect = { track ->
             showEditDialog = false
-            track?.let { updatedTrack ->
-                Timber.d("[LocalEdit - Old]${selectedTrack.value}")
-                Timber.d("[LocalEdit - New]$updatedTrack")
-            }
+            track?.let { updatedTrack -> localViewModel.editCachedScrobble(updatedTrack) }
         }, onDismiss = {
             showEditDialog = false
         }, track = selectedTrack.value)
