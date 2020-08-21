@@ -19,7 +19,7 @@ interface BaseDao<T> {
     suspend fun insert(obj: T?): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun forceInsert(obj: T?)
+    suspend fun forceInsert(obj: T?): Long
 
     /**
      * Insert an array of objects in the database.

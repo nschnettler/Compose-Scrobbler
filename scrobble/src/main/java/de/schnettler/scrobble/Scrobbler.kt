@@ -51,8 +51,9 @@ class Scrobbler @Inject constructor(
         val scrobbleThreshold = prefs.getFloat(SCROBBLE_POINT_KEY, SCROBBLE_POINT_DEFAULT).get()
         if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
-            Timber.d("[Cache] $track")
-            repo.saveTrack(track.copy(status = ScrobbleStatus.LOCAL))
+            val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
+            repo.saveTrack(toBeSaved)
+            Timber.d("[Cache] $toBeSaved")
 
             // 2. Schedule Workmanager Work
             if (prefs.getBoolean(
@@ -67,12 +68,14 @@ class Scrobbler @Inject constructor(
 
     fun notifyNowPlaying(track: Scrobble?) {
         updateNowPlayingNotification(track)
-        Timber.d("[New] $track")
+        Timber.d("[NowPlaying] $track")
         if (prefs.getBoolean(SUBMIT_NOWPLAYING_KEY, SUBMIT_NOWPLAYING_DEFAULT).get() && track != null) {
             scope.launch {
                 if (authProvider.loggedIn()) {
                     val result = repo.submitNowPlaying(track)
                     result.printResult()
+                } else {
+                    Timber.d("NowPlaying submission failed: Not authenticated")
                 }
             }
         }
