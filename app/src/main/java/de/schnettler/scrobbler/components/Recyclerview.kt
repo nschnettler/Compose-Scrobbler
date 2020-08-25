@@ -22,14 +22,15 @@ fun <T> Recyclerview(
     items: List<T>,
     height: Dp = 100.dp,
     orientation: Orientation = Orientation.Vertical,
+    modifier: Modifier = Modifier,
     childView: @Composable (listing: T) -> Unit
 ) {
     if (orientation == Orientation.Horizontal) {
-        LazyRowFor(items = items, modifier = Modifier.preferredHeight(height)) {
+        LazyRowFor(items = items, modifier = modifier.preferredHeight(height)) {
             childView(it)
         }
     } else {
-        LazyColumnFor(items = items) {
+        LazyColumnFor(items = items, modifier) {
             childView(it)
         }
     }

@@ -25,7 +25,8 @@ import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 fun ChartScreen(
     model: ChartsViewModel,
     actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit
+    errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     onActive { model.startStream() }
     val chartState by model.state.collectAsState()
@@ -45,7 +46,7 @@ fun ChartScreen(
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
             chartState.currentData?.let { charts ->
-                Recyclerview(items = charts) { (entry, artist) ->
+                Recyclerview(items = charts, modifier = modifier) { (entry, artist) ->
                     ChartListItem(artist.name, entry.count) { actionHandler(ListingSelected(artist)) }
                     CustomDivider()
                 }

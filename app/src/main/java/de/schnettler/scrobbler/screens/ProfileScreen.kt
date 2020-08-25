@@ -53,6 +53,7 @@ fun ProfileScreen(
     model: UserViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val userState by model.userState.collectAsState()
@@ -86,7 +87,7 @@ fun ProfileScreen(
         onRefresh = model::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
-        ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
+        ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
             userState.currentData?.let {
                 UserInfoComponent(it)
             }

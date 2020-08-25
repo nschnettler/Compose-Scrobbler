@@ -39,6 +39,7 @@ fun DetailScreen(
     model: DetailViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val detailState by model.state.collectAsState()
     if (detailState.isError) {
@@ -59,7 +60,8 @@ fun DetailScreen(
                 when (details) {
                     is ArtistWithStatsAndInfo -> ArtistDetailScreen(
                         artistInfo = details,
-                        actionHandler = actionHandler
+                        actionHandler = actionHandler,
+                        modifier = modifier
                     )
                     is TrackWithStatsAndInfo -> TrackDetailScreen(
                         details,

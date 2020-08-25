@@ -24,6 +24,7 @@ import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.ListingScroller
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.screens.TagCategory
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
@@ -32,9 +33,10 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 fun ArtistDetailScreen(
     artistInfo: ArtistWithStatsAndInfo,
     actionHandler: (UIAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val (artist, stats, info) = artistInfo
-    ScrollableColumn {
+    ScrollableColumn(modifier = modifier) {
         Backdrop(
             imageUrl = artist.imageUrl,
             modifier = Modifier.aspectRatio(16 / 10f),

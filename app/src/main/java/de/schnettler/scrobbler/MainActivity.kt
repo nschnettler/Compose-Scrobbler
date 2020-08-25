@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
@@ -102,7 +104,8 @@ class MainActivity : AppCompatActivity() {
                                     localViewModel = localViewModel,
                                     searchViewModel = searchViewModel,
                                     actionHandler = ::handleAction,
-                                    errorHandler = { error -> handleError(host = snackbarHostState, error = error) }
+                                    errorHandler = { error -> handleError(host = snackbarHostState, error = error) },
+                                    modifier = Modifier.padding(it)
                                 )
                             },
                             bottomBar = {

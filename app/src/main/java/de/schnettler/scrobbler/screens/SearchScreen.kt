@@ -42,6 +42,7 @@ fun SearchScreen(
     model: SearchViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val searchResult by model.state.collectAsState()
     val searchQuery by model.searchQuery.collectAsState()
@@ -54,7 +55,7 @@ fun SearchScreen(
         )
     }
 
-    Column {
+    Column(modifier = modifier) {
         Box(modifier = Modifier.padding(16.dp)) {
             TextField(
                 value = searchInputState.value,

@@ -39,9 +39,10 @@ import dev.chrisbanes.accompanist.coil.CoilImage
 fun AlbumDetailScreen(
     albumDetails: AlbumWithStatsAndInfo,
     actionHandler: (UIAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val (album, stats, info) = albumDetails
-    ScrollableColumn {
+    ScrollableColumn(modifier = modifier) {
         Row(modifier = Modifier.padding(16.dp)) {
             AlbumArtwork(url = album.imageUrl)
             Spacer(modifier = Modifier.preferredWidth(16.dp))

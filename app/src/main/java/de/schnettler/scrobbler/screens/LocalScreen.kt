@@ -49,10 +49,16 @@ fun LocalScreen(
     localViewModel: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = ContextAmbient.current
     when (MediaListenerService.isEnabled(context)) {
-        true -> Content(localViewModel = localViewModel, actionHandler = actionHandler, errorHandler = errorHandler)
+        true -> Content(
+            localViewModel = localViewModel,
+            actionHandler = actionHandler,
+            errorHandler = errorHandler,
+            modifier = modifier
+        )
         false -> Button(onClick = {
             context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
         }) {
@@ -68,6 +74,7 @@ fun Content(
     localViewModel: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     onActive { localViewModel.startStream() }
     val recentTracksState by localViewModel.state.collectAsState()
@@ -83,7 +90,7 @@ fun Content(
         ))
     }
 
-    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
+    Stack(modifier = modifier.fillMaxSize()) {
         if (recentTracksState.isLoading) { LoadingScreen() } else {
             SwipeToRefreshLayout(
                 refreshingState = recentTracksState.isRefreshing,

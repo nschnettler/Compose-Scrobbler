@@ -9,6 +9,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.scrobbler.AppRoute
@@ -63,7 +64,8 @@ fun AppContent(
     localViewModel: LocalViewModel,
     searchViewModel: SearchViewModel,
     actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit
+    errorHandler: @Composable (UIError) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
@@ -73,27 +75,35 @@ fun AppContent(
                 model = chartsModel,
                 actionHandler = actionHandler,
                 errorHandler = errorHandler,
+                modifier = modifier,
             )
             is AppRoute.LocalRoute -> LocalScreen(
                 localViewModel = localViewModel,
                 actionHandler = actionHandler,
                 errorHandler = errorHandler,
+                modifier = modifier,
             )
             is AppRoute.ProfileRoute -> {
                 when (sessionStatus) {
                     is SessionState.LoggedOut -> LoginScreen(ContextAmbient.current)
                     is SessionState.LoggedIn -> {
-                        ProfileScreen(model = userViewModel, actionHandler = actionHandler, errorHandler = errorHandler)
+                        ProfileScreen(
+                            model = userViewModel,
+                            actionHandler = actionHandler,
+                            errorHandler = errorHandler,
+                            modifier = modifier,
+                        )
                     }
                 }
             }
-            is AppRoute.SearchRoute -> SearchScreen(searchViewModel, actionHandler, errorHandler)
+            is AppRoute.SearchRoute -> SearchScreen(searchViewModel, actionHandler, errorHandler, modifier)
             is AppRoute.DetailRoute -> {
                 detailsViewModel.updateEntry(screen.item)
                 DetailScreen(
                     model = detailsViewModel,
                     actionHandler = actionHandler,
-                    errorHandler = errorHandler
+                    errorHandler = errorHandler,
+                    modifier = modifier,
                 )
             }
             is AppRoute.SettingsRoute -> PreferenceScreen()

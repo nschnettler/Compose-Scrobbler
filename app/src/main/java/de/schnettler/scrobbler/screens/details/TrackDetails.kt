@@ -17,14 +17,17 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInf
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
+import de.schnettler.scrobbler.screens.AlbumCategory
+import de.schnettler.scrobbler.screens.TagCategory
 
 @Composable
 fun TrackDetailScreen(
     trackDetails: TrackWithStatsAndInfo,
-    actionHandler: (UIAction) -> Unit
+    actionHandler: (UIAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val (track, stats, info, album) = trackDetails
-    Stack(Modifier.fillMaxSize()) {
+    Stack(modifier.fillMaxSize()) {
         ScrollableColumn(children = {
             AlbumCategory(
                 album = album,
