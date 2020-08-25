@@ -6,7 +6,6 @@ import com.dropbox.android.external.store4.Store
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.freshFrom
 import de.schnettler.scrobbler.util.streamFrom
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -24,7 +23,7 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
      * Refreshes Data
      */
     fun refresh() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             state.freshFrom(store, key)
         }
     }
@@ -35,7 +34,7 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
     fun startStream() {
         if (!streaming) {
             streaming = true
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch {
                 state.streamFrom(store, key)
             }
         }
