@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -13,9 +14,8 @@ import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.CustomDivider
+import de.schnettler.scrobbler.components.IndexListIconBackground
 import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.NameListIcon
-import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.util.abbreviate
@@ -46,8 +46,8 @@ fun ChartScreen(
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
             chartState.currentData?.let { charts ->
-                Recyclerview(items = charts, modifier = modifier) { (entry, artist) ->
-                    ChartListItem(artist.name, entry.count) { actionHandler(ListingSelected(artist)) }
+                LazyColumnForIndexed(items = charts, modifier) { index, (entry, artist) ->
+                    ChartListItem(artist.name, entry.count, index) { actionHandler(ListingSelected(artist)) }
                     CustomDivider()
                 }
             }
@@ -56,7 +56,7 @@ fun ChartScreen(
 }
 
 @Composable
-private fun ChartListItem(name: String, listener: Long, onClicked: () -> Unit) {
+private fun ChartListItem(name: String, listener: Long, index: Int, onClicked: () -> Unit) {
     ListItem(
         text = { Text(text = name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {
@@ -65,7 +65,7 @@ private fun ChartListItem(name: String, listener: Long, onClicked: () -> Unit) {
                     .Ellipsis
             )
         },
-        icon = { NameListIcon(title = name) },
+        icon = { IndexListIconBackground(index = index) },
         modifier = Modifier.clickable(onClick = { onClicked() })
     )
 }
