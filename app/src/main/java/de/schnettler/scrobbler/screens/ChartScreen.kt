@@ -2,64 +2,55 @@ package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Stack
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
+import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.CustomDivider
-import de.schnettler.scrobbler.components.ErrorSnackbar
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.components.Recyclerview
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
 @Composable
-fun ChartScreen(model: ChartsViewModel, actionHandler: (UIAction) -> Unit) {
+fun ChartScreen(
+    model: ChartsViewModel,
+    actionHandler: (UIAction) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit
+) {
     onActive { model.startStream() }
     val chartState by model.state.collectAsState()
-    val (showSnackbarError, updateShowSnackbarError) = remember(chartState) {
-        mutableStateOf(chartState is RefreshableUiState.Error)
+
+    if (chartState.isError) {
+        errorHandler(UIError.ShowErrorSnackbar(
+            state = chartState,
+            fallbackMessage = "Unable to refresh charts",
+            onAction = model::refresh
+        ))
     }
 
-    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-        if (chartState.isLoading) { LoadingScreen() } else {
-            SwipeToRefreshLayout(
-                refreshingState = chartState.isRefreshing,
-                onRefresh = { model.refresh() },
-                refreshIndicator = { SwipeRefreshProgressIndicator() }
-            ) {
-                chartState.currentData?.let { charts ->
-                    Recyclerview(items = charts) { (entry, artist) ->
-                        ChartListItem(artist.name, entry.count) { actionHandler(ListingSelected(artist)) }
-                        CustomDivider()
-                    }
+    if (chartState.isLoading) { LoadingScreen() } else {
+        SwipeToRefreshLayout(
+            refreshingState = chartState.isRefreshing,
+            onRefresh = { model.refresh() },
+            refreshIndicator = { SwipeRefreshProgressIndicator() }
+        ) {
+            chartState.currentData?.let { charts ->
+                Recyclerview(items = charts) { (entry, artist) ->
+                    ChartListItem(artist.name, entry.count) { actionHandler(ListingSelected(artist)) }
+                    CustomDivider()
                 }
             }
         }
-        ErrorSnackbar(
-            showError = showSnackbarError,
-            onErrorAction = { model.refresh() },
-            onDismiss = { updateShowSnackbarError(false) },
-            state = chartState,
-            fallBackMessage = "Unable to refresh charts",
-            modifier = Modifier.gravity(Alignment.BottomCenter)
-        )
     }
 }
 

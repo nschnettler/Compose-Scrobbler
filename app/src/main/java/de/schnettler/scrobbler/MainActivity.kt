@@ -4,8 +4,15 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Providers
+import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.setContent
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
@@ -18,6 +25,7 @@ import de.schnettler.scrobbler.screens.AppContent
 import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
 import de.schnettler.scrobbler.util.REDIRECT_URL
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openUrlInCustomTab
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
@@ -62,8 +70,10 @@ class MainActivity : AppCompatActivity() {
 
     private val startScreen: AppRoute = AppRoute.LocalRoute
 
-    @Inject lateinit var sharedPrefs: FlowSharedPreferences
+    @Inject
+    lateinit var sharedPrefs: FlowSharedPreferences
 
+    @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,27 +87,23 @@ class MainActivity : AppCompatActivity() {
                             )
                         }
 
+                        val snackbarHostState = remember { SnackbarHostState() }
+
                         Scaffold(
+                            scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
                             topBar = { ToolBar(currentScreen = currentRoute.data) },
                             bodyContent = {
                                 AppContent(
-                                    currentRoute.data,
-                                    model,
-                                    chartsModel,
-                                    detailsViewModel,
-                                    userViewModel,
-                                    localViewModel,
-                                    searchViewModel
-                                ) { action ->
-                                    when (action) {
-                                        is UIAction.ListingSelected -> onListingClicked(action.listing)
-                                        is UIAction.TagSelected -> onTagClicked(action.id)
-                                        is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(
-                                            action.track,
-                                            action.info
-                                        )
-                                    }
-                                }
+                                    currentScreen = currentRoute.data,
+                                    model = model,
+                                    chartsModel = chartsModel,
+                                    detailsViewModel = detailsViewModel,
+                                    userViewModel = userViewModel,
+                                    localViewModel = localViewModel,
+                                    searchViewModel = searchViewModel,
+                                    actionHandler = ::handleAction,
+                                    errorHandler = { error -> handleError(host = snackbarHostState, error = error) }
+                                )
                             },
                             bottomBar = {
                                 BottomNavigationBar(
@@ -107,6 +113,41 @@ class MainActivity : AppCompatActivity() {
                             }
                         )
                     }
+                }
+            }
+        }
+    }
+
+    private fun handleAction(action: UIAction) {
+        when (action) {
+            is UIAction.ListingSelected -> onListingClicked(action.listing)
+            is UIAction.TagSelected -> onTagClicked(action.id)
+            is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
+        }
+    }
+
+    @ExperimentalMaterialApi
+    @Composable
+    fun handleError(host: SnackbarHostState, error: UIError) {
+        when (error) {
+            is UIError.ShowErrorSnackbar -> showErrorSnackbar(host = host, error = error)
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun showErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
+        if (error.state is RefreshableUiState.Error) {
+            launchInComposition {
+                val result = host.showSnackbar(
+                    message = error.state.errorMessage
+                        ?: error.state.exception?.message
+                        ?: error.fallbackMessage,
+                    actionLabel = error.actionMessage
+                )
+                when (result) {
+                    SnackbarResult.ActionPerformed -> error.onAction()
+                    SnackbarResult.Dismissed -> error.onDismiss()
                 }
             }
         }

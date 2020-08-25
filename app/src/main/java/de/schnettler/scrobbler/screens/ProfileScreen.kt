@@ -5,7 +5,6 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,15 +26,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.UIAction
-import de.schnettler.scrobbler.components.ErrorSnackbar
+import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -52,7 +49,11 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun ProfileScreen(model: UserViewModel, actionHandler: (UIAction) -> Unit) {
+fun ProfileScreen(
+    model: UserViewModel,
+    actionHandler: (UIAction) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit,
+) {
 
     val userState by model.userState.collectAsState()
     val artistState by model.artistState.collectAsState()
@@ -72,44 +73,39 @@ fun ProfileScreen(model: UserViewModel, actionHandler: (UIAction) -> Unit) {
         }, model = model)
     }
 
-    Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
-        val (showSnackbarError, updateShowSnackbarError) = remember(states) {
-            mutableStateOf(states.any { it.isError })
-        }
-        SwipeToRefreshLayout(
-            refreshingState = states.any { it.isRefreshing },
-            onRefresh = { model.refresh() },
-            refreshIndicator = { SwipeRefreshProgressIndicator() }
-        ) {
-                ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
-                    userState.currentData?.let {
-                        UserInfoComponent(it)
-                    }
-                    TopListScroller(
-                        title = "Top-Künstler (${timePeriod.niceName})",
-                        state = artistState,
-                        actionHandler = actionHandler
-                    )
-                    TopListScroller(
-                        title = "Top-Alben",
-                        state = albumState,
-                        actionHandler = actionHandler
-                    )
-                    TopListScroller(
-                        title = "Top-Titel",
-                        state = trackState,
-                        actionHandler = actionHandler
-                    )
-                })
-        }
-        ErrorSnackbar(
-            showError = showSnackbarError,
-            onErrorAction = { model.refresh() },
-            onDismiss = { updateShowSnackbarError(false) },
+    if (states.any { it.isError }) {
+        errorHandler(UIError.ShowErrorSnackbar(
             state = states.firstOrNull { it.isError },
-            fallBackMessage = "Unable to refresh history",
-            modifier = Modifier.gravity(Alignment.BottomCenter)
-        )
+            fallbackMessage = "Unable to refresh history",
+            onAction = model::refresh
+        ))
+    }
+
+    SwipeToRefreshLayout(
+        refreshingState = states.any { it.isRefreshing },
+        onRefresh = model::refresh,
+        refreshIndicator = { SwipeRefreshProgressIndicator() }
+    ) {
+        ScrollableColumn(modifier = Modifier.fillMaxSize(), children = {
+            userState.currentData?.let {
+                UserInfoComponent(it)
+            }
+            TopListScroller(
+                title = "Top-Künstler (${timePeriod.niceName})",
+                state = artistState,
+                actionHandler = actionHandler
+            )
+            TopListScroller(
+                title = "Top-Alben",
+                state = albumState,
+                actionHandler = actionHandler
+            )
+            TopListScroller(
+                title = "Top-Titel",
+                state = trackState,
+                actionHandler = actionHandler
+            )
+        })
     }
 }
 

@@ -28,7 +28,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
-import de.schnettler.scrobbler.components.ErrorSnackbar
+import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -36,7 +36,6 @@ import de.schnettler.scrobbler.screens.local.ConfirmDialog
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
-import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
@@ -46,10 +45,14 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
 @Composable
-fun LocalScreen(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
+fun LocalScreen(
+    localViewModel: LocalViewModel,
+    actionHandler: (UIAction) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit,
+) {
     val context = ContextAmbient.current
     when (MediaListenerService.isEnabled(context)) {
-        true -> Content(localViewModel = localViewModel, actionHandler = actionHandler)
+        true -> Content(localViewModel = localViewModel, actionHandler = actionHandler, errorHandler = errorHandler)
         false -> Button(onClick = {
             context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
         }) {
@@ -61,15 +64,23 @@ fun LocalScreen(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Uni
 
 @Suppress("LongMethod")
 @Composable
-fun Content(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
+fun Content(
+    localViewModel: LocalViewModel,
+    actionHandler: (UIAction) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit,
+) {
     onActive { localViewModel.startStream() }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
-    val (showSnackbarError, updateShowSnackbarError) = remember(recentTracksState) {
-        mutableStateOf(recentTracksState is RefreshableUiState.Error)
+    if (recentTracksState.isError) {
+        errorHandler(UIError.ShowErrorSnackbar(
+            state = recentTracksState,
+            fallbackMessage = "Unable to refresh history",
+            onAction = localViewModel::refresh
+        ))
     }
 
     Stack(modifier = Modifier.padding(bottom = 56.dp).fillMaxSize()) {
@@ -96,14 +107,6 @@ fun Content(localViewModel: LocalViewModel, actionHandler: (UIAction) -> Unit) {
                 }
             }
         }
-        ErrorSnackbar(
-            showError = showSnackbarError,
-            onErrorAction = { localViewModel.refresh() },
-            onDismiss = { updateShowSnackbarError(false) },
-            state = recentTracksState,
-            fallBackMessage = "Unable to refresh history",
-            modifier = Modifier.gravity(Alignment.BottomCenter)
-        )
         if (cachedNumber > 0) {
             ExtendedFloatingActionButton(
                 text = { Text(text = "$cachedNumber Scrobbles") },
