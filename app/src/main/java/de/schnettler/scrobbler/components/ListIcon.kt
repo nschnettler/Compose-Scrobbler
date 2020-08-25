@@ -41,3 +41,10 @@ fun PlainListIconBackground(
         }
     }
 }
+
+@Composable
+fun IndexListIconBackground(
+    index: Int
+) {
+    PlainListIconBackground { Text(text = "${index + 1}") }
+}

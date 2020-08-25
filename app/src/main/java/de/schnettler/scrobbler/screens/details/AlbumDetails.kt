@@ -28,6 +28,7 @@ import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIAction.TagSelected
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingInfoCard
+import de.schnettler.scrobbler.components.IndexListIconBackground
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.theme.AppColor
@@ -86,7 +87,7 @@ fun TrackList(tracks: List<LastFmEntity.Track>, onListingSelected: (LastFmEntity
     tracks.forEachIndexed { index, track ->
         ListItem(
             text = { Text(track.name) },
-            icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
+            icon = { IndexListIconBackground(index = index) },
             modifier = Modifier.clickable(onClick = { onListingSelected(track) })
         )
     }
