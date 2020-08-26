@@ -80,9 +80,9 @@ dependencies {
     implementation(AndroidX.activityKtx)
     implementation(AndroidX.compose.foundation.layout)
     implementation(AndroidX.compose.runtime.liveData)
+    implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.ui.tooling)
-    implementation(AndroidX.Compose.Material.material)
-    implementation(AndroidX.Compose.Material.icons.extended)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
@@ -92,7 +92,7 @@ dependencies {
     kapt(AndroidX.hilt.compiler)
 
     // Dagger
-    implementation(Google.Dagger.hilt.android.core)
+    implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
 
     // Other

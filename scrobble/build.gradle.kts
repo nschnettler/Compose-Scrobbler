@@ -24,7 +24,7 @@ dependencies {
 
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)
-    implementation(Google.dagger.hilt.android.core)
+    implementation(Google.dagger.hilt.android)
     kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
 }
