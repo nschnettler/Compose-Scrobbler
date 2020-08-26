@@ -34,7 +34,7 @@ dependencies {
     implementation(Square.okHttp3.okHttp)
     implementation(AndroidX.work.runtimeKtx)
     implementation(AndroidX.hilt.work)
-    implementation(Google.dagger.hilt.android.core)
+    implementation(Google.dagger.hilt.android)
     kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
 
