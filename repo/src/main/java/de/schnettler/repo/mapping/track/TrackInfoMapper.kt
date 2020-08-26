@@ -24,7 +24,7 @@ object TrackInfoMapper : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
 fun RecentTracksDto.mapToLocal() = Scrobble(
     name = name,
     artist = artist.name,
-    album = album.name,
+    album = albumResponse.name,
     duration = 1,
     timestamp = date?.uts ?: -1,
     playedBy = "external",

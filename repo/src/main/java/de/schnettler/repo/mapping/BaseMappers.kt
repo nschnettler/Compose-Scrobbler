@@ -35,7 +35,7 @@ object TrackMapper : ParameterMapper<BaseTrackDto, LastFmEntity.Track, LastFmEnt
             name = from.name,
             url = from.url,
             artist = from.artist.name,
-            album = album?.name,
+            album = album?.name ?: from.album?.name,
             albumId = album?.id,
             imageUrl = album?.imageUrl
         )

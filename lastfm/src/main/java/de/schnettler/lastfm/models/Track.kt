@@ -25,13 +25,13 @@ data class UserTrackDto(
 @JsonClass(generateAdapter = true)
 data class RecentTracksDto(
     override val name: String,
-    override val mbid: String?,
+    val mbid: String?,
     override val url: String,
-    val artist: TrackRelationDto,
-    val album: TrackRelationDto,
+    @Json(name = "artist") val artistResponse: TrackRelationDto,
+    @Json(name = "album") val albumResponse: TrackRelationDto,
     val date: TrackDateDto?,
     @Json(name = "@attr") val attrs: AttributesDto?
-) : ListingDto
+) : BaseTrackDto(name, url, MinimalArtist(artistResponse.name, ""), null)
 
 @JsonClass(generateAdapter = true)
 data class AlbumTrack(

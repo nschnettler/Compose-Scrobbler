@@ -36,3 +36,11 @@ internal inline fun <F, T> Mapper<F, T>.forLists(): suspend (List<F>) -> List<T>
 internal inline fun <F, T> IndexedMapper<F, T>.forLists(): suspend (List<F>) -> List<T> {
     return { list -> list.mapIndexed { index, item -> map(index, item) } }
 }
+
+internal inline fun <F, T, P> ParameterMapper<F, T, P>.forLists(): suspend (List<F>, List<P>) -> List<T> {
+    return { list, parameters ->
+        list.zip(parameters) { item, parameter ->
+            map(item, parameter)
+        }
+    }
+}
