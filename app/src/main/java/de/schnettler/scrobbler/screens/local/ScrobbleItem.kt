@@ -61,7 +61,8 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
             }
         },
         icon = { NameListIcon(title = track.name) },
-        modifier = Modifier.clickable(onClick = { expanded = !expanded }),
+        modifier = Modifier.clickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
+            expanded = !expanded }),
         trailing = {
             track.timestampToRelativeTime()?.let {
                 Column(verticalArrangement = Arrangement.Center) {
