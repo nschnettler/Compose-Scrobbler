@@ -22,6 +22,7 @@ import de.schnettler.scrobbler.screens.AlbumCategory
 import de.schnettler.scrobbler.screens.TagCategory
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import de.schnettler.scrobbler.util.navigationBarsPadding
+import de.schnettler.scrobbler.util.statusBarsHeight
 
 @Composable
 fun TrackDetailScreen(
@@ -32,6 +33,7 @@ fun TrackDetailScreen(
     val (track, stats, info, album) = trackDetails
     Stack(modifier.fillMaxSize()) {
         ScrollableColumn(children = {
+            Spacer(modifier = Modifier.statusBarsHeight())
             AlbumCategory(
                 album = album,
                 artistPlaceholder = track.artist,
