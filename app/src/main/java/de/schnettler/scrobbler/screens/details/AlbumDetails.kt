@@ -30,9 +30,9 @@ import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.IndexListIconBackground
 import de.schnettler.scrobbler.components.ListeningStats
-import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.fromHtmlLastFm
+import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @OptIn(ExperimentalLayout::class)
@@ -64,6 +64,7 @@ fun AlbumDetailScreen(
             tracks = albumDetails.tracks.map { it.entity },
             onListingSelected = { actionHandler(ListingSelected(it)) }
         )
+        Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
     }
 }
 

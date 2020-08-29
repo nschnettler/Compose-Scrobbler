@@ -2,11 +2,12 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
-import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import de.schnettler.scrobbler.AppRoute
+import de.schnettler.scrobbler.util.navigationBarsPadding
 
 @Composable
 fun BottomNavigationBar(
@@ -15,7 +16,8 @@ fun BottomNavigationBar(
     onDestinationSelected: (AppRoute) -> Unit
 ) {
     if (currentScreen !is AppRoute.DetailRoute) {
-        BottomNavigation(backgroundColor = MaterialTheme.colors.surface) {
+        CustomBottomNavigation(backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
+            .navigationBarsPadding()) {
             items.forEach { screen ->
                 BottomNavigationItem(
                     icon = {

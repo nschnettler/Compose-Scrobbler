@@ -27,6 +27,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.AppContent
 import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
+import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openUrlInCustomTab
@@ -85,39 +86,43 @@ class MainActivity : AppCompatActivity() {
         setContent {
             Providers(AmbientPreferences provides sharedPrefs) {
                 AppTheme {
-                    Router(start = startScreen) { currentRoute ->
-                        onListingClicked = {
-                            this.push(
-                                AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
+                    ProvideDisplayInsets {
+                        Router(start = startScreen) { currentRoute ->
+                            onListingClicked = {
+                                this.push(
+                                    AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
+                                )
+                            }
+
+                            val snackbarHostState = remember { SnackbarHostState() }
+
+                            Scaffold(
+                                scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
+                                topBar = { ToolBar(currentScreen = currentRoute.data) },
+                                bodyContent = {
+                                    AppContent(
+                                        currentScreen = currentRoute.data,
+                                        model = model,
+                                        chartsModel = chartsModel,
+                                        detailsViewModel = detailsViewModel,
+                                        userViewModel = userViewModel,
+                                        localViewModel = localViewModel,
+                                        searchViewModel = searchViewModel,
+                                        actionHandler = ::handleAction,
+                                        errorHandler = { error ->
+                                            handleError(host = snackbarHostState, error = error)
+                                        },
+                                        modifier = Modifier.padding(it)
+                                    )
+                                },
+                                bottomBar = {
+                                    BottomNavigationBar(
+                                        items = bottomNavDestinations,
+                                        currentScreen = currentRoute.data
+                                    ) { newScreen -> replace(newScreen) }
+                                }
                             )
                         }
-
-                        val snackbarHostState = remember { SnackbarHostState() }
-
-                        Scaffold(
-                            scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
-                            topBar = { ToolBar(currentScreen = currentRoute.data) },
-                            bodyContent = {
-                                AppContent(
-                                    currentScreen = currentRoute.data,
-                                    model = model,
-                                    chartsModel = chartsModel,
-                                    detailsViewModel = detailsViewModel,
-                                    userViewModel = userViewModel,
-                                    localViewModel = localViewModel,
-                                    searchViewModel = searchViewModel,
-                                    actionHandler = ::handleAction,
-                                    errorHandler = { error -> handleError(host = snackbarHostState, error = error) },
-                                    modifier = Modifier.padding(it)
-                                )
-                            },
-                            bottomBar = {
-                                BottomNavigationBar(
-                                    items = bottomNavDestinations,
-                                    currentScreen = currentRoute.data
-                                ) { newScreen -> replace(newScreen) }
-                            }
-                        )
                     }
                 }
             }
