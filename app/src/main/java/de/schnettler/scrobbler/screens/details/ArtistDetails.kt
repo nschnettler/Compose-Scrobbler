@@ -29,7 +29,7 @@ fun ArtistDetailScreen(
 ) {
     CollapsingToolbar(imageUrl = artistInfo.entity.imageUrl, title = artistInfo.entity.name, onUp = {
         actionHandler(UIAction.NavigateUp)
-    }) {
+    }, statusBarGuardAlpha = 0f) {
         Content(artistInfo = artistInfo, actionHandler = actionHandler)
     }
 }

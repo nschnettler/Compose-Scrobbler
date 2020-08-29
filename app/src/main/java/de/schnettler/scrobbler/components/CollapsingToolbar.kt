@@ -40,7 +40,7 @@ import de.schnettler.scrobbler.util.statusBarsHeight
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun CollapsingToolbar(imageUrl: String?, title: String, onUp: () -> Unit, content: @Composable () -> Unit) =
+fun CollapsingToolbar(imageUrl: String?, title: String, statusBarGuardAlpha: Float = 0.5F, onUp: () -> Unit, content: @Composable () -> Unit) =
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (appbar) = createRefs()
         val scrollState = rememberScrollState()
@@ -66,10 +66,8 @@ fun CollapsingToolbar(imageUrl: String?, title: String, onUp: () -> Unit, conten
             appBar = {
                 Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
             },
-            modifier = Modifier.fillMaxWidth()
-                .constrainAs(appbar) {
-                    top.linkTo(parent.top)
-                }
+            modifier = Modifier.fillMaxWidth().constrainAs(appbar) { top.linkTo(parent.top) },
+            statusBarGuardAlpha = statusBarGuardAlpha
         )
     }
 
@@ -99,6 +97,7 @@ private fun OverlaidStatusBarAppBar(
     scrollPosition: Float,
     backdropHeight: Int,
     modifier: Modifier = Modifier,
+    statusBarGuardAlpha: Float,
     appBar: @Composable () -> Unit
 ) {
 
@@ -106,7 +105,7 @@ private fun OverlaidStatusBarAppBar(
     val trigger = (backdropHeight - insets.systemBars.top).coerceAtLeast(0)
 
     val alpha = lerp(
-        startValue = 0.5f,
+        startValue = statusBarGuardAlpha,
         endValue = 1f,
         fraction = if (trigger > 0) (scrollPosition / trigger).coerceIn(0f, 1f) else 0f
     )
@@ -158,7 +157,7 @@ private fun Content(
 
     Surface(
         modifier = Modifier.fillMaxWidth().wrapContentHeight(Alignment.Top),
-        elevation = 2.dp
+        elevation = 0.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
             Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
