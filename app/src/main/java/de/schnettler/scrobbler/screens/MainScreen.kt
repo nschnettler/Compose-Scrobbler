@@ -28,32 +28,34 @@ import timber.log.Timber
 
 @Composable
 fun ToolBar(currentScreen: AppRoute) {
-    CustomTopAppBar(
-        title = {
-            Text(
-                text = currentScreen.title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        actions = {
-            currentScreen.menuActions.forEach { menuAction ->
-                Timber.d("MenuItem $menuAction")
-                IconButton(onClick = {
-                    when (menuAction) {
-                        is MenuAction.OpenInBrowser -> {
-                            menuAction.onClick.invoke((currentScreen as AppRoute.DetailRoute).item)
+    if (currentScreen !is AppRoute.DetailRoute) {
+        CustomTopAppBar(
+            title = {
+                Text(
+                    text = currentScreen.title,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            },
+            actions = {
+                currentScreen.menuActions.forEach { menuAction ->
+                    Timber.d("MenuItem $menuAction")
+                    IconButton(onClick = {
+                        when (menuAction) {
+                            is MenuAction.OpenInBrowser -> {
+                                menuAction.onClick.invoke((currentScreen as AppRoute.DetailRoute).item)
+                            }
+                            is MenuAction.Period -> menuAction.onClick.invoke()
                         }
-                        is MenuAction.Period -> menuAction.onClick.invoke()
+                    }) {
+                        Icon(menuAction.icon)
                     }
-                }) {
-                    Icon(menuAction.icon)
                 }
-            }
-        },
-        backgroundColor = MaterialTheme.colors.surface,
-        modifier = Modifier.statusBarsPadding()
-    )
+            },
+            backgroundColor = MaterialTheme.colors.surface,
+            modifier = Modifier.statusBarsPadding()
+        )
+    }
 }
 
 @Composable

@@ -114,7 +114,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             Preference(
                 title = "Notifications",
                 summary = "Change notification preferences",
-                key = "settings_notif",
                 singleLineTitle = true,
                 icon = Icons.Outlined.Notifications,
                 onClick = {
@@ -131,7 +130,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             Preference(
                 title = "Reset Preferences",
                 summary = "Reset app settings to factory state",
-                key = "setttings_reset",
                 singleLineTitle = true,
                 icon = Icons.Outlined.DeleteForever,
                 onClick = {
