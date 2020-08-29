@@ -106,7 +106,7 @@ fun AppContent(
                     modifier = modifier,
                 )
             }
-            is AppRoute.SettingsRoute -> SettingsScreen()
+            is AppRoute.SettingsRoute -> SettingsScreen(modifier = modifier)
         }
     }
 }
