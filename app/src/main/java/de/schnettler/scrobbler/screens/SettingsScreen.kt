@@ -16,9 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.core.content.ContextCompat.startActivity
-import de.schnettler.composepreferences.AmbientPreferences
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
+import de.schnettler.composepreferences.PreferenceAmbient
 import de.schnettler.composepreferences.SeekBarPreference
 import de.schnettler.composepreferences.SwitchPreference
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
@@ -37,7 +37,7 @@ import kotlin.math.roundToInt
 
 @Suppress("LongMethod")
 @Composable
-fun PreferenceScreen() {
+fun SettingsScreen() {
     val context = ContextAmbient.current
 
     val mediaServices = remember {
@@ -119,7 +119,7 @@ fun PreferenceScreen() {
         )
         CustomDivider()
 
-        val prefs = AmbientPreferences.current
+        val prefs = PreferenceAmbient.current
         Preference(
             title = "Reset Preferences",
             summary = "Reset app settings to factory state",
