@@ -61,15 +61,17 @@ fun DetailScreen(
                     is ArtistWithStatsAndInfo -> ArtistDetailScreen(
                         artistInfo = details,
                         actionHandler = actionHandler,
-                        modifier = modifier
+                        modifier = modifier,
                     )
                     is TrackWithStatsAndInfo -> TrackDetailScreen(
                         details,
-                        actionHandler
+                        actionHandler,
+                        modifier,
                     )
                     is AlbumWithStatsAndInfo -> AlbumDetailScreen(
                         albumDetails = details,
-                        actionHandler
+                        actionHandler,
+                        modifier,
                     )
                 }
             }
