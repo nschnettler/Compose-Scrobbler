@@ -5,7 +5,6 @@ import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -15,8 +14,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.components.CustomTopAppBar
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.SessionState
+import de.schnettler.scrobbler.util.statusBarsPadding
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
@@ -27,7 +28,7 @@ import timber.log.Timber
 
 @Composable
 fun ToolBar(currentScreen: AppRoute) {
-    TopAppBar(
+    CustomTopAppBar(
         title = {
             Text(
                 text = currentScreen.title,
@@ -50,7 +51,8 @@ fun ToolBar(currentScreen: AppRoute) {
                 }
             }
         },
-        backgroundColor = MaterialTheme.colors.surface
+        backgroundColor = MaterialTheme.colors.surface,
+        modifier = Modifier.statusBarsPadding()
     )
 }
 

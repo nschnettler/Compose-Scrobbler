@@ -2,6 +2,7 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,8 @@ import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.screens.AlbumCategory
 import de.schnettler.scrobbler.screens.TagCategory
+import de.schnettler.scrobbler.util.navigationBarsHeightPlus
+import de.schnettler.scrobbler.util.navigationBarsPadding
 
 @Composable
 fun TrackDetailScreen(
@@ -39,13 +42,14 @@ fun TrackDetailScreen(
             if (info?.tags?.isNotEmpty() == true) {
                 TagCategory(tags = info.tags, actionHandler = actionHandler)
             }
+            Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
         })
         info?.let {
             FloatingActionButton(
                 onClick = {
                     actionHandler(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
                 },
-                Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+                Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
             ) {
                 if (info.loved) {
                     Icon(asset = Icons.Rounded.Favorite)

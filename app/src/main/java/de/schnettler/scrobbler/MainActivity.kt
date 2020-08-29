@@ -15,6 +15,7 @@ import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
+import androidx.core.view.WindowCompat
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences
@@ -25,6 +26,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.AppContent
 import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
+import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openUrlInCustomTab
@@ -78,42 +80,48 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
-                    Router(start = startScreen) { currentRoute ->
-                        onListingClicked = {
-                            this.push(
-                                AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
+                    ProvideDisplayInsets {
+                        Router(start = startScreen) { currentRoute ->
+                            onListingClicked = {
+                                this.push(
+                                    AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
+                                )
+                            }
+
+                            val snackbarHostState = remember { SnackbarHostState() }
+
+                            Scaffold(
+                                scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
+                                topBar = { ToolBar(currentScreen = currentRoute.data) },
+                                bodyContent = {
+                                    AppContent(
+                                        currentScreen = currentRoute.data,
+                                        model = model,
+                                        chartsModel = chartsModel,
+                                        detailsViewModel = detailsViewModel,
+                                        userViewModel = userViewModel,
+                                        localViewModel = localViewModel,
+                                        searchViewModel = searchViewModel,
+                                        actionHandler = ::handleAction,
+                                        errorHandler = { error ->
+                                            handleError(host = snackbarHostState, error = error)
+                                        },
+                                        modifier = Modifier.padding(it)
+                                    )
+                                },
+                                bottomBar = {
+                                    BottomNavigationBar(
+                                        items = bottomNavDestinations,
+                                        currentScreen = currentRoute.data
+                                    ) { newScreen -> replace(newScreen) }
+                                }
                             )
                         }
-
-                        val snackbarHostState = remember { SnackbarHostState() }
-
-                        Scaffold(
-                            scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
-                            topBar = { ToolBar(currentScreen = currentRoute.data) },
-                            bodyContent = {
-                                AppContent(
-                                    currentScreen = currentRoute.data,
-                                    model = model,
-                                    chartsModel = chartsModel,
-                                    detailsViewModel = detailsViewModel,
-                                    userViewModel = userViewModel,
-                                    localViewModel = localViewModel,
-                                    searchViewModel = searchViewModel,
-                                    actionHandler = ::handleAction,
-                                    errorHandler = { error -> handleError(host = snackbarHostState, error = error) },
-                                    modifier = Modifier.padding(it)
-                                )
-                            },
-                            bottomBar = {
-                                BottomNavigationBar(
-                                    items = bottomNavDestinations,
-                                    currentScreen = currentRoute.data
-                                ) { newScreen -> replace(newScreen) }
-                            }
-                        )
                     }
                 }
             }

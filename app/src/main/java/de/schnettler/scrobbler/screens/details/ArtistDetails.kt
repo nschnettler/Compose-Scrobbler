@@ -6,6 +6,7 @@ import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ListItem
@@ -27,6 +28,7 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.screens.TagCategory
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.abbreviate
+import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
@@ -63,6 +65,8 @@ fun ArtistDetailScreen(
             playsStyle = PlaysStyle.NO_PLAYS,
             actionHandler = actionHandler
         )
+
+        Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
     }
 }
 
