@@ -40,36 +40,39 @@ import de.schnettler.scrobbler.util.statusBarsHeight
 import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
-fun CollapsingToolbar(imageUrl: String?, title: String, statusBarGuardAlpha: Float = 0.5F, onUp: () -> Unit, content: @Composable () -> Unit) =
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (appbar) = createRefs()
-        val scrollState = rememberScrollState()
-        var backdropHeight by remember { mutableStateOf(0) }
+fun CollapsingToolbar(
+    imageUrl: String?, title: String,
+    statusBarGuardAlpha: Float = 0.5F,
+    onUp: () -> Unit, content: @Composable () -> Unit
+) = ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+    val (appbar) = createRefs()
+    val scrollState = rememberScrollState()
+    var backdropHeight by remember { mutableStateOf(0) }
 
-        ScrollableColumn(
+    ScrollableColumn(
+        scrollState = scrollState,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        Content(
+            onBackdropSizeChanged = { backdropHeight = it.height },
             scrollState = scrollState,
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            Content(
-                onBackdropSizeChanged = { backdropHeight = it.height },
-                scrollState = scrollState,
-                realContent = content,
-                imageUrl = imageUrl,
-                title = title,
-                onUp = onUp
-            )
-        }
-
-        OverlaidStatusBarAppBar(
-            scrollPosition = scrollState.value,
-            backdropHeight = backdropHeight,
-            appBar = {
-                Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
-            },
-            modifier = Modifier.fillMaxWidth().constrainAs(appbar) { top.linkTo(parent.top) },
-            statusBarGuardAlpha = statusBarGuardAlpha
+            realContent = content,
+            imageUrl = imageUrl,
+            title = title,
+            onUp = onUp
         )
     }
+
+    OverlaidStatusBarAppBar(
+        scrollPosition = scrollState.value,
+        backdropHeight = backdropHeight,
+        appBar = {
+            Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
+        },
+        modifier = Modifier.fillMaxWidth().constrainAs(appbar) { top.linkTo(parent.top) },
+        statusBarGuardAlpha = statusBarGuardAlpha
+    )
+}
 
 @Composable
 private fun Toolbar(
