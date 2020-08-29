@@ -11,7 +11,6 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,7 +19,7 @@ import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.composepreferences.AmbientPreferences
+import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.AppContent
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Providers(AmbientPreferences provides sharedPrefs) {
+            ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
                     Router(start = startScreen) { currentRoute ->
                         onListingClicked = {
