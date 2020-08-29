@@ -75,7 +75,7 @@ dependencies {
 
     // AndroidX
     implementation(AndroidX.browser)
-    implementation(AndroidX.core)
+    implementation(AndroidX.core.ktx)
     implementation(AndroidX.appCompat)
     implementation(AndroidX.activityKtx)
     implementation(AndroidX.compose.foundation.layout)

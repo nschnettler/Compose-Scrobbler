@@ -16,6 +16,7 @@ import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
+import androidx.core.view.WindowCompat
 import com.koduok.compose.navigation.Router
 import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences
@@ -78,6 +79,8 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             Providers(AmbientPreferences provides sharedPrefs) {
