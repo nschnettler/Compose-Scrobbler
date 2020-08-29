@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.scrobbler.AppRoute
+import de.schnettler.scrobbler.MainRoute
+import de.schnettler.scrobbler.NestedRoute
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.CustomTopAppBar
@@ -28,38 +30,36 @@ import timber.log.Timber
 
 @Composable
 fun ToolBar(currentScreen: AppRoute) {
-    if (currentScreen !is AppRoute.DetailRoute) {
-        CustomTopAppBar(
-            title = {
-                Text(
-                    text = currentScreen.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            actions = {
-                currentScreen.menuActions.forEach { menuAction ->
-                    Timber.d("MenuItem $menuAction")
-                    IconButton(onClick = {
-                        when (menuAction) {
-                            is MenuAction.OpenInBrowser -> {
-                                menuAction.onClick.invoke((currentScreen as AppRoute.DetailRoute).item)
-                            }
-                            is MenuAction.Period -> menuAction.onClick.invoke()
+    CustomTopAppBar(
+        title = {
+            Text(
+                text = currentScreen.title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        actions = {
+            currentScreen.menuActions.forEach { menuAction ->
+                Timber.d("MenuItem $menuAction")
+                IconButton(onClick = {
+                    when (menuAction) {
+                        is MenuAction.OpenInBrowser -> {
+                            menuAction.onClick.invoke((currentScreen as NestedRoute.DetailRoute).item)
                         }
-                    }) {
-                        Icon(menuAction.icon)
+                        is MenuAction.Period -> menuAction.onClick.invoke()
                     }
+                }) {
+                    Icon(menuAction.icon)
                 }
-            },
-            backgroundColor = MaterialTheme.colors.surface,
-            modifier = Modifier.statusBarsPadding()
-        )
-    }
+            }
+        },
+        backgroundColor = MaterialTheme.colors.surface,
+        modifier = Modifier.statusBarsPadding()
+    )
 }
 
 @Composable
-fun AppContent(
+fun MainRouteContent(
     currentScreen: AppRoute,
     model: MainViewModel,
     chartsModel: ChartsViewModel,
@@ -68,26 +68,26 @@ fun AppContent(
     localViewModel: LocalViewModel,
     searchViewModel: SearchViewModel,
     actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit,
+    errorHandler: @Composable() (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
     Crossfade(currentScreen) { screen ->
         when (screen) {
-            is AppRoute.ChartRoute -> ChartScreen(
+            is MainRoute.ChartRoute -> ChartScreen(
                 model = chartsModel,
                 actionHandler = actionHandler,
                 errorHandler = errorHandler,
                 modifier = modifier,
             )
-            is AppRoute.LocalRoute -> LocalScreen(
+            is MainRoute.LocalRoute -> LocalScreen(
                 localViewModel = localViewModel,
                 actionHandler = actionHandler,
                 errorHandler = errorHandler,
                 modifier = modifier,
             )
-            is AppRoute.ProfileRoute -> {
+            is MainRoute.ProfileRoute -> {
                 when (sessionStatus) {
                     is SessionState.LoggedOut -> LoginScreen(ContextAmbient.current)
                     is SessionState.LoggedIn -> {
@@ -100,8 +100,9 @@ fun AppContent(
                     }
                 }
             }
-            is AppRoute.SearchRoute -> SearchScreen(searchViewModel, actionHandler, errorHandler, modifier)
-            is AppRoute.DetailRoute -> {
+            is MainRoute.SearchRoute -> SearchScreen(searchViewModel, actionHandler, errorHandler, modifier)
+            is MainRoute.SettingsRoute -> SettingsScreen(modifier = modifier)
+            is NestedRoute.DetailRoute -> {
                 detailsViewModel.updateEntry(screen.item)
                 DetailScreen(
                     model = detailsViewModel,
@@ -110,7 +111,6 @@ fun AppContent(
                     modifier = modifier,
                 )
             }
-            is AppRoute.SettingsRoute -> SettingsScreen(modifier = modifier)
         }
     }
 }

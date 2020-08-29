@@ -15,21 +15,17 @@ fun BottomNavigationBar(
     currentScreen: AppRoute,
     onDestinationSelected: (AppRoute) -> Unit
 ) {
-    if (currentScreen !is AppRoute.DetailRoute) {
-        CustomBottomNavigation(backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
-            .navigationBarsPadding()) {
-            items.forEach { screen ->
-                BottomNavigationItem(
-                    icon = {
-                        Icon(screen.icon)
-                    },
-                    label = {
-                        Text(text = screen.title)
-                    },
-                    selected = currentScreen::class == screen::class,
-                    onSelect = { onDestinationSelected.invoke(screen) }
-                )
-            }
+    CustomBottomNavigation(
+        backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
+            .navigationBarsPadding()
+    ) {
+        items.forEach { screen ->
+            BottomNavigationItem(
+                icon = { Icon(screen.icon) },
+                label = { Text(text = screen.title) },
+                selected = currentScreen::class == screen::class,
+                onSelect = { onDestinationSelected.invoke(screen) }
+            )
         }
     }
 }

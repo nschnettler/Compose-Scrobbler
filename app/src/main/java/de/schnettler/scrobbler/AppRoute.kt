@@ -10,26 +10,36 @@ import androidx.compose.ui.graphics.vector.VectorAsset
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.util.MenuAction
 
-sealed class AppRoute(
-    val title: String,
-    val icon: VectorAsset,
-    val menuActions: List<MenuAction> = listOf()
-) {
-    object ChartRoute : AppRoute("Charts", Icons.Rounded.BarChart)
-    object LocalRoute : AppRoute("History", Icons.Rounded.History)
-    class ProfileRoute(onFilterClicked: () -> Unit) : AppRoute(
+interface AppRoute {
+    val title: String
+    val icon: VectorAsset
+    val menuActions: List<MenuAction>
+}
+
+sealed class MainRoute(
+    override val title: String,
+    override val icon: VectorAsset,
+    override val menuActions: List<MenuAction> = listOf()
+): AppRoute {
+    object ChartRoute : MainRoute(title = "Charts", icon = Icons.Rounded.BarChart)
+    object LocalRoute : MainRoute("History", Icons.Rounded.History)
+    class ProfileRoute(onFilterClicked: () -> Unit) : MainRoute(
         title = "Profile",
         icon = Icons.Outlined.AccountCircle,
         menuActions = listOf(MenuAction.Period(onFilterClicked))
     )
+    object SearchRoute : MainRoute("Search", Icons.Rounded.Search)
+    object SettingsRoute : MainRoute("Settings", Icons.Outlined.Settings)
+}
 
-    class DetailRoute(val item: LastFmEntity, onOpenInBrowser: (LastFmEntity) -> Unit) : AppRoute(
+sealed class NestedRoute(
+    override val title: String,
+    override val icon: VectorAsset,
+    override val menuActions: List<MenuAction> = listOf()
+) : AppRoute {
+    class DetailRoute(val item: LastFmEntity, onOpenInBrowser: (LastFmEntity) -> Unit) : NestedRoute(
         title = item.name,
         icon = Icons.Outlined.AccountCircle,
         menuActions = listOf(MenuAction.OpenInBrowser(onClick = onOpenInBrowser))
     )
-
-    object SearchRoute : AppRoute("Search", Icons.Rounded.Search)
-
-    object SettingsRoute : AppRoute("Settings", Icons.Outlined.Settings)
 }
