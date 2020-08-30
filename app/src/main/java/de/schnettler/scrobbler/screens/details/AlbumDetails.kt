@@ -33,6 +33,7 @@ import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.fromHtmlLastFm
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
+import de.schnettler.scrobbler.util.statusBarsHeight
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @OptIn(ExperimentalLayout::class)
@@ -44,6 +45,7 @@ fun AlbumDetailScreen(
 ) {
     val (album, stats, info) = albumDetails
     ScrollableColumn(modifier = modifier) {
+        Spacer(modifier = Modifier.statusBarsHeight())
         Row(modifier = Modifier.padding(16.dp)) {
             AlbumArtwork(url = album.imageUrl)
             Spacer(modifier = Modifier.preferredWidth(16.dp))

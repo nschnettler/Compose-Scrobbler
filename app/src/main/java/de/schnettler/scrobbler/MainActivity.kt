@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -23,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
-import de.schnettler.scrobbler.screens.AppContent
+import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
@@ -62,16 +64,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
-        AppRoute.ChartRoute,
-        AppRoute.LocalRoute,
-        AppRoute.SearchRoute,
-        AppRoute.ProfileRoute(onFilterClicked = {
+        MainRoute.ChartRoute,
+        MainRoute.LocalRoute,
+        MainRoute.SearchRoute,
+        MainRoute.ProfileRoute(onFilterClicked = {
             userViewModel.showDialog(true)
         }),
-        AppRoute.SettingsRoute
+        MainRoute.SettingsRoute
     )
 
-    private val startScreen: AppRoute = AppRoute.LocalRoute
+    private val startScreen: AppRoute = MainRoute.LocalRoute
 
     @Inject
     lateinit var sharedPrefs: FlowSharedPreferences
@@ -88,39 +90,38 @@ class MainActivity : AppCompatActivity() {
                     ProvideDisplayInsets {
                         Router(start = startScreen) { currentRoute ->
                             onListingClicked = {
-                                this.push(
-                                    AppRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser)
-                                )
+                                this.push(NestedRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
                             }
 
-                            val snackbarHostState = remember { SnackbarHostState() }
+                            val snackHost = remember { SnackbarHostState() }
 
-                            Scaffold(
-                                scaffoldState = rememberScaffoldState(snackbarHostState = snackbarHostState),
-                                topBar = { ToolBar(currentScreen = currentRoute.data) },
-                                bodyContent = {
-                                    AppContent(
-                                        currentScreen = currentRoute.data,
-                                        model = model,
-                                        chartsModel = chartsModel,
-                                        detailsViewModel = detailsViewModel,
-                                        userViewModel = userViewModel,
-                                        localViewModel = localViewModel,
-                                        searchViewModel = searchViewModel,
-                                        actionHandler = ::handleAction,
-                                        errorHandler = { error ->
-                                            handleError(host = snackbarHostState, error = error)
-                                        },
-                                        modifier = Modifier.padding(it)
-                                    )
-                                },
-                                bottomBar = {
-                                    BottomNavigationBar(
-                                        items = bottomNavDestinations,
-                                        currentScreen = currentRoute.data
-                                    ) { newScreen -> replace(newScreen) }
+                            Crossfade(currentRoute.data) { screen ->
+                                when (screen) {
+                                    is NestedRoute -> {
+                                        Scaffold(
+                                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                                            bodyContent = {
+                                                Content(screen = currentRoute.data, host = snackHost, innerPadding = it)
+                                            },
+                                        )
+                                    }
+                                    is MainRoute -> {
+                                        Scaffold(
+                                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                                            topBar = { ToolBar(currentScreen = currentRoute.data) },
+                                            bodyContent = {
+                                                Content(screen = currentRoute.data, host = snackHost, innerPadding = it)
+                                            },
+                                            bottomBar = {
+                                                BottomNavigationBar(
+                                                    items = bottomNavDestinations,
+                                                    currentScreen = currentRoute.data
+                                                ) { newScreen -> replace(newScreen) }
+                                            }
+                                        )
+                                    }
                                 }
-                            )
+                            }
                         }
                     }
                 }
@@ -128,11 +129,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    private fun Content(screen: AppRoute, host: SnackbarHostState, innerPadding: InnerPadding) {
+        MainRouteContent(
+            currentScreen = screen,
+            model = model,
+            chartsModel = chartsModel,
+            userViewModel = userViewModel,
+            localViewModel = localViewModel,
+            searchViewModel = searchViewModel,
+            detailsViewModel = detailsViewModel,
+            actionHandler = ::handleAction,
+            errorHandler = { error ->
+                handleError(host = host, error = error)
+            },
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+
     private fun handleAction(action: UIAction) {
         when (action) {
             is UIAction.ListingSelected -> onListingClicked(action.listing)
             is UIAction.TagSelected -> onTagClicked(action.id)
             is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
+            is UIAction.NavigateUp -> backStackController.pop()
         }
     }
 
