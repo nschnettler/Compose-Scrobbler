@@ -8,7 +8,9 @@ sealed class UIAction {
     class TagSelected(val id: String) : UIAction()
     class ListingSelected(val listing: LastFmEntity) : UIAction()
     class TrackLiked(val track: LastFmEntity.Track, val info: EntityInfo) : UIAction()
+    class OpenInBrowser(val url: String) : UIAction()
     object NavigateUp : UIAction()
+    object ShowTimePeriodDialog : UIAction()
 }
 
 sealed class UIError {

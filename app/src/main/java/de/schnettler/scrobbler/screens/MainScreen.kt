@@ -26,10 +26,9 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
-import timber.log.Timber
 
 @Composable
-fun ToolBar(currentScreen: AppRoute) {
+fun ToolBar(currentScreen: AppRoute, actionHandler: (UIAction) -> Unit) {
     CustomTopAppBar(
         title = {
             Text(
@@ -40,13 +39,10 @@ fun ToolBar(currentScreen: AppRoute) {
         },
         actions = {
             currentScreen.menuActions.forEach { menuAction ->
-                Timber.d("MenuItem $menuAction")
                 IconButton(onClick = {
                     when (menuAction) {
-                        is MenuAction.OpenInBrowser -> {
-                            menuAction.onClick.invoke((currentScreen as NestedRoute.DetailRoute).item)
-                        }
-                        is MenuAction.Period -> menuAction.onClick.invoke()
+                        is MenuAction.OpenInBrowser -> actionHandler(UIAction.OpenInBrowser(menuAction.url))
+                        is MenuAction.Period -> actionHandler(UIAction.ShowTimePeriodDialog)
                     }
                 }) {
                     Icon(menuAction.icon)

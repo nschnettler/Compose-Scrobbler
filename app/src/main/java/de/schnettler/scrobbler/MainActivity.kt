@@ -52,15 +52,6 @@ class MainActivity : AppCompatActivity() {
     private val localViewModel: LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
 
-    private val onOpenInBrowser: (LastFmEntity) -> Unit = {
-        openUrlInCustomTab(it.url)
-    }
-
-    private val onTagClicked: (String) -> Unit = { tag ->
-        val url = "https://www.last.fm/tag/$tag"
-        openUrlInCustomTab(url)
-    }
-
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
     private val bottomNavDestinations = listOf(
@@ -107,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                                 is MainRoute -> {
                                     Scaffold(
                                         scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        topBar = { ToolBar(currentScreen = screen) },
+                                        topBar = { ToolBar(currentScreen = screen, actionHandler = ::handleAction) },
                                         bodyContent = {
                                             Content(screen = screen, host = snackHost, innerPadding = it)
                                         },
@@ -149,9 +140,11 @@ class MainActivity : AppCompatActivity() {
     private fun handleAction(action: UIAction) {
         when (action) {
             is UIAction.ListingSelected -> onListingClicked(action.listing)
-            is UIAction.TagSelected -> onTagClicked(action.id)
+            is UIAction.TagSelected -> openUrlInCustomTab("https://www.last.fm/tag/${action.id}")
             is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
             is UIAction.NavigateUp -> onBackPressed()
+            is UIAction.OpenInBrowser -> openUrlInCustomTab(action.url)
+            is UIAction.ShowTimePeriodDialog -> userViewModel.showDialog(true)
         }
     }
 

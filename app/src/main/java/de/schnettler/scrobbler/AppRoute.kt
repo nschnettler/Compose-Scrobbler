@@ -25,7 +25,11 @@ sealed class MainRoute(
 ) : AppRoute, Parcelable {
     @Parcelize object ChartRoute : MainRoute(title = "Charts", icon = Icons.Rounded.BarChart)
     @Parcelize object LocalRoute : MainRoute("History", Icons.Rounded.History)
-    @Parcelize object ProfileRoute : MainRoute(title = "Profile", icon = Icons.Outlined.AccountCircle)
+    @Parcelize object ProfileRoute : MainRoute(
+        title = "Profile",
+        icon = Icons.Outlined.AccountCircle,
+        menuActions = listOf(MenuAction.Period),
+    )
     @Parcelize object SearchRoute : MainRoute("Search", Icons.Rounded.Search)
     @Parcelize object SettingsRoute : MainRoute("Settings", Icons.Outlined.Settings)
 }
@@ -35,9 +39,9 @@ sealed class NestedRoute(
     override val icon: VectorAsset,
     override val menuActions: List<MenuAction> = listOf()
 ) : AppRoute {
-    @Parcelize class DetailRoute(val item: LastFmEntity, /*onOpenInBrowser: (LastFmEntity) -> Unit*/) : NestedRoute(
+    @Parcelize class DetailRoute(val item: LastFmEntity) : NestedRoute(
         title = item.name,
         icon = Icons.Outlined.AccountCircle,
-//        menuActions = listOf(MenuAction.OpenInBrowser(onClick = onOpenInBrowser))
+        menuActions = listOf(MenuAction.OpenInBrowser(item.url))
     )
 }
