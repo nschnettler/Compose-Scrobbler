@@ -98,7 +98,6 @@ dependencies {
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("com.github.mvarnagiris.compose-navigation", "navigation", "_")
     coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
     // Testing

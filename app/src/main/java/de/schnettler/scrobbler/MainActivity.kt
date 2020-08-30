@@ -15,11 +15,10 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.launchInComposition
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
-import com.koduok.compose.navigation.Router
-import com.koduok.compose.navigation.core.backStackController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
@@ -28,6 +27,7 @@ import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
+import de.schnettler.scrobbler.util.Navigator
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -67,13 +67,9 @@ class MainActivity : AppCompatActivity() {
         MainRoute.ChartRoute,
         MainRoute.LocalRoute,
         MainRoute.SearchRoute,
-        MainRoute.ProfileRoute(onFilterClicked = {
-            userViewModel.showDialog(true)
-        }),
+        MainRoute.ProfileRoute,
         MainRoute.SettingsRoute
     )
-
-    private val startScreen: AppRoute = MainRoute.LocalRoute
 
     @Inject
     lateinit var sharedPrefs: FlowSharedPreferences
@@ -88,38 +84,40 @@ class MainActivity : AppCompatActivity() {
             ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
                     ProvideDisplayInsets {
-                        Router(start = startScreen) { currentRoute ->
+                        val navigator: Navigator<AppRoute> = rememberSavedInstanceState(
+                            saver = Navigator.saver(onBackPressedDispatcher)
+                        ) {
+                            Navigator(MainRoute.LocalRoute, onBackPressedDispatcher)
+                        }
+                        val snackHost = remember { SnackbarHostState() }
+
+                        Crossfade(current = navigator.current) { screen ->
                             onListingClicked = {
-                                this.push(NestedRoute.DetailRoute(item = it, onOpenInBrowser = onOpenInBrowser))
+                                navigator.navigate(NestedRoute.DetailRoute(it))
                             }
-
-                            val snackHost = remember { SnackbarHostState() }
-
-                            Crossfade(currentRoute.data) { screen ->
-                                when (screen) {
-                                    is NestedRoute -> {
-                                        Scaffold(
-                                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                            bodyContent = {
-                                                Content(screen = currentRoute.data, host = snackHost, innerPadding = it)
-                                            },
-                                        )
-                                    }
-                                    is MainRoute -> {
-                                        Scaffold(
-                                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                            topBar = { ToolBar(currentScreen = currentRoute.data) },
-                                            bodyContent = {
-                                                Content(screen = currentRoute.data, host = snackHost, innerPadding = it)
-                                            },
-                                            bottomBar = {
-                                                BottomNavigationBar(
-                                                    items = bottomNavDestinations,
-                                                    currentScreen = currentRoute.data
-                                                ) { newScreen -> replace(newScreen) }
-                                            }
-                                        )
-                                    }
+                            when (screen) {
+                                is NestedRoute -> {
+                                    Scaffold(
+                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                                        bodyContent = {
+                                            Content(screen = screen, host = snackHost, innerPadding = it)
+                                        },
+                                    )
+                                }
+                                is MainRoute -> {
+                                    Scaffold(
+                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                                        topBar = { ToolBar(currentScreen = screen) },
+                                        bodyContent = {
+                                            Content(screen = screen, host = snackHost, innerPadding = it)
+                                        },
+                                        bottomBar = {
+                                            BottomNavigationBar(
+                                                items = bottomNavDestinations,
+                                                currentScreen = screen
+                                            ) { newScreen -> navigator.replace(newScreen as MainRoute) }
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -153,7 +151,7 @@ class MainActivity : AppCompatActivity() {
             is UIAction.ListingSelected -> onListingClicked(action.listing)
             is UIAction.TagSelected -> onTagClicked(action.id)
             is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
-            is UIAction.NavigateUp -> backStackController.pop()
+            is UIAction.NavigateUp -> onBackPressed()
         }
     }
 
@@ -182,10 +180,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onBackPressed() {
-        if (!backStackController.pop()) super.onBackPressed()
     }
 
     override fun onNewIntent(intent: Intent?) {

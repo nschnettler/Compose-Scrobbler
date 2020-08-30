@@ -1,9 +1,11 @@
 package de.schnettler.database.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.util.Locale
+import kotlinx.android.parcel.Parcelize
 
 interface BaseEntity
 
@@ -21,8 +23,9 @@ sealed class LastFmEntity(
     @Ignore open val name: String,
     @Ignore open val url: String,
     @Ignore open val imageUrl: String?
-) : BaseEntity {
+) : BaseEntity, Parcelable {
 
+    @Parcelize
     @Entity(tableName = "albums")
     data class Album(
         override val name: String,
@@ -33,6 +36,7 @@ sealed class LastFmEntity(
         override val imageUrl: String? = null
     ) : LastFmEntity(id, name, url, imageUrl)
 
+    @Parcelize
     @Entity(tableName = "artists")
     data class Artist(
         override val name: String,
@@ -41,6 +45,7 @@ sealed class LastFmEntity(
         override val imageUrl: String? = null
     ) : LastFmEntity(id, name, url, imageUrl)
 
+    @Parcelize
     @Entity(tableName = "tracks")
     data class Track(
         override val name: String,

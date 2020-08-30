@@ -34,7 +34,7 @@ class DetailViewModel @ViewModelInject constructor(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             entry.filterNotNull().collectLatest { listing ->
                 when (listing) {
                     is Artist -> state.streamFrom(repo.artistStore, listing)
