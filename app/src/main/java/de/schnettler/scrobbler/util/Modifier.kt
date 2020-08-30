@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import kotlin.math.roundToInt
 
-
 fun Modifier.offset(getOffset: (IntSize) -> Offset) = then(OffsetModifier(getOffset))
 
 private data class OffsetModifier(

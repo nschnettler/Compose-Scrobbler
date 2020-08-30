@@ -8,7 +8,7 @@ sealed class UIAction {
     class TagSelected(val id: String) : UIAction()
     class ListingSelected(val listing: LastFmEntity) : UIAction()
     class TrackLiked(val track: LastFmEntity.Track, val info: EntityInfo) : UIAction()
-    object NavigateUp: UIAction()
+    object NavigateUp : UIAction()
 }
 
 sealed class UIError {

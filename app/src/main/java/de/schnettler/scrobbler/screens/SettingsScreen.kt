@@ -109,7 +109,6 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
         }
 
-
         PreferenceGroup(title = "App Settings") {
             Preference(
                 title = "Notifications",

@@ -41,9 +41,11 @@ import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
 
 @Composable
 fun CollapsingToolbar(
-    imageUrl: String?, title: String,
+    imageUrl: String?,
+    title: String,
     statusBarGuardAlpha: Float = 0.5F,
-    onUp: () -> Unit, content: @Composable () -> Unit
+    onUp: () -> Unit,
+    content: @Composable () -> Unit,
 ) = ConstraintLayout(modifier = Modifier.fillMaxSize()) {
     val (appbar) = createRefs()
     val scrollState = rememberScrollState()

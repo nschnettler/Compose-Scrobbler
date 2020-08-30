@@ -20,7 +20,7 @@ sealed class MainRoute(
     override val title: String,
     override val icon: VectorAsset,
     override val menuActions: List<MenuAction> = listOf()
-): AppRoute {
+) : AppRoute {
     object ChartRoute : MainRoute(title = "Charts", icon = Icons.Rounded.BarChart)
     object LocalRoute : MainRoute("History", Icons.Rounded.History)
     class ProfileRoute(onFilterClicked: () -> Unit) : MainRoute(
