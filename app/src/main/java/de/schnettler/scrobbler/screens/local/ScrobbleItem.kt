@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.HapticFeedBackAmbient
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
@@ -38,6 +40,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
+    val feedback = HapticFeedBackAmbient.current
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {
@@ -62,7 +65,9 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
         },
         icon = { NameListIcon(title = track.name) },
         modifier = Modifier.clickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
-            expanded = !expanded }),
+            expanded = !expanded
+            feedback.performHapticFeedback(HapticFeedbackType.LongPress)
+        }),
         trailing = {
             track.timestampToRelativeTime()?.let {
                 Column(verticalArrangement = Arrangement.Center) {
