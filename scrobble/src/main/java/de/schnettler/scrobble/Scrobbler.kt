@@ -48,12 +48,21 @@ class Scrobbler @Inject constructor(
     }
 
     fun submitScrobble(track: Scrobble) {
+        Timber.d("[Cache] Caching Started")
         val scrobbleThreshold = prefs.getFloat(SCROBBLE_POINT_KEY, SCROBBLE_POINT_DEFAULT).get()
         if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
-            repo.saveTrack(toBeSaved)
-            Timber.d("[Cache] $toBeSaved")
+            Timber.d("[Cache] Saving ${track.name}")
+            scope.launch {
+                val result = repo.saveTrack(toBeSaved)
+                if (result == -1L) {
+                    Timber.d("[Cache] Error while saving ${track.name}")
+                    notificationManager.errorNotification("Couldn't cache ${track.name}")
+                } else {
+                    Timber.d("[Cache] Saved ${track.name}")
+                }
+            }
 
             // 2. Schedule Workmanager Work
             if (prefs.getBoolean(
@@ -62,20 +71,22 @@ class Scrobbler @Inject constructor(
                 repo.scheduleScrobble()
             }
         } else {
-            Timber.d("[Skip] $track")
+            Timber.d("[Cache] Skipped ${track.name}")
         }
     }
 
     fun notifyNowPlaying(track: Scrobble?) {
+        Timber.d("[NowPlaying] NP submission started")
         updateNowPlayingNotification(track)
-        Timber.d("[NowPlaying] $track")
         if (prefs.getBoolean(SUBMIT_NOWPLAYING_KEY, SUBMIT_NOWPLAYING_DEFAULT).get() && track != null) {
             scope.launch {
                 if (authProvider.loggedIn()) {
+                    Timber.d("[NowPlaying] Submitting ${track.name}")
                     val result = repo.submitNowPlaying(track)
                     result.printResult()
                 } else {
-                    Timber.d("NowPlaying submission failed: Not authenticated")
+                    notificationManager.errorNotification("Couldn't submit NP: Unauthenticated")
+                    Timber.d("[NowPlaying] Error: Unauthenticated")
                 }
             }
         }

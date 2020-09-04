@@ -12,7 +12,6 @@ import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.mapping.response.map
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
@@ -23,22 +22,16 @@ import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
 import de.schnettler.repo.work.ScrobbleWorker
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
-    private val scope: ServiceCoroutineScope,
     private val service: PostService,
     private val authProvider: LastFmAuthProvider,
     private val workManager: WorkManager,
     private val prefs: FlowSharedPreferences
 ) {
-    fun saveTrack(track: Scrobble) {
-        scope.launch {
-            localTrackDao.forceInsert(track)
-        }
-    }
+    suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
     suspend fun submitScrobble(track: Scrobble) = service.submitScrobble(
         method = LastFmService.METHOD_SCROBBLE,

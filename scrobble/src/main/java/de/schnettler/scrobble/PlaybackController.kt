@@ -22,13 +22,13 @@ class PlaybackController(
 
             // Track changed
             false -> {
-                Timber.d("[Controller] Track Changed $track")
                 // Save old Track
                 nowPlaying?.let {
                     it.pause()
                     scrobbler.submitScrobble(it)
                 }
                 // Start new Track
+                Timber.d("[Controller] New Track $track")
                 nowPlaying = track
                 if (wasPlaying) {
                     track.play()
