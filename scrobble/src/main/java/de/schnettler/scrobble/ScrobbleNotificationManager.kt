@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 const val NOW_PLAYING_ID = 0
 const val SCROBBLE_ID = 1
+const val ERROR_ID = 2
 
 class ScrobbleNotificationManager @Inject constructor(
     private val context: Service,
@@ -26,6 +27,11 @@ class ScrobbleNotificationManager @Inject constructor(
         createChannel(
             context.getString(R.string.scrobble_notification_channel_id),
             context.getString(R.string.scrobble_notification_channel_name)
+        )
+
+        createChannel(
+            context.getString(R.string.error_notification_channel_id),
+            context.getString(R.string.error_notification_channel_name)
         )
     }
 
@@ -116,6 +122,16 @@ class ScrobbleNotificationManager @Inject constructor(
             description = fullDescription,
             notificationId = SCROBBLE_ID,
             lines = lines
+        )
+    }
+
+    fun errorNotification(text: String) {
+        sendNotification(
+            channelId = R.string.error_notification_channel_id,
+            title = R.string.error_title,
+            description = text,
+            icon = R.drawable.ic_outline_bug_report_24,
+            notificationId = ERROR_ID
         )
     }
 }
