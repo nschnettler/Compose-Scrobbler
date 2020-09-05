@@ -2,29 +2,35 @@ package de.schnettler.scrobble
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
+import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ServiceLifecycleDispatcher
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.repo.di.ServiceCoroutineScope
 import de.schnettler.repo.preferences.PreferenceConstants
 import de.schnettler.repo.util.defaultSharedPrefs
-import kotlinx.coroutines.cancel
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaListenerService : NotificationListenerService(),
-    MediaSessionManager.OnActiveSessionsChangedListener, SharedPreferences.OnSharedPreferenceChangeListener {
+    MediaSessionManager.OnActiveSessionsChangedListener,
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    LifecycleOwner {
+    private val dispatcher = ServiceLifecycleDispatcher(this)
+
     private var controllers: List<MediaController>? = null
     private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> =
         hashMapOf()
     @Inject lateinit var tracker: PlayBackTracker
-    @Inject lateinit var scope: ServiceCoroutineScope
-    lateinit var prefs: SharedPreferences
+    private lateinit var prefs: SharedPreferences
 
     companion object {
         fun isEnabled(context: Context) = NotificationManagerCompat
@@ -33,6 +39,7 @@ class MediaListenerService : NotificationListenerService(),
     }
 
     override fun onCreate() {
+        dispatcher.onServicePreSuperOnCreate()
         super.onCreate()
         prefs = application.defaultSharedPrefs()
         prefs.registerOnSharedPreferenceChangeListener(this)
@@ -42,11 +49,6 @@ class MediaListenerService : NotificationListenerService(),
         manager.addOnActiveSessionsChangedListener(this, componentName)
         Timber.i("Media Listener started")
         onActiveSessionsChanged(manager.getActiveSessions(componentName))
-    }
-
-    override fun onDestroy() {
-        scope.cancel()
-        super.onDestroy()
     }
 
     override fun onActiveSessionsChanged(activeControllers: List<MediaController>?) {
@@ -116,5 +118,25 @@ class MediaListenerService : NotificationListenerService(),
             }
             onActiveSessionsChanged(controllers)
         }
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        return dispatcher.lifecycle
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        dispatcher.onServicePreSuperOnBind()
+        return super.onBind(intent)
+    }
+
+    @Suppress("deprecation")
+    override fun onStart(intent: Intent?, startId: Int) {
+        dispatcher.onServicePreSuperOnStart()
+        super.onStart(intent, startId)
+    }
+
+    override fun onDestroy() {
+        dispatcher.onServicePreSuperOnDestroy()
+        super.onDestroy()
     }
 }

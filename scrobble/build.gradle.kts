@@ -25,6 +25,8 @@ dependencies {
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)
     implementation(Google.dagger.hilt.android)
+    implementation(AndroidX.lifecycle.service)
+    implementation(AndroidX.lifecycle.runtimeKtx)
     kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
 }
