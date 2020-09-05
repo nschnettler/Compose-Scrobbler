@@ -17,6 +17,7 @@ import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION
 import de.schnettler.repo.work.RESULT_TRACKS
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.scrobble.notification.CACHE_ID
 import de.schnettler.scrobble.notification.NOW_PLAYING_ID
 import de.schnettler.scrobble.notification.ScrobbleNotificationManager
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +59,9 @@ class Scrobbler @Inject constructor(
                 if (repo.saveTrack(toBeSaved) == -1L) {
                     Timber.d("[Cache] Error while saving ${track.name}")
                     notificationManager.errorNotification("Couldn't cache ${track.name}")
+                    notificationManager.cancelNotifications(CACHE_ID)
                 } else {
+                    notificationManager.cachedNotification(track)
                     Timber.d("[Cache] Saved ${track.name}")
                 }
             }

@@ -9,5 +9,6 @@
     <string name="np_description">Description</string>
     <string name="scrobble_title">Submitted Scobbles</string>
     <string name="scrobble_description">Description</string>
-    <string name="error_title">Scrobble Error</string>
+    <string name="error_title">Error</string>
+    <string name="cache_title">Cached</string>
 </resources>
