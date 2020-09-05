@@ -17,6 +17,9 @@ import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION
 import de.schnettler.repo.work.RESULT_TRACKS
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
+import de.schnettler.scrobble.notification.NOW_PLAYING_ID
+import de.schnettler.scrobble.notification.ScrobbleNotificationManager
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -25,8 +28,7 @@ class Scrobbler @Inject constructor(
     workManager: WorkManager,
     private val notificationManager: ScrobbleNotificationManager,
     private val repo: ScrobbleRepository,
-    private val scope: ServiceCoroutineScope,
-    private val authProvider: LastFmAuthProvider,
+    private val scope: CoroutineScope,
     private val prefs: FlowSharedPreferences
 ) {
     init {
