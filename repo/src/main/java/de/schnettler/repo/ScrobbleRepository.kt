@@ -10,7 +10,10 @@ import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.PostService
+import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
+import de.schnettler.lastfm.models.ScrobbleResponse
+import de.schnettler.lastfm.models.SingleScrobbleResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.mapping.response.map
@@ -33,52 +36,59 @@ class ScrobbleRepository @Inject constructor(
 ) {
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
-    suspend fun submitScrobble(track: Scrobble) = service.submitScrobble(
-        method = LastFmService.METHOD_SCROBBLE,
-        artist = track.artist,
-        track = track.name,
-        timestamp = track.timeStampString(),
-        album = track.album,
-        duration = track.durationUnix(),
-        sessionKey = authProvider.getSessionKeyOrThrow(),
-        signature = createSignature(
-            mutableMapOf(
-                "method" to LastFmService.METHOD_SCROBBLE,
-                "artist" to track.artist,
-                "track" to track.name,
-                "album" to track.album,
-                "duration" to track.durationUnix(),
-                "timestamp" to track.timeStampString(),
-                "sk" to authProvider.getSessionKeyOrThrow()
+    suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
+        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
+        return service.submitScrobble(
+            method = LastFmService.METHOD_SCROBBLE,
+            artist = track.artist,
+            track = track.name,
+            timestamp = track.timeStampString(),
+            album = track.album,
+            duration = track.durationUnix(),
+            sessionKey = key,
+            signature = createSignature(
+                mutableMapOf(
+                    "method" to LastFmService.METHOD_SCROBBLE,
+                    "artist" to track.artist,
+                    "track" to track.name,
+                    "album" to track.album,
+                    "duration" to track.durationUnix(),
+                    "timestamp" to track.timeStampString(),
+                    "sk" to key
+                )
             )
-        )
-    ).map()
+        ).map()
+    }
 
-    suspend fun submitNowPlaying(track: Scrobble) = service.submitNowPlaying(
-        method = LastFmService.METHOD_NOWPLAYING,
-        artist = track.artist,
-        track = track.name,
-        album = track.album,
-        duration = track.durationUnix(),
-        sessionKey = authProvider.getSessionKeyOrThrow(),
-        signature = createSignature(
-            mutableMapOf(
-                "method" to LastFmService.METHOD_NOWPLAYING,
-                "artist" to track.artist,
-                "track" to track.name,
-                "album" to track.album,
-                "duration" to track.durationUnix(),
-                "sk" to authProvider.getSessionKeyOrThrow()
+    suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<ScrobbleResponse> {
+        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
+        return service.submitNowPlaying(
+            method = LastFmService.METHOD_NOWPLAYING,
+            artist = track.artist,
+            track = track.name,
+            album = track.album,
+            duration = track.durationUnix(),
+            sessionKey = key,
+            signature = createSignature(
+                mutableMapOf(
+                    "method" to LastFmService.METHOD_NOWPLAYING,
+                    "artist" to track.artist,
+                    "track" to track.name,
+                    "album" to track.album,
+                    "duration" to track.durationUnix(),
+                    "sk" to key
+                )
             )
-        )
-    ).map()
+        ).map()
+    }
 
     suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
 
     suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
+        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
         val result: MutableMap<String, String> = mutableMapOf(
             "method" to LastFmService.METHOD_SCROBBLE,
-            "sk" to authProvider.getSessionKeyOrThrow()
+            "sk" to key
         )
         val artists = tracks.map { it.artist }
         val albums = tracks.map { it.album }
