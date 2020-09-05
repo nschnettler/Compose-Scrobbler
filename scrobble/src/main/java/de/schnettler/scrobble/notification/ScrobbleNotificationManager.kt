@@ -97,7 +97,7 @@ class ScrobbleNotificationManager @Inject constructor(
             .setPriority(priority)
             .setAutoCancel(true)
             .setStyle(NotificationCompat.InboxStyle().also {
-                lines.reversed().forEach { line -> it.addLine(line) }
+                lines.forEach { line -> it.addLine(line) }
             })
         notificationManager.notify(notificationId, builder.build())
     }

@@ -7,7 +7,7 @@
     <string name="error_notification_channel_name" translatable="true">Scrobble Errors</string>
     <string name="np_title">Now playing</string>
     <string name="np_description">Description</string>
-    <string name="scrobble_title">Submitted Scobbles</string>
+    <string name="scrobble_title">Submitted</string>
     <string name="scrobble_description">Description</string>
     <string name="error_title">Error</string>
     <string name="cache_title">Cached</string>
