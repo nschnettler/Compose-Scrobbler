@@ -2,6 +2,7 @@ package de.schnettler.scrobble
 
 import android.media.session.PlaybackState
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobble.util.isPlaying
 import timber.log.Timber
 
 class PlaybackController(
@@ -45,10 +46,10 @@ class PlaybackController(
 
         if (playbackState.isPlaying()) {
             current.play()
-            scrobbler.updateNowPlayingNotification(current)
+            Timber.d("[Controller] Resumed")
         } else {
             current.pause()
-            scrobbler.updateNowPlayingNotification(null)
+            Timber.d("[Controller] Paused")
         }
     }
 }

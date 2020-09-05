@@ -6,9 +6,9 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.di.ServiceCoroutineScope
-import de.schnettler.repo.preferences.PreferenceConstants
+import de.schnettler.repo.mapping.response.LastFmResponse
+import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
+import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
@@ -50,15 +50,12 @@ class Scrobbler @Inject constructor(
     }
 
     fun submitScrobble(track: Scrobble) {
-        Timber.d("[Cache] Caching Started")
         val scrobbleThreshold = prefs.getFloat(SCROBBLE_POINT_KEY, SCROBBLE_POINT_DEFAULT).get()
         if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
-            Timber.d("[Cache] Saving ${track.name}")
             scope.launch {
-                val result = repo.saveTrack(toBeSaved)
-                if (result == -1L) {
+                if (repo.saveTrack(toBeSaved) == -1L) {
                     Timber.d("[Cache] Error while saving ${track.name}")
                     notificationManager.errorNotification("Couldn't cache ${track.name}")
                 } else {
@@ -67,38 +64,28 @@ class Scrobbler @Inject constructor(
             }
 
             // 2. Schedule Workmanager Work
-            if (prefs.getBoolean(
-                    PreferenceConstants.AUTO_SCROBBLE_KEY, PreferenceConstants.AUTO_SCROBBLE_DEFAULT
-                ).get()) {
-                repo.scheduleScrobble()
-            }
+            if (prefs.getBoolean(AUTO_SCROBBLE_KEY, AUTO_SCROBBLE_DEFAULT).get()) { repo.scheduleScrobble() }
         } else {
             Timber.d("[Cache] Skipped ${track.name}")
         }
     }
 
     fun notifyNowPlaying(track: Scrobble?) {
-        Timber.d("[NowPlaying] NP submission started")
-        updateNowPlayingNotification(track)
         if (prefs.getBoolean(SUBMIT_NOWPLAYING_KEY, SUBMIT_NOWPLAYING_DEFAULT).get() && track != null) {
             scope.launch {
-                if (authProvider.loggedIn()) {
-                    Timber.d("[NowPlaying] Submitting ${track.name}")
-                    val result = repo.submitNowPlaying(track)
-                    result.printResult()
-                } else {
-                    notificationManager.errorNotification("Couldn't submit NP: Unauthenticated")
-                    Timber.d("[NowPlaying] Error: Unauthenticated")
+                when (val result = repo.submitNowPlaying(track)) {
+                    is LastFmResponse.SUCCESS -> {
+                        notificationManager.updateNowPlayingNotification(track)
+                        Timber.d("[NowPlaying] Submitted ${track.name}")
+                    }
+                    is LastFmResponse.ERROR -> {
+                        val error = result.error?.title
+                        notificationManager.errorNotification("Couldn't submit NP: $error")
+                        notificationManager.cancelNotifications(NOW_PLAYING_ID)
+                        Timber.d("[NowPlaying] Submission Error: $error")
+                    }
                 }
             }
-        }
-    }
-
-    fun updateNowPlayingNotification(current: Scrobble?) {
-        if (current == null) {
-            notificationManager.cancelNotifications(NOW_PLAYING_ID)
-        } else {
-            notificationManager.updateNowPlayingNotification(current)
         }
     }
 }
