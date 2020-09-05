@@ -1,5 +1,6 @@
 package de.schnettler.database.models
 
+import android.media.MediaMetadata
 import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
@@ -65,6 +66,26 @@ data class Scrobble(
         artist = artist,
         album = album
     )
+
+    companion object {
+        fun fromMetadata(metadata: MediaMetadata, packageName: String): Scrobble {
+            val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()
+            val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(
+                MediaMetadata
+                    .METADATA_KEY_ALBUM_ARTIST
+            )) ?: "").toString()
+            val album = (metadata.getText(MediaMetadata.METADATA_KEY_ALBUM) ?: "").toString()
+            val duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION)
+            return Scrobble(
+                name = title,
+                artist = artist,
+                album = album,
+                duration = duration,
+                playedBy = packageName
+            )
+        }
+    }
+
 }
 
 enum class ScrobbleStatus {
