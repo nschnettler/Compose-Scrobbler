@@ -1,4 +1,4 @@
-package de.schnettler.scrobble
+package de.schnettler.scrobble.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager.IMPORTANCE_LOW
@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobble.R
 import javax.inject.Inject
 
 const val NOW_PLAYING_ID = 0
@@ -55,12 +56,17 @@ class ScrobbleNotificationManager @Inject constructor(
         description: String,
         @DrawableRes icon: Int = R.drawable.ic_outline_album_24,
         priority: Int = NotificationCompat.PRIORITY_LOW,
-        notificationId: Int
+        notificationId: Int,
+        timeout: Long = -1
     ) {
         val builder = NotificationCompat.Builder(
             context,
             context.getString(channelId)
-        )
+        ).apply {
+            if (timeout > 0) {
+                setTimeoutAfter(timeout)
+            }
+        }
             .setSmallIcon(icon)
             .setContentTitle(context.getString(title))
             .setContentText(description)
@@ -107,7 +113,8 @@ class ScrobbleNotificationManager @Inject constructor(
             channelId = R.string.np_notification_channel_id,
             title = R.string.np_notification_channel_name,
             description = "${track.artist} - ${track.name}",
-            notificationId = NOW_PLAYING_ID
+            notificationId = NOW_PLAYING_ID,
+            timeout = track.duration
         )
     }
 
