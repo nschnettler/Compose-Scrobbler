@@ -37,7 +37,7 @@ class ChartRepositoryTest : DatabaseTest() {
             expect(first).isA<StoreResponse.Data<Any>>()
             expect(first.dataOrNull()).toBe(emptyList())
 
-            expect(expectItem()).isA<StoreResponse.Loading>()
+            expect(expectItem()).isA<StoreResponse.Loading<Any>>()
 
             val third = expectItem()
             expect(third).isA<StoreResponse.Data<Any>>()
