@@ -21,3 +21,9 @@ allprojects {
         kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
+
+tasks {
+    val clean by registering(Delete::class) {
+        delete(buildDir)
+    }
+}
