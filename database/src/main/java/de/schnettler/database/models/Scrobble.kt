@@ -85,7 +85,6 @@ data class Scrobble(
             )
         }
     }
-
 }
 
 enum class ScrobbleStatus {
