@@ -16,21 +16,7 @@ class PlayBackTracker @Inject constructor(
         }
 
     fun onMetadataChanged(packageName: String, metadata: MediaMetadata) {
-        val title = (metadata.getText(MediaMetadata.METADATA_KEY_TITLE) ?: "").toString()
-        val artist = ((metadata.getText(MediaMetadata.METADATA_KEY_ARTIST) ?: metadata.getText(
-            MediaMetadata
-                .METADATA_KEY_ALBUM_ARTIST
-        )) ?: "").toString()
-        val album = (metadata.getText(MediaMetadata.METADATA_KEY_ALBUM) ?: "").toString()
-        val duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION)
-        val track = Scrobble(
-            name = title,
-            artist = artist,
-            album = album,
-            duration = duration,
-            playedBy = packageName
-        )
-        getPlaybackController(packageName).updateTrack(track)
+        getPlaybackController(packageName).updateTrack(Scrobble.fromMetadata(metadata, packageName))
     }
 
     fun onStateChanged(packageName: String, state: PlaybackState) {

@@ -2,6 +2,7 @@ package de.schnettler.scrobble
 
 import android.media.session.PlaybackState
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobble.util.isPlaying
 import timber.log.Timber
 
 class PlaybackController(
@@ -22,13 +23,13 @@ class PlaybackController(
 
             // Track changed
             false -> {
-                Timber.d("[Controller] Track Changed $track")
                 // Save old Track
                 nowPlaying?.let {
                     it.pause()
                     scrobbler.submitScrobble(it)
                 }
                 // Start new Track
+                Timber.d("[Controller] New Track $track")
                 nowPlaying = track
                 if (wasPlaying) {
                     track.play()
@@ -45,10 +46,10 @@ class PlaybackController(
 
         if (playbackState.isPlaying()) {
             current.play()
-            scrobbler.updateNowPlayingNotification(current)
+            Timber.d("[Controller] Resumed")
         } else {
             current.pause()
-            scrobbler.updateNowPlayingNotification(null)
+            Timber.d("[Controller] Paused")
         }
     }
 }
