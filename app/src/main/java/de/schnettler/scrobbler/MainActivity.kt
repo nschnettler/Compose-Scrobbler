@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -82,11 +81,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val snackHost = remember { SnackbarHostState() }
 
-                        Crossfade(current = navigator.current) { screen ->
+//                        Crossfade(current = navigator.current) { screen ->
                             onListingClicked = {
                                 navigator.navigate(NestedRoute.DetailRoute(it))
                             }
-                            when (screen) {
+                            when (val screen = navigator.current) {
                                 is NestedRoute -> {
                                     Scaffold(
                                         scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
@@ -111,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                        }
+//                        }
                     }
                 }
             }
