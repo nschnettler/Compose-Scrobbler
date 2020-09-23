@@ -34,9 +34,6 @@ jobs:
         uses: natiginfo/action-detekt-all@1.10.0
         with:
           args: --fail-fast --config detekt-config.yml
-           
-      - name: Android Lint
-        run: ./gradlew lintDebug
   
   unit-test: 
     name: Unit Tests
