@@ -51,7 +51,7 @@ fun TrackDetailScreen(
                 onClick = {
                     actionHandler(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
                 },
-                Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
+                Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
             ) {
                 if (info.loved) {
                     Icon(asset = Icons.Rounded.Favorite)

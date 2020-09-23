@@ -32,7 +32,7 @@ fun BottomNavigationBar(
                     )
                 },
                 selected = currentScreen::class == screen::class,
-                onSelect = { onDestinationSelected.invoke(screen) }
+                onClick = { onDestinationSelected.invoke(screen) }
             )
         }
     }

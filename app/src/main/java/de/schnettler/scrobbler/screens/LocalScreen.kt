@@ -124,7 +124,7 @@ fun Content(
                 onClick = { localViewModel.scheduleScrobbleSubmission() },
                 icon = { Icon(asset = Icons.Outlined.CloudUpload) },
                 contentColor = Color.White,
-                modifier = Modifier.gravity(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
             )
         }
     }

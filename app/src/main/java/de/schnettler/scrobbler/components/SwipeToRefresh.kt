@@ -31,15 +31,10 @@ fun SwipeToRefreshLayout(
     content: @Composable () -> Unit
 ) {
     val refreshDistance = with(DensityAmbient.current) { RefreshDistance.toPx() }
-    val state = rememberSwipeableState(refreshingState)
-    onCommit(refreshingState) {
-        state.animateTo(refreshingState)
-    }
-    // When complete the swipe-to-refresh, kick off the action
-    onCommit(state.value) {
-        if (state.value) {
-            onRefresh()
-        }
+    val state = rememberSwipeableState(refreshingState) { newValue ->
+        // compare both copies of the swipe state before calling onRefresh(). This is a workaround.
+        if (newValue && !refreshingState) onRefresh()
+        true
     }
 
     Stack(
@@ -54,10 +49,17 @@ fun SwipeToRefreshLayout(
         )
     ) {
         content()
-        Box(Modifier.gravity(Alignment.TopCenter).offsetPx(y = state.offset)) {
+        Box(Modifier.align(Alignment.TopCenter).offsetPx(y = state.offset)) {
             if (state.offset.value != -refreshDistance) {
                 refreshIndicator()
             }
+        }
+
+        // TODO (https://issuetracker.google.com/issues/164113834): This state->event trampoline is a
+        //  workaround for a bug in the SwipableState API. Currently, state.value is a duplicated
+        //  source of truth of refreshingState.
+        onCommit(refreshingState) {
+            state.animateTo(refreshingState)
         }
     }
 }

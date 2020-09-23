@@ -30,7 +30,8 @@ fun TitleWithLoadingIndicator(title: String, loading: Boolean) {
             CircularProgressIndicator(
                 color = MaterialTheme.colors.secondary,
                 strokeWidth = 2.dp,
-                modifier = Modifier.size(24.dp).gravity(Alignment.CenterVertically))
+                modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
+            )
         }
     }
 }

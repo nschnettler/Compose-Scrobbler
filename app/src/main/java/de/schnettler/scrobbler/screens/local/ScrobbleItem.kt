@@ -78,7 +78,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                         Surface(
                             color = MaterialTheme.colors.secondary,
                             shape = CircleShape,
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).preferredSize(8.dp).gravity(
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).preferredSize(8.dp).align(
                                 Alignment.End
                             )
                         ) { }
