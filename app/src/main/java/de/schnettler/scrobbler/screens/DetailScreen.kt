@@ -69,8 +69,7 @@ fun DetailScreen(
                     )
                     is AlbumWithStatsAndInfo -> AlbumDetailScreen(
                         albumDetails = details,
-                        actionHandler,
-                        modifier,
+                        actionHandler = actionHandler,
                     )
                 }
             }

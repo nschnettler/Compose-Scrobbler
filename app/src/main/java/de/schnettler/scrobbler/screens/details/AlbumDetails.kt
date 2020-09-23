@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.foundation.Box
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -36,37 +37,43 @@ import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import de.schnettler.scrobbler.util.statusBarsHeight
 import dev.chrisbanes.accompanist.coil.CoilImage
 
-@OptIn(ExperimentalLayout::class)
+@OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class)
 @Composable
 fun AlbumDetailScreen(
     albumDetails: AlbumWithStatsAndInfo,
     actionHandler: (UIAction) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val (album, stats, info) = albumDetails
-    ScrollableColumn(modifier = modifier) {
-        Spacer(modifier = Modifier.statusBarsHeight())
-        Row(modifier = Modifier.padding(16.dp)) {
-            AlbumArtwork(url = album.imageUrl)
-            Spacer(modifier = Modifier.preferredWidth(16.dp))
-            AlbumInfo(
-                name = album.name,
-                artist = album.artist,
-                tracks = albumDetails.tracks.size,
-                duration = albumDetails.getLength(),
-                onArtistSelected = { actionHandler(ListingSelected(it)) }
+    LazyColumn {
+        item { Spacer(modifier = Modifier.statusBarsHeight()) }
+        item {
+            Row(modifier = Modifier.padding(16.dp)) {
+                AlbumArtwork(url = album.imageUrl)
+                Spacer(modifier = Modifier.preferredWidth(16.dp))
+                AlbumInfo(
+                    name = album.name,
+                    artist = album.artist,
+                    tracks = albumDetails.tracks.size,
+                    duration = albumDetails.getLength(),
+                    onArtistSelected = { actionHandler(ListingSelected(it)) }
+                )
+            }
+        }
+        item { albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = { tag ->
+            actionHandler(TagSelected(tag))
+        }) } }
+        item { Spacer(modifier = Modifier.preferredHeight(16.dp)) }
+        item { ListeningStats(item = stats) }
+        item { ExpandingInfoCard(info?.wiki?.fromHtmlLastFm()) }
+        item { Spacer(modifier = Modifier.preferredHeight(16.dp)) }
+        itemsIndexed(albumDetails.tracks) { index, (track, _) ->
+            ListItem(
+                text = { Text(track.name) },
+                icon = { IndexListIconBackground(index = index) },
+                modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
             )
         }
-        albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = { tag -> actionHandler(TagSelected(tag)) }) }
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
-        ListeningStats(item = stats)
-        ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
-        TrackList(
-            tracks = albumDetails.tracks.map { it.entity },
-            onListingSelected = { actionHandler(ListingSelected(it)) }
-        )
-        Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+        item { Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp)) }
     }
 }
 
@@ -82,17 +89,6 @@ fun AlbumArtwork(url: String?) {
                 CoilImage(data = url, modifier = Modifier.fillMaxSize())
             }
         }
-    }
-}
-
-@Composable
-fun TrackList(tracks: List<LastFmEntity.Track>, onListingSelected: (LastFmEntity) -> Unit) {
-    tracks.forEachIndexed { index, track ->
-        ListItem(
-            text = { Text(track.name) },
-            icon = { IndexListIconBackground(index = index) },
-            modifier = Modifier.clickable(onClick = { onListingSelected(track) })
-        )
     }
 }
 
