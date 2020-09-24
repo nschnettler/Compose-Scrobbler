@@ -7,6 +7,7 @@ artist artwork.
 This app is very much work in progress and still in heavy development. Im building this app to learn Android 
 development using best practises and also cutting edge technologies.
 
+<img src="https://raw.githubusercontent.com/Sh4dowSoul/Compose-Scrobbler/main/art/profile.png" width=25% height=25%> <img src="https://raw.githubusercontent.com/Sh4dowSoul/Compose-Scrobbler/main/art/artist.png" width=25% height=25%> <img src="https://raw.githubusercontent.com/Sh4dowSoul/Compose-Scrobbler/main/art/settings.png" width=25% height=25%>
 
 ## Development Setup
 The project requires a version of Android Studio which supports Jetpack Compose. Currently it is supported by Android Studio 4.2 Canary.
