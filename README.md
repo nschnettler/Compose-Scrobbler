@@ -8,6 +8,27 @@ This app is very much work in progress and still in heavy development. Im buildi
 development using best practises and also cutting edge technologies.
 
 
+## Development Setup
+The project requires a version of Android Studio which supports Jetpack Compose. Currently it is supported by Android Studio 4.2 Canary.
+
+### API Keys
+The app uses various APIs to deliver dynamic data. You need to supply your own API keys for [Last.fm](https://www.last.fm/api/account/create) and [Spotify](https://developer.spotify.com/dashboard/applications).
+
+After you obtained the api keys you can provide them to the app by putting the following in the
+`gradle.properties` file in your user home:
+
+```
+# Get these from Last.fm
+lastfmKey = <insert>
+lastFmSecret = <insert>
+
+# Get this from Spotify
+spotifyAuth = <insert>
+```
+
+Linux/Mac: `~/.gradle/gradle.properties`
+Windows: `C:\Users\USERNAME\.gradle`
+
 ##  Architecture
 
 • Dependency Injection: [Dagger Hilt](https://dagger.dev/hilt/)
@@ -15,8 +36,6 @@ development using best practises and also cutting edge technologies.
 • 1 Activity, no Fragments
 
 • UI Toolkit: [Jetpack Compose](https://developer.android.com/jetpack/compose)
-
-• Navigation: [Compose Router](https://github.com/zsoltk/compose-router)
 
 • Image Loading: [Coil](https://github.com/coil-kt/coil)
 
