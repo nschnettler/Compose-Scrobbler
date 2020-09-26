@@ -49,4 +49,7 @@ dependencies {
     androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
     androidTestImplementation(Square.moshi.kotlinReflect)
     androidTestImplementation("app.cash.turbine:turbine:0.2.0")
+
+    testImplementation(Testing.junit4)
+    testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

@@ -38,48 +38,52 @@ class ScrobbleRepository @Inject constructor(
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
         val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
-        return service.submitScrobble(
-            method = LastFmService.METHOD_SCROBBLE,
-            artist = track.artist,
-            track = track.name,
-            timestamp = track.timeStampString(),
-            album = track.album,
-            duration = track.durationUnix(),
-            sessionKey = key,
-            signature = createSignature(
-                mutableMapOf(
-                    "method" to LastFmService.METHOD_SCROBBLE,
-                    "artist" to track.artist,
-                    "track" to track.name,
-                    "album" to track.album,
-                    "duration" to track.durationUnix(),
-                    "timestamp" to track.timeStampString(),
-                    "sk" to key
+        return safePost {
+            service.submitScrobble(
+                method = LastFmService.METHOD_SCROBBLE,
+                artist = track.artist,
+                track = track.name,
+                timestamp = track.timeStampString(),
+                album = track.album,
+                duration = track.durationUnix(),
+                sessionKey = key,
+                signature = createSignature(
+                    mutableMapOf(
+                        "method" to LastFmService.METHOD_SCROBBLE,
+                        "artist" to track.artist,
+                        "track" to track.name,
+                        "album" to track.album,
+                        "duration" to track.durationUnix(),
+                        "timestamp" to track.timeStampString(),
+                        "sk" to key
+                    )
                 )
-            )
-        ).map()
+            ).map()
+        }
     }
 
     suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<ScrobbleResponse> {
         val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
-        return service.submitNowPlaying(
-            method = LastFmService.METHOD_NOWPLAYING,
-            artist = track.artist,
-            track = track.name,
-            album = track.album,
-            duration = track.durationUnix(),
-            sessionKey = key,
-            signature = createSignature(
-                mutableMapOf(
-                    "method" to LastFmService.METHOD_NOWPLAYING,
-                    "artist" to track.artist,
-                    "track" to track.name,
-                    "album" to track.album,
-                    "duration" to track.durationUnix(),
-                    "sk" to key
+        return safePost {
+            service.submitNowPlaying(
+                method = LastFmService.METHOD_NOWPLAYING,
+                artist = track.artist,
+                track = track.name,
+                album = track.album,
+                duration = track.durationUnix(),
+                sessionKey = key,
+                signature = createSignature(
+                    mutableMapOf(
+                        "method" to LastFmService.METHOD_NOWPLAYING,
+                        "artist" to track.artist,
+                        "track" to track.name,
+                        "album" to track.album,
+                        "duration" to track.durationUnix(),
+                        "sk" to key
+                    )
                 )
-            )
-        ).map()
+            ).map()
+        }
     }
 
     suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
@@ -107,7 +111,7 @@ class ScrobbleRepository @Inject constructor(
         result["api_key"] = LastFmService.API_KEY
         result["format"] = "json"
 
-        return service.submitMultipleScrobbles(createBody(result)).map()
+        return safePost { service.submitMultipleScrobbles(createBody(result)).map() }
     }
 
     suspend fun markScrobblesAsSubmitted(tracks: List<Scrobble>) {
@@ -136,5 +140,12 @@ class ScrobbleRepository @Inject constructor(
     }
 }
 
-fun listToMap(list: List<String>, key: String) =
+private fun listToMap(list: List<String>, key: String) =
     list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })
+
+inline fun <T> safePost(post: () -> LastFmResponse<T>): LastFmResponse<T> =
+    try {
+        post()
+    } catch (ex: Exception) {
+        LastFmResponse.EXCEPTION(ex)
+    }

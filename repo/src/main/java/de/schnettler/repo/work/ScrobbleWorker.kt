@@ -11,10 +11,10 @@ import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.GeneralScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.mapping.response.LastFmResponse
+import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import kotlin.math.min
 
 const val SUBMIT_CACHED_SCROBBLES_WORK = "submit_cached_scrobbles"
 const val MAX_SCROBBLE_BATCH_SIZE = 50
@@ -105,6 +105,9 @@ class ScrobbleWorker @WorkerInject constructor(
             }
             is LastFmResponse.ERROR -> {
                 handleError(response.error)
+            }
+            is LastFmResponse.EXCEPTION -> {
+                Result.failure()
             }
         }
     }
