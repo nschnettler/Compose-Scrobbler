@@ -8,10 +8,10 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
-import kotlin.time.ExperimentalTime
 
 class ChartRepositoryTest : DatabaseTest() {
     private lateinit var repo: ChartRepository
@@ -37,7 +37,7 @@ class ChartRepositoryTest : DatabaseTest() {
             expect(first).isA<StoreResponse.Data<Any>>()
             expect(first.dataOrNull()).toBe(emptyList())
 
-            expect(expectItem()).isA<StoreResponse.Loading<Any>>()
+            expect(expectItem()).isA<StoreResponse.Loading>()
 
             val third = expectItem()
             expect(third).isA<StoreResponse.Data<Any>>()
