@@ -143,6 +143,7 @@ class ScrobbleRepository @Inject constructor(
 private fun listToMap(list: List<String>, key: String) =
     list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })
 
+@Suppress("TooGenericExceptionCaught")
 inline fun <T> safePost(post: () -> LastFmResponse<T>): LastFmResponse<T> =
     try {
         post()
