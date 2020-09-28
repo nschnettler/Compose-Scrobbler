@@ -16,8 +16,6 @@ import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
-import de.schnettler.database.migration.MIGRATION_47_48
-import de.schnettler.database.migration.MIGRATION_48_49
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
@@ -27,6 +25,7 @@ import de.schnettler.database.models.Session
 import de.schnettler.database.models.Stats
 import de.schnettler.database.models.TopListEntry
 import de.schnettler.database.models.User
+import dev.matrix.roomigrant.GenerateRoomMigrations
 
 @Database(
     entities = [
@@ -41,10 +40,11 @@ import de.schnettler.database.models.User
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class
-    ], version = 49
+    ], version = 51
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
+@GenerateRoomMigrations
 abstract class AppDatabase : RoomDatabase() {
     abstract fun authDao(): AuthDao
     abstract fun chartDao(): ChartDao
@@ -59,10 +59,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
 }
 
+@Suppress("SpreadOperator")
 fun provideDatabase(context: Context) = Room
     .databaseBuilder(context, AppDatabase::class.java, "lastfm")
-    .addMigrations(
-        MIGRATION_47_48, // Add loved to track
-        MIGRATION_48_49, // Remove loved from track, add loved to Info
-    )
+    .addMigrations(*AppDatabase_Migrations.build())
     .build()

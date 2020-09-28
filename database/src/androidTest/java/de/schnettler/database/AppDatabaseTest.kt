@@ -8,22 +8,15 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.platform.app.InstrumentationRegistry
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import de.schnettler.database.migration.MIGRATION_47_48
-import de.schnettler.database.migration.MIGRATION_48_49
 import de.schnettler.database.models.EntityInfo
+import java.io.IOException
 import org.junit.Rule
 import org.junit.Test
-import java.io.IOException
 
 class AppDatabaseTest {
     private val TEST_DB = "migration-test"
 
     private val converter = TypeConverter()
-
-    private val ALL_MIGRATIONS = arrayOf(
-        MIGRATION_47_48,
-        MIGRATION_48_49
-    )
 
     @get:Rule
     val helper: MigrationTestHelper = MigrationTestHelper(
@@ -49,7 +42,7 @@ class AppDatabaseTest {
             InstrumentationRegistry.getInstrumentation().targetContext,
             AppDatabase::class.java,
                 TEST_DB
-        ).addMigrations(*ALL_MIGRATIONS).build().apply {
+        ).addMigrations(*AppDatabase_Migrations.build()).build().apply {
             openHelper.writableDatabase
             close()
         }
