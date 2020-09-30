@@ -48,6 +48,10 @@ interface LastFmService {
     @Wrapped(path = ["artists", "artist"])
     suspend fun getTopArtists(): List<ChartArtistDto>
 
+    @GET("?method=chart.gettoptracks")
+    @Wrapped(path = ["tracks", "track"])
+    suspend fun getTopTracks(): List<UserTrackDto>
+
     @GET("?method=$METHOD_AUTH_SESSION")
     @Wrapped(path = ["session"])
     suspend fun getSession(
