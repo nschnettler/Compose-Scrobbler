@@ -72,12 +72,15 @@ fun AlbumDetailScreen(
         item { ListeningStats(item = stats) }
         item { ExpandingInfoCard(info?.wiki?.fromHtmlLastFm()) }
         item { Spacer(modifier = Modifier.preferredHeight(16.dp)) }
-        itemsIndexed(albumDetails.tracks) { index, (track, _) ->
-            ListItem(
-                text = { Text(track.name) },
-                icon = { IndexListIconBackground(index = index) },
-                modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
-            )
+        //TODO: Check if itemsIndexed works with empty lists now
+        if (albumDetails.tracks.isNotEmpty()) {
+            itemsIndexed(albumDetails.tracks) { index, (track, _) ->
+                ListItem(
+                    text = { Text(track.name) },
+                    icon = { IndexListIconBackground(index = index) },
+                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
+                )
+            }
         }
         item { Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp)) }
     }
