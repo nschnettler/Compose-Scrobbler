@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
+import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
@@ -56,50 +57,56 @@ fun ChartScreen(
         ))
     }
 
-    if (chartState.isLoading) { LoadingScreen() } else {
+    if (chartState.isLoading) {
+        LoadingScreen()
+    } else {
         SwipeToRefreshLayout(
             refreshingState = chartState.isRefreshing,
             onRefresh = { model.refresh(selectedTab) },
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
-            chartState.currentData?.let { charts ->
-                Column {
-                    TabRow(
-                        selectedTabIndex = selectedTab.index,
-                        backgroundColor = MaterialTheme.colors.surface
-                    ) {
-                        val onSelect: (ChartTab) -> Unit = { selectedTab = it }
-                        ChartsTab(
-                            tab = ChartTab.Artist,
-                            current = selectedTab,
-                            onSelect = onSelect
-                        )
-                        ChartsTab(
-                            tab = ChartTab.Track,
-                            current = selectedTab,
-                            onSelect = onSelect
-                        )
-                    }
-
-                    LazyColumnForIndexed(items = charts, modifier) { index, entry ->
-                        when (entry) {
-                            is TopListArtist -> ChartArtistListItem(
-                                name = entry.value.name,
-                                listener = entry.listing.count,
-                                index = index,
-                                onClicked = { actionHandler(ListingSelected(entry.value)) }
-                            )
-                            is TopListTrack -> ChartTrackListItem(
-                                name = entry.value.name,
-                                artist = entry.value.artist,
-                                index = index,
-                                onClicked = { actionHandler(ListingSelected(entry.value)) }
-                            )
-                        }
-                        CustomDivider()
-                    }
+            Column {
+                TabRow(
+                    selectedTabIndex = selectedTab.index,
+                    backgroundColor = MaterialTheme.colors.surface
+                ) {
+                    val onSelect: (ChartTab) -> Unit = { selectedTab = it }
+                    ChartsTab(
+                        tab = ChartTab.Artist,
+                        current = selectedTab,
+                        onSelect = onSelect
+                    )
+                    ChartsTab(
+                        tab = ChartTab.Track,
+                        current = selectedTab,
+                        onSelect = onSelect
+                    )
                 }
+                ChartList(chartState.currentData, actionHandler, modifier)
             }
+        }
+    }
+}
+
+@Composable
+private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, modifier: Modifier = Modifier) {
+    chartData?.let { charts ->
+        LazyColumnForIndexed(items = charts, modifier) { index, entry ->
+            when (entry) {
+                is TopListArtist -> ChartArtistListItem(
+                    name = entry.value.name,
+                    listener = entry.listing.count,
+                    index = index,
+                    onClicked = { handler(ListingSelected(entry.value)) }
+                )
+                is TopListTrack -> ChartTrackListItem(
+                    name = entry.value.name,
+                    artist = entry.value.artist,
+                    index = index,
+                    onClicked = { handler(ListingSelected(entry.value)) }
+                )
+            }
+            CustomDivider()
         }
     }
 }
