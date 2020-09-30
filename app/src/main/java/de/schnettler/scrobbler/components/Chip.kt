@@ -39,7 +39,7 @@ fun ChipRow(items: List<String>, onChipClicked: (String) -> Unit = {}) {
 
 @OptIn(ExperimentalLayout::class)
 @Composable
-fun SelectableChipRow(items: List<String>, selectedIndex: Int, onSelectionChanged: (Int) -> Unit) {
+fun SelectableChipRow(items: Array<String>, selectedIndex: Int, onSelectionChanged: (Int) -> Unit) {
     Box(
         modifier = Modifier.padding(horizontal = PADDING_16).border(
             width = DIVIDER_SIZE,

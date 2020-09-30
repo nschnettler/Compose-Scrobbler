@@ -28,9 +28,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.User
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.StatsRow
@@ -75,11 +77,13 @@ fun ProfileScreen(
     }
 
     if (states.any { it.isError }) {
-        errorHandler(UIError.ShowErrorSnackbar(
-            state = states.firstOrNull { it.isError },
-            fallbackMessage = "Unable to refresh history",
-            onAction = model::refresh
-        ))
+        errorHandler(
+            UIError.ShowErrorSnackbar(
+                state = states.firstOrNull { it.isError },
+                fallbackMessage = stringResource(id = R.string.error_profile),
+                onAction = model::refresh
+            )
+        )
     }
 
     SwipeToRefreshLayout(
@@ -92,17 +96,17 @@ fun ProfileScreen(
                 UserInfoComponent(it)
             }
             TopListScroller(
-                title = "Top-Künstler (${timePeriod.niceName})",
+                title = "${stringResource(id = R.string.header_topartists)} (${timePeriod.niceName})",
                 state = artistState,
                 actionHandler = actionHandler
             )
             TopListScroller(
-                title = "Top-Alben",
+                title = stringResource(id = R.string.header_topalbums),
                 state = albumState,
                 actionHandler = actionHandler
             )
             TopListScroller(
-                title = "Top-Titel",
+                title = stringResource(id = R.string.header_toptracks),
                 state = trackState,
                 actionHandler = actionHandler
             )
@@ -128,13 +132,16 @@ fun UserInfoComponent(user: User) {
                     Text(text = "${user.name} ${user.countryCode.toFlagEmoji()}")
                 },
                 secondaryText = {
-                    Text(
-                        text = "${user.realname}\nscrobbelt seit ${
-                            DateTimeFormatter.ofLocalizedDate(
-                                FormatStyle.LONG
-                            ).format(date)
-                        }"
-                    )
+                    Column() {
+                        Text(text = user.realname)
+                        Text(
+                            text = "${stringResource(id = R.string.profile_scrobblingsince)} ${
+                                DateTimeFormatter.ofLocalizedDate(
+                                    FormatStyle.LONG
+                                ).format(date)
+                            }"
+                        )
+                    }
                 },
                 icon = {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
@@ -168,7 +175,7 @@ private fun PeriodSelectDialog(
     val radioGroupOptions = TimePeriod.values().asList()
     AlertDialog(
         onDismissRequest = { onDismiss() },
-        title = { Text(text = "Zeitrahmen") },
+        title = { Text(text = stringResource(id = R.string.profile_perioddialog_title)) },
         text = {
             Column {
                 radioGroupOptions.forEach { current ->
@@ -198,7 +205,7 @@ private fun PeriodSelectDialog(
                 onClick = { onSelect(selected) },
                 contentColor = MaterialTheme.colors.secondary
             ) {
-                Text(text = "Select")
+                Text(text = stringResource(id = R.string.profile_perioddialog_select))
             }
         }
     )

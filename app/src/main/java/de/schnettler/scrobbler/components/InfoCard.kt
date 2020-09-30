@@ -15,9 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.theme.AppColor
 
 @Composable
@@ -46,11 +48,12 @@ private fun ExpandingSummary(
     Box(modifier = Modifier.clickable(onClick = { expanded = !expanded }, enabled = expandable)) {
         ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
             Text(
-                text = text ?: "No Bio available",
+                text = text ?: stringResource(id = R.string.bio_unavailable),
                 style = textStyle,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = if (expanded) expandedMaxLines else collapsedMaxLines,
-                modifier = modifier)
+                modifier = modifier
+            )
         }
     }
 }

@@ -23,9 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.MediaListenerService
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
@@ -83,11 +85,13 @@ fun Content(
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
     if (recentTracksState.isError) {
-        errorHandler(UIError.ShowErrorSnackbar(
-            state = recentTracksState,
-            fallbackMessage = "Unable to refresh history",
-            onAction = localViewModel::refresh
-        ))
+        errorHandler(
+            UIError.ShowErrorSnackbar(
+                state = recentTracksState,
+                fallbackMessage = stringResource(id = R.string.error_history),
+                onAction = localViewModel::refresh
+            )
+        )
     }
 
     Stack(modifier = modifier.fillMaxSize()) {
@@ -116,7 +120,7 @@ fun Content(
         }
         if (cachedNumber > 0) {
             ExtendedFloatingActionButton(
-                text = { Text(text = "$cachedNumber Scrobbles") },
+                text = { Text(text = "$cachedNumber ${stringResource(id = R.string.scrobbles)}") },
                 onClick = { localViewModel.scheduleScrobbleSubmission() },
                 icon = { Icon(asset = Icons.Outlined.CloudUpload) },
                 contentColor = Color.White,
@@ -135,8 +139,9 @@ fun Content(
     }
     if (showConfirmDialog) {
         ConfirmDialog(
-            title = "Delete Scrobble",
-            description = "Are you sure you want to delete the selected scrobble?") { confirmed ->
+            title = stringResource(id = R.string.deletedialog_title),
+            description = stringResource(id = R.string.deletedialog_content),
+        ) { confirmed ->
             if (confirmed && selectedTrack.value != null) {
                 selectedTrack.value?.let { localViewModel.deleteScrobble(it) }
             }

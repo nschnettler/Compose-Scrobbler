@@ -20,10 +20,12 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIAction.TagSelected
@@ -59,9 +61,13 @@ fun AlbumDetailScreen(
                 )
             }
         }
-        item { albumDetails.info?.tags?.let { ChipRow(items = it, onChipClicked = { tag ->
-            actionHandler(TagSelected(tag))
-        }) } }
+        item {
+            albumDetails.info?.tags?.let {
+                ChipRow(items = it, onChipClicked = { tag ->
+                    actionHandler(TagSelected(tag))
+                })
+            }
+        }
         item { Spacer(modifier = Modifier.preferredHeight(16.dp)) }
         item { ListeningStats(item = stats) }
         item { ExpandingInfoCard(info?.wiki?.fromHtmlLastFm()) }
@@ -108,7 +114,7 @@ fun AlbumInfo(
             style = MaterialTheme.typography.h5
         )
         Text(
-            text = "von $artist",
+            text = "${stringResource(id = R.string.albumdetails_by)} $artist",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.subtitle1,
@@ -117,7 +123,8 @@ fun AlbumInfo(
             })
         )
         Text(
-            text = "$tracks Songs ⦁ $duration Minuten",
+            text = "$tracks ${stringResource(id = R.string.albumdetails_tracks)} ⦁ " +
+                    "$duration ${stringResource(id = R.string.albumdetails_minutes)}",
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.subtitle2

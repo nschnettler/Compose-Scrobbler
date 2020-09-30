@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.IconButton
@@ -26,16 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.HapticFeedBackAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.milliSecondsToDate
-import de.schnettler.scrobbler.util.milliSecondsToMinSeconds
 import de.schnettler.scrobbler.util.packageNameToAppName
-import kotlin.math.roundToInt
+import de.schnettler.scrobbler.util.runtimeInfo
 
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
@@ -53,7 +55,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                 if (expanded) {
                     if (track.isLocal()) AdditionalInformation(
                         playedBy = track.playedBy,
-                        amountPlayed = track.amountPlayed,
+                        played = track.amountPlayed,
                         duration = track.duration,
                         timestamp = track.timestamp
                     )
@@ -91,19 +93,26 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
 @Composable
 fun AdditionalInformation(
     playedBy: String,
-    amountPlayed: Long,
+    played: Long,
     duration: Long,
     timestamp: Long
 ) {
     Spacer(modifier = Modifier.preferredHeight(8.dp))
-    Text(text = "Source: ${packageNameToAppName(playedBy)}")
-    Text(
-        text = "Runtime: ${milliSecondsToMinSeconds(amountPlayed)}/${
-            milliSecondsToMinSeconds(duration)
-        } (${(amountPlayed.toFloat() / duration * 100).roundToInt()}%)"
+    InformationItem(category = stringResource(id = R.string.scrobble_source), value = packageNameToAppName(playedBy))
+    InformationItem(category = stringResource(id = R.string.scrobble_runtime), value = runtimeInfo(played, duration))
+    InformationItem(category = stringResource(id = R.string.scrobble_timestamp),
+        value = (timestamp * 1000).milliSecondsToDate()
     )
-    Text(text = "Timestamp: ${(timestamp * 1000).milliSecondsToDate()}")
     Spacer(modifier = Modifier.preferredHeight(8.dp))
+}
+
+@Composable
+private fun InformationItem(category: String, value: String) {
+    Row {
+        Text(text = "$category:")
+        Spacer(modifier = Modifier.preferredWidth(4.dp))
+        Text(text = value)
+    }
 }
 
 @Composable

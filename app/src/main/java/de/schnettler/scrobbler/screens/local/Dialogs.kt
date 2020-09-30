@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.copyByState
 
 @Composable
@@ -36,23 +38,23 @@ fun TrackEditDialog(
                     onDismiss()
                 }
             },
-            title = { Text(text = "Scrobble bearbeiten") },
+            title = { Text(text = stringResource(id = R.string.edit_title)) },
             text = {
                 Column {
                     TextField(
                         value = trackState.value,
                         onValueChange = { trackState.value = it },
-                        label = { Text("Song") })
+                        label = { Text(stringResource(id = R.string.edit_track)) })
                     Spacer(modifier = Modifier.preferredHeight(16.dp))
                     TextField(
                         value = artistState.value,
                         onValueChange = { artistState.value = it },
-                        label = { Text("Künstler") })
+                        label = { Text(stringResource(id = R.string.edit_artist)) })
                     Spacer(modifier = Modifier.preferredHeight(16.dp))
                     TextField(
                         value = albumState.value,
                         onValueChange = { albumState.value = it },
-                        label = { Text("Album") })
+                        label = { Text(stringResource(id = R.string.edit_album)) })
                 }
             },
             confirmButton = {
@@ -61,7 +63,7 @@ fun TrackEditDialog(
                     onClick = { onSelect(if (updated != track) updated else null) },
                     contentColor = MaterialTheme.colors.secondary
                 ) {
-                    Text(text = "Select")
+                    Text(text = stringResource(id = R.string.edit_save))
                 }
             },
             dismissButton = {
@@ -71,7 +73,7 @@ fun TrackEditDialog(
                         contentColor()
                     )
                 ) {
-                    Text(text = "Discard")
+                    Text(text = stringResource(id = R.string.edit_cancel))
                 }
             }
         )
@@ -81,7 +83,7 @@ fun TrackEditDialog(
 @Composable
 fun ConfirmDialog(
     title: String,
-    description: String = "Are you sure?",
+    description: String,
     onDismiss: (Boolean) -> Unit
 ) {
     AlertDialog(
@@ -93,7 +95,7 @@ fun ConfirmDialog(
                 onClick = { onDismiss(true) },
                 contentColor = MaterialTheme.colors.secondary
             ) {
-                Text(text = "Confirm")
+                Text(text = stringResource(id = R.string.confirmdialog_confirm))
             }
         },
         dismissButton = {
@@ -101,7 +103,7 @@ fun ConfirmDialog(
                 onClick = { onDismiss(false) },
                 contentColor = EmphasisAmbient.current.medium.applyEmphasis(contentColor())
             ) {
-                Text(text = "Cancel")
+                Text(text = stringResource(id = R.string.confirmdialog_cancel))
             }
         }
     )

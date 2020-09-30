@@ -20,6 +20,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,7 @@ import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
@@ -48,9 +51,10 @@ fun SearchScreen(
     val searchQuery by model.searchQuery.collectAsState()
     val searchInputState = remember { mutableStateOf(TextFieldValue(searchQuery.query)) }
     if (searchResult.isError) {
-        errorHandler(UIError.ShowErrorSnackbar(
+        errorHandler(
+            UIError.ShowErrorSnackbar(
                 state = searchResult,
-                fallbackMessage = "Unable to load search results"
+                fallbackMessage = stringResource(id = R.string.error_search)
             )
         )
     }
@@ -63,7 +67,7 @@ fun SearchScreen(
                     searchInputState.value = it
                     model.updateQuery(it.text)
                 },
-                label = { Text("Search") },
+                label = { Text(stringResource(id = R.string.search_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 imeAction = ImeAction.Search,
                 onImeActionPerformed = { _, controller ->
@@ -73,7 +77,7 @@ fun SearchScreen(
             )
         }
         SelectableChipRow(
-            items = listOf("Alles", "Artist", "Album", "Track"),
+            items = stringArrayResource(id = R.array.search_filter),
             selectedIndex = searchQuery.filter
         ) {
             model.updateFilter(it)
@@ -93,7 +97,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                 ListItem(
                     text = { Text(it.entity.name) },
                     secondaryText = {
-                        Text("${it.stats.listeners.abbreviate()} Listeners")
+                        Text("${it.stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
                     },
                     icon = {
                         PlainListIconBackground {

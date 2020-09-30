@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.components.CollapsingToolbar
@@ -40,11 +42,11 @@ fun ArtistDetailScreen(
     ExpandingInfoCard(info = info?.wiki)
     ListeningStats(item = stats)
     info?.tags?.let { TagCategory(tags = it, actionHandler = actionHandler) }
-    ListTitle(title = "Top Tracks")
+    ListTitle(title = stringResource(id = R.string.header_toptracks))
     TrackListWithStats(tracks = artistInfo.topTracks, actionHandler = actionHandler)
 
     ListingScroller(
-        title = "Top Albums",
+        title = stringResource(id = R.string.header_topalbums),
         content = artistInfo.topAlbums,
         height = 160.dp,
         playsStyle = PlaysStyle.PUBLIC_PLAYS,
@@ -52,7 +54,7 @@ fun ArtistDetailScreen(
     )
 
     ListingScroller(
-        title = "Ähnliche Künstler",
+        title = stringResource(id = R.string.artist_similar),
         content = artistInfo.similarArtists,
         height = 136.dp,
         playsStyle = PlaysStyle.NO_PLAYS,
@@ -68,7 +70,7 @@ fun TrackListWithStats(tracks: List<TrackWithStats>, actionHandler: (UIAction) -
         ListItem(
             text = { Text(track.name) },
             secondaryText = {
-                Text("${stats.listeners.abbreviate()} Hörer")
+                Text("${stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
             },
             icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
             modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })

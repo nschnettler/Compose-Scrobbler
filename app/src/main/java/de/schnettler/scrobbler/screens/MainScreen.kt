@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.scrobbler.AppRoute
 import de.schnettler.scrobbler.MainRoute
@@ -32,7 +33,7 @@ fun ToolBar(currentScreen: AppRoute, actionHandler: (UIAction) -> Unit) {
     CustomTopAppBar(
         title = {
             Text(
-                text = currentScreen.title,
+                text = stringResource(id = currentScreen.title) ,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

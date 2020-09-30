@@ -14,11 +14,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
@@ -43,11 +45,13 @@ fun DetailScreen(
 ) {
     val detailState by model.state.collectAsState()
     if (detailState.isError) {
-        errorHandler(UIError.ShowErrorSnackbar(
-            state = detailState,
-            fallbackMessage = "Unable to refresh details",
-            onAction = model::refresh
-        ))
+        errorHandler(
+            UIError.ShowErrorSnackbar(
+                state = detailState,
+                fallbackMessage = stringResource(id = R.string.error_details),
+                onAction = model::refresh
+            )
+        )
     }
 
     if (detailState.isLoading) { LoadingScreen() } else {
@@ -80,7 +84,7 @@ fun DetailScreen(
 @OptIn(ExperimentalLayout::class)
 @Composable
 fun TagCategory(tags: List<String>, actionHandler: (UIAction) -> Unit) {
-    ListTitle(title = "Tags")
+    ListTitle(title = stringResource(id = R.string.header_tags))
     ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
 }
 
@@ -90,10 +94,10 @@ fun AlbumCategory(
     artistPlaceholder: String,
     actionHandler: (UIAction) -> Unit
 ) {
-    ListTitle(title = "Aus dem Album")
+    ListTitle(title = stringResource(id = R.string.track_sourcealbum))
     ListItem(
         text = {
-            Text(album?.name ?: "Unknown Album")
+            Text(album?.name ?: stringResource(id = R.string.track_unknownalbum))
         },
         secondaryText = {
             Text(album?.artist ?: artistPlaceholder)

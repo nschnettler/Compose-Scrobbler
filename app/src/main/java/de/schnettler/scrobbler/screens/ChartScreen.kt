@@ -15,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
@@ -49,7 +51,7 @@ fun ChartScreen(
     if (chartState.isError) {
         errorHandler(UIError.ShowErrorSnackbar(
             state = chartState,
-            fallbackMessage = "Unable to refresh charts",
+            fallbackMessage = stringResource(id = R.string.error_charts),
             onAction = { model.refresh(selectedTab) }
         ))
     }
@@ -104,12 +106,17 @@ fun ChartScreen(
 
 @Composable
 private fun ChartsTab(tab: ChartTab, current: ChartTab, onSelect: (ChartTab) -> Unit) {
-    Tab(selected = tab == current, onClick = { onSelect(tab) }, text = { Text(text = tab.text) })
+    Tab(selected = tab == current, onClick = { onSelect(tab) }, text = { Text(text = stringResource(id = tab.text)) })
 }
 
 @Composable
 private fun ChartArtistListItem(name: String, listener: Long, index: Int, onClicked: () -> Unit) {
-    RankingListItem(title = name, subtitle = "${listener.abbreviate()} Listener", index = index, onClicked = onClicked)
+    RankingListItem(
+        title = name,
+        subtitle = "${listener.abbreviate()} ${stringResource(id = R.string.stats_listeners)}",
+        index = index,
+        onClicked = onClicked
+    )
 }
 
 @Composable

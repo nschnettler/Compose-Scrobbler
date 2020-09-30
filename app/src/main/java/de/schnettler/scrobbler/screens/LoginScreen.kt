@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import de.schnettler.common.BuildConfig
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.util.AUTH_ENDPOINT
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import timber.log.Timber
@@ -27,7 +29,7 @@ fun LoginScreen(context: Context) {
                  .also { Timber.i(it.toString()) }
            )
         }) {
-            Text(text = "Login")
+            Text(text = stringResource(id = R.string.login_button))
         }
     }
 }
