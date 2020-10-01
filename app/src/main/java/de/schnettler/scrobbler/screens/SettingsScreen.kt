@@ -13,9 +13,11 @@ import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
@@ -34,6 +36,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.util.getMediaBrowserServices
 import kotlin.math.roundToInt
@@ -45,15 +48,21 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     val context = ContextAmbient.current
 
     val mediaServices = mutableStateMapOf<String, String>()
+    val constraints: Map<String, Int> = remember {
+        mapOf(
+            SCROBBLE_CONSTRAINTS_NETWORK to R.string.setting_list_scrobbleconstraints_network,
+            SCROBBLE_CONSTRAINTS_BATTERY to R.string.setting_list_scrobbleconstraints_battery,
+        )
+    }
     val scope = rememberCoroutineScope()
 
     scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
     ScrollableColumn(modifier = modifier) {
-        PreferenceGroup(title = "LastFm Submission") {
+        PreferenceGroup(title = stringResource(id = R.string.setting_group_submission)) {
             SwitchPreference(
-                title = "Auto Scrobble",
-                summary = "Automatically submit scrobbles",
+                title = stringResource(id = R.string.setting_switch_autoscrobble_title),
+                summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
                 key = AUTO_SCROBBLE_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.CloudUpload,
@@ -61,8 +70,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
 
             SwitchPreference(
-                title = "Submit NowPlaying",
-                summary = "Submit nowplaying track to last.fm",
+                title = stringResource(id = R.string.setting_switch_submitnp_title),
+                summary = stringResource(id = R.string.setting_switch_submitnp_description),
                 key = SUBMIT_NOWPLAYING_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.MusicNote,
@@ -70,10 +79,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
         }
 
-        PreferenceGroup(title = "Scrobble Settings") {
+        PreferenceGroup(title = stringResource(id = R.string.settings_group_scrobble)) {
             MultiSelectListPreference(
-                title = "Scrobble Sources",
-                summary = "Select media apps which should be scrobbled",
+                title = stringResource(id = R.string.setting_list_scrobblesource_title),
+                summary = stringResource(id = R.string.setting_list_scrobblesource_description),
                 key = SCROBBLE_SOURCES_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.Speaker,
@@ -81,8 +90,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
 
             SeekBarPreference(
-                title = "Scrobble point",
-                summary = "Set the percentage of playback required for a track to scrobble",
+                title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
+                summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
                 key = SCROBBLE_POINT_KEY,
                 defaultValue = SCROBBLE_POINT_DEFAULT,
                 singleLineTitle = true,
@@ -92,25 +101,21 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 valueRepresentation = { "${(it * 100).roundToInt()} %" }
             )
 
-            val constraints = mapOf(
-                SCROBBLE_CONSTRAINTS_NETWORK to "Unmetered Network",
-                SCROBBLE_CONSTRAINTS_BATTERY to "Battery not low",
-            )
             MultiSelectListPreference(
-                title = "Scrobble Constraints",
-                summary = "Set constraints which need to be met before submitting scrobbles to last.fm",
+                title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
+                summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
                 key = SCROBBLE_CONSTRAINTS_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.SettingsOverscan,
-                entries = constraints,
+                entries = constraints.mapValues { stringResource(id = it.value) },
                 defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
             )
         }
 
-        PreferenceGroup(title = "App Settings") {
+        PreferenceGroup(title = stringResource(id = R.string.setting_group_misc)) {
             Preference(
-                title = "Notifications",
-                summary = "Change notification preferences",
+                title = stringResource(id = R.string.setting_notifications_title),
+                summary = stringResource(id = R.string.setting_notifications_description),
                 singleLineTitle = true,
                 icon = Icons.Outlined.Notifications,
                 onClick = {
@@ -125,8 +130,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
             val prefs = PreferenceAmbient.current
             Preference(
-                title = "Reset Preferences",
-                summary = "Reset app settings to factory state",
+                title = stringResource(id = R.string.setting_reset_title),
+                summary = stringResource(id = R.string.setting_reset_description),
                 singleLineTitle = true,
                 icon = Icons.Outlined.DeleteForever,
                 onClick = {
