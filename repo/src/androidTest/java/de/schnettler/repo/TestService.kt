@@ -40,6 +40,10 @@ class TestService : LastFmService {
         return moshi.parseJsonList(getJsonStringFromFile("topArtists")) ?: emptyList()
     }
 
+    override suspend fun getTopTracks(): List<UserTrackDto> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getSession(token: String, signature: String): SessionDto {
         TODO("Not yet implemented")
     }

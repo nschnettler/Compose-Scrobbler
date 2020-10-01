@@ -19,7 +19,7 @@ class ChartRepositoryTest : DatabaseTest() {
     @Before
     fun setupRepo() {
         service = TestService()
-        repo = ChartRepository(db.chartDao(), db.artistDao(), service)
+        repo = ChartRepository(db.chartDao(), db.artistDao(), db.trackDao(), service)
     }
 
     @OptIn(ExperimentalTime::class)
