@@ -130,7 +130,7 @@ class ScrobbleRepository @Inject constructor(
         val request = OneTimeWorkRequestBuilder<ScrobbleWorker>().setConstraints(constraints).build()
         workManager.enqueueUniqueWork(
             SUBMIT_CACHED_SCROBBLES_WORK,
-            ExistingWorkPolicy.KEEP,
+            ExistingWorkPolicy.REPLACE,
             request
         )
     }
