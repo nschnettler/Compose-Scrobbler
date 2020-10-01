@@ -2,7 +2,6 @@ package de.schnettler.scrobbler.screens
 
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -13,7 +12,8 @@ import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.core.content.ContextCompat.startActivity
@@ -35,21 +35,19 @@ import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.components.CustomDivider
+import de.schnettler.scrobbler.util.getMediaBrowserServices
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
     val context = ContextAmbient.current
 
-    val mediaServices = remember {
-        context.packageManager.queryIntentServices(
-            Intent("android.media.browse.MediaBrowserService"),
-            PackageManager.GET_RESOLVED_FILTER
-        ).mapNotNull { it.serviceInfo }.associateBy({ it.packageName }, {
-            it.loadLabel(context.packageManager).toString()
-        })
-    }
+    val mediaServices = mutableStateMapOf<String, String>()
+    val scope = rememberCoroutineScope()
+
+    scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
     ScrollableColumn(modifier = modifier) {
         PreferenceGroup(title = "LastFm Submission") {
