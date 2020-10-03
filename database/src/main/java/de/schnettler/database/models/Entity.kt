@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 import kotlinx.android.parcel.Parcelize
 
 interface BaseEntity
@@ -33,6 +33,7 @@ sealed class LastFmEntity(
         val artist: String,
         @PrimaryKey
         override val id: String = "album_${name.toLowerCase(Locale.US)}:artist_${artist.toLowerCase(Locale.US)}",
+        val artistId: String = "artist_${artist.toLowerCase(Locale.US)}",
         override val imageUrl: String? = null
     ) : LastFmEntity(id, name, url, imageUrl)
 

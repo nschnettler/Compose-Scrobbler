@@ -40,7 +40,7 @@ import dev.matrix.roomigrant.GenerateRoomMigrations
         RelatedArtistEntry::class,
         Stats::class,
         EntityInfo::class
-    ], version = 51
+    ], version = 52
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
