@@ -5,9 +5,14 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
+@OptIn(ExperimentalTime::class)
 @Suppress("TooManyFunctions")
 @Entity(tableName = "localTracks")
 data class Scrobble(
@@ -25,9 +30,16 @@ data class Scrobble(
 ) {
     @Ignore val id: String = name.toLowerCase(Locale.US)
     @Ignore val url: String = "https://www.last.fm/music/$artist/_/$name"
+
+    val playDuration: Duration
+        get() = amountPlayed.toDuration(DurationUnit.MILLISECONDS)
+    val runtimeDuration: Duration
+        get() = duration.toDuration(DurationUnit.MILLISECONDS)
+    val playPercent: Int
+        get() = (amountPlayed.toFloat() / duration * 100).roundToInt()
+
     private fun playedEnough(threshold: Float) = amountPlayed >= (duration * threshold)
     fun readyToScrobble(threshold: Float) = canBeScrobbled() && playedEnough(threshold) // threshold between 0.5..1
-    fun playPercent() = (amountPlayed.toFloat() / duration * 100).roundToInt()
     fun timeStampString() = timestamp.toString()
     fun durationUnix() = (duration / 1000).toString()
     fun isPlaying() = status == ScrobbleStatus.PLAYING

@@ -25,11 +25,15 @@ import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.util.MenuAction
+import de.schnettler.scrobbler.util.asMinSec
 import de.schnettler.scrobbler.util.fromHtmlLastFm
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImage
+import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class)
+@OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class, ExperimentalTime::class)
 @Composable
 fun AlbumDetailScreen(
     albumDetails: AlbumDetails,
@@ -45,8 +49,8 @@ fun AlbumDetailScreen(
     ) {
         ArtistItem(
             artist = artist ?: LastFmEntity.Artist(album.artist, ""),
-            albumDetails.tracks.size,
-            albumDetails.getLength(),
+            albumDetails.trackNumber,
+            albumDetails.runtime,
             actionHandler
         )
 
@@ -63,9 +67,10 @@ fun AlbumDetailScreen(
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
         ListWithTitle(title = "Tracks", list = albumDetails.tracks) { tracks ->
-            tracks.forEachIndexed { index, (track, _) ->
+            tracks.forEachIndexed { index, (track, info) ->
                 ListItem(
                     text = { Text(track.name) },
+                    secondaryText = { Text(text = info.duration.asMinSec()) },
                     icon = { IndexListIconBackground(index = index) },
                     modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
                 )
@@ -76,11 +81,12 @@ fun AlbumDetailScreen(
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
 private fun ArtistItem(
     artist: LastFmEntity.Artist,
     trackNumber: Int,
-    albumLength: Long,
+    albumLength: Duration,
     actionHandler: (UIAction) -> Unit
 ) {
     ListItem(
@@ -88,7 +94,7 @@ private fun ArtistItem(
         secondaryText = {
             Text(
                 text = "$trackNumber ${stringResource(id = R.string.albumdetails_tracks)} ⦁ " +
-                        "$albumLength ${stringResource(id = R.string.albumdetails_minutes)}"
+                        "${albumLength.inMinutes.roundToInt()} ${stringResource(id = R.string.albumdetails_minutes)}"
             )
         },
         icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "") } },

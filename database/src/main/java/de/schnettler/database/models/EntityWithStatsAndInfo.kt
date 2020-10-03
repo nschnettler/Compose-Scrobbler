@@ -5,7 +5,9 @@ import androidx.room.Ignore
 import androidx.room.Relation
 import de.schnettler.database.models.EntityWithInfo.TrackWithInfo
 import de.schnettler.database.sumByLong
-import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 sealed class EntityWithStatsAndInfo(
     @Ignore open val entity: LastFmEntity,
@@ -20,7 +22,11 @@ sealed class EntityWithStatsAndInfo(
         @Relation(parentColumn = "artistId", entityColumn = "id") val artist: LastFmEntity.Artist?,
     ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore var tracks: List<TrackWithInfo> = listOf()
-        fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info.duration })
+        @OptIn(ExperimentalTime::class)
+        val runtime: kotlin.time.Duration
+            get() = tracks.sumByLong { it.info.durationInSeconds }.toDuration(DurationUnit.SECONDS)
+        val trackNumber: Int
+            get() = tracks.size
     }
 
     data class ArtistWithStatsAndInfo(

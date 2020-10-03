@@ -35,10 +35,13 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.NameListIcon
 import de.schnettler.scrobbler.util.ScrobbleAction
+import de.schnettler.scrobbler.util.asMinSec
 import de.schnettler.scrobbler.util.milliSecondsToDate
 import de.schnettler.scrobbler.util.packageNameToAppName
-import de.schnettler.scrobbler.util.runtimeInfo
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
@@ -55,8 +58,9 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                 if (expanded) {
                     if (track.isLocal()) AdditionalInformation(
                         playedBy = track.playedBy,
-                        played = track.amountPlayed,
-                        duration = track.duration,
+                        played = track.playDuration,
+                        duration = track.runtimeDuration,
+                        playPercent = track.playPercent,
                         timestamp = track.timestamp
                     )
                     else Spacer(modifier = Modifier.preferredHeight(16.dp))
@@ -90,17 +94,23 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     CustomDivider()
 }
 
+@ExperimentalTime
 @Composable
 fun AdditionalInformation(
     playedBy: String,
-    played: Long,
-    duration: Long,
+    played: Duration,
+    duration: Duration,
+    playPercent: Int,
     timestamp: Long
 ) {
     Spacer(modifier = Modifier.preferredHeight(8.dp))
     InformationItem(category = stringResource(id = R.string.scrobble_source), value = packageNameToAppName(playedBy))
-    InformationItem(category = stringResource(id = R.string.scrobble_runtime), value = runtimeInfo(played, duration))
-    InformationItem(category = stringResource(id = R.string.scrobble_timestamp),
+    InformationItem(
+        category = stringResource(id = R.string.scrobble_runtime),
+        value = "${played.asMinSec()}/${duration.asMinSec()} ($playPercent%)"
+    )
+    InformationItem(
+        category = stringResource(id = R.string.scrobble_timestamp),
         value = (timestamp * 1000).milliSecondsToDate()
     )
     Spacer(modifier = Modifier.preferredHeight(8.dp))

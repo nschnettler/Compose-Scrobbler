@@ -5,6 +5,10 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import java.util.*
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 import kotlinx.android.parcel.Parcelize
 
 interface BaseEntity
@@ -13,10 +17,14 @@ interface BaseEntity
 data class EntityInfo(
     @PrimaryKey val id: String,
     val tags: List<String> = listOf(),
-    val duration: Long = 0,
+    val durationInSeconds: Long = 0,
     val wiki: String?,
     val loved: Boolean = false
-)
+) {
+    @OptIn(ExperimentalTime::class)
+    val duration: Duration
+        get() = durationInSeconds.toDuration(DurationUnit.SECONDS)
+}
 
 sealed class LastFmEntity(
     @Ignore open val id: String,
