@@ -4,7 +4,6 @@ import android.icu.text.CompactDecimalFormat
 import android.icu.text.DateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 fun Long.milliSecondsToDate(): String =
     DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault()).format(

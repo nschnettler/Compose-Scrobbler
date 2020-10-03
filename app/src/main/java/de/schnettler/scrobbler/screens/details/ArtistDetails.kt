@@ -62,7 +62,10 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     }
 
     // Albums
-    LazyListWithTitle(title = stringResource(id = R.string.header_topalbums), data = artistInfo.topAlbums,) { (album, stats) ->
+    LazyListWithTitle(
+        title = stringResource(id = R.string.header_topalbums),
+        data = artistInfo.topAlbums
+    ) { (album, stats) ->
         MediaCard(
             name = album.name,
             plays = stats.plays,
@@ -73,7 +76,10 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     }
 
     // Artists
-    LazyListWithTitle(title = stringResource(id = R.string.artist_similar), data = artistInfo.similarArtists) { artist ->
+    LazyListWithTitle(
+        title = stringResource(id = R.string.artist_similar),
+        data = artistInfo.similarArtists
+    ) { artist ->
         MediaCard(
             name = artist.name,
             imageUrl = artist.imageUrl,

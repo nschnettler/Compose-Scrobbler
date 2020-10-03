@@ -14,10 +14,15 @@ fun <T> ListWithTitle(title: String, list: List<T>?, content: @Composable (List<
 }
 
 @Composable
-fun <T> LazyListWithTitle(title: String, data: List<T>?, orientation: Orientation = Orientation.Horizontal, block: @Composable (T) -> Unit) {
+fun <T> LazyListWithTitle(
+    title: String,
+    data: List<T>?,
+    orientation: Orientation = Orientation.Horizontal,
+    block: @Composable (T) -> Unit
+) {
     if (data?.isNotEmpty() == true) {
         ListTitle(title = title)
-        when(orientation) {
+        when (orientation) {
             Orientation.Horizontal -> LazyRowFor(items = data) { item ->
                 block(item)
             }
