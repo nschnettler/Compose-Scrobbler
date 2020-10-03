@@ -20,7 +20,7 @@ import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.CollapsingToolbar
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.IndexListIconBackground
-import de.schnettler.scrobbler.components.ListTitle
+import de.schnettler.scrobbler.components.ListWithTitle
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.Spacer
@@ -100,12 +100,4 @@ private fun ArtistItem(
         icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "") } },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(artist)) })
     )
-}
-
-@Composable
-fun <T> ListWithTitle(title: String, list: List<T>?, content: @Composable (List<T>) -> Unit) {
-    if (list?.isNotEmpty() == true) {
-        ListTitle(title = title)
-        content(list)
-    }
 }

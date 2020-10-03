@@ -18,13 +18,13 @@ fun ListingCardPreview() {
                 url = "Url"
             )
             MediaCard(
-                onEntrySelected = {},
+                onSelect = {},
                 plays = 10,
                 name = artist.name,
                 imageUrl = null
             )
             MediaCard(
-                onEntrySelected = {},
+                onSelect = {},
                 plays = -1,
                 name = artist.name,
                 imageUrl = null
