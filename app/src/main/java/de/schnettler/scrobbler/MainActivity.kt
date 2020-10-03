@@ -4,8 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -38,8 +37,8 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -82,11 +81,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val snackHost = remember { SnackbarHostState() }
 
-                        Crossfade(current = navigator.current) { screen ->
+//                        Crossfade(current = navigator.current) { screen ->
                             onListingClicked = {
                                 navigator.navigate(NestedRoute.DetailRoute(it))
                             }
-                            when (screen) {
+                            when (val screen = navigator.current) {
                                 is NestedRoute -> {
                                     Scaffold(
                                         scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
@@ -111,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-                        }
+//                        }
                     }
                 }
             }
@@ -120,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun Content(screen: AppRoute, host: SnackbarHostState, innerPadding: InnerPadding) {
+    private fun Content(screen: AppRoute, host: SnackbarHostState, innerPadding: PaddingValues) {
         MainRouteContent(
             currentScreen = screen,
             model = model,

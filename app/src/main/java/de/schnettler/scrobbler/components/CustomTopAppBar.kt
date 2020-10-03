@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.ContentGravity
 import androidx.compose.foundation.ProvideTextStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.contentColorFor
 import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -46,14 +46,14 @@ fun CustomTopAppBar(
         if (navigationIcon == null) {
             Spacer(TitleInsetWithoutIcon)
         } else {
-            Row(TitleIconModifier, verticalGravity = ContentGravity.CenterVertically) {
+            Row(TitleIconModifier, verticalAlignment = Alignment.CenterVertically) {
                 ProvideEmphasis(emphasisLevels.high, navigationIcon)
             }
         }
 
         Row(
             Modifier.fillMaxHeight().weight(1f),
-            verticalGravity = ContentGravity.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             ProvideTextStyle(value = MaterialTheme.typography.h6) {
                 ProvideEmphasis(emphasisLevels.high, title)
@@ -64,7 +64,7 @@ fun CustomTopAppBar(
             Row(
                 Modifier.fillMaxHeight(),
                 horizontalArrangement = Arrangement.End,
-                verticalGravity = ContentGravity.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
                 children = actions
             )
         }

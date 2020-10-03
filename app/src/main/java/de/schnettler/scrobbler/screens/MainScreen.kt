@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.material.IconButton
@@ -33,7 +32,7 @@ fun ToolBar(currentScreen: AppRoute, actionHandler: (UIAction) -> Unit) {
     CustomTopAppBar(
         title = {
             Text(
-                text = stringResource(id = currentScreen.title) ,
+                text = stringResource(id = currentScreen.title),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -70,8 +69,8 @@ fun MainRouteContent(
 ) {
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
 
-    Crossfade(currentScreen) { screen ->
-        when (screen) {
+//    Crossfade(currentScreen) { screen ->
+        when (val screen = currentScreen) {
             is MainRoute.ChartRoute -> ChartScreen(
                 model = chartsModel,
                 actionHandler = actionHandler,
@@ -109,5 +108,5 @@ fun MainRouteContent(
                 )
             }
         }
-    }
+//    }
 }

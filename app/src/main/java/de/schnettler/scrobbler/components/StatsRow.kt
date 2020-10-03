@@ -29,7 +29,7 @@ fun StatsRow(
     ) {
         items.forEach {
             val count = it.second ?: 0
-            Column(horizontalGravity = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(asset = it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
                 Text(text = count.abbreviate())
             }
