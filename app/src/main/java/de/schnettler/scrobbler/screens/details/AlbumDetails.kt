@@ -24,6 +24,7 @@ import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.Spacer
+import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.fromHtmlLastFm
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -40,6 +41,7 @@ fun AlbumDetailScreen(
         title = album.name,
         statusBarGuardAlpha = 0F,
         actionHandler = actionHandler,
+        menuActions = listOf(MenuAction.OpenInBrowser(album.url))
     ) {
         ArtistItem(
             artist = artist ?: LastFmEntity.Artist(album.artist, ""),

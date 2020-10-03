@@ -20,6 +20,7 @@ import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.ListingScroller
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.screens.TagCategory
+import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
@@ -33,7 +34,8 @@ fun ArtistDetailScreen(
         imageUrl = artistInfo.entity.imageUrl,
         title = artistInfo.entity.name,
         actionHandler = actionHandler,
-        statusBarGuardAlpha = 0f
+        statusBarGuardAlpha = 0f,
+        menuActions = listOf(MenuAction.OpenInBrowser(artistInfo.entity.url))
     ) {
         Content(artistInfo = artistInfo, actionHandler = actionHandler)
     }
