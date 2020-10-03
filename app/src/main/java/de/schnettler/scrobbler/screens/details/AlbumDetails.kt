@@ -72,7 +72,7 @@ fun AlbumDetailScreen(
         item { ListeningStats(item = stats) }
         item { ExpandingInfoCard(info?.wiki?.fromHtmlLastFm()) }
         item { Spacer(modifier = Modifier.preferredHeight(16.dp)) }
-        //TODO: Check if itemsIndexed works with empty lists now
+        // TODO: Check if itemsIndexed works with empty lists now
         if (albumDetails.tracks.isNotEmpty()) {
             itemsIndexed(albumDetails.tracks) { index, (track, _) ->
                 ListItem(

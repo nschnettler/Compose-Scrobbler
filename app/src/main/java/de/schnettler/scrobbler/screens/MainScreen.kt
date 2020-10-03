@@ -32,7 +32,7 @@ fun ToolBar(currentScreen: AppRoute, actionHandler: (UIAction) -> Unit) {
     CustomTopAppBar(
         title = {
             Text(
-                text = stringResource(id = currentScreen.title) ,
+                text = stringResource(id = currentScreen.title),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
