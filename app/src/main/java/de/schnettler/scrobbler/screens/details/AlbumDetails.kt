@@ -9,59 +9,92 @@ import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
+import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
+import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.CollapsingToolbar
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.IndexListIconBackground
 import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.components.ListeningStats
-import de.schnettler.scrobbler.components.NameListIcon
+import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.Spacer
-import de.schnettler.scrobbler.screens.TagCategory
 import de.schnettler.scrobbler.util.fromHtmlLastFm
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class)
 @Composable
 fun AlbumDetailScreen(
-    albumDetails: AlbumWithStatsAndInfo,
+    albumDetails: AlbumDetails,
     actionHandler: (UIAction) -> Unit,
 ) {
-    val (album, stats, info) = albumDetails
+    val (album, stats, info, artist) = albumDetails
     CollapsingToolbar(imageUrl = album.imageUrl, title = album.name, statusBarGuardAlpha = 0F, onUp = {
         actionHandler(UIAction.NavigateUp)
     }) {
-        ListItem(
-            text = { Text(text = album.artist) },
-            icon = {
-                NameListIcon(title = album.artist)
-            }
+        ArtistItem(
+            artist = artist ?: LastFmEntity.Artist(album.artist, ""),
+            albumDetails.tracks.size,
+            albumDetails.getLength(),
+            actionHandler
         )
+
         ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
 
         Spacer(size = 16.dp)
 
         ListeningStats(item = stats)
 
-        Spacer(size = 16.dp)
-
-        TagCategory(tags = albumDetails.info?.tags ?: emptyList(), actionHandler = actionHandler)
+        ListWithTitle(title = stringResource(id = R.string.header_tags), list = albumDetails.info?.tags) { tags ->
+            ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
+        }
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
-        ListTitle(title = "Tracks")
-
-        albumDetails.tracks.forEachIndexed { index, (track, _) ->
-            ListItem(
-                text = { Text(track.name) },
-                icon = { IndexListIconBackground(index = index) },
-                modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
-            )
+        ListWithTitle(title = "Tracks", list = albumDetails.tracks) { tracks ->
+            tracks.forEachIndexed { index, (track, _) ->
+                ListItem(
+                    text = { Text(track.name) },
+                    icon = { IndexListIconBackground(index = index) },
+                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
+                )
+            }
         }
 
         Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+    }
+}
+
+@Composable
+private fun ArtistItem(
+    artist: LastFmEntity.Artist,
+    trackNumber: Int,
+    albumLength: Long,
+    actionHandler: (UIAction) -> Unit
+) {
+    ListItem(
+        text = { Text(text = artist.name) },
+        secondaryText = {
+            Text(
+                text = "$trackNumber ${stringResource(id = R.string.albumdetails_tracks)} ⦁ " +
+                        "$albumLength ${stringResource(id = R.string.albumdetails_minutes)}"
+            )
+        },
+        icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "") } },
+        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(artist)) })
+    )
+}
+
+@Composable
+fun <T> ListWithTitle(title: String, list: List<T>?, content: @Composable (List<T>) -> Unit) {
+    if (list?.isNotEmpty() == true) {
+        ListTitle(title = title)
+        content(list)
     }
 }
