@@ -1,5 +1,7 @@
 package de.schnettler.repo.di
 
+import android.app.Application
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,8 +21,8 @@ import javax.inject.Singleton
 class NetworkModule {
     @Provides
     @Singleton
-    fun provideLastFmService(): LastFmService = provideRetrofit(
-        provideOkHttpClient(LastFMInterceptor(), loggingInterceptor), LastFmService.ENDPOINT
+    fun provideLastFmService(application: Application): LastFmService = provideRetrofit(
+        provideOkHttpClient(LastFMInterceptor(), loggingInterceptor, ChuckerInterceptor(application)), LastFmService.ENDPOINT
     ).create(
         LastFmService::class.java
     )
