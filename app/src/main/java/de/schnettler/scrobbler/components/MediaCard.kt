@@ -35,7 +35,7 @@ fun MediaCard(
     imageUrl: String? = null,
     height: Dp = 200.dp,
     hintSuffix: String = "Wiedergaben",
-    onEntrySelected: () -> Unit
+    onSelect: () -> Unit
 ) {
 
     val titleTextSize = 14.dp
@@ -46,7 +46,7 @@ fun MediaCard(
         Modifier.preferredSize(width = width, height = height).padding(horizontal = PADDING_8)
     ) {
         Card(modifier = Modifier.fillMaxSize().padding(bottom = PADDING_8)) {
-            Column(modifier = Modifier.clickable(onClick = { onEntrySelected() })) {
+            Column(modifier = Modifier.clickable(onClick = { onSelect() })) {
                 CardBackdrop(width = width, imageUrl = imageUrl, placeholderText = name)
                 CardContent(
                     name = name,

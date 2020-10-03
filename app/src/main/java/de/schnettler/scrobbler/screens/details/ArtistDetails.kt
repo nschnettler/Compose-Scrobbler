@@ -13,14 +13,15 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndIn
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
+import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.CollapsingToolbar
 import de.schnettler.scrobbler.components.ExpandingInfoCard
-import de.schnettler.scrobbler.components.ListTitle
+import de.schnettler.scrobbler.components.LazyListWithTitle
+import de.schnettler.scrobbler.components.ListWithTitle
 import de.schnettler.scrobbler.components.ListeningStats
-import de.schnettler.scrobbler.components.ListingScroller
+import de.schnettler.scrobbler.components.MediaCard
 import de.schnettler.scrobbler.components.PlainListIconBackground
-import de.schnettler.scrobbler.screens.TagCategory
-import de.schnettler.scrobbler.util.PlaysStyle
+import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 
@@ -29,37 +30,63 @@ fun ArtistDetailScreen(
     artistInfo: ArtistWithStatsAndInfo,
     actionHandler: (UIAction) -> Unit
 ) {
-    CollapsingToolbar(imageUrl = artistInfo.entity.imageUrl, title = artistInfo.entity.name, onUp = {
-        actionHandler(UIAction.NavigateUp)
-    }, statusBarGuardAlpha = 0f) {
-        Content(artistInfo = artistInfo, actionHandler = actionHandler)
+    CollapsingToolbar(
+        imageUrl = artistInfo.entity.imageUrl,
+        title = artistInfo.entity.name,
+        actionHandler = actionHandler,
+        statusBarGuardAlpha = 0f,
+        menuActions = listOf(MenuAction.OpenInBrowser(artistInfo.entity.url))
+    ) {
+        Content(artistInfo = artistInfo, actioner = actionHandler)
     }
 }
 
-@Composable fun Content(artistInfo: ArtistWithStatsAndInfo, actionHandler: (UIAction) -> Unit) {
+@Composable
+fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     val (_, stats, info) = artistInfo
 
+    // BIO
     ExpandingInfoCard(info = info?.wiki)
+
+    // Stats
     ListeningStats(item = stats)
-    info?.tags?.let { TagCategory(tags = it, actionHandler = actionHandler) }
-    ListTitle(title = stringResource(id = R.string.header_toptracks))
-    TrackListWithStats(tracks = artistInfo.topTracks, actionHandler = actionHandler)
 
-    ListingScroller(
+    // Tags
+    ListWithTitle(title = stringResource(id = R.string.header_tags), list = info?.tags) { tags ->
+        ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) })
+    }
+
+    // Tracks
+    ListWithTitle(title = stringResource(id = R.string.header_toptracks), list = artistInfo.topTracks) { tracks ->
+        TrackListWithStats(tracks = tracks, actionHandler = actioner)
+    }
+
+    // Albums
+    LazyListWithTitle(
         title = stringResource(id = R.string.header_topalbums),
-        content = artistInfo.topAlbums,
-        height = 160.dp,
-        playsStyle = PlaysStyle.PUBLIC_PLAYS,
-        actionHandler = actionHandler
-    )
+        data = artistInfo.topAlbums
+    ) { (album, stats) ->
+        MediaCard(
+            name = album.name,
+            plays = stats.plays,
+            imageUrl = album.imageUrl,
+            onSelect = { actioner(ListingSelected(album)) },
+            height = 256.dp
+        )
+    }
 
-    ListingScroller(
+    // Artists
+    LazyListWithTitle(
         title = stringResource(id = R.string.artist_similar),
-        content = artistInfo.similarArtists,
-        height = 136.dp,
-        playsStyle = PlaysStyle.NO_PLAYS,
-        actionHandler = actionHandler
-    )
+        data = artistInfo.similarArtists
+    ) { artist ->
+        MediaCard(
+            name = artist.name,
+            imageUrl = artist.imageUrl,
+            onSelect = { actioner(ListingSelected(artist)) },
+            height = 180.dp
+        )
+    }
 
     Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
 }

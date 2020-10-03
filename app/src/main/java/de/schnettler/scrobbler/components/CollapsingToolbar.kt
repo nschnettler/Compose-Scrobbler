@@ -33,7 +33,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.util.InsetsAmbient
+import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.lerp
 import de.schnettler.scrobbler.util.offset
 import de.schnettler.scrobbler.util.onSizeChanged
@@ -45,7 +47,8 @@ fun CollapsingToolbar(
     imageUrl: String?,
     title: String,
     statusBarGuardAlpha: Float = 0.5F,
-    onUp: () -> Unit,
+    actionHandler: (UIAction) -> Unit = {},
+    menuActions: List<MenuAction> = emptyList(),
     content: @Composable () -> Unit,
 ) = ConstraintLayout(modifier = Modifier.fillMaxSize()) {
     val (appbar) = createRefs()
@@ -62,7 +65,8 @@ fun CollapsingToolbar(
             realContent = content,
             imageUrl = imageUrl,
             title = title,
-            onUp = onUp
+            actionHandler = actionHandler,
+            menuActions = menuActions
         )
     }
 
@@ -70,7 +74,13 @@ fun CollapsingToolbar(
         scrollPosition = scrollState.value,
         backdropHeight = backdropHeight,
         appBar = {
-            Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
+            Toolbar(
+                title = title,
+                elevation = 0.dp,
+                backgroundColor = Color.Transparent,
+                actionHandler = actionHandler,
+                menuActions = menuActions
+            )
         },
         modifier = Modifier.fillMaxWidth().constrainAs(appbar) { top.linkTo(parent.top) },
         statusBarGuardAlpha = statusBarGuardAlpha
@@ -83,18 +93,30 @@ private fun Toolbar(
     elevation: Dp,
     backgroundColor: Color,
     modifier: Modifier = Modifier,
-    onUp: () -> Unit
+    actionHandler: (UIAction) -> Unit = {},
+    menuActions: List<MenuAction> = emptyList()
 ) {
     TopAppBar(
         title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         navigationIcon = {
-            IconButton(onClick = { onUp() }) {
+            IconButton(onClick = { actionHandler(UIAction.NavigateUp) }) {
                 Icon(Icons.Default.ArrowBack)
             }
         },
         elevation = elevation,
         backgroundColor = backgroundColor,
-        modifier = modifier
+        modifier = modifier,
+        actions = {
+            menuActions.forEach { menuItem ->
+                IconButton(onClick = {
+                    menuItem.action?.let {
+                        actionHandler(it)
+                    }
+                }) {
+                    Icon(menuItem.icon)
+                }
+            }
+        }
     )
 }
 
@@ -136,7 +158,8 @@ private fun Content(
     scrollState: ScrollState,
     imageUrl: String?,
     title: String,
-    onUp: () -> Unit,
+    actionHandler: (UIAction) -> Unit = {},
+    menuActions: List<MenuAction> = emptyList(),
     realContent: @Composable () -> Unit
 ) {
     Column(Modifier.fillMaxWidth()) {
@@ -166,7 +189,13 @@ private fun Content(
         elevation = 0.dp
     ) {
         Column(Modifier.fillMaxWidth()) {
-            Toolbar(title = title, elevation = 0.dp, backgroundColor = Color.Transparent, onUp = onUp)
+            Toolbar(
+                title = title,
+                elevation = 0.dp,
+                backgroundColor = Color.Transparent,
+                actionHandler = actionHandler,
+                menuActions = menuActions
+            )
             realContent()
         }
     }

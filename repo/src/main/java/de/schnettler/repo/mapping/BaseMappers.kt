@@ -54,7 +54,7 @@ object InfoMapper : ParameterMapper<BaseInfoDto, EntityInfo, String> {
     override suspend fun map(from: BaseInfoDto, id: String) = EntityInfo(
         id = id,
         tags = from.tags?.tag?.map { tag -> tag.name } ?: emptyList(),
-        duration = from.duration,
+        durationInSeconds = from.duration,
         wiki = from.wiki?.summary,
         loved = from.userloved.toBoolean()
     )

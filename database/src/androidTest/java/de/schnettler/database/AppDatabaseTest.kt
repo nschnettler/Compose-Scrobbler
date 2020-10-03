@@ -61,7 +61,7 @@ class AppDatabaseTest {
         val expectedInfo = EntityInfo(
             id = oldInfo.getAsString("id"),
             tags = converter.stringToList(oldInfo.getAsString("tags")),
-            duration = oldInfo.getAsLong("duration"),
+            durationInSeconds = oldInfo.getAsLong("duration"),
             wiki = oldInfo.getAsString("wiki"),
             loved = false
         )

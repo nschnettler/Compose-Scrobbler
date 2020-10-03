@@ -4,7 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import kotlin.math.roundToInt
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 val defaultSpacerSize = 16.dp
 
@@ -23,8 +24,8 @@ enum class Orientation {
     Horizontal
 }
 
-fun runtimeInfo(played: Long, duration: Long): String {
-    return "${milliSecondsToMinSeconds(played)}/${
-        milliSecondsToMinSeconds(duration)
-    } (${(played.toFloat() / duration * 100).roundToInt()}%)"
+@ExperimentalTime
+fun Duration.asMinSec() = this.toComponents { min, s, _ ->
+    val padded = s.toString().padStart(2, '0')
+    "$min:$padded"
 }

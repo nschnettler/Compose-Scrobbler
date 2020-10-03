@@ -78,6 +78,7 @@ data class TrackInfoDto(
     override val playcount: Long,
     override val userplaycount: Long = 0,
 
+    // Duration is in ms
     override val duration: Long,
     override val wiki: WikiDto?,
 

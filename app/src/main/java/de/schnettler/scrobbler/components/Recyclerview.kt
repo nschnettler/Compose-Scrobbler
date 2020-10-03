@@ -7,14 +7,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.BaseEntity
-import de.schnettler.database.models.EntityWithStats
-import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.util.Orientation
-import de.schnettler.scrobbler.util.PlaysStyle
 import de.schnettler.scrobbler.util.RefreshableUiState
 
 @Composable
@@ -78,48 +74,8 @@ fun TopListScroller(
             name = listing.value.name,
             plays = listing.listing.count,
             imageUrl = listing.value.imageUrl,
-            onEntrySelected = { actionHandler(ListingSelected(listing.value)) },
+            onSelect = { actionHandler(ListingSelected(listing.value)) },
             height = height
         )
-    }
-}
-
-@Composable
-fun ListingScroller(
-    title: String,
-    content: List<BaseEntity>,
-    height: Dp,
-    playsStyle: PlaysStyle,
-    actionHandler: (UIAction) -> Unit
-) {
-    GenericHorizontalListingScrollerWithTitle(
-        items = content,
-        title = title,
-        scrollerHeight = height
-    ) { listing ->
-        when (listing) {
-            is EntityWithStats -> {
-                MediaCard(
-                    name = listing.entity.name,
-                    plays = when (playsStyle) {
-                        PlaysStyle.PUBLIC_PLAYS -> listing.stats.plays
-                        PlaysStyle.USER_PLAYS -> listing.stats.userPlays
-                        else -> -1
-                    },
-                    imageUrl = listing.entity.imageUrl,
-                    onEntrySelected = { actionHandler(ListingSelected(listing.entity)) },
-                    height = height
-                )
-            }
-            is LastFmEntity -> {
-                MediaCard(
-                    name = listing.name,
-                    plays = -1,
-                    imageUrl = listing.imageUrl,
-                    onEntrySelected = { actionHandler(ListingSelected(listing)) },
-                    height = height
-                )
-            }
-        }
     }
 }
