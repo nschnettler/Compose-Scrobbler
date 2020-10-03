@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
@@ -71,7 +71,7 @@ fun DetailScreen(
                         actionHandler,
                         modifier,
                     )
-                    is AlbumWithStatsAndInfo -> AlbumDetailScreen(
+                    is AlbumDetails -> AlbumDetailScreen(
                         albumDetails = details,
                         actionHandler = actionHandler,
                     )

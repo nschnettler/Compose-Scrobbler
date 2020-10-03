@@ -13,10 +13,11 @@ sealed class EntityWithStatsAndInfo(
     @Ignore open val info: EntityInfo?,
 ) : BaseEntity {
 
-    data class AlbumWithStatsAndInfo(
+    data class AlbumDetails(
         @Embedded override val entity: LastFmEntity.Album,
         @Relation(parentColumn = "id", entityColumn = "id") override val stats: Stats?,
         @Relation(parentColumn = "id", entityColumn = "id") override val info: EntityInfo?,
+        @Relation(parentColumn = "artistId", entityColumn = "id") val artist: LastFmEntity.Artist?,
     ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore var tracks: List<TrackWithInfo> = listOf()
         fun getLength() = TimeUnit.SECONDS.toMinutes(tracks.sumByLong { it.info.duration })

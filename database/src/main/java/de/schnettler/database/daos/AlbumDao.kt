@@ -3,7 +3,7 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.database.models.EntityWithStats.AlbumWithStats
-import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumWithStatsAndInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.database.models.LastFmEntity.Album
 import kotlinx.coroutines.flow.Flow
 
@@ -17,5 +17,5 @@ abstract class AlbumDao : BaseDao<Album> {
     abstract fun getTopAlbumsOfArtist(artist: String): Flow<List<AlbumWithStats>>
 
     @Query("SELECT * FROM albums WHERE id = :id and artist = :artist")
-    abstract fun getAlbumWithStatsAndInfo(id: String, artist: String): Flow<AlbumWithStatsAndInfo?>
+    abstract fun getAlbumWithStatsAndInfo(id: String, artist: String): Flow<AlbumDetails?>
 }

@@ -30,7 +30,7 @@ object DataGenerator {
 
     fun generateAlbumWithStatsAndInfo(count: Int, artist: String?) = List(count) {
         val album = generateAlbum(it, artist)
-        EntityWithStatsAndInfo.AlbumWithStatsAndInfo(
+        EntityWithStatsAndInfo.AlbumDetails(
             album,
             generateStat(album.id, it),
             generateInfo(album.id)
