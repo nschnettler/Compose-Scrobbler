@@ -29,14 +29,18 @@ fun ArtistDetailScreen(
     artistInfo: ArtistWithStatsAndInfo,
     actionHandler: (UIAction) -> Unit
 ) {
-    CollapsingToolbar(imageUrl = artistInfo.entity.imageUrl, title = artistInfo.entity.name, onUp = {
-        actionHandler(UIAction.NavigateUp)
-    }, statusBarGuardAlpha = 0f) {
+    CollapsingToolbar(
+        imageUrl = artistInfo.entity.imageUrl,
+        title = artistInfo.entity.name,
+        actionHandler = actionHandler,
+        statusBarGuardAlpha = 0f
+    ) {
         Content(artistInfo = artistInfo, actionHandler = actionHandler)
     }
 }
 
-@Composable fun Content(artistInfo: ArtistWithStatsAndInfo, actionHandler: (UIAction) -> Unit) {
+@Composable
+fun Content(artistInfo: ArtistWithStatsAndInfo, actionHandler: (UIAction) -> Unit) {
     val (_, stats, info) = artistInfo
 
     ExpandingInfoCard(info = info?.wiki)

@@ -35,9 +35,12 @@ fun AlbumDetailScreen(
     actionHandler: (UIAction) -> Unit,
 ) {
     val (album, stats, info, artist) = albumDetails
-    CollapsingToolbar(imageUrl = album.imageUrl, title = album.name, statusBarGuardAlpha = 0F, onUp = {
-        actionHandler(UIAction.NavigateUp)
-    }) {
+    CollapsingToolbar(
+        imageUrl = album.imageUrl,
+        title = album.name,
+        statusBarGuardAlpha = 0F,
+        actionHandler = actionHandler,
+    ) {
         ArtistItem(
             artist = artist ?: LastFmEntity.Artist(album.artist, ""),
             albumDetails.tracks.size,
