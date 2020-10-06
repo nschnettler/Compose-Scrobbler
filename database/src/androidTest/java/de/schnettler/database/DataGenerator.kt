@@ -28,12 +28,13 @@ object DataGenerator {
         )
     }
 
-    fun generateAlbumWithStatsAndInfo(count: Int, artist: String?) = List(count) {
+    fun generateAlbumWithStatsAndInfo(count: Int, artist: String) = List(count) {
         val album = generateAlbum(it, artist)
         EntityWithStatsAndInfo.AlbumDetails(
             album,
             generateStat(album.id, it),
-            generateInfo(album.id)
+            generateInfo(album.id),
+            LastFmEntity.Artist(artist, "")
         )
     }
 

@@ -9,9 +9,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.models.EntityInfo
-import java.io.IOException
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 class AppDatabaseTest {
     private val TEST_DB = "migration-test"
@@ -61,7 +61,7 @@ class AppDatabaseTest {
         val expectedInfo = EntityInfo(
             id = oldInfo.getAsString("id"),
             tags = converter.stringToList(oldInfo.getAsString("tags")),
-            durationInSeconds = oldInfo.getAsLong("duration"),
+            // durationInSeconds = oldInfo.getAsLong("duration"),
             wiki = oldInfo.getAsString("wiki"),
             loved = false
         )

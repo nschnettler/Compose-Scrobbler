@@ -137,6 +137,7 @@ class AlbumDaoTest : DatabaseTest() {
         db.albumDao().insert(album.entity)
         db.statDao().insert(album.stats)
         db.infoDao().insert(album.info)
+        db.artistDao().insert(album.artist)
 
         // WHEN - Requesting the album with info and stats
         val returned = db.albumDao().getAlbumWithStatsAndInfo(album.entity.id, artistName)

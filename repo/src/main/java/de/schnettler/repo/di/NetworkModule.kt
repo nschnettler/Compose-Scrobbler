@@ -22,7 +22,8 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideLastFmService(application: Application): LastFmService = provideRetrofit(
-        provideOkHttpClient(LastFMInterceptor(), loggingInterceptor, ChuckerInterceptor(application)), LastFmService.ENDPOINT
+        provideOkHttpClient(LastFMInterceptor(), loggingInterceptor, ChuckerInterceptor(application)),
+        LastFmService.ENDPOINT
     ).create(
         LastFmService::class.java
     )
