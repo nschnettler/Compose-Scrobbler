@@ -65,4 +65,5 @@
     <string name="setting_list_scrobbleconstraints_network">Kostenloses Netzwerk</string>
     <string name="setting_list_scrobbleconstraints_battery">Akku nicht leer</string>
     <string name="header_more">Mehr</string>
+    <string name="stats_plays">Wiedergaben</string>
 </resources>

@@ -4,12 +4,15 @@ import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
@@ -34,12 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.components.Carousel
+import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
@@ -47,6 +53,7 @@ import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.defaultSpacerSize
+import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
@@ -105,9 +112,39 @@ fun ProfileScreen(
                     UserInfoComponent(it)
                 }
                 Spacer(size = 16.dp)
-                TopListCarousel(state = artistState, actionHandler = actionHandler, titleRes = R.string.header_topartists)
+                TopListCarousel(
+                    state = artistState,
+                    actionHandler = actionHandler,
+                    titleRes = R.string.header_topartists
+                )
                 TopListCarousel(state = albumState, actionHandler = actionHandler, titleRes = R.string.header_topalbums)
-                TopListCarousel(state = trackState, actionHandler = actionHandler, titleRes = R.string.header_toptracks)
+
+                Carousel(
+                    items = trackState.currentData?.chunked(5),
+                    titleRes = R.string.header_toptracks,
+                    contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
+                ) { list, padding ->
+                    Column {
+                        list.forEach { (top, track) ->
+                            ListItem(
+                                text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                                secondaryText = { Text("${track.artist}, ${top.count} ${stringResource(id = R.string.stats_plays)}") },
+                                icon = {
+                                    PlainListIconBackground {
+                                        track.imageUrl?.let {
+                                            CoilImage(data = it)
+                                        } ?: Text(text = track.name.firstLetter())
+
+                                    }
+                                },
+                                modifier = Modifier.padding(padding).preferredWidth(300.dp)
+                                    .clickable(onClick = { actionHandler(UIAction.ListingSelected(track)) })
+                            )
+                        }
+                    }
+                }
+
+                Spacer(56.dp)
             })
 
             ExtendedFloatingActionButton(
