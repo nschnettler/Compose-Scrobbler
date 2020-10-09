@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.Orientation
@@ -38,8 +39,14 @@ fun MediaCard(
             ProvideEmphasis(EmphasisAmbient.current.medium) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.h4,
-                    modifier = Modifier.padding(8.dp).align(Alignment.Center)
+                    style = when (name.length) {
+                        in 10..20 -> MaterialTheme.typography.h5
+                        in 20..Int.MAX_VALUE -> MaterialTheme.typography.h6
+                        else -> MaterialTheme.typography.h4
+                    },
+                    modifier = Modifier.padding(16.dp).align(Alignment.Center),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
             imageUrl?.let {
