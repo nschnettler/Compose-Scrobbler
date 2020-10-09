@@ -28,7 +28,8 @@
     <string name="track_sourcealbum">"From The Album</string>
     <string name="track_unknownalbum">We don‘t have an album for this track yet.</string>
 
-    <!-- Categorie Headers -->
+    <!-- Headers -->
+    <string name="header_more">More</string>
     <string name="header_toptracks">Top Tracks</string>
     <string name="header_topalbums">Top Albums</string>
     <string name="header_topartists">Top Artists</string>

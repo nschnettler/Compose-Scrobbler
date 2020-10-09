@@ -18,17 +18,15 @@ fun ListingCardPreview() {
                 url = "Url"
             )
             MediaCard(
-                onSelect = {},
+                name = artist.name,
                 plays = 10,
-                name = artist.name,
                 imageUrl = null
-            )
+            ) {}
             MediaCard(
-                onSelect = {},
-                plays = -1,
                 name = artist.name,
+                plays = -1,
                 imageUrl = null
-            )
+            ) {}
         }
 }
 

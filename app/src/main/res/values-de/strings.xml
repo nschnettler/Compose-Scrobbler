@@ -64,4 +64,5 @@
     <string name="ic_open_in">In Browser öffnen</string>
     <string name="setting_list_scrobbleconstraints_network">Kostenloses Netzwerk</string>
     <string name="setting_list_scrobbleconstraints_battery">Akku nicht leer</string>
+    <string name="header_more">Mehr</string>
 </resources>

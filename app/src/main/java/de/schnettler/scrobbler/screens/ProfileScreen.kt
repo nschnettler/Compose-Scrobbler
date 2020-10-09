@@ -35,10 +35,11 @@ import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.components.TopListScroller
+import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.toFlagEmoji
@@ -95,21 +96,10 @@ fun ProfileScreen(
             userState.currentData?.let {
                 UserInfoComponent(it)
             }
-            TopListScroller(
-                title = "${stringResource(id = R.string.header_topartists)} (${timePeriod.niceName})",
-                state = artistState,
-                actionHandler = actionHandler
-            )
-            TopListScroller(
-                title = stringResource(id = R.string.header_topalbums),
-                state = albumState,
-                actionHandler = actionHandler
-            )
-            TopListScroller(
-                title = stringResource(id = R.string.header_toptracks),
-                state = trackState,
-                actionHandler = actionHandler
-            )
+            Spacer(size = 16.dp)
+            TopListCarousel(state = artistState, actionHandler = actionHandler, titleRes = R.string.header_topartists)
+            TopListCarousel(state = albumState, actionHandler = actionHandler, titleRes = R.string.header_topalbums)
+            TopListCarousel(state = trackState, actionHandler = actionHandler, titleRes = R.string.header_toptracks)
         })
     }
 }
