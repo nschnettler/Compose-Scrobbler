@@ -39,6 +39,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.util.getMediaBrowserServices
+import de.schnettler.scrobbler.util.statusBarsHeight
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
 
@@ -59,6 +60,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
     ScrollableColumn(modifier = modifier) {
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
         PreferenceGroup(title = stringResource(id = R.string.setting_group_submission)) {
             SwitchPreference(
                 title = stringResource(id = R.string.setting_switch_autoscrobble_title),
