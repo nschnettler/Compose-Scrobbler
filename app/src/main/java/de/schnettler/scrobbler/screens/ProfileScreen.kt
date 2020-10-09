@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.Box
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
@@ -13,12 +14,14 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.PlayCircleOutline
@@ -27,7 +30,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.common.TimePeriod
@@ -42,6 +47,7 @@ import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.defaultSpacerSize
+import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
@@ -92,15 +98,27 @@ fun ProfileScreen(
         onRefresh = model::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
-        ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
-            userState.currentData?.let {
-                UserInfoComponent(it)
-            }
-            Spacer(size = 16.dp)
-            TopListCarousel(state = artistState, actionHandler = actionHandler, titleRes = R.string.header_topartists)
-            TopListCarousel(state = albumState, actionHandler = actionHandler, titleRes = R.string.header_topalbums)
-            TopListCarousel(state = trackState, actionHandler = actionHandler, titleRes = R.string.header_toptracks)
-        })
+        androidx.compose.foundation.layout.Box {
+            ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
+                androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+                userState.currentData?.let {
+                    UserInfoComponent(it)
+                }
+                Spacer(size = 16.dp)
+                TopListCarousel(state = artistState, actionHandler = actionHandler, titleRes = R.string.header_topartists)
+                TopListCarousel(state = albumState, actionHandler = actionHandler, titleRes = R.string.header_topalbums)
+                TopListCarousel(state = trackState, actionHandler = actionHandler, titleRes = R.string.header_toptracks)
+            })
+
+            ExtendedFloatingActionButton(
+                text = { Text(text = timePeriod.niceName) },
+                onClick = { model.showDialog(true) },
+                icon = { Icon(asset = Icons.Outlined.Event) },
+                contentColor = Color.White,
+                modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+            )
+        }
+
     }
 }
 
