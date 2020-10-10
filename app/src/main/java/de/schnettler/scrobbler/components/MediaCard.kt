@@ -40,8 +40,15 @@ fun MediaCard(
     colorCache: DominantColorCache = rememberDominantColorCache(),
     onSelect: () -> Unit,
 ) {
+    var longClicked by remember {
+        mutableStateOf(false)
+    }
+
     Card(modifier = modifier) {
-        Box(modifier = Modifier.clickable(onClick = onSelect), alignment = Alignment.BottomEnd) {
+        Box(
+            modifier = Modifier.clickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
+            alignment = Alignment.BottomEnd
+        ) {
             ProvideEmphasis(EmphasisAmbient.current.medium) {
                 Text(
                     text = name,
@@ -51,7 +58,7 @@ fun MediaCard(
                         else -> MaterialTheme.typography.h4
                     },
                     modifier = Modifier.padding(16.dp).align(Alignment.Center),
-                    maxLines = 1,
+                    maxLines = if (longClicked) 4 else 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
@@ -63,12 +70,14 @@ fun MediaCard(
             }
 
             imageUrl?.let {
-                CoilImage(
-                    data = it,
-                    fadeIn = true,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                )
+                if (!longClicked) {
+                    CoilImage(
+                        data = it,
+                        fadeIn = true,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.matchParentSize()
+                    )
+                }
                 launchInComposition(imageUrl) {
                     colors = colorCache.getColorsFromImageUrl(imageUrl)
                 }
