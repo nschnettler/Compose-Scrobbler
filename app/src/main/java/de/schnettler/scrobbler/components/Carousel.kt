@@ -65,6 +65,8 @@ fun <T : Toplist> TopListCarousel(
     itemSize: Dp = 200.dp,
     actionHandler: (UIAction) -> Unit,
 ) {
+    val colorCache = rememberDominantColorCache()
+
     Carousel(
         items = state.currentData,
         itemSpacing = spacing,
@@ -83,7 +85,8 @@ fun <T : Toplist> TopListCarousel(
             name = toplist.value.name,
             modifier = Modifier.padding(padding).preferredSize(itemSize),
             imageUrl = toplist.value.imageUrl,
-            plays = toplist.listing.count
+            plays = toplist.listing.count,
+            colorCache = colorCache
         ) { actionHandler(UIAction.ListingSelected(toplist.value)) }
     }
 }

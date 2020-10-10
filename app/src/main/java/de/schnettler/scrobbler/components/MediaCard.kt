@@ -15,11 +15,14 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Hearing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,7 +30,6 @@ import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImage
-import timber.log.Timber
 
 @Composable
 fun MediaCard(
@@ -35,7 +37,8 @@ fun MediaCard(
     modifier: Modifier = Modifier,
     plays: Long = -1,
     imageUrl: String? = null,
-    onSelect: () -> Unit
+    colorCache: DominantColorCache = rememberDominantColorCache(),
+    onSelect: () -> Unit,
 ) {
     Card(modifier = modifier) {
         Box(modifier = Modifier.clickable(onClick = onSelect), alignment = Alignment.BottomEnd) {
@@ -61,20 +64,20 @@ fun MediaCard(
                 )
             }
 
-            val dominantColorState = rememberDominantColorState()
+            var test by remember {
+                mutableStateOf(DominantColors(Color.Black, Color.White))
+            }
 
             if (imageUrl != null) {
                 launchInComposition(imageUrl) {
-                    dominantColorState.updateColorsFromImageUrl(imageUrl)
+                    test = colorCache.getColorsFromImageUrl(imageUrl)
                 }
-            } else {
-                dominantColorState.reset()
             }
 
-            Timber.d("DominantColor ${dominantColorState.color.toArgb()}")
+//            Timber.d("DominantColor ${dominantColorState.color.toArgb()}")
 
             if (plays > -1) {
-                StatChip(plays = plays, onImage = imageUrl != null, color = dominantColorState.color, onColor = dominantColorState.onColor)
+                StatChip(plays = plays, onImage = imageUrl != null, color = test.color, onColor = test.onColor)
             }
         }
     }

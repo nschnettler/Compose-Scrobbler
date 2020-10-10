@@ -23,6 +23,7 @@ import de.schnettler.scrobbler.components.ListWithTitle
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.MediaCard
 import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.components.rememberDominantColorCache
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
@@ -46,6 +47,7 @@ fun ArtistDetailScreen(
 @Composable
 fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     val (_, stats, info) = artistInfo
+    val colorCache = rememberDominantColorCache()
 
     // BIO
     ExpandingInfoCard(info = info?.wiki)
@@ -69,7 +71,8 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
             name = album.name,
             plays = stats.plays,
             imageUrl = album.imageUrl,
-            modifier = Modifier.padding(padding).preferredSize(256.dp)
+            modifier = Modifier.padding(padding).preferredSize(256.dp),
+            colorCache = colorCache
         ) { actioner(ListingSelected(album)) }
     }
 
@@ -78,7 +81,8 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
         MediaCard(
             name = artist.name,
             imageUrl = artist.imageUrl,
-            modifier = Modifier.padding(padding).preferredSize(180.dp)
+            modifier = Modifier.padding(padding).preferredSize(180.dp),
+            colorCache = colorCache
         ) {
             actioner(ListingSelected(artist))
         }

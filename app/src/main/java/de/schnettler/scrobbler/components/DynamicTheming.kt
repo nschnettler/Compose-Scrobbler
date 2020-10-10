@@ -6,10 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.core.graphics.drawable.toBitmap
@@ -23,19 +20,19 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 @Composable
-fun rememberDominantColorState(
+fun rememberDominantColorCache(
     context: Context = ContextAmbient.current,
     defaultColor: Color = MaterialTheme.colors.primary,
     defaultOnColor: Color = MaterialTheme.colors.onPrimary,
     cacheSize: Int = 12,
     isColorValid: (Color) -> Boolean = { true }
-): DominantColorState = remember {
-    DominantColorState(context, defaultColor, defaultOnColor, cacheSize, isColorValid)
+): DominantColorCache = remember {
+    DominantColorCache(context, defaultColor, defaultOnColor, cacheSize, isColorValid)
 }
 
 
 @Immutable
-private data class DominantColors(val color: Color, val onColor: Color)
+data class DominantColors(val color: Color, val onColor: Color)
 
 /**
  * A class which stores and caches the result of any calculated dominant colors
@@ -50,28 +47,19 @@ private data class DominantColors(val color: Color, val onColor: Color)
  * @param isColorValid A lambda which allows filtering of the calculated image colors.
  */
 @Stable
-class DominantColorState(
+class DominantColorCache(
     private val context: Context,
     private val defaultColor: Color,
     private val defaultOnColor: Color,
     cacheSize: Int = 12,
     private val isColorValid: (Color) -> Boolean = { true }
 ) {
-    var color by mutableStateOf(defaultColor)
-        private set
-    var onColor by mutableStateOf(defaultOnColor)
-        private set
-
     private val cache = when {
         cacheSize > 0 -> LruCache<String, DominantColors>(cacheSize)
         else -> null
     }
 
-    suspend fun updateColorsFromImageUrl(url: String) {
-        val result = calculateDominantColor(url)
-        color = result?.color ?: defaultColor
-        onColor = result?.onColor ?: defaultOnColor
-    }
+    suspend fun getColorsFromImageUrl(url: String)  = calculateDominantColor(url) ?: DominantColors(defaultColor, defaultOnColor)
 
     private suspend fun calculateDominantColor(url: String): DominantColors? {
         val cached = cache?.get(url)
@@ -80,6 +68,8 @@ class DominantColorState(
             Timber.d("DominantColor - Used cache")
             return cached
         }
+
+        Timber.d("DominantColor - Calculated")
 
         // Otherwise we calculate the swatches in the image, and return the first valid color
         return calculateSwatchesInImage(context, url)
@@ -96,14 +86,6 @@ class DominantColorState(
             }
             // Cache the resulting [DominantColors]
             ?.also { result -> cache?.put(url, result) }
-    }
-
-    /**
-     * Reset the color values to [defaultColor].
-     */
-    fun reset() {
-        color = defaultColor
-        onColor = defaultColor
     }
 }
 
