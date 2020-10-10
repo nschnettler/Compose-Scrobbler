@@ -55,6 +55,13 @@ fun MediaCard(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+
+            val defaultBackground = AppColor.BackgroundElevated
+            val defaultOn = MaterialTheme.colors.onBackground
+            var colors by remember {
+                mutableStateOf(DominantColors(defaultBackground, defaultOn))
+            }
+
             imageUrl?.let {
                 CoilImage(
                     data = it,
@@ -62,22 +69,13 @@ fun MediaCard(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
                 )
-            }
-
-            var test by remember {
-                mutableStateOf(DominantColors(Color.Black, Color.White))
-            }
-
-            if (imageUrl != null) {
                 launchInComposition(imageUrl) {
-                    test = colorCache.getColorsFromImageUrl(imageUrl)
+                    colors = colorCache.getColorsFromImageUrl(imageUrl)
                 }
             }
 
-//            Timber.d("DominantColor ${dominantColorState.color.toArgb()}")
-
             if (plays > -1) {
-                StatChip(plays = plays, onImage = imageUrl != null, color = test.color, onColor = test.onColor)
+                StatChip(plays = plays, color = colors.color, onColor = colors.onColor)
             }
         }
     }
@@ -86,9 +84,8 @@ fun MediaCard(
 @Composable
 private fun StatChip(
     plays: Long,
-    onImage: Boolean = false,
-    color: Color = if (onImage) Color.Black.copy(0.3F) else AppColor.BackgroundElevated,
-    onColor: Color = if (onImage) Color.White else MaterialTheme.colors.onBackground
+    color: Color,
+    onColor: Color
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
