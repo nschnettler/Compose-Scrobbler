@@ -56,6 +56,7 @@ import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.UITimePeriod
+import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
@@ -140,6 +141,7 @@ private fun ProfileContent(
             Carousel(
                 items = tracks?.chunked(5),
                 titleRes = R.string.header_toptracks,
+                itemSpacing = 16.dp,
                 contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
             ) { topTracks, padding ->
                 TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
@@ -164,7 +166,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
             ListItem(
                 text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 secondaryText = {
-                    Text("${track.artist}, ${top.count} ${stringResource(id = R.string.stats_plays)}")
+                    Text("${track.artist}")
                 },
                 icon = {
                     PlainListIconBackground {
@@ -173,6 +175,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
                         } ?: Text(text = track.name.firstLetter())
                     }
                 },
+                trailing = { Text(text = top.count.abbreviate()) },
                 modifier = Modifier.padding(padding).preferredWidth(300.dp)
                     .clickable(onClick = { actioner(UIAction.ListingSelected(track)) })
             )
@@ -240,10 +243,11 @@ private fun PeriodSelectDialog(
         text = {
             Column {
                 radioGroupOptions.forEach { current ->
-                    Row(Modifier
-                        .fillMaxWidth()
-                        .selectable(selected = (current == selected), onClick = { selected = current })
-                        .padding(16.dp)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .selectable(selected = (current == selected), onClick = { selected = current })
+                            .padding(16.dp)
                     ) {
                         RadioButton(
                             selected = (current == selected),
