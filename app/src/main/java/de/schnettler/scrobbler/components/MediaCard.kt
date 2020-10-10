@@ -15,9 +15,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Hearing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.launchInComposition
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,7 @@ import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImage
+import timber.log.Timber
 
 @Composable
 fun MediaCard(
@@ -58,8 +61,20 @@ fun MediaCard(
                 )
             }
 
+            val dominantColorState = rememberDominantColorState()
+
+            if (imageUrl != null) {
+                launchInComposition(imageUrl) {
+                    dominantColorState.updateColorsFromImageUrl(imageUrl)
+                }
+            } else {
+                dominantColorState.reset()
+            }
+
+            Timber.d("DominantColor ${dominantColorState.color.toArgb()}")
+
             if (plays > -1) {
-                StatChip(plays = plays, onImage = imageUrl != null)
+                StatChip(plays = plays, onImage = imageUrl != null, color = dominantColorState.color, onColor = dominantColorState.onColor)
             }
         }
     }
@@ -68,13 +83,15 @@ fun MediaCard(
 @Composable
 private fun StatChip(
     plays: Long,
-    onImage: Boolean = false
+    onImage: Boolean = false,
+    color: Color = if (onImage) Color.Black.copy(0.3F) else AppColor.BackgroundElevated,
+    onColor: Color = if (onImage) Color.White else MaterialTheme.colors.onBackground
 ) {
     Surface(
         shape = RoundedCornerShape(12.dp),
-        color = if (onImage) Color.Black.copy(0.3F) else AppColor.BackgroundElevated,
+        color = color,
         modifier = Modifier.padding(8.dp),
-        contentColor = if (onImage) Color.White else MaterialTheme.colors.onBackground
+        contentColor = onColor
     ) {
         Box(
             alignment = Alignment.Center,
