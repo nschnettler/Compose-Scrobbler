@@ -30,7 +30,6 @@ fun rememberDominantColorCache(
     DominantColorCache(context, defaultColor, defaultOnColor, cacheSize, isColorValid)
 }
 
-
 @Immutable
 data class DominantColors(val color: Color, val onColor: Color)
 
@@ -59,7 +58,8 @@ class DominantColorCache(
         else -> null
     }
 
-    suspend fun getColorsFromImageUrl(url: String)  = calculateDominantColor(url) ?: DominantColors(defaultColor, defaultOnColor)
+    suspend fun getColorsFromImageUrl(url: String) =
+        calculateDominantColor(url) ?: DominantColors(defaultColor, defaultOnColor)
 
     private suspend fun calculateDominantColor(url: String): DominantColors? {
         val cached = cache?.get(url)
