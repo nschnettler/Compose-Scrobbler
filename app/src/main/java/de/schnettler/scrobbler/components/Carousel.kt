@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
-import de.schnettler.scrobbler.util.RefreshableUiState
 
 @Composable
 fun <T> Carousel(
@@ -59,7 +58,7 @@ fun <T> Carousel(
 
 @Composable
 fun <T : Toplist> TopListCarousel(
-    state: RefreshableUiState<List<T>>,
+    topList: List<T>?,
     @StringRes titleRes: Int? = null,
     spacing: Dp = 8.dp,
     itemSize: Dp = 200.dp,
@@ -68,10 +67,9 @@ fun <T : Toplist> TopListCarousel(
     val colorCache = rememberDominantColorCache()
 
     Carousel(
-        items = state.currentData,
+        items = topList,
         itemSpacing = spacing,
         titleRes = titleRes,
-        loading = state.isLoading,
         action = {
             TextButton(
                 onClick = { },

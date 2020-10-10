@@ -1,10 +1,10 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import de.schnettler.database.models.TopListAlbum
+import de.schnettler.database.models.TopListArtist
+import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
@@ -52,14 +56,12 @@ import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.UITimePeriod
-import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -71,7 +73,6 @@ fun ProfileScreen(
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
     val userState by model.userState.collectAsState()
     val artistState by model.artistState.collectAsState()
     val albumState by model.albumState.collectAsState()
@@ -105,79 +106,94 @@ fun ProfileScreen(
         onRefresh = model::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
-        androidx.compose.foundation.layout.Box {
-            ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
-                userState.currentData?.let {
-                    UserInfoComponent(it)
-                }
-                Spacer(size = 16.dp)
-                TopListCarousel(
-                    state = artistState,
-                    actionHandler = actionHandler,
-                    titleRes = R.string.header_topartists
-                )
-                TopListCarousel(state = albumState, actionHandler = actionHandler, titleRes = R.string.header_topalbums)
-
-                Carousel(
-                    items = trackState.currentData?.chunked(5),
-                    titleRes = R.string.header_toptracks,
-                    contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
-                ) { list, padding ->
-                    Column {
-                        list.forEach { (top, track) ->
-                            ListItem(
-                                text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                                secondaryText = { Text("${track.artist}, ${top.count} ${stringResource(id = R.string.stats_plays)}") },
-                                icon = {
-                                    PlainListIconBackground {
-                                        track.imageUrl?.let {
-                                            CoilImage(data = it)
-                                        } ?: Text(text = track.name.firstLetter())
-
-                                    }
-                                },
-                                modifier = Modifier.padding(padding).preferredWidth(300.dp)
-                                    .clickable(onClick = { actionHandler(UIAction.ListingSelected(track)) })
-                            )
-                        }
-                    }
-                }
-
-                Spacer(56.dp)
-            })
-
-            ExtendedFloatingActionButton(
-                text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
-                onClick = { model.showDialog(true) },
-                icon = { Icon(asset = Icons.Outlined.Event) },
-                contentColor = Color.White,
-                modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
-            )
-        }
-
+        ProfileContent(
+            modifier = modifier,
+            user = userState.currentData,
+            artists = artistState.currentData,
+            albums = albumState.currentData,
+            tracks = trackState.currentData,
+            timePeriod = timePeriod,
+            onFabClicked = { model.showDialog(true) },
+            actioner = actionHandler,
+        )
     }
 }
 
 @Composable
-fun UserInfoComponent(user: User) {
-    Card(
-        modifier = Modifier.fillMaxWidth().padding(
-            start = defaultSpacerSize,
-            end = defaultSpacerSize,
-            top = defaultSpacerSize
+private fun ProfileContent(
+    modifier: Modifier,
+    user: User?,
+    artists: List<TopListArtist>?,
+    albums: List<TopListAlbum>?,
+    tracks: List<TopListTrack>?,
+    timePeriod: UITimePeriod,
+    onFabClicked: () -> Unit,
+    actioner: (UIAction) -> Unit,
+) {
+    Box {
+        ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+            user?.let { UserInfo(it) }
+            TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
+            TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums)
+
+            Carousel(
+                items = tracks?.chunked(5),
+                titleRes = R.string.header_toptracks,
+                contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
+            ) { topTracks, padding ->
+                TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
+            }
+            Spacer(56.dp)
+        })
+
+        ExtendedFloatingActionButton(
+            text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
+            onClick = onFabClicked,
+            icon = { Icon(asset = Icons.Outlined.Event) },
+            contentColor = Color.White,
+            modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
         )
-    ) {
-        val date: LocalDateTime = Instant.ofEpochSecond(user.registerDate)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDateTime()
+    }
+}
+
+@Composable
+private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValues, actioner: (UIAction) -> Unit) {
+    Column {
+        list.forEach { (top, track) ->
+            ListItem(
+                text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                secondaryText = {
+                    Text("${track.artist}, ${top.count} ${stringResource(id = R.string.stats_plays)}")
+                },
+                icon = {
+                    PlainListIconBackground {
+                        track.imageUrl?.let {
+                            CoilImage(data = it)
+                        } ?: Text(text = track.name.firstLetter())
+                    }
+                },
+                modifier = Modifier.padding(padding).preferredWidth(300.dp)
+                    .clickable(onClick = { actioner(UIAction.ListingSelected(track)) })
+            )
+        }
+    }
+}
+
+@Composable
+private fun UserInfo(user: User) {
+    Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        val date = remember {
+            Instant.ofEpochSecond(user.registerDate).atZone(ZoneId.systemDefault()).toLocalDateTime()
+        }
+
         Column {
             ListItem(
                 text = {
                     Text(text = "${user.name} ${user.countryCode.toFlagEmoji()}")
                 },
                 secondaryText = {
-                    Column() {
+                    Column {
                         Text(text = user.realname)
                         Text(
                             text = "${stringResource(id = R.string.profile_scrobblingsince)} ${
@@ -226,10 +242,7 @@ private fun PeriodSelectDialog(
                 radioGroupOptions.forEach { current ->
                     Row(Modifier
                         .fillMaxWidth()
-                        .selectable(
-                            selected = (current == selected),
-                            onClick = { selected = current }
-                        )
+                        .selectable(selected = (current == selected), onClick = { selected = current })
                         .padding(16.dp)
                     ) {
                         RadioButton(
