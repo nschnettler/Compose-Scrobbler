@@ -100,4 +100,18 @@
     <string name="setting_notifications_description">Change notification preferences</string>
     <string name="setting_reset_title">Reset Preferences</string>
     <string name="setting_reset_description">Reset app settings to factory state</string>
+
+    <string name="period_overall">Overall</string>
+    <string name="period_week">Last week</string>
+    <string name="period_month">Last month</string>
+    <string name="period_quarter">Last quarter</string>
+    <string name="period_halfyear">Last half-year</string>
+    <string name="period_year">Last year</string>
+
+    <string name="period_overall_short">Overall</string>
+    <string name="period_week_short">Week</string>
+    <string name="period_month_short">Month</string>
+    <string name="period_quarter_short">Quarter</string>
+    <string name="period_halfyear_short">Half-year</string>
+    <string name="period_year_short">Year</string>
 </resources>

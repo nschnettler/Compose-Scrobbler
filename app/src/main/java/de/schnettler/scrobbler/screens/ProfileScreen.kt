@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.common.TimePeriod
 import de.schnettler.database.models.User
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
@@ -52,6 +51,7 @@ import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.util.UITimePeriod
 import de.schnettler.scrobbler.util.defaultSpacerSize
 import de.schnettler.scrobbler.util.firstLetter
 import de.schnettler.scrobbler.util.statusBarsHeight
@@ -148,7 +148,7 @@ fun ProfileScreen(
             })
 
             ExtendedFloatingActionButton(
-                text = { Text(text = timePeriod.niceName) },
+                text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
                 onClick = { model.showDialog(true) },
                 icon = { Icon(asset = Icons.Outlined.Event) },
                 contentColor = Color.White,
@@ -212,12 +212,12 @@ fun UserInfoComponent(user: User) {
 
 @Composable
 private fun PeriodSelectDialog(
-    onSelect: (selected: TimePeriod) -> Unit,
+    onSelect: (selected: UITimePeriod) -> Unit,
     onDismiss: () -> Unit,
     model: UserViewModel
 ) {
     var selected by mutableStateOf(model.timePeriod.value)
-    val radioGroupOptions = TimePeriod.values().asList()
+    val radioGroupOptions = UITimePeriod.values().asList()
     AlertDialog(
         onDismissRequest = { onDismiss() },
         title = { Text(text = stringResource(id = R.string.profile_perioddialog_title)) },
@@ -237,7 +237,7 @@ private fun PeriodSelectDialog(
                             onClick = { selected = current }
                         )
                         Text(
-                            text = current.niceName,
+                            text = stringResource(id = current.titleRes),
                             style = MaterialTheme.typography.body1.merge(),
                             modifier = Modifier.padding(start = 16.dp)
                         )
