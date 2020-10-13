@@ -26,8 +26,8 @@ dependencies {
     implementation(Square.retrofit2.converter.scalars)
     implementation(Square.okHttp3.okHttp)
     api(Square.okHttp3.loggingInterceptor)
-    debugApi ("com.github.chuckerteam.chucker:library:3.3.0")
-    releaseApi ("com.github.chuckerteam.chucker:library-no-op:3.3.0")
+    debugApi("com.github.chuckerteam.chucker:library:3.3.0")
+    releaseApi("com.github.chuckerteam.chucker:library-no-op:3.3.0")
 
     kapt(Square.moshi.kotlinCodegen)
     implementation(Square.moshi.kotlinReflect)

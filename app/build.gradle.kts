@@ -87,6 +87,7 @@ dependencies {
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.lifecycle.viewModelSavedState)
     implementation(AndroidX.work.runtimeKtx)
+    implementation(AndroidX.paletteKtx)
     implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
     kapt(AndroidX.hilt.compiler)

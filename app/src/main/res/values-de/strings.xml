@@ -64,4 +64,18 @@
     <string name="ic_open_in">In Browser öffnen</string>
     <string name="setting_list_scrobbleconstraints_network">Kostenloses Netzwerk</string>
     <string name="setting_list_scrobbleconstraints_battery">Akku nicht leer</string>
+    <string name="header_more">Mehr</string>
+    <string name="stats_plays">Wiedergaben</string>
+    <string name="period_overall">Insgesamt</string>
+    <string name="period_week">Letzte Woche</string>
+    <string name="period_month">Letzter Monat</string>
+    <string name="period_quarter">Letztes Quartal</string>
+    <string name="period_halfyear">Letztes Halbjahr</string>
+    <string name="period_year">Letztes Jahr</string>
+    <string name="period_overall_short">Insgesamt</string>
+    <string name="period_week_short">Woche</string>
+    <string name="period_month_short">Monat</string>
+    <string name="period_quarter_short">Quartal</string>
+    <string name="period_halfyear_short">Halbjahr</string>
+    <string name="period_year_short">Jahr</string>
 </resources>

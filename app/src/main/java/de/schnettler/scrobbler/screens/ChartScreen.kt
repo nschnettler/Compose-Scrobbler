@@ -31,6 +31,7 @@ import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.charts.ChartTab
 import de.schnettler.scrobbler.util.abbreviate
+import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
 @Composable
@@ -66,6 +67,7 @@ fun ChartScreen(
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
             Column {
+                androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
                 TabRow(
                     selectedTabIndex = selectedTab.index,
                     backgroundColor = MaterialTheme.colors.surface

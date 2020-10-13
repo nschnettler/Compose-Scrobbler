@@ -3,6 +3,8 @@ package de.schnettler.scrobbler.screens.details
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,14 +15,15 @@ import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndIn
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
+import de.schnettler.scrobbler.components.Carousel
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.CollapsingToolbar
 import de.schnettler.scrobbler.components.ExpandingInfoCard
-import de.schnettler.scrobbler.components.LazyListWithTitle
 import de.schnettler.scrobbler.components.ListWithTitle
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.components.MediaCard
 import de.schnettler.scrobbler.components.PlainListIconBackground
+import de.schnettler.scrobbler.components.rememberDominantColorCache
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.navigationBarsHeightPlus
@@ -44,6 +47,7 @@ fun ArtistDetailScreen(
 @Composable
 fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     val (_, stats, info) = artistInfo
+    val colorCache = rememberDominantColorCache()
 
     // BIO
     ExpandingInfoCard(info = info?.wiki)
@@ -62,30 +66,26 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     }
 
     // Albums
-    LazyListWithTitle(
-        title = stringResource(id = R.string.header_topalbums),
-        data = artistInfo.topAlbums
-    ) { (album, stats) ->
+    Carousel(items = artistInfo.topAlbums, titleRes = R.string.header_topalbums) { (album, stats), padding ->
         MediaCard(
             name = album.name,
             plays = stats.plays,
             imageUrl = album.imageUrl,
-            onSelect = { actioner(ListingSelected(album)) },
-            height = 256.dp
-        )
+            modifier = Modifier.padding(padding).preferredSize(256.dp),
+            colorCache = colorCache
+        ) { actioner(ListingSelected(album)) }
     }
 
     // Artists
-    LazyListWithTitle(
-        title = stringResource(id = R.string.artist_similar),
-        data = artistInfo.similarArtists
-    ) { artist ->
+    Carousel(items = artistInfo.similarArtists, titleRes = R.string.artist_similar) { artist, padding ->
         MediaCard(
             name = artist.name,
             imageUrl = artist.imageUrl,
-            onSelect = { actioner(ListingSelected(artist)) },
-            height = 180.dp
-        )
+            modifier = Modifier.padding(padding).preferredSize(180.dp),
+            colorCache = colorCache
+        ) {
+            actioner(ListingSelected(artist))
+        }
     }
 
     Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))

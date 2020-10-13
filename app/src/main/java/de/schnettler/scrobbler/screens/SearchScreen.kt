@@ -38,6 +38,7 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.abbreviate
+import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 
 @Composable
@@ -60,6 +61,7 @@ fun SearchScreen(
     }
 
     Column(modifier = modifier) {
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
         Box(modifier = Modifier.padding(16.dp)) {
             TextField(
                 value = searchInputState.value,

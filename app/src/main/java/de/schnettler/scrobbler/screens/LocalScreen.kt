@@ -6,7 +6,8 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.ExperimentalLazyDsl
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.icons.Icons
@@ -43,6 +44,7 @@ import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
 import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
 import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
+import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
 
@@ -150,18 +152,24 @@ fun Content(
     }
 }
 
+@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
-    onNowPlayingSelected: (Scrobble) -> Unit,
-    modifier: Modifier = Modifier
+    onNowPlayingSelected: (Scrobble) -> Unit
 ) {
-    LazyColumnFor(items = tracks, modifier = modifier) { track ->
-        if (track.isPlaying()) {
-            NowPlayingItem(name = track.name, artist = track.artist, onClick = { onNowPlayingSelected(track) })
-        } else {
-            ScrobbleItem(track = track, onActionClicked = { onActionClicked(track, it) })
+    LazyColumn {
+        item {
+            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+        }
+
+        items(tracks) { track ->
+            if (track.isPlaying()) {
+                NowPlayingItem(name = track.name, artist = track.artist, onClick = { onNowPlayingSelected(track) })
+            } else {
+                ScrobbleItem(track = track, onActionClicked = { onActionClicked(track, it) })
+            }
         }
     }
 }

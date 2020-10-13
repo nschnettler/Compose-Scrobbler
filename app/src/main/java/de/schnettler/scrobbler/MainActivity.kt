@@ -24,7 +24,6 @@ import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
-import de.schnettler.scrobbler.screens.ToolBar
 import de.schnettler.scrobbler.theme.AppTheme
 import de.schnettler.scrobbler.util.Navigator
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
@@ -37,8 +36,8 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
-import javax.inject.Inject
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -97,7 +96,6 @@ class MainActivity : AppCompatActivity() {
                                 is MainRoute -> {
                                     Scaffold(
                                         scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        topBar = { ToolBar(currentScreen = screen, actionHandler = ::handleAction) },
                                         bodyContent = {
                                             Content(screen = screen, host = snackHost, innerPadding = it)
                                         },

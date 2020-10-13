@@ -28,13 +28,15 @@
     <string name="track_sourcealbum">"From The Album</string>
     <string name="track_unknownalbum">We don‘t have an album for this track yet.</string>
 
-    <!-- Categorie Headers -->
+    <!-- Headers -->
+    <string name="header_more">More</string>
     <string name="header_toptracks">Top Tracks</string>
     <string name="header_topalbums">Top Albums</string>
     <string name="header_topartists">Top Artists</string>
     <string name="header_tags">Tags</string>
 
     <string name="stats_listeners">Listeners</string>
+    <string name="stats_plays">Plays</string>
     <string name="bio_unavailable">No Bio available</string>
     <string name="login_button">Login</string>
     <string name="profile_scrobblingsince">scrobbling since</string>
@@ -98,4 +100,18 @@
     <string name="setting_notifications_description">Change notification preferences</string>
     <string name="setting_reset_title">Reset Preferences</string>
     <string name="setting_reset_description">Reset app settings to factory state</string>
+
+    <string name="period_overall">Overall</string>
+    <string name="period_week">Last week</string>
+    <string name="period_month">Last month</string>
+    <string name="period_quarter">Last quarter</string>
+    <string name="period_halfyear">Last half-year</string>
+    <string name="period_year">Last year</string>
+
+    <string name="period_overall_short">Overall</string>
+    <string name="period_week_short">Week</string>
+    <string name="period_month_short">Month</string>
+    <string name="period_quarter_short">Quarter</string>
+    <string name="period_halfyear_short">Half-year</string>
+    <string name="period_year_short">Year</string>
 </resources>
