@@ -31,7 +31,7 @@ fun MainRouteContent(
     errorHandler: @Composable() (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedOut)
+    val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedIn)
 
 //    Crossfade(currentScreen) { screen ->
         when (val screen = currentScreen) {

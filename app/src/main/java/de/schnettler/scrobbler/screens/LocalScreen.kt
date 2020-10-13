@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.screens
 import android.content.Intent
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -63,10 +64,14 @@ fun LocalScreen(
             errorHandler = errorHandler,
             modifier = modifier
         )
-        false -> Button(onClick = {
-            context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-        }) {
-            Text(text = "Enable")
+        false -> {
+            Box(alignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                Button(onClick = {
+                    context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+                }) {
+                    Text(text = "Enable")
+                }
+            }
         }
     }
     Timber.i("Started Service")
