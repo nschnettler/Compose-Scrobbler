@@ -1,17 +1,21 @@
 package de.schnettler.scrobble
 
+import android.media.MediaMetadata
+import android.media.session.MediaController
 import android.media.session.PlaybackState
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.util.isPlaying
 import timber.log.Timber
 
-class PlaybackState(
+class ScrobbleState(
+    val controller: MediaController,
     private val scrobbler: Scrobbler
-) {
+) : MediaController.Callback() {
+
     private var nowPlaying: Scrobble? = null
     private var lastPlaybackState: Int? = null
 
-    fun updateTrack(track: Scrobble) {
+    private fun updateTrack(track: Scrobble) {
         val wasPlaying = nowPlaying?.isPlaying() ?: true
 
         when (track.isTheSameAs(nowPlaying)) {
@@ -51,5 +55,13 @@ class PlaybackState(
             current.pause()
             Timber.d("[Controller] Paused")
         }
+    }
+
+    override fun onMetadataChanged(metadata: MediaMetadata?) {
+        metadata?.let { updateTrack(Scrobble.fromMetadata(metadata, controller.packageName)) }
+    }
+
+    override fun onPlaybackStateChanged(state: PlaybackState?) {
+        state?.let { updatePlayBackState(state) }
     }
 }

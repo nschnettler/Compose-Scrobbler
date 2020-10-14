@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.media.session.MediaController
-import android.media.session.MediaController.Callback
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.media.session.MediaSessionManager.OnActiveSessionsChangedListener
@@ -20,14 +19,14 @@ import javax.inject.Inject
 class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSessionsChangedListener,
     OnSharedPreferenceChangeListener {
 
-    private val activeSessions: HashMap<MediaSession.Token, Pair<MediaController, Callback>> = hashMapOf()
+    private val activeSessions: HashMap<MediaSession.Token, ScrobbleState> = hashMapOf()
     private var allowedPackages = emptySet<String>()
 
     private lateinit var manager: MediaSessionManager
     private lateinit var componentName: ComponentName
 
     @Inject
-    lateinit var tracker: PlaybackTracker
+    lateinit var scrobbler: Scrobbler
     private lateinit var prefs: SharedPreferences
 
     companion object {
@@ -67,9 +66,9 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
          */
         activeSessions.filterNot { (token, _) ->
             allowedControllers.map { it.sessionToken }.contains(token)
-        }.forEach { token, (controller, callback) ->
-            Timber.d("[Removed Session] - ${controller.packageName}")
-            controller.unregisterCallback(callback)
+        }.forEach { (token, state) ->
+            Timber.d("[Removed Session] - ${state.controller.packageName}")
+            state.controller.unregisterCallback(state)
             activeSessions.remove(token)
         }
 
@@ -78,12 +77,12 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
          */
         allowedControllers.filter { !activeSessions.contains(it.sessionToken) }.forEach { controller ->
             Timber.d("[Added Session] - ${controller.packageName}")
-            val callback = MediaControllerCallback(controller, tracker)
-            controller.registerCallback(callback)
-            activeSessions[controller.sessionToken] = controller to callback
+            val scrobbleState = ScrobbleState(controller, scrobbler)
+            controller.registerCallback(scrobbleState)
+            activeSessions[controller.sessionToken] = scrobbleState
 
             // 2.1 Supply initial information
-            callback.apply {
+            scrobbleState.apply {
                 onMetadataChanged(controller.metadata)
                 onPlaybackStateChanged(controller.playbackState)
             }
