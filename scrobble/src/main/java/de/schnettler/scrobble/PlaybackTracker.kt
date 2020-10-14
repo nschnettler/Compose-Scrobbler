@@ -5,13 +5,13 @@ import android.media.session.PlaybackState
 import de.schnettler.database.models.Scrobble
 import javax.inject.Inject
 
-class PlayBackTracker @Inject constructor(
+class PlaybackTracker @Inject constructor(
     private val scrobbler: Scrobbler
 ) {
-    private val playerStates = hashMapOf<String, PlaybackController>()
+    private val playerStates = hashMapOf<String, de.schnettler.scrobble.PlaybackState>()
 
     private fun getPlaybackController(packageName: String) =
-        playerStates[packageName] ?: PlaybackController(scrobbler).also {
+        playerStates[packageName] ?: PlaybackState(scrobbler).also {
             playerStates[packageName] = it
         }
 

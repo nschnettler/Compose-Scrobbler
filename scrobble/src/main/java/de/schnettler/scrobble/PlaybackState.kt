@@ -5,7 +5,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.util.isPlaying
 import timber.log.Timber
 
-class PlaybackController(
+class PlaybackState(
     private val scrobbler: Scrobbler
 ) {
     private var nowPlaying: Scrobble? = null

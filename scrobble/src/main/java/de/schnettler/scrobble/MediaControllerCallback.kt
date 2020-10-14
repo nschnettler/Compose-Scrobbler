@@ -6,7 +6,7 @@ import android.media.session.PlaybackState
 
 class MediaControllerCallback(
     private val controller: MediaController,
-    private val playbackTracker: PlayBackTracker
+    private val playbackTracker: PlaybackTracker
 ) : MediaController.Callback() {
 
     override fun onPlaybackStateChanged(state: PlaybackState?) {
