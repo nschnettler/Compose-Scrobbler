@@ -16,8 +16,6 @@ class ScrobbleState(
     private var lastPlaybackState: Int? = null
 
     private fun updateTrack(track: Scrobble) {
-        val wasPlaying = nowPlaying?.isPlaying() ?: true
-
         when (track.isTheSameAs(nowPlaying)) {
             // Track is the same (title and artist match)
             true -> {
@@ -35,7 +33,7 @@ class ScrobbleState(
                 // Start new Track
                 Timber.d("[Controller] New Track $track")
                 nowPlaying = track
-                if (wasPlaying) {
+                if (controller.playbackState?.isPlaying() == true) {
                     track.play()
                     scrobbler.notifyNowPlaying(nowPlaying)
                 }
@@ -53,6 +51,11 @@ class ScrobbleState(
             Timber.d("[Controller] Resumed")
         } else {
             current.pause()
+            nowPlaying?.let {
+                if (scrobbler.submitScrobble(it)) {
+                    nowPlaying?.amountPlayed = 0
+                }
+            }
             Timber.d("[Controller] Paused")
         }
     }

@@ -50,9 +50,9 @@ class Scrobbler @Inject constructor(
             }
     }
 
-    fun submitScrobble(track: Scrobble) {
+    fun submitScrobble(track: Scrobble): Boolean {
         val scrobbleThreshold = prefs.getFloat(SCROBBLE_POINT_KEY, SCROBBLE_POINT_DEFAULT).get()
-        if (track.readyToScrobble(scrobbleThreshold)) {
+        return if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
             scope.launch {
@@ -68,8 +68,10 @@ class Scrobbler @Inject constructor(
 
             // 2. Schedule Workmanager Work
             if (prefs.getBoolean(AUTO_SCROBBLE_KEY, AUTO_SCROBBLE_DEFAULT).get()) { repo.scheduleScrobble() }
+            true
         } else {
             Timber.d("[Cache] Skipped ${track.name}")
+            false
         }
     }
 
