@@ -8,9 +8,8 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.repo.mapping.track.mapToLocal
-import kotlinx.coroutines.flow.combine
-import timber.log.Timber
+import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.track.ScrobbleMapper
 import javax.inject.Inject
 
 class LocalRepository @Inject constructor(
@@ -19,33 +18,20 @@ class LocalRepository @Inject constructor(
     private val authProvider: LastFmAuthProvider
 ) {
     val recentTracksStore = StoreBuilder.from(
-        fetcher = Fetcher.of { _: String ->
-            service.getUserRecentTrack(authProvider.getSessionKeyOrThrow()).map { it.mapToLocal() }
-        },
+        fetcher = Fetcher.of { ScrobbleMapper.forLists()(service.getUserRecentTrack(authProvider.session!!.key)) },
         sourceOfTruth = SourceOfTruth.of(
-            reader = {
-                localTrackDao.getLocalTracks().combine(
-                    localTrackDao.getNowPlaying()
-                ) { tracks, nowPlaying ->
-                    return@combine if (nowPlaying == null) {
-                        tracks
-                    } else {
-                        listOf(nowPlaying) + tracks
-                    }
-                }
-            },
-            writer = { _: String, value: List<Scrobble> ->
-                val changedRows = localTrackDao.insertAll(value)
-                val notInserted = value.filterIndexed { index, _ ->
+            reader = { localTrackDao.getListeningHistory() },
+            writer = { _: String, scrobbles: List<Scrobble> ->
+                // Update local scrobbles with remote data
+                val changedRows = localTrackDao.insertAll(scrobbles)
+                scrobbles.filterIndexed { index, _ ->
                     changedRows[index] == -1L
                 }.forEach { localTrackDao.updateTrackData(it.timestamp, it.name, it.artist, it.album) }
-                Timber.d("Found: $notInserted")
-                val nowPlaying = value.firstOrNull { it.status == ScrobbleStatus.PLAYING }
-                if (nowPlaying != null) {
+
+                // Update nowPlaying a) Replace b) Remove
+                scrobbles.firstOrNull { it.status == ScrobbleStatus.PLAYING }?.let { nowPlaying ->
                     localTrackDao.forceInsert(nowPlaying)
-                } else {
-                    localTrackDao.deleteByStatus(ScrobbleStatus.PLAYING)
-                }
+                } ?: localTrackDao.deleteByStatus(ScrobbleStatus.PLAYING)
             }
         )
     ).build()

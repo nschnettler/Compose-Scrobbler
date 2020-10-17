@@ -9,9 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @Suppress("MaxLineLength", "TooManyFunctions")
 @Dao
 abstract class LocalTrackDao : BaseDao<Scrobble> {
-    @Query("SELECT * FROM localTracks WHERE status != :exclude ORDER BY timestamp DESC LIMIT :limit")
-    abstract fun getLocalTracks(
-        exclude: ScrobbleStatus = ScrobbleStatus.PLAYING,
+    @Query("SELECT * FROM localTracks ORDER BY timestamp DESC LIMIT :limit")
+    abstract fun getListeningHistory(
         limit: Int = 50
     ): Flow<List<Scrobble>>
 

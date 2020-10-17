@@ -22,12 +22,14 @@ object TrackInfoMapper : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
     }
 }
 
-fun RecentTracksDto.mapToLocal() = Scrobble(
-    name = name,
-    artist = artist.name,
-    album = album.name,
-    duration = 1,
-    timestamp = date?.uts ?: -1,
-    playedBy = "external",
-    status = if (date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
-)
+object ScrobbleMapper : Mapper<RecentTracksDto, Scrobble> {
+    override suspend fun map(from: RecentTracksDto) = Scrobble(
+        name = from.name,
+        artist = from.artist.name,
+        album = from.album.name,
+        duration = 1,
+        timestamp = from.date?.uts ?: Long.MAX_VALUE,
+        playedBy = "external",
+        status = if (from.date != null) ScrobbleStatus.EXTERNAL else ScrobbleStatus.PLAYING
+    )
+}
