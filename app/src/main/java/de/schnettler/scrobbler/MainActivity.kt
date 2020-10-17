@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -12,7 +13,7 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.launchInComposition
+import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
@@ -80,11 +81,11 @@ class MainActivity : AppCompatActivity() {
                         }
                         val snackHost = remember { SnackbarHostState() }
 
-//                        Crossfade(current = navigator.current) { screen ->
+                        Crossfade(current = navigator.current) { screen ->
                             onListingClicked = {
                                 navigator.navigate(NestedRoute.DetailRoute(it))
                             }
-                            when (val screen = navigator.current) {
+                            when (screen) {
                                 is NestedRoute -> {
                                     Scaffold(
                                         scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                                     )
                                 }
                             }
-//                        }
+                        }
                     }
                 }
             }
@@ -157,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     fun showErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
         if (error.state is RefreshableUiState.Error) {
-            launchInComposition {
+            LaunchedTask {
                 val result = host.showSnackbar(
                     message = error.state.errorMessage
                         ?: error.state.exception?.message

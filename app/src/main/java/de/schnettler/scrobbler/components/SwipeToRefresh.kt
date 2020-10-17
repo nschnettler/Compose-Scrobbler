@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.layout.Stack
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
@@ -37,7 +36,7 @@ fun SwipeToRefreshLayout(
         true
     }
 
-    Stack(
+    Box(
         modifier = Modifier.swipeable(
             state = state,
             anchors = mapOf(

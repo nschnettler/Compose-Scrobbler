@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.onSizeChanged
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
@@ -38,9 +39,8 @@ import de.schnettler.scrobbler.util.InsetsAmbient
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.lerp
 import de.schnettler.scrobbler.util.offset
-import de.schnettler.scrobbler.util.onSizeChanged
 import de.schnettler.scrobbler.util.statusBarsHeight
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun CollapsingToolbar(
@@ -169,8 +169,9 @@ private fun Content(
                 .onSizeChanged(onBackdropSizeChanged)
         ) {
             imageUrl?.let {
-                CoilImageWithCrossfade(
+                CoilImage(
                     data = it,
+                    fadeIn = true,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize().offset { size ->
                         Offset(

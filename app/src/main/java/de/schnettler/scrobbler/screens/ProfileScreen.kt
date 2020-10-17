@@ -166,7 +166,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
             ListItem(
                 text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 secondaryText = {
-                    Text("${track.artist}")
+                    Text(track.artist)
                 },
                 icon = {
                     PlainListIconBackground {

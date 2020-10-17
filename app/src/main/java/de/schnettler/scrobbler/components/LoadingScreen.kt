@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.CircularProgressIndicator
@@ -12,7 +11,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier.fillMaxSize()) {
-    Box(modifier = modifier, gravity = ContentGravity.Center) {
+    Box(modifier = modifier, alignment = Alignment.Center) {
         CircularProgressIndicator(
             color = MaterialTheme.colors.secondary,
             modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)

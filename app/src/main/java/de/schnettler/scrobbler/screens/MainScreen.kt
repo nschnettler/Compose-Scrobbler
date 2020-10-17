@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.screens
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -28,13 +29,13 @@ fun MainRouteContent(
     localViewModel: LocalViewModel,
     searchViewModel: SearchViewModel,
     actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable() (UIError) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedIn)
 
-//    Crossfade(currentScreen) { screen ->
-        when (val screen = currentScreen) {
+    Crossfade(currentScreen) { screen ->
+        when (screen) {
             is MainRoute.ChartRoute -> ChartScreen(
                 model = chartsModel,
                 actionHandler = actionHandler,
@@ -72,5 +73,5 @@ fun MainRouteContent(
                 )
             }
         }
-//    }
+    }
 }

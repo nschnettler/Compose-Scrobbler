@@ -2,8 +2,8 @@ package de.schnettler.scrobbler.screens.details
 
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
@@ -31,7 +31,7 @@ fun TrackDetailScreen(
     modifier: Modifier = Modifier,
 ) {
     val (track, stats, info, album) = trackDetails
-    Stack(modifier.fillMaxSize()) {
+    Box(modifier.fillMaxSize()) {
         ScrollableColumn(children = {
             Spacer(modifier = Modifier.statusBarsHeight())
             AlbumCategory(

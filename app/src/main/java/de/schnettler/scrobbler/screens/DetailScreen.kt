@@ -1,8 +1,8 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.preferredSize
@@ -34,7 +34,7 @@ import de.schnettler.scrobbler.screens.details.ArtistDetailScreen
 import de.schnettler.scrobbler.screens.details.TrackDetailScreen
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
-import dev.chrisbanes.accompanist.coil.CoilImageWithCrossfade
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun DetailScreen(
@@ -109,8 +109,9 @@ fun AlbumCategory(
             ) {
                 Box(modifier = Modifier.preferredSize(60.dp)) {
                     album?.imageUrl?.let {
-                        CoilImageWithCrossfade(
+                        CoilImage(
                             data = it,
+                            fadeIn = true,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
                         )

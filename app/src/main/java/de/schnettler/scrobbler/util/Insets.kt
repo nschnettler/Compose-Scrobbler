@@ -19,7 +19,6 @@
 package de.schnettler.scrobbler.util
 
 import android.view.View
-import androidx.compose.foundation.layout.InnerPadding
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -426,7 +425,7 @@ fun Modifier.navigationBarsWidthPlus(
 }
 
 /**
- * Returns the current insets converted into a [InnerPadding].
+ * Returns the current insets converted into a [PaddingValues].
  *
  * @param start Whether to apply the inset on the start dimension.
  * @param top Whether to apply the inset on the top dimension.

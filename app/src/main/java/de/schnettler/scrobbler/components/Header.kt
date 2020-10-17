@@ -6,12 +6,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.graphics.Color
@@ -31,16 +30,15 @@ fun Header(
     Row(modifier) {
         Spacer(size = 16.dp, orientation = Orientation.Horizontal)
 
-        ProvideEmphasis(EmphasisAmbient.current.high) {
+        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(vertical = 8.dp)
-                    .weight(1f, true)
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
+
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f, true))
 
         AnimatedVisibility(visible = loading) {
             AutoSizedCircularProgressIndicator(

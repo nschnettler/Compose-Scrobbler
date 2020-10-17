@@ -1,12 +1,11 @@
 package de.schnettler.scrobbler.screens.local
 
+import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.contentColor
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
@@ -69,9 +68,7 @@ fun TrackEditDialog(
             dismissButton = {
                 TextButton(
                     onClick = onDismiss,
-                    contentColor = EmphasisAmbient.current.medium.applyEmphasis(
-                        contentColor()
-                    )
+                    contentColor = AmbientContentColor.current
                 ) {
                     Text(text = stringResource(id = R.string.edit_cancel))
                 }
@@ -101,7 +98,7 @@ fun ConfirmDialog(
         dismissButton = {
             TextButton(
                 onClick = { onDismiss(false) },
-                contentColor = EmphasisAmbient.current.medium.applyEmphasis(contentColor())
+                contentColor = AmbientContentColor.current
             ) {
                 Text(text = stringResource(id = R.string.confirmdialog_cancel))
             }

@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
@@ -101,7 +100,7 @@ fun Content(
         )
     }
 
-    Stack(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         if (recentTracksState.isLoading) { LoadingScreen() } else {
             SwipeToRefreshLayout(
                 refreshingState = recentTracksState.isRefreshing,
