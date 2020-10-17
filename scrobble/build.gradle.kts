@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    api(project(":repo"))
+    implementation(project(":repo"))
 
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)
