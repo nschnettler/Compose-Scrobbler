@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
+import de.schnettler.composepreferences.AmbientPreference
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
-import de.schnettler.composepreferences.PreferenceAmbient
 import de.schnettler.composepreferences.PreferenceGroup
 import de.schnettler.composepreferences.SeekBarPreference
 import de.schnettler.composepreferences.SwitchPreference
@@ -40,8 +40,8 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.util.getMediaBrowserServices
 import de.schnettler.scrobbler.util.statusBarsHeight
-import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 @Suppress("LongMethod")
 @Composable
@@ -130,7 +130,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
             CustomDivider()
 
-            val prefs = PreferenceAmbient.current
+            val prefs = AmbientPreference.current
             Preference(
                 title = stringResource(id = R.string.setting_reset_title),
                 summary = stringResource(id = R.string.setting_reset_description),
