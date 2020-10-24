@@ -38,7 +38,6 @@ class DetailRepository @Inject constructor(
     private val entityInfoDao: EntityInfoDao,
     private val relationDao: ArtistRelationDao,
     private val service: LastFmService,
-    private val lastFmAuthProvider: LastFmAuthProvider,
     private val imageRepo: ImageRepo,
     private val authProvider: LastFmAuthProvider,
     private val postService: PostService,
@@ -48,7 +47,7 @@ class DetailRepository @Inject constructor(
             if (artist.imageUrl == null) imageRepo.retrieveArtistImage(artist)
             coroutineScope {
                 val infoResult = async {
-                    service.getArtistInfo(artist.name, lastFmAuthProvider.getSessionKeyOrThrow())
+                    service.getArtistInfo(artist.name, authProvider.sessionKey)
                 }
                 val albums = async { service.getArtistAlbums(artist.name) }
                 val tracks = async { service.getArtistTracks(artist.name) }
@@ -103,11 +102,7 @@ class DetailRepository @Inject constructor(
     val trackStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Track ->
             TrackInfoMapper.map(
-                service.getTrackInfo(
-                    key.artist,
-                    key.name,
-                    lastFmAuthProvider.getSessionKeyOrThrow()
-                )
+                service.getTrackInfo(key.artist, key.name, authProvider.sessionKey)
             )
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -123,11 +118,9 @@ class DetailRepository @Inject constructor(
 
     val albumStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Album ->
-            val albumInfo = service.getAlbumInfo(
-                artistName = key.artist,
-                albumName = key.name, sessionKey = lastFmAuthProvider.getSessionKeyOrThrow()
+            AlbumInfoMapper.map(
+                service.getAlbumInfo(name = key.artist, albumName = key.name, sessionKey = authProvider.sessionKey)
             )
-            AlbumInfoMapper.map(albumInfo)
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = { key ->
@@ -154,12 +147,14 @@ class DetailRepository @Inject constructor(
 
     suspend fun toggleTrackLikeStatus(track: Track, info: EntityInfo) {
         val method = if (info.loved) LastFmService.METHOD_LOVE else LastFmService.METHOD_UNLOVE
-        val sig = createSignature(mutableMapOf(
-            "method" to method,
-            "track" to track.name,
-            "artist" to track.artist,
-            "sk" to authProvider.getSessionKeyOrThrow()
-        ))
+        val sig = createSignature(
+            mutableMapOf(
+                "method" to method,
+                "track" to track.name,
+                "artist" to track.artist,
+                "sk" to authProvider.getSessionKeyOrThrow()
+            )
+        )
         val result = postService.toggleTrackLoveStatus(
             method = method,
             track = track.name,

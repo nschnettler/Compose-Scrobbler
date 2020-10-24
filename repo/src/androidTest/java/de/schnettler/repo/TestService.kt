@@ -81,11 +81,11 @@ class TestService : LastFmService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getArtistInfo(name: String, sessionKey: String): ArtistInfoDto {
+    override suspend fun getArtistInfo(name: String, sessionKey: String?): ArtistInfoDto {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTrackInfo(artistName: String, trackName: String, sessionKey: String): TrackInfoDto {
+    override suspend fun getTrackInfo(artistName: String, trackName: String, sessionKey: String?): TrackInfoDto {
         TODO("Not yet implemented")
     }
 
@@ -97,7 +97,7 @@ class TestService : LastFmService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAlbumInfo(artistName: String, albumName: String, sessionKey: String): AlbumInfoDto {
+    override suspend fun getAlbumInfo(name: String, albumName: String, sessionKey: String?): AlbumInfoDto {
         TODO("Not yet implemented")
     }
 
