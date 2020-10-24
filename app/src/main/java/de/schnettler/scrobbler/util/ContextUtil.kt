@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.NotificationManagerCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,3 +25,6 @@ suspend fun Context.getMediaBrowserServices(): Map<String, String> {
         })
     }
 }
+
+fun Context.notificationListenerEnabled() =
+    NotificationManagerCompat.getEnabledListenerPackages(this).contains(this.packageName)

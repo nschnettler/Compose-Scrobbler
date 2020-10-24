@@ -1,17 +1,26 @@
 package de.schnettler.scrobbler.screens
 
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import androidx.annotation.StringRes
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.NotificationImportant
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -23,15 +32,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.common.BuildConfig
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -39,11 +50,14 @@ import de.schnettler.scrobbler.screens.local.ConfirmDialog
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
+import de.schnettler.scrobbler.util.AUTH_ENDPOINT
+import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
 import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
 import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
+import de.schnettler.scrobbler.util.notificationListenerEnabled
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import timber.log.Timber
@@ -54,26 +68,15 @@ fun LocalScreen(
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
+    loggedIn: Boolean
 ) {
-    val context = ContextAmbient.current
-    when (MediaListenerService.isEnabled(context)) {
-        true -> Content(
-            localViewModel = localViewModel,
-            actionHandler = actionHandler,
-            errorHandler = errorHandler,
-            modifier = modifier
-        )
-        false -> {
-            Box(alignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Button(onClick = {
-                    context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-                }) {
-                    Text(text = "Enable")
-                }
-            }
-        }
-    }
-    Timber.i("Started Service")
+    Content(
+        localViewModel = localViewModel,
+        actionHandler = actionHandler,
+        errorHandler = errorHandler,
+        modifier = modifier,
+        loggedIn = loggedIn
+    )
 }
 
 @Suppress("LongMethod")
@@ -82,6 +85,7 @@ fun Content(
     localViewModel: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    loggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
     onActive { localViewModel.startStream() }
@@ -119,7 +123,8 @@ fun Content(
                                 SUBMIT -> localViewModel.submitScrobble(track)
                             }
                         },
-                        onNowPlayingSelected = { }
+                        onNowPlayingSelected = { },
+                        errors = getErrors(ContextAmbient.current, loggedIn)
                     )
                 }
             }
@@ -156,16 +161,83 @@ fun Content(
     }
 }
 
+fun getErrors(context: Context, loggedIn: Boolean): List<ErrorListItem> {
+    val errors = mutableListOf<ErrorListItem>()
+
+    if (!context.notificationListenerEnabled()) errors.add(ErrorListItem(titleRes = R.string.error_listerner_title,
+        subtitleRes = R.string.error_listener_subtitle,
+        icon = Icons.Outlined.NotificationImportant,
+        onClick = {
+            context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+        }
+    ))
+    if (!loggedIn) errors.add(ErrorListItem(titleRes = R.string.error_login_title,
+        subtitleRes = R.string.error_login_subtitle,
+        icon = Icons.Outlined.AccountCircle,
+        onClick = {
+            val builder = CustomTabsIntent.Builder()
+            val customTabsIntent = builder.build()
+            customTabsIntent.launchUrl(
+                context,
+                Uri.parse("$AUTH_ENDPOINT?api_key=${BuildConfig.LASTFM_API_KEY}&cb=$REDIRECT_URL")
+                    .also { Timber.i(it.toString()) }
+            )
+        }
+    ))
+
+    return errors
+}
+
+@Composable
+fun ErrorItem(errorListItem: ErrorListItem) {
+    ListItem(
+        text = {
+            Text(text = stringResource(id = errorListItem.titleRes))
+        },
+        secondaryText = {
+            Text(text = stringResource(id = errorListItem.subtitleRes))
+        },
+        icon = {
+            Box(alignment = Alignment.Center) {
+                Icon(asset = errorListItem.icon)
+            }
+        },
+        modifier = Modifier.clickable(onClick = errorListItem.onClick)
+    )
+}
+
+data class ErrorListItem(
+    @StringRes val titleRes: Int,
+    @StringRes val subtitleRes: Int,
+    val icon: VectorAsset,
+    val onClick: () -> Unit,
+)
+
 @OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
-    onNowPlayingSelected: (Scrobble) -> Unit
+    onNowPlayingSelected: (Scrobble) -> Unit,
+    errors: List<ErrorListItem>
 ) {
     LazyColumn {
         item {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+        }
+
+        item {
+            Card(modifier = Modifier.padding(16.dp)) {
+                Column() {
+                    errors.forEachIndexed { index, error ->
+                        ErrorItem(errorListItem = error)
+
+                        if (index != errors.size - 1) {
+                            CustomDivider(startIndent = 72.dp)
+                        }
+                    }
+                }
+            }
         }
 
         items(tracks) { track ->

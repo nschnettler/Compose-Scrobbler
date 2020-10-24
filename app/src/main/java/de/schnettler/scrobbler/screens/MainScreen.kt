@@ -47,6 +47,7 @@ fun MainRouteContent(
                 actionHandler = actionHandler,
                 errorHandler = errorHandler,
                 modifier = modifier,
+                loggedIn = sessionStatus is SessionState.LoggedIn
             )
             is MainRoute.ProfileRoute -> {
                 when (sessionStatus) {
