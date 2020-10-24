@@ -78,4 +78,8 @@
     <string name="period_quarter_short">Quartal</string>
     <string name="period_halfyear_short">Halbjahr</string>
     <string name="period_year_short">Jahr</string>
+    <string name="error_listener_title">Kein Benachrichtigungszugriff</string>
+    <string name="error_listener_subtitle">Zugriff auf Mediabenachrichtigungen wird für Musik-Tracking benötigt.</string>
+    <string name="error_login_title">Nicht eingeloggt</string>
+    <string name="error_login_subtitle">Logge dich mit deinem Last.fm Konto ein um deine Scrobbles zu synchronisieren.</string>
 </resources>

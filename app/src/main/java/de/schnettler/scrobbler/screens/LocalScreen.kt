@@ -1,12 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.annotation.StringRes
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.Text
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,11 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.CloudUpload
-import androidx.compose.material.icons.outlined.NotificationImportant
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -32,11 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorAsset
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.schnettler.common.BuildConfig
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
@@ -47,11 +37,11 @@ import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.local.ConfirmDialog
+import de.schnettler.scrobbler.screens.local.ErrorItem
+import de.schnettler.scrobbler.screens.local.HistoryError
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
-import de.schnettler.scrobbler.util.AUTH_ENDPOINT
-import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
@@ -60,7 +50,6 @@ import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.util.notificationListenerEnabled
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
-import timber.log.Timber
 
 @Composable
 fun LocalScreen(
@@ -88,13 +77,17 @@ fun Content(
     loggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    onActive { localViewModel.startStream() }
+    onActive {
+        if (loggedIn) {
+            localViewModel.startStream()
+        }
+    }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
-    if (recentTracksState.isError) {
+    if (recentTracksState.isError && loggedIn) {
         errorHandler(
             UIError.ShowErrorSnackbar(
                 state = recentTracksState,
@@ -124,7 +117,8 @@ fun Content(
                             }
                         },
                         onNowPlayingSelected = { },
-                        errors = getErrors(ContextAmbient.current, loggedIn)
+                        errors = getErrors(ContextAmbient.current, loggedIn),
+                        onErrorClicked = { error -> actionHandler(error.action) }
                     )
                 }
             }
@@ -161,56 +155,9 @@ fun Content(
     }
 }
 
-fun getErrors(context: Context, loggedIn: Boolean): List<ErrorListItem> {
-    val errors = mutableListOf<ErrorListItem>()
-
-    if (!context.notificationListenerEnabled()) errors.add(ErrorListItem(titleRes = R.string.error_listerner_title,
-        subtitleRes = R.string.error_listener_subtitle,
-        icon = Icons.Outlined.NotificationImportant,
-        onClick = {
-            context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-        }
-    ))
-    if (!loggedIn) errors.add(ErrorListItem(titleRes = R.string.error_login_title,
-        subtitleRes = R.string.error_login_subtitle,
-        icon = Icons.Outlined.AccountCircle,
-        onClick = {
-            val builder = CustomTabsIntent.Builder()
-            val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(
-                context,
-                Uri.parse("$AUTH_ENDPOINT?api_key=${BuildConfig.LASTFM_API_KEY}&cb=$REDIRECT_URL")
-                    .also { Timber.i(it.toString()) }
-            )
-        }
-    ))
-
-    return errors
-}
-
-@Composable
-fun ErrorItem(errorListItem: ErrorListItem) {
-    ListItem(
-        text = {
-            Text(text = stringResource(id = errorListItem.titleRes))
-        },
-        secondaryText = {
-            Text(text = stringResource(id = errorListItem.subtitleRes))
-        },
-        icon = {
-            Box(alignment = Alignment.Center) {
-                Icon(asset = errorListItem.icon)
-            }
-        },
-        modifier = Modifier.clickable(onClick = errorListItem.onClick)
-    )
-}
-
-data class ErrorListItem(
-    @StringRes val titleRes: Int,
-    @StringRes val subtitleRes: Int,
-    val icon: VectorAsset,
-    val onClick: () -> Unit,
+private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
+    if (!context.notificationListenerEnabled()) HistoryError.NotificationAccessDisabled else null,
+    if (!loggedIn) HistoryError.LoggedOut else null
 )
 
 @OptIn(ExperimentalLazyDsl::class)
@@ -219,7 +166,8 @@ fun HistoryTrackList(
     tracks: List<Scrobble>,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
     onNowPlayingSelected: (Scrobble) -> Unit,
-    errors: List<ErrorListItem>
+    onErrorClicked: (HistoryError) -> Unit,
+    errors: List<HistoryError>
 ) {
     LazyColumn {
         item {
@@ -228,9 +176,9 @@ fun HistoryTrackList(
 
         item {
             Card(modifier = Modifier.padding(16.dp)) {
-                Column() {
+                Column {
                     errors.forEachIndexed { index, error ->
-                        ErrorItem(errorListItem = error)
+                        ErrorItem(item = error) { onErrorClicked(error) }
 
                         if (index != errors.size - 1) {
                             CustomDivider(startIndent = 72.dp)

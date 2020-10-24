@@ -114,10 +114,9 @@
     <string name="period_quarter_short">Quarter</string>
     <string name="period_halfyear_short">Half-year</string>
     <string name="period_year_short">Year</string>
-    <string name="error_listerner_title">Notification Listener Disabled</string>
-    <string name="error_listener_subtitle">Click to grant notification listener access</string>
-    <string name="error_listener_more">Notification listener access is needed to track music playback on this device. This app only ever accesses Media Notifications and does not read any other notifications</string>
+    <string name="error_listener_title">Can\'t access media notification</string>
+    <string name="error_listener_subtitle">Notification access needed for music tracking.</string>
 
     <string name="error_login_title">Not logged in</string>
-    <string name="error_login_subtitle">Click to login with your last.fm account</string>
+    <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
 </resources>

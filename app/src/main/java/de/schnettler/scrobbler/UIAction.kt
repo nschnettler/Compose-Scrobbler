@@ -11,6 +11,7 @@ sealed class UIAction {
     class OpenInBrowser(val url: String) : UIAction()
     object NavigateUp : UIAction()
     object ShowTimePeriodDialog : UIAction()
+    object OpenNotificationListenerSettings : UIAction()
 }
 
 sealed class UIError {
