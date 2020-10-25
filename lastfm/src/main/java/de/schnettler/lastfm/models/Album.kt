@@ -24,8 +24,8 @@ data class AlbumDto(
     override val url: String,
 
     override val playcount: Long,
-    override val listeners: Long = 0,
-    override val userplaycount: Long = 0,
+    override val listeners: Long = -1,
+    override val userplaycount: Long = -1,
 
     val mbid: String?,
     @Json(name = "artist") val artistEntity: MinimalArtist,
@@ -41,7 +41,7 @@ data class AlbumInfoDto(
 
     override val listeners: Long,
     override val playcount: Long,
-    override val userplaycount: Long = 0,
+    override val userplaycount: Long = -1,
 
     override val tags: TagsDto,
     override val wiki: WikiDto?,

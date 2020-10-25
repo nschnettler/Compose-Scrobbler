@@ -76,7 +76,7 @@ data class TrackInfoDto(
 
     override val listeners: Long,
     override val playcount: Long,
-    override val userplaycount: Long = 0,
+    override val userplaycount: Long = -1,
 
     // Duration is in ms
     override val duration: Long,

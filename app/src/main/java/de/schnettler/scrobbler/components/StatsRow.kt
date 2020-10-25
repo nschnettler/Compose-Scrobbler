@@ -21,27 +21,30 @@ import de.schnettler.scrobbler.util.abbreviate
 
 @Composable
 fun StatsRow(
-    items: List<Pair<VectorAsset, Long?>>
+    items: List<Pair<VectorAsset, Long>>
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
-        items.forEach {
-            val count = it.second ?: 0
+        items.filter { it.second >= 0 }.forEach {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
-                Text(text = count.abbreviate())
+                Icon(asset = it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
+                Text(text = it.second.abbreviate())
             }
         }
     }
 }
 
 @Composable
-fun ListeningStats(item: Stats?) = StatsRow(
-    items = listOf(
-        Icons.Rounded.PlayCircleOutline to item?.plays,
-        Icons.Rounded.Hearing to item?.userPlays,
-        Icons.Outlined.AccountCircle to item?.listeners
-    )
-)
+fun ListeningStats(item: Stats?) {
+    item?.let { stat ->
+        StatsRow(
+            items = listOf(
+                Icons.Rounded.PlayCircleOutline to stat.plays,
+                Icons.Rounded.Hearing to stat.userPlays,
+                Icons.Outlined.AccountCircle to stat.listeners
+            )
+        )
+    }
+}
