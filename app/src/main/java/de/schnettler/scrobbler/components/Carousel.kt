@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRowFor
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -73,7 +74,7 @@ fun <T : Toplist> TopListCarousel(
         action = {
             TextButton(
                 onClick = { },
-                contentColor = MaterialTheme.colors.secondary,
+                colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
             ) {
                 Text(text = stringResource(id = R.string.header_more))
             }

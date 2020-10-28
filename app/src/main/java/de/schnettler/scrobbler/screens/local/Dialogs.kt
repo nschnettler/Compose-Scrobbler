@@ -1,11 +1,13 @@
 package de.schnettler.scrobbler.screens.local
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.AmbientContentColor
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
@@ -58,21 +60,11 @@ fun TrackEditDialog(
             },
             confirmButton = {
                 val updated = track.copyByState(trackState, artistState, albumState)
-                TextButton(
-                    onClick = { onSelect(if (updated != track) updated else null) },
-                    contentColor = MaterialTheme.colors.secondary
-                ) {
-                    Text(text = stringResource(id = R.string.edit_save))
-                }
+                PositiveButton(
+                    textRes = R.string.edit_save,
+                    onPressed = { onSelect(if (updated != track) updated else null) })
             },
-            dismissButton = {
-                TextButton(
-                    onClick = onDismiss,
-                    contentColor = AmbientContentColor.current
-                ) {
-                    Text(text = stringResource(id = R.string.edit_cancel))
-                }
-            }
+            dismissButton = { NegativeButton(textRes = R.string.edit_cancel, onPressed = onDismiss) }
         )
     }
 }
@@ -87,21 +79,27 @@ fun ConfirmDialog(
         onDismissRequest = { onDismiss(false) },
         title = { Text(text = title) },
         text = { Text(text = description) },
-        confirmButton = {
-            TextButton(
-                onClick = { onDismiss(true) },
-                contentColor = MaterialTheme.colors.secondary
-            ) {
-                Text(text = stringResource(id = R.string.confirmdialog_confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = { onDismiss(false) },
-                contentColor = AmbientContentColor.current
-            ) {
-                Text(text = stringResource(id = R.string.confirmdialog_cancel))
-            }
-        }
+        confirmButton = { PositiveButton(textRes = R.string.confirmdialog_confirm, onPressed = { onDismiss(true) }) },
+        dismissButton = { NegativeButton(textRes = R.string.confirmdialog_cancel, onPressed = { onDismiss(false) }) }
     )
+}
+
+@Composable
+private fun NegativeButton(@StringRes textRes: Int, onPressed: () -> Unit) {
+    TextButton(
+        onClick = onPressed,
+        colors = ButtonConstants.defaultTextButtonColors(contentColor = AmbientContentColor.current),
+    ) {
+        Text(text = stringResource(id = textRes))
+    }
+}
+
+@Composable
+private fun PositiveButton(@StringRes textRes: Int, onPressed: () -> Unit) {
+    TextButton(
+        onClick = onPressed,
+        colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
+    ) {
+        Text(text = stringResource(id = textRes))
+    }
 }
