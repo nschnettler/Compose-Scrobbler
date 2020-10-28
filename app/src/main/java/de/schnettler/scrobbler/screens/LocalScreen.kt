@@ -175,13 +175,15 @@ fun HistoryTrackList(
         }
 
         item {
-            Card(modifier = Modifier.padding(16.dp)) {
-                Column {
-                    errors.forEachIndexed { index, error ->
-                        ErrorItem(item = error) { onErrorClicked(error) }
+            if (errors.isNotEmpty()) {
+                Card(modifier = Modifier.padding(16.dp)) {
+                    Column {
+                        errors.forEachIndexed { index, error ->
+                            ErrorItem(item = error) { onErrorClicked(error) }
 
-                        if (index != errors.size - 1) {
-                            CustomDivider(startIndent = 72.dp)
+                            if (index != errors.size - 1) {
+                                CustomDivider(startIndent = 72.dp)
+                            }
                         }
                     }
                 }
