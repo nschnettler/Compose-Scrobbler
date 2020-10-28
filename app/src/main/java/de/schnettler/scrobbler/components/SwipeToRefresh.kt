@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offsetPx
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.size
@@ -45,7 +46,7 @@ fun SwipeToRefreshLayout(
             ),
             thresholds = { _, _ -> FractionalThreshold(0.5f) },
             orientation = Orientation.Vertical
-        )
+        ).fillMaxSize()
     ) {
         content()
         Box(Modifier.align(Alignment.TopCenter).offsetPx(y = state.offset)) {
