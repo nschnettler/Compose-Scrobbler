@@ -108,16 +108,18 @@ fun ProfileScreen(
         onRefresh = model::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
-        ProfileContent(
-            modifier = modifier,
-            user = userState.currentData,
-            artists = artistState.currentData,
-            albums = albumState.currentData,
-            tracks = trackState.currentData,
-            timePeriod = timePeriod,
-            onFabClicked = { model.showDialog(true) },
-            actioner = actionHandler,
-        )
+        userState.currentData?.let {
+            ProfileContent(
+                modifier = modifier,
+                user = userState.currentData,
+                artists = artistState.currentData,
+                albums = albumState.currentData,
+                tracks = trackState.currentData,
+                timePeriod = timePeriod,
+                onFabClicked = { model.showDialog(true) },
+                actioner = actionHandler,
+            )
+        } ?: LoginScreen()
     }
 }
 

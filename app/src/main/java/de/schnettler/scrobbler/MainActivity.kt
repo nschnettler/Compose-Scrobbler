@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -15,10 +14,11 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedTask
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
@@ -26,7 +26,6 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.theme.AppTheme
-import de.schnettler.scrobbler.util.Navigator
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
@@ -54,12 +53,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
-    private val bottomNavDestinations = listOf(
-        MainRoute.ChartRoute,
-        MainRoute.LocalRoute,
-        MainRoute.SearchRoute,
-        MainRoute.ProfileRoute,
-        MainRoute.SettingsRoute
+    private val mainScreens = listOf(
+        Screen.Charts,
+        Screen.History,
+        Screen.Search,
+        Screen.Profile,
+        Screen.Settings
     )
 
     @Inject
@@ -75,41 +74,21 @@ class MainActivity : AppCompatActivity() {
             ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
                     ProvideDisplayInsets {
-                        val navigator: Navigator<AppRoute> = rememberSavedInstanceState(
-                            saver = Navigator.saver(onBackPressedDispatcher)
-                        ) {
-                            Navigator(MainRoute.LocalRoute, onBackPressedDispatcher)
-                        }
+                        val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
-
-                        Crossfade(current = navigator.current) { screen ->
-                            onListingClicked = {
-                                navigator.navigate(NestedRoute.DetailRoute(it))
+                        onListingClicked = {
+//                                navigator.navigate(NestedRoute.DetailRoute(it))
+                        }
+                        Scaffold(
+                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                            bottomBar = {
+                                BottomNavigationBar(
+                                    navController = navController,
+                                    screens = mainScreens,
+                                )
                             }
-                            when (screen) {
-                                is NestedRoute -> {
-                                    Scaffold(
-                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        bodyContent = {
-                                            Content(screen = screen, host = snackHost, innerPadding = it)
-                                        },
-                                    )
-                                }
-                                is MainRoute -> {
-                                    Scaffold(
-                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        bodyContent = {
-                                            Content(screen = screen, host = snackHost, innerPadding = it)
-                                        },
-                                        bottomBar = {
-                                            BottomNavigationBar(
-                                                items = bottomNavDestinations,
-                                                currentScreen = screen
-                                            ) { newScreen -> navigator.replace(newScreen as MainRoute) }
-                                        }
-                                    )
-                                }
-                            }
+                        ) {
+                            Content(controller = navController, host = snackHost, innerPadding = it)
                         }
                     }
                 }
@@ -119,19 +98,17 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun Content(screen: AppRoute, host: SnackbarHostState, innerPadding: PaddingValues) {
+    private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
         MainRouteContent(
-            currentScreen = screen,
+            navController = controller,
             model = model,
             chartsModel = chartsModel,
             userViewModel = userViewModel,
             localViewModel = localViewModel,
             searchViewModel = searchViewModel,
             detailsViewModel = detailsViewModel,
-            actionHandler = ::handleAction,
-            errorHandler = { error ->
-                handleError(host = host, error = error)
-            },
+            actioner = ::handleAction,
+            errorer = { error -> handleError(host = host, error = error) },
             modifier = Modifier.padding(innerPadding)
         )
     }

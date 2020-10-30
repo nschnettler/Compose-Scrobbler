@@ -34,7 +34,7 @@ android {
 
     composeOptions {
         kotlinCompilerVersion = "1.4.0"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha05"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha06"
     }
 
     compileOptions {
@@ -75,6 +75,7 @@ dependencies {
     implementation(AndroidX.compose.runtime.liveData)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
+    implementation("androidx.navigation:navigation-compose:_")
     implementation(AndroidX.ui.tooling)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)

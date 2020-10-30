@@ -52,15 +52,15 @@ import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 
 @Composable
-fun LocalScreen(
-    localViewModel: LocalViewModel,
+fun HistoryScreen(
+    model: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
     loggedIn: Boolean
 ) {
     Content(
-        localViewModel = localViewModel,
+        localViewModel = model,
         actionHandler = actionHandler,
         errorHandler = errorHandler,
         modifier = modifier,
