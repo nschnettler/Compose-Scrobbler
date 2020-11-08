@@ -1,10 +1,10 @@
 package de.schnettler.scrobbler.screens.local
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -23,10 +23,7 @@ fun NowPlayingItem(name: String, artist: String, onClick: () -> Unit) {
             secondaryText = { Text(artist) },
             icon = {
                 PlainListIconBackground(MaterialTheme.colors.secondary) {
-                    Icon(
-                        asset = Icons.Rounded.MusicNote,
-                        tint = Color.White
-                    )
+                    Icon(Icons.Rounded.MusicNote)
                 }
             },
             modifier = Modifier.clickable(onClick = onClick)

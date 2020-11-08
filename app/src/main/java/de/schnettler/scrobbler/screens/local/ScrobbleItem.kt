@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens.local
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -138,7 +138,7 @@ private fun QuickActionsRow(items: List<ScrobbleAction>, onSelect: (ScrobbleActi
     Row(modifier = Modifier.fillMaxWidth()) {
         items.forEach {
             IconButton(onClick = { onSelect(it) }) {
-                Icon(asset = it.asset)
+                Icon(it.asset)
             }
             Spacer(modifier = Modifier.width(24.dp))
         }

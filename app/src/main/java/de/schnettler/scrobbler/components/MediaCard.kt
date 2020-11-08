@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
@@ -108,7 +108,7 @@ private fun StatChip(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
-                    Icon(asset = Icons.Outlined.Hearing.copy(defaultHeight = 16.dp, defaultWidth = 16.dp))
+                    Icon(Icons.Outlined.Hearing.copy(defaultHeight = 16.dp, defaultWidth = 16.dp))
                     Spacer(size = 4.dp, orientation = Orientation.Horizontal)
                     Text(text = plays.abbreviate(), style = MaterialTheme.typography.caption)
                 }
