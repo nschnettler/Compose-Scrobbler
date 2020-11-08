@@ -23,7 +23,7 @@ class StatsDaoTest : DatabaseTest() {
     }
 
     @Test
-    fun insertOrUpdateStats_updatingWithUserPlaysZero_updatesPublicStats() = runBlockingTest {
+    fun insertOrUpdateStats_updatingWithUserPlaysMinusOne_updatesPublicStats() = runBlockingTest {
         // GIVEN - Stats in DB
         val stat = listOf(
             Stats("stat1", 10, 20, 30),
@@ -32,10 +32,10 @@ class StatsDaoTest : DatabaseTest() {
         )
         db.statDao().insertAll(stat)
 
-        // WHEN - Stat with userplays = 0 is inserted/updated
+        // WHEN - Stat with userplays = -1 is inserted/updated
         val newPlays = 230L
         val newListeners = 545L
-        val updatedStat = stat[2].copy(plays = newPlays, listeners = newListeners, userPlays = 0)
+        val updatedStat = stat[2].copy(plays = newPlays, listeners = newListeners, userPlays = -1)
         db.statDao().insertOrUpdateStats(listOf(updatedStat))
 
         // THEN - Stat is updated: Only public stats changed, userplays stays the same
