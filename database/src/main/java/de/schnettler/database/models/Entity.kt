@@ -4,12 +4,12 @@ import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import kotlinx.android.parcel.Parcelize
+import java.util.*
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
-import kotlinx.android.parcel.Parcelize
 
 interface BaseEntity
 
@@ -37,7 +37,7 @@ sealed class LastFmEntity(
     @Entity(tableName = "albums")
     data class Album(
         override val name: String,
-        override val url: String,
+        override val url: String = "",
         val artist: String,
         @PrimaryKey
         override val id: String = "album_${name.toLowerCase(Locale.US)}:artist_${artist.toLowerCase(Locale.US)}",
@@ -49,16 +49,20 @@ sealed class LastFmEntity(
     @Entity(tableName = "artists")
     data class Artist(
         override val name: String,
-        override val url: String,
-        @PrimaryKey override val id: String = "artist_${name.toLowerCase(Locale.US)}",
+        override val url: String = "",
+        @PrimaryKey override val id: String = generateId(name),
         override val imageUrl: String? = null
-    ) : LastFmEntity(id, name, url, imageUrl)
+    ) : LastFmEntity(id, name, url, imageUrl) {
+        companion object {
+            fun generateId(name: String) = "artist_${name.toLowerCase(Locale.US)}"
+        }
+    }
 
     @Parcelize
     @Entity(tableName = "tracks")
     data class Track(
         override val name: String,
-        override val url: String,
+        override val url: String = "",
         val artist: String,
         val album: String? = null,
         val albumId: String? = null,

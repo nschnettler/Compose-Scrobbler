@@ -30,17 +30,17 @@ import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 
 @Composable
 fun ArtistDetailScreen(
-    artistInfo: ArtistWithStatsAndInfo,
-    actionHandler: (UIAction) -> Unit
+    info: ArtistWithStatsAndInfo,
+    actioner: (UIAction) -> Unit
 ) {
     CollapsingToolbar(
-        imageUrl = artistInfo.entity.imageUrl,
-        title = artistInfo.entity.name,
-        actionHandler = actionHandler,
+        imageUrl = info.entity.imageUrl,
+        title = info.entity.name,
+        actionHandler = actioner,
         statusBarGuardAlpha = 0f,
-        menuActions = listOf(MenuAction.OpenInBrowser(artistInfo.entity.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(info.entity.url))
     ) {
-        Content(artistInfo = artistInfo, actioner = actionHandler)
+        Content(artistInfo = info, actioner = actioner)
     }
 }
 

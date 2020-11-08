@@ -36,22 +36,22 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class, ExperimentalTime::class)
 @Composable
 fun AlbumDetailScreen(
-    albumDetails: AlbumDetails,
-    actionHandler: (UIAction) -> Unit,
+    details: AlbumDetails,
+    actioner: (UIAction) -> Unit,
 ) {
-    val (album, stats, info, artist) = albumDetails
+    val (album, stats, info, artist) = details
     CollapsingToolbar(
         imageUrl = album.imageUrl,
         title = album.name,
         statusBarGuardAlpha = 0F,
-        actionHandler = actionHandler,
+        actionHandler = actioner,
         menuActions = listOf(MenuAction.OpenInBrowser(album.url))
     ) {
         ArtistItem(
             artist = artist ?: LastFmEntity.Artist(album.artist, ""),
-            albumDetails.trackNumber,
-            albumDetails.runtime,
-            actionHandler
+            details.trackNumber,
+            details.runtime,
+            actioner
         )
 
         ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
@@ -60,19 +60,19 @@ fun AlbumDetailScreen(
 
         ListeningStats(item = stats)
 
-        ListWithTitle(title = stringResource(id = R.string.header_tags), list = albumDetails.info?.tags) { tags ->
-            ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
+        ListWithTitle(title = stringResource(id = R.string.header_tags), list = details.info?.tags) { tags ->
+            ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) })
         }
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
-        ListWithTitle(title = "Tracks", list = albumDetails.tracks) { tracks ->
+        ListWithTitle(title = "Tracks", list = details.tracks) { tracks ->
             tracks.forEachIndexed { index, (track, info) ->
                 ListItem(
                     text = { Text(track.name) },
                     secondaryText = { Text(text = info.duration.asMinSec()) },
                     icon = { IndexListIconBackground(index = index) },
-                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
+                    modifier = Modifier.clickable(onClick = { actioner(ListingSelected(track)) })
                 )
             }
         }

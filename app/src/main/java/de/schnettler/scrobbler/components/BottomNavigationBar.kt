@@ -23,30 +23,27 @@ fun BottomNavigationBar(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.arguments?.getString(KEY_ROUTE)
-    CustomBottomNavigation(
-        backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
-            .navigationBarsPadding()
-    ) {
-        screens.forEach { screen ->
-            BottomNavigationItem(
-                icon = { Icon(screen.icon) },
-                label = {
-                    Text(text = stringResource(id = screen.titleId), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                },
-                selected = currentRoute == screen.routeId,
-                onClick = {
-                    // This is the equivalent to popUpTo the start destination
-                    // navController.popBackStack(navController.graph.startDestination, false)
 
-
-                    // This if check gives us a "singleTop" behavior where we do not create a
-                    // second instance of the composable if we are already on that destination
-                    if (currentRoute != screen.routeId) {
-                        navController.popBackStack()
-                        navController.navigate(screen.routeId)
+    if (Screen.mainRoutes.map { it.routeId }.contains(currentRoute)) {
+        CustomBottomNavigation(
+            backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
+                .navigationBarsPadding()
+        ) {
+            screens.forEach { screen ->
+                BottomNavigationItem(
+                    icon = { Icon(screen.icon) },
+                    label = {
+                        Text(text = stringResource(id = screen.titleId), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    },
+                    selected = currentRoute == screen.routeId,
+                    onClick = {
+                        navController.popBackStack(navController.graph.startDestination, false)
+                        if (currentRoute != screen.routeId) {
+                            navController.navigate(screen.routeId)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

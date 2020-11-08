@@ -27,7 +27,7 @@ class ImageRepo @Inject constructor(
         Timber.d("[Spotify] Requesting images for ${needsImage.size} artists")
         val service = provideSpotifyService(authProvider, authenticator)
         needsImage.forEach { artist ->
-            retrieveArtistImage(artist = artist, spotifyService = service)
+            updateArtistImage(artist = artist, spotifyService = service)
         }
 
         val trackNeedsImage = chartDao.getTracksWithoutImages()
@@ -42,7 +42,7 @@ class ImageRepo @Inject constructor(
         }
     }
 
-    suspend fun retrieveArtistImage(
+    suspend fun updateArtistImage(
         artist: LastFmEntity.Artist,
         maxRes: Long = 1000,
         spotifyService: SpotifyService? = null

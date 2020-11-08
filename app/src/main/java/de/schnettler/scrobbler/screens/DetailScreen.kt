@@ -16,9 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
-import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
-import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
@@ -26,57 +24,36 @@ import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ListTitle
-import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.details.AlbumDetailScreen
 import de.schnettler.scrobbler.screens.details.ArtistDetailScreen
 import de.schnettler.scrobbler.screens.details.TrackDetailScreen
 import de.schnettler.scrobbler.theme.AppColor
-import de.schnettler.scrobbler.viewmodels.DetailViewModel
+import de.schnettler.scrobbler.viewmodels.RefreshableStateViewModel2
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
-fun DetailScreen(
-    model: DetailViewModel,
-    actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit,
+fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
+    model: RefreshableStateViewModel2<Key, StateType, Output>,
+    actioner: (UIAction) -> Unit,
+    errorer: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val detailState by model.state.collectAsState()
-    if (detailState.isError) {
-        errorHandler(
-            UIError.ShowErrorSnackbar(
-                state = detailState,
-                fallbackMessage = stringResource(id = R.string.error_details),
-                onAction = model::refresh
+    val state by model.state.collectAsState()
+    RefreshableScreen(
+        state = state,
+        refresh = model::refresh,
+        errorer = errorer,
+        errorId = R.string.error_details
+    ) { details ->
+        when (details) {
+            is EntityWithStatsAndInfo.ArtistWithStatsAndInfo -> ArtistDetailScreen(info = details, actioner = actioner)
+            is EntityWithStatsAndInfo.AlbumDetails -> AlbumDetailScreen(details = details, actioner = actioner)
+            is EntityWithStatsAndInfo.TrackWithStatsAndInfo -> TrackDetailScreen(
+                details = details,
+                actioner = actioner,
+                modifier = modifier
             )
-        )
-    }
-
-    if (detailState.isLoading) { LoadingScreen() } else {
-        SwipeToRefreshLayout(
-            refreshingState = detailState.isRefreshing,
-            onRefresh = { model.refresh() },
-            refreshIndicator = { SwipeRefreshProgressIndicator() }
-        ) {
-            detailState.currentData.let { details ->
-                when (details) {
-                    is ArtistWithStatsAndInfo -> ArtistDetailScreen(
-                        artistInfo = details,
-                        actionHandler = actionHandler,
-                    )
-                    is TrackWithStatsAndInfo -> TrackDetailScreen(
-                        details,
-                        actionHandler,
-                        modifier,
-                    )
-                    is AlbumDetails -> AlbumDetailScreen(
-                        albumDetails = details,
-                        actionHandler = actionHandler,
-                    )
-                }
-            }
+            else -> Text(text = "ERROR")
         }
     }
 }

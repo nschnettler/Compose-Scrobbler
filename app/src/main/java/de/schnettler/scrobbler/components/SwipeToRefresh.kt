@@ -27,7 +27,7 @@ private val RefreshDistance = 80.dp
 fun SwipeToRefreshLayout(
     refreshingState: Boolean,
     onRefresh: () -> Unit,
-    refreshIndicator: @Composable () -> Unit,
+    refreshIndicator: @Composable () -> Unit = { SwipeRefreshProgressIndicator() },
     content: @Composable () -> Unit
 ) {
     val refreshDistance = with(DensityAmbient.current) { RefreshDistance.toPx() }

@@ -18,11 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.Screen.AlbumDetails
+import de.schnettler.scrobbler.Screen.ArtistDetails
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.theme.AppTheme
@@ -31,11 +34,14 @@ import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
+import de.schnettler.scrobbler.viewmodels.AlbumViewModel
+import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
+import de.schnettler.scrobbler.viewmodels.TrackViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,6 +56,9 @@ class MainActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val localViewModel: LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+    private val artistViewModel: ArtistViewModel by viewModels()
+    private val albumViewModel: AlbumViewModel by viewModels()
+    private val trackViewModel: TrackViewModel by viewModels()
 
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
@@ -77,7 +86,15 @@ class MainActivity : AppCompatActivity() {
                         val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
                         onListingClicked = {
-//                                navigator.navigate(NestedRoute.DetailRoute(it))
+                            Timber.d("ClickedOnListing")
+                            when (it) {
+                                is LastFmEntity.Artist ->
+                                    navController.navigate(ArtistDetails.withArg(it.name))
+                                is LastFmEntity.Album ->
+                                    navController.navigate(AlbumDetails.withArgs(listOf(it.artist, it.name)))
+                                is LastFmEntity.Track ->
+                                    navController.navigate(Screen.TrackDetails.withArgs(listOf(it.artist, it.name)))
+                            }
                         }
                         Scaffold(
                             scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
@@ -101,12 +118,13 @@ class MainActivity : AppCompatActivity() {
     private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
         MainRouteContent(
             navController = controller,
-            model = model,
             chartsModel = chartsModel,
             userViewModel = userViewModel,
             localViewModel = localViewModel,
             searchViewModel = searchViewModel,
-            detailsViewModel = detailsViewModel,
+            artistViewModel = artistViewModel,
+            albumViewModel = albumViewModel,
+            trackViewModel = trackViewModel,
             actioner = ::handleAction,
             errorer = { error -> handleError(host = host, error = error) },
             modifier = Modifier.padding(innerPadding)
