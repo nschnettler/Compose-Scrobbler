@@ -13,19 +13,19 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.Screen.AlbumDetails
-import de.schnettler.scrobbler.Screen.ArtistDetails
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.theme.AppTheme
@@ -34,6 +34,7 @@ import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
+import de.schnettler.scrobbler.util.route
 import de.schnettler.scrobbler.viewmodels.AlbumViewModel
 import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
@@ -86,23 +87,26 @@ class MainActivity : AppCompatActivity() {
                         val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
                         onListingClicked = {
-                            Timber.d("ClickedOnListing")
-                            when (it) {
-                                is LastFmEntity.Artist ->
-                                    navController.navigate(ArtistDetails.withArg(it.name))
-                                is LastFmEntity.Album ->
-                                    navController.navigate(AlbumDetails.withArgs(listOf(it.artist, it.name)))
-                                is LastFmEntity.Track ->
-                                    navController.navigate(Screen.TrackDetails.withArgs(listOf(it.artist, it.name)))
-                            }
+                            navController.navigate(when (it) {
+                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
+                                is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
+                            })
                         }
+
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
                         Scaffold(
                             scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
                             bottomBar = {
-                                BottomNavigationBar(
-                                    navController = navController,
-                                    screens = mainScreens,
-                                )
+//                                if (mainScreens.map { it.routeId }.contains(navBackStackEntry?.route())) {
+                                    BottomNavigationBar(
+                                        currentRoute = navBackStackEntry?.route(),
+                                        screens = mainScreens,
+                                    ) {
+                                        navController.popBackStack(navController.graph.startDestination, false)
+                                        navController.navigate(it.routeId)
+                                    }
+//                                }
                             }
                         ) {
                             Content(controller = navController, host = snackHost, innerPadding = it)

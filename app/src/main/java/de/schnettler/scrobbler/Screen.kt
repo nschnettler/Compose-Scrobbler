@@ -16,9 +16,8 @@ import androidx.navigation.compose.navArgument
 
 data class NavArgument(
     val name: String,
-    val default: String = "",
 ) {
-    val navargument = navArgument(name) { defaultValue = default }
+    val navArg = navArgument(name) { nullable = true }
 }
 
 sealed class Screen(
@@ -27,8 +26,8 @@ sealed class Screen(
     @StringRes val titleId: Int,
     val icon: VectorAsset,
 
-    val fullRoute: String = generateFullRoute(routeId, args),
-    val navArgs: List<NamedNavArgument> = args.map { it.navargument },
+    val argRoute: String = generateRouteWithArgPlaceholders(routeId, args),
+    val navArgs: List<NamedNavArgument> = args.map { it.navArg },
 ) {
     object Charts : Screen(routeId = "chart", titleId = R.string.nav_charts, icon = Rounded.BarChart)
     object History : Screen(routeId = "history", titleId = R.string.nav_history, icon = Rounded.History)
@@ -38,7 +37,7 @@ sealed class Screen(
     object ArtistDetails :
         Screen(
             routeId = "artist",
-            args = listOf(NavArgument("artist")),
+            args = listOf(NavArgument("artistName")),
             titleId = R.string.nav_history,
             icon = Outlined.AccountCircle
         )
@@ -77,7 +76,7 @@ sealed class Screen(
     fun withArg(arg: String) = "$routeId/$arg"
 }
 
-fun generateFullRoute(route: String, args: List<NavArgument>) =
+fun generateRouteWithArgPlaceholders(route: String, args: List<NavArgument>) =
     route + if (args.isNotEmpty()) args.joinToString("/", "/") {
         "{${it.name}}"
     } else ""
