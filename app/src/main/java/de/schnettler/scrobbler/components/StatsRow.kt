@@ -1,12 +1,12 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.rounded.Hearing
@@ -30,7 +30,7 @@ fun StatsRow(
         items.forEach {
             val count = it.second ?: 0
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(asset = it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
+                Icon(it.first.copy(defaultHeight = 28.dp, defaultWidth = 28.dp))
                 Text(text = count.abbreviate())
             }
         }

@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
@@ -16,8 +15,10 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.ButtonConstants
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
@@ -152,7 +153,7 @@ private fun ProfileContent(
         ExtendedFloatingActionButton(
             text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
             onClick = onFabClicked,
-            icon = { Icon(asset = Icons.Outlined.Event) },
+            icon = { Icon(Icons.Outlined.Event) },
             contentColor = Color.White,
             modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
         )
@@ -166,7 +167,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
             ListItem(
                 text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 secondaryText = {
-                    Text("${track.artist}")
+                    Text(track.artist)
                 },
                 icon = {
                     PlainListIconBackground {
@@ -265,7 +266,7 @@ private fun PeriodSelectDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSelect(selected) },
-                contentColor = MaterialTheme.colors.secondary
+                colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
             ) {
                 Text(text = stringResource(id = R.string.profile_perioddialog_select))
             }

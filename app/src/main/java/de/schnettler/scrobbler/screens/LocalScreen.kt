@@ -1,16 +1,15 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Intent
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Stack
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.ExtendedFloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.runtime.Composable
@@ -101,7 +100,7 @@ fun Content(
         )
     }
 
-    Stack(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         if (recentTracksState.isLoading) { LoadingScreen() } else {
             SwipeToRefreshLayout(
                 refreshingState = recentTracksState.isRefreshing,
@@ -129,7 +128,7 @@ fun Content(
             ExtendedFloatingActionButton(
                 text = { Text(text = "$cachedNumber ${stringResource(id = R.string.scrobbles)}") },
                 onClick = { localViewModel.scheduleScrobbleSubmission() },
-                icon = { Icon(asset = Icons.Outlined.CloudUpload) },
+                icon = { Icon(Icons.Outlined.CloudUpload) },
                 contentColor = Color.White,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
             )

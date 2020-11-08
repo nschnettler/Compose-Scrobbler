@@ -1,13 +1,13 @@
 package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Box
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AmbientEmphasisLevels
 import androidx.compose.material.Card
-import androidx.compose.material.EmphasisAmbient
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
@@ -46,7 +46,7 @@ private fun ExpandingSummary(
 ) {
     var expanded by mutableStateOf(false)
     Box(modifier = Modifier.clickable(onClick = { expanded = !expanded }, enabled = expandable)) {
-        ProvideEmphasis(emphasis = EmphasisAmbient.current.high) {
+        ProvideEmphasis(emphasis = AmbientEmphasisLevels.current.high) {
             Text(
                 text = text ?: stringResource(id = R.string.bio_unavailable),
                 style = textStyle,

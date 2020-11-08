@@ -1,6 +1,5 @@
 plugins {
-    id("com.autonomousapps.dependency-analysis") version "0.56.0"
-    id("com.android.application") version "4.2.0-alpha13" apply false
+    id("com.android.application") version "4.2.0-alpha16" apply false
     id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
     kotlin("android") version "1.4.0" apply false
 }
