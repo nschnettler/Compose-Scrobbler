@@ -20,6 +20,8 @@ class LastFmAuthProvider @Inject constructor(
 ) {
     var session: Session? = null
     val sessionLive = dao.getSession()
+    val sessionKey: String?
+        get() = session?.key
 
     suspend fun refreshSession(token: String): Session {
         val params = mutableMapOf("token" to token, "method" to METHOD_AUTH_SESSION)
@@ -31,8 +33,6 @@ class LastFmAuthProvider @Inject constructor(
 
     fun getSessionOrThrow() = session ?: throw NoSessionFoundException("Session was null. Reauthorise the user")
     fun getSessionKeyOrThrow() = session?.key ?: throw NoSessionFoundException("Session was null. Reauthorise the user")
-
-    fun loggedIn() = session != null
 
     init {
         GlobalScope.launch(Dispatchers.IO) {

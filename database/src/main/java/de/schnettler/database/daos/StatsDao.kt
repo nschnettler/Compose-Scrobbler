@@ -15,7 +15,7 @@ abstract class StatsDao : BaseDao<Stats> {
             if (value == -1L) {
                 stats[index]?.let { stat ->
                     updatePublicStats(stat.id, stat.plays, stat.listeners)
-                    if (stat.userPlays > 0) updateUserStats(stat.id, stat.userPlays)
+                    if (stat.userPlays >= 0) updateUserStats(stat.id, stat.userPlays)
                 }
             }
         }

@@ -1,13 +1,14 @@
 package de.schnettler.scrobbler.screens
 
-import android.content.Intent
+import android.content.Context
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Button
+import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -27,15 +28,17 @@ import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobble.MediaListenerService
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.local.ConfirmDialog
+import de.schnettler.scrobbler.screens.local.ErrorItem
+import de.schnettler.scrobbler.screens.local.HistoryError
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
@@ -44,9 +47,9 @@ import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
 import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
 import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
+import de.schnettler.scrobbler.util.notificationListenerEnabled
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
-import timber.log.Timber
 
 @Composable
 fun LocalScreen(
@@ -54,26 +57,15 @@ fun LocalScreen(
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
+    loggedIn: Boolean
 ) {
-    val context = ContextAmbient.current
-    when (MediaListenerService.isEnabled(context)) {
-        true -> Content(
-            localViewModel = localViewModel,
-            actionHandler = actionHandler,
-            errorHandler = errorHandler,
-            modifier = modifier
-        )
-        false -> {
-            Box(alignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                Button(onClick = {
-                    context.startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-                }) {
-                    Text(text = "Enable")
-                }
-            }
-        }
-    }
-    Timber.i("Started Service")
+    Content(
+        localViewModel = localViewModel,
+        actionHandler = actionHandler,
+        errorHandler = errorHandler,
+        modifier = modifier,
+        loggedIn = loggedIn
+    )
 }
 
 @Suppress("LongMethod")
@@ -82,15 +74,20 @@ fun Content(
     localViewModel: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
+    loggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    onActive { localViewModel.startStream() }
+    onActive {
+        if (loggedIn) {
+            localViewModel.startStream()
+        }
+    }
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
-    if (recentTracksState.isError) {
+    if (recentTracksState.isError && loggedIn) {
         errorHandler(
             UIError.ShowErrorSnackbar(
                 state = recentTracksState,
@@ -119,7 +116,9 @@ fun Content(
                                 SUBMIT -> localViewModel.submitScrobble(track)
                             }
                         },
-                        onNowPlayingSelected = { }
+                        onNowPlayingSelected = { },
+                        errors = getErrors(ContextAmbient.current, loggedIn),
+                        onErrorClicked = { error -> actionHandler(error.action) }
                     )
                 }
             }
@@ -156,16 +155,39 @@ fun Content(
     }
 }
 
+private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
+    if (!context.notificationListenerEnabled()) HistoryError.NotificationAccessDisabled else null,
+    if (!loggedIn) HistoryError.LoggedOut else null
+)
+
 @OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
-    onNowPlayingSelected: (Scrobble) -> Unit
+    onNowPlayingSelected: (Scrobble) -> Unit,
+    onErrorClicked: (HistoryError) -> Unit,
+    errors: List<HistoryError>
 ) {
     LazyColumn {
         item {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+        }
+
+        item {
+            if (errors.isNotEmpty()) {
+                Card(modifier = Modifier.padding(16.dp)) {
+                    Column {
+                        errors.forEachIndexed { index, error ->
+                            ErrorItem(item = error) { onErrorClicked(error) }
+
+                            if (index != errors.size - 1) {
+                                CustomDivider(startIndent = 72.dp)
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         items(tracks) { track ->

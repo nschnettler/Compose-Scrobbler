@@ -30,7 +30,8 @@ import de.schnettler.scrobbler.util.Navigator
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.openUrlInCustomTab
+import de.schnettler.scrobbler.util.openCustomTab
+import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
@@ -138,11 +139,12 @@ class MainActivity : AppCompatActivity() {
     private fun handleAction(action: UIAction) {
         when (action) {
             is UIAction.ListingSelected -> onListingClicked(action.listing)
-            is UIAction.TagSelected -> openUrlInCustomTab("https://www.last.fm/tag/${action.id}")
+            is UIAction.TagSelected -> openCustomTab("https://www.last.fm/tag/${action.id}")
             is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
             is UIAction.NavigateUp -> onBackPressed()
-            is UIAction.OpenInBrowser -> openUrlInCustomTab(action.url)
+            is UIAction.OpenInBrowser -> openCustomTab(action.url)
             is UIAction.ShowTimePeriodDialog -> userViewModel.showDialog(true)
+            is UIAction.OpenNotificationListenerSettings -> openNotificationListenerSettings()
         }
     }
 

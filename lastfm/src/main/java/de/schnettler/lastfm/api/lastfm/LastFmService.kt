@@ -102,7 +102,7 @@ interface LastFmService {
     @Wrapped(path = ["artist"])
     suspend fun getArtistInfo(
         @Query("artist") name: String,
-        @Query("sk") sessionKey: String
+        @Query("sk") sessionKey: String?
     ): ArtistInfoDto
 
     @GET("?method=$METHOD_TRACK_INFO")
@@ -110,7 +110,7 @@ interface LastFmService {
     suspend fun getTrackInfo(
         @Query("artist") artistName: String,
         @Query("track") trackName: String,
-        @Query("sk") sessionKey: String
+        @Query("sk") sessionKey: String?
     ): TrackInfoDto
 
     @GET("?method=$METHOD_ARTIST_ALBUMS&limit=10")
@@ -128,9 +128,9 @@ interface LastFmService {
     @GET("?method=$METHOD_ALBUM_INFO")
     @Wrapped(path = ["album"])
     suspend fun getAlbumInfo(
-        @Query("artist") artistName: String,
+        @Query("artist") name: String,
         @Query("album") albumName: String,
-        @Query("sk") sessionKey: String
+        @Query("sk") sessionKey: String?
     ): AlbumInfoDto
 
     @GET("?method=artist.search")

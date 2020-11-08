@@ -12,5 +12,5 @@ interface BaseStatsDto {
 data class StatsDto(
     override val listeners: Long,
     override val playcount: Long,
-    override val userplaycount: Long = 0
+    override val userplaycount: Long = -1
 ) : BaseStatsDto

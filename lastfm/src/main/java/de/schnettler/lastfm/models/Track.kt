@@ -76,14 +76,14 @@ data class TrackInfoDto(
 
     override val listeners: Long,
     override val playcount: Long,
-    override val userplaycount: Long = 0,
+    override val userplaycount: Long = -1,
 
     // Duration is in ms
     override val duration: Long,
     override val wiki: WikiDto?,
 
     val mbid: String?,
-    override val userloved: Long,
+    override val userloved: Long = 0,
     val toptags: TagsDto,
 ) : BaseTrackDto(name, url, artist, album), BaseStatsDto, BaseInfoDto
 

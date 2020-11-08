@@ -114,4 +114,9 @@
     <string name="period_quarter_short">Quarter</string>
     <string name="period_halfyear_short">Half-year</string>
     <string name="period_year_short">Year</string>
+    <string name="error_listener_title">Can\'t access media notification</string>
+    <string name="error_listener_subtitle">Notification access needed for music tracking.</string>
+
+    <string name="error_login_title">Not logged in</string>
+    <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
 </resources>
