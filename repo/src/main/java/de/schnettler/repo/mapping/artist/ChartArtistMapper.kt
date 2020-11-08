@@ -4,6 +4,7 @@ import de.schnettler.database.models.EntityType
 import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
+import de.schnettler.database.models.Toplist
 import de.schnettler.lastfm.models.ChartArtistDto
 import de.schnettler.lastfm.models.UserTrackDto
 import de.schnettler.repo.mapping.ArtistMapper
@@ -11,7 +12,7 @@ import de.schnettler.repo.mapping.IndexedMapper
 import de.schnettler.repo.mapping.TrackMapper
 import de.schnettler.repo.mapping.createTopListEntry
 
-object ChartArtistMapper : IndexedMapper<ChartArtistDto, TopListArtist> {
+object ChartArtistMapper : IndexedMapper<ChartArtistDto, Toplist> {
     override suspend fun map(index: Int, from: ChartArtistDto): TopListArtist {
         val artist = ArtistMapper.map(from)
         val toplist = createTopListEntry(artist.id, EntityType.ARTIST, ListType.CHART, index, from.listeners)
@@ -19,7 +20,7 @@ object ChartArtistMapper : IndexedMapper<ChartArtistDto, TopListArtist> {
     }
 }
 
-object ChartTrackMapper : IndexedMapper<UserTrackDto, TopListTrack> {
+object ChartTrackMapper : IndexedMapper<UserTrackDto, Toplist> {
     override suspend fun map(index: Int, from: UserTrackDto): TopListTrack {
         val track = TrackMapper.map(from, null)
         val toplist = createTopListEntry(track.id, EntityType.TRACK, ListType.CHART, index, from.playcount)

@@ -1,5 +1,6 @@
 package de.schnettler.database.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.database.models.EntityType
@@ -17,8 +18,14 @@ abstract class ChartDao : BaseDao<TopListEntry> {
     @Query("SELECT * FROM toplist WHERE entityType = :entityType AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopArtists(entityType: EntityType = EntityType.ARTIST, listType: ListType): Flow<List<TopListArtist>>
 
+    @Query("SELECT * FROM toplist WHERE entityType = :entityType AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopArtistsPaging(entityType: EntityType = EntityType.ARTIST, listType: ListType = ListType.CHART): PagingSource<Int, TopListArtist>
+
     @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopTracks(type: EntityType = EntityType.TRACK, listType: ListType = ListType.USER): Flow<List<TopListTrack>>
+
+    @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopTracksPaging(type: EntityType = EntityType.TRACK, listType: ListType = ListType.CHART): PagingSource<Int, TopListTrack>
 
     @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopAlbums(type: EntityType = EntityType.ALBUM, listType: ListType = ListType.USER): Flow<List<TopListAlbum>>

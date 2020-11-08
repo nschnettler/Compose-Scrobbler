@@ -82,6 +82,7 @@ dependencies {
     implementation(AndroidX.compose.runtime.liveData)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
+    implementation("androidx.paging:paging-compose:1.0.0-alpha01")
     implementation(AndroidX.ui.tooling)
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)

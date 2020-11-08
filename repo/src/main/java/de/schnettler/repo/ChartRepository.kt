@@ -1,47 +1,49 @@
 package de.schnettler.repo
 
-import com.dropbox.android.external.store4.Fetcher
-import com.dropbox.android.external.store4.SourceOfTruth
-import com.dropbox.android.external.store4.StoreBuilder
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
-import de.schnettler.database.models.ListType
+import de.schnettler.database.models.Toplist
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.artist.ChartTrackMapper
-import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.paging.ChartRemoteMediator
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ChartRepository @Inject constructor(
-    private val chartDao: ChartDao,
-    private val artistDao: ArtistDao,
-    private val trackDao: TrackDao,
-    private val service: LastFmService
+    chartDao: ChartDao,
+    artistDao: ArtistDao,
+    trackDao: TrackDao,
+    service: LastFmService
 ) {
-    val chartArtistsStore = StoreBuilder.from(
-        fetcher = Fetcher.of {
-            ChartArtistMapper.forLists()(service.getTopArtists())
-        },
-        sourceOfTruth = SourceOfTruth.of(
-            reader = { chartDao.getTopArtists(listType = ListType.CHART) },
-            writer = { _: String, entries ->
-                artistDao.insertAll(entries.map { it.value })
-                chartDao.forceInsertAll(entries.map { it.listing })
-            }
-        )
-    ).build()
+    private val pageSize = 50
 
-    val chartTrackStore = StoreBuilder.from(
-        fetcher = Fetcher.of {
-            ChartTrackMapper.forLists()(service.getTopTracks())
-        },
-        sourceOfTruth = SourceOfTruth.of(
-            reader = { chartDao.getTopTracks(listType = ListType.CHART) },
-            writer = { _: String, entries ->
-                trackDao.insertAll(entries.map { it.value })
-                chartDao.forceInsertAll(entries.map { it.listing })
-            }
-        )
-    ).build()
+    val artistChartPager: Flow<PagingData<Toplist>> = Pager(
+        config = PagingConfig(pageSize, enablePlaceholders = true),
+        remoteMediator = ChartRemoteMediator(
+            pageSize = pageSize,
+            entityDao = artistDao,
+            chartDao = chartDao,
+            mapper = ChartArtistMapper,
+        ) { service.getTopArtists(it) }
+    ) {
+        chartDao.getTopArtistsPaging() as PagingSource<Int, Toplist>
+    }.flow
+
+    val trackChartPager = Pager(
+        config = PagingConfig(pageSize, enablePlaceholders = true),
+        remoteMediator = ChartRemoteMediator(
+            pageSize = pageSize,
+            entityDao = trackDao,
+            chartDao = chartDao,
+            mapper = ChartTrackMapper,
+        ) { service.getTopTracks(it) }
+    ) {
+        chartDao.getTopTracksPaging() as PagingSource<Int, Toplist>
+    }.flow
 }

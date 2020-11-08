@@ -48,6 +48,7 @@ dependencies {
     api(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
     implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
+    api("androidx.paging:paging-runtime:_")
     kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
 
     androidTestImplementation(Testing.junit4)

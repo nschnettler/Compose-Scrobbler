@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
