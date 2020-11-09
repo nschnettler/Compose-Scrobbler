@@ -88,7 +88,7 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
     }
 }
 
-private fun extractErrorMessageFromException(exception: Throwable): String? {
+fun extractErrorMessageFromException(exception: Throwable): String? {
     return when (exception) {
         is HttpException -> {
             (exception.response()?.map() as? LastFmResponse.ERROR)?.error?.title

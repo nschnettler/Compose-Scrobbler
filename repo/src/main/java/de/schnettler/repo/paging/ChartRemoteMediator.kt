@@ -10,7 +10,9 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
 import de.schnettler.repo.mapping.IndexedMapper
 import de.schnettler.repo.mapping.forPagedLists
+import retrofit2.HttpException
 import timber.log.Timber
+import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
 class ChartRemoteMediator<T : LastFmEntity, Input, Output : Toplist>(
@@ -25,23 +27,30 @@ class ChartRemoteMediator<T : LastFmEntity, Input, Output : Toplist>(
         loadType: LoadType,
         state: PagingState<Int, Output>
     ): MediatorResult {
-        val page = when (loadType) {
-            LoadType.REFRESH -> 1 // First Page
-            LoadType.PREPEND -> {
-                // No Prepend, because only first page is refreshed
-                return MediatorResult.Success(endOfPaginationReached = true)
+        return try {
+            val page = when (loadType) {
+                LoadType.REFRESH -> 1 // First Page
+                LoadType.PREPEND -> {
+                    // No Prepend, because only first page is refreshed
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
+                LoadType.APPEND -> {
+                    val lastItem =
+                        state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    lastItem.listing.index.div(pageSize) + 2
+                }
             }
-            LoadType.APPEND -> {
-                val lastItem = state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = true)
-                lastItem.listing.index.div(pageSize) + 2
-            }
+
+            val response = mapper.forPagedLists(page, 50)(backend(page))
+            entityDao.insertAll(response.map { it.value as T })
+            chartDao.forceInsertAll(response.map { it.listing })
+
+            Timber.d("Paging: Page $page, Result: ${response.size}")
+            return MediatorResult.Success(endOfPaginationReached = response.isEmpty())
+        } catch (e: IOException) {
+            MediatorResult.Error(e)
+        } catch (e: HttpException) {
+            MediatorResult.Error(e)
         }
-
-        val response = mapper.forPagedLists(page, 50)(backend(page))
-        entityDao.insertAll(response.map { it.value as T })
-        chartDao.forceInsertAll(response.map { it.listing })
-
-        Timber.d("Paging: Page $page, Result: ${response.size}")
-        return MediatorResult.Success(endOfPaginationReached = response.isEmpty())
     }
 }

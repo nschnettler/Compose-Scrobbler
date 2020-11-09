@@ -33,6 +33,7 @@ import de.schnettler.scrobbler.screens.details.AlbumDetailScreen
 import de.schnettler.scrobbler.screens.details.ArtistDetailScreen
 import de.schnettler.scrobbler.screens.details.TrackDetailScreen
 import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 
@@ -45,9 +46,11 @@ fun DetailScreen(
 ) {
     val detailState by model.state.collectAsState()
     if (detailState.isError) {
+        val errorState = detailState as RefreshableUiState.Error
         errorHandler(
             UIError.ShowErrorSnackbar(
-                state = detailState,
+                errorMessage = errorState.errorMessage,
+                exception = errorState.exception,
                 fallbackMessage = stringResource(id = R.string.error_details),
                 onAction = model::refresh
             )

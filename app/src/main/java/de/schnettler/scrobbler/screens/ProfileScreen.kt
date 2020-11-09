@@ -56,6 +56,7 @@ import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
 import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.UITimePeriod
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
@@ -94,9 +95,11 @@ fun ProfileScreen(
     }
 
     if (states.any { it.isError }) {
+        val errorState = states.firstOrNull { it.isError } as RefreshableUiState.Error
         errorHandler(
             UIError.ShowErrorSnackbar(
-                state = states.firstOrNull { it.isError },
+                errorMessage = errorState.errorMessage,
+                exception = errorState.exception,
                 fallbackMessage = stringResource(id = R.string.error_profile),
                 onAction = model::refresh
             )

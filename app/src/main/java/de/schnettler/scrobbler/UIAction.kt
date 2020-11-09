@@ -2,7 +2,6 @@ package de.schnettler.scrobbler
 
 import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.util.RefreshableUiState
 
 sealed class UIAction {
     class TagSelected(val id: String) : UIAction()
@@ -16,7 +15,8 @@ sealed class UIAction {
 
 sealed class UIError {
     class ShowErrorSnackbar(
-        val state: RefreshableUiState<*>?,
+        val errorMessage: String?,
+        val exception: Throwable?,
         val fallbackMessage: String = "Unable to load data",
         val actionMessage: String? = "Refresh",
         val onAction: () -> Unit = { },

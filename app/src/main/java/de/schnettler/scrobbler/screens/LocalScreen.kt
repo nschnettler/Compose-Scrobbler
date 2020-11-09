@@ -42,6 +42,7 @@ import de.schnettler.scrobbler.screens.local.HistoryError
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
@@ -88,9 +89,11 @@ fun Content(
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
     if (recentTracksState.isError && loggedIn) {
+        val errorState = recentTracksState as RefreshableUiState.Error
         errorHandler(
             UIError.ShowErrorSnackbar(
-                state = recentTracksState,
+                errorMessage = errorState.errorMessage,
+                exception = errorState.exception,
                 fallbackMessage = stringResource(id = R.string.error_history),
                 onAction = localViewModel::refresh
             )

@@ -29,7 +29,6 @@ import de.schnettler.scrobbler.theme.AppTheme
 import de.schnettler.scrobbler.util.Navigator
 import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
-import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
@@ -159,18 +158,16 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun showErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
-        if (error.state is RefreshableUiState.Error) {
-            LaunchedTask {
-                val result = host.showSnackbar(
-                    message = error.state.errorMessage
-                        ?: error.state.exception?.message
-                        ?: error.fallbackMessage,
-                    actionLabel = error.actionMessage
-                )
-                when (result) {
-                    SnackbarResult.ActionPerformed -> error.onAction()
-                    SnackbarResult.Dismissed -> error.onDismiss()
-                }
+        LaunchedTask {
+            val result = host.showSnackbar(
+                message = error.errorMessage
+                    ?: error.exception?.message
+                    ?: error.fallbackMessage,
+                actionLabel = error.actionMessage
+            )
+            when (result) {
+                SnackbarResult.ActionPerformed -> error.onAction()
+                SnackbarResult.Dismissed -> error.onDismiss()
             }
         }
     }

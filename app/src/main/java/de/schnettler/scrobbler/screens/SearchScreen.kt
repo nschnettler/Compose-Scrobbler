@@ -37,6 +37,7 @@ import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
 import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
@@ -52,9 +53,11 @@ fun SearchScreen(
     val searchQuery by model.searchQuery.collectAsState()
     val searchInputState = remember { mutableStateOf(TextFieldValue(searchQuery.query)) }
     if (searchResult.isError) {
+        val errorState = searchResult as RefreshableUiState.Error
         errorHandler(
             UIError.ShowErrorSnackbar(
-                state = searchResult,
+                errorMessage = errorState.errorMessage,
+                exception = errorState.exception,
                 fallbackMessage = stringResource(id = R.string.error_search)
             )
         )

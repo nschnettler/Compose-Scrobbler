@@ -38,11 +38,12 @@ import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.charts.ChartTab
 import de.schnettler.scrobbler.util.abbreviate
+import de.schnettler.scrobbler.util.extractErrorMessageFromException
 import de.schnettler.scrobbler.util.navigationBarsHeight
 import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 
-fun <T : Any> LazyPagingItems<T>.isRefreshing() = loadState.refresh == LoadState.Loading
+fun <T : Any> LazyPagingItems<T>.isRefreshing() = loadState.refresh is LoadState.Loading
 fun <T : Any> LazyPagingItems<T>.isError() = loadState.refresh is LoadState.Error
 
 @OptIn(ExperimentalLazyDsl::class)
@@ -62,13 +63,15 @@ fun ChartScreen(
         ChartTab.Track -> model.trackCharts
     }.collectAsLazyPagingItems()
 
-//    if (chartState.isError) {
-//        errorHandler(UIError.ShowErrorSnackbar(
-//            state = chartState,
-//            fallbackMessage = stringResource(id = R.string.error_charts),
-//            onAction = { model.refresh(selectedTab) }
-//        ))
-//    }
+    if (lazyPagingItems.isError()) {
+        val loadError = lazyPagingItems.loadState.refresh as LoadState.Error
+        errorHandler(UIError.ShowErrorSnackbar(
+            errorMessage = extractErrorMessageFromException(loadError.error),
+            exception = loadError.error,
+            fallbackMessage = stringResource(id = R.string.error_charts),
+            onAction = {  }
+        ))
+    }
 
     SwipeToRefreshLayout(
         refreshingState = lazyPagingItems.isRefreshing(),
