@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
                         Scaffold(
                             scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
                             bottomBar = {
-//                                if (mainScreens.map { it.routeId }.contains(navBackStackEntry?.route())) {
+                                if (mainScreens.map { it.routeId }.contains(navBackStackEntry?.route())) {
                                     BottomNavigationBar(
                                         currentRoute = navBackStackEntry?.route(),
                                         screens = mainScreens,
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                                         navController.popBackStack(navController.graph.startDestination, false)
                                         navController.navigate(it.routeId)
                                     }
-//                                }
+                                }
                             }
                         ) {
                             Content(controller = navController, host = snackHost, innerPadding = it)
