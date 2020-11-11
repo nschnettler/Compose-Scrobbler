@@ -76,11 +76,13 @@ interface LastFmService {
         @Query("sk") sessionKey: String
     ): List<AlbumDto>
 
-    @GET("?method=$METHOD_USER_ARTISTS&limit=15")
+    @GET("?method=$METHOD_USER_ARTISTS")
     @Wrapped(path = ["topartists"])
     suspend fun getUserTopArtists(
+        @Query("page") page: Int,
+        @Query("limit") pageSize: Int,
         @Query("period") timePeriod: TimePeriod,
-        @Query("sk") sessionKey: String
+        @Query("sk") sessionKey: String?
     ): UserArtistResponse
 
     @GET("?method=$METHOD_USER_LOVED_TRACKS&limit=1")

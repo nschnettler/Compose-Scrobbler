@@ -1,5 +1,8 @@
 package de.schnettler.repo
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.room.withTransaction
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -7,11 +10,14 @@ import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.common.TimePeriod
+import de.schnettler.database.AppDatabase
 import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
+import de.schnettler.database.models.EntityType
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
@@ -21,8 +27,11 @@ import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.album.TopUserAlbumMapper
 import de.schnettler.repo.mapping.artist.TopUserArtistMapper
 import de.schnettler.repo.mapping.forLists
+import de.schnettler.repo.mapping.forPagedLists
 import de.schnettler.repo.mapping.track.TopUserTrackMapper
+import de.schnettler.repo.paging.ChartRemoteMediator
 import de.schnettler.repo.work.SpotifyWorker
+import timber.log.Timber
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
@@ -32,27 +41,10 @@ class TopListRepository @Inject constructor(
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
     private val service: LastFmService,
+    private val db: AppDatabase,
     private val authProvider: LastFmAuthProvider,
     private val workManager: WorkManager,
 ) {
-    val topArtistStore = StoreBuilder.from(
-        fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            val session = authProvider.getSessionOrThrow()
-            val response = service.getUserTopArtists(timePeriod, session.key)
-            if (timePeriod == TimePeriod.OVERALL) {
-                userDao.updateArtistCount(session.name, response.info.total)
-            }
-            TopUserArtistMapper.forLists()(response.artist)
-        },
-        sourceOfTruth = SourceOfTruth.of(
-            reader = { chartDao.getTopArtists(listType = ListType.USER) },
-            writer = { _: Any, entries: List<TopListArtist> ->
-                artistDao.insertAll(entries.map { it.value })
-                chartDao.forceInsertAll(entries.map { it.listing })
-                startSpotifyImageWorker()
-            }
-        )
-    ).build()
 
     val topAlbumStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
@@ -93,4 +85,33 @@ class TopListRepository @Inject constructor(
             request
         )
     }
+
+    val pageSize = 5
+    suspend fun userArtistPager(timePeriod: TimePeriod) = Pager(
+        config = PagingConfig(pageSize, enablePlaceholders = true),
+        remoteMediator = ChartRemoteMediator<LastFmEntity.Artist, TopListArtist>(
+            pageSize = pageSize,
+            fetcher = { page ->
+                Timber.d("Paging Fetching $page for ${timePeriod.name}")
+                val session = authProvider.getSessionOrThrow()
+                val response = service.getUserTopArtists(page, pageSize, timePeriod, session.key)
+                if (timePeriod == TimePeriod.OVERALL) {
+                    userDao.updateArtistCount(session.name, response.info.total)
+                }
+                TopUserArtistMapper.forPagedLists(page = page, size = pageSize)(response.artist)
+            },
+            writer = { toplist, isRefresh ->
+                db.withTransaction {
+                    if (isRefresh) {
+                    chartDao.deleteByType(EntityType.ARTIST, ListType.USER)
+                    }
+                    artistDao.insertAll(toplist.map { it.value })
+                    chartDao.forceInsertAll(toplist.map { it.listing })
+                }
+                startSpotifyImageWorker()
+            }
+        )
+    ) {
+        chartDao.getTopArtistsPaging(listType = ListType.USER)
+    }.flow
 }

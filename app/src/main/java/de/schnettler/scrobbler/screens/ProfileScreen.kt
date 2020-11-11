@@ -41,6 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
@@ -55,6 +57,7 @@ import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
+import de.schnettler.scrobbler.components.TopListPagingCarousel
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.UITimePeriod
@@ -77,10 +80,9 @@ fun ProfileScreen(
     modifier: Modifier = Modifier
 ) {
     val userState by model.userState.collectAsState()
-    val artistState by model.artistState.collectAsState()
     val albumState by model.albumState.collectAsState()
     val trackState by model.trackState.collectAsState()
-    val states = listOf(userState, artistState, albumState, trackState)
+    val states = listOf(userState, albumState, trackState)
 
     val timePeriod by model.timePeriod.collectAsState()
     val showDialog by model.showFilterDialog.collectAsState()
@@ -93,6 +95,8 @@ fun ProfileScreen(
             model.showDialog(false)
         }, model = model)
     }
+
+    val pagingArtists = model.topArtists.collectAsLazyPagingItems()
 
     if (states.any { it.isError }) {
         val errorState = states.firstOrNull { it.isError } as RefreshableUiState.Error
@@ -114,7 +118,7 @@ fun ProfileScreen(
         ProfileContent(
             modifier = modifier,
             user = userState.currentData,
-            artists = artistState.currentData,
+            artists = pagingArtists,
             albums = albumState.currentData,
             tracks = trackState.currentData,
             timePeriod = timePeriod,
@@ -128,7 +132,7 @@ fun ProfileScreen(
 private fun ProfileContent(
     modifier: Modifier,
     user: User?,
-    artists: List<TopListArtist>?,
+    artists: LazyPagingItems<TopListArtist>,
     albums: List<TopListAlbum>?,
     tracks: List<TopListTrack>?,
     timePeriod: UITimePeriod,
@@ -139,7 +143,7 @@ private fun ProfileContent(
         ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
             user?.let { UserInfo(it) }
-            TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
+            TopListPagingCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
             TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums)
 
             Carousel(

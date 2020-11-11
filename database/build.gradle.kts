@@ -44,7 +44,7 @@ android {
 }
 
 dependencies {
-    implementation(AndroidX.room.ktx)
+    api(AndroidX.room.ktx)
     api(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
     implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")

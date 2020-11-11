@@ -35,4 +35,7 @@ abstract class ChartDao : BaseDao<TopListEntry> {
 
     @Query("SELECT * FROM tracks INNER JOIN toplist ON tracks.id = toplist.id WHERE listType = 'USER' AND imageUrl is NULL ")
     abstract suspend fun getTracksWithoutImages(): List<LastFmEntity.Track>
+
+    @Query("DELETE FROM toplist WHERE entityType = :entityType AND listType = :listType")
+    abstract suspend fun deleteByType(entityType: EntityType, listType: ListType)
 }

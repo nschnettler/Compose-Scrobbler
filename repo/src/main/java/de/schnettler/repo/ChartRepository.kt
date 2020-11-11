@@ -7,10 +7,12 @@ import androidx.paging.PagingSource
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
+import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.Toplist
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.artist.ChartTrackMapper
+import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.paging.ChartRemoteMediator
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -25,24 +27,28 @@ class ChartRepository @Inject constructor(
 
     val artistChartPager: Flow<PagingData<Toplist>> = Pager(
         config = PagingConfig(pageSize, enablePlaceholders = true),
-        remoteMediator = ChartRemoteMediator(
+        remoteMediator = ChartRemoteMediator<LastFmEntity.Artist, Toplist>(
             pageSize = pageSize,
-            entityDao = artistDao,
-            chartDao = chartDao,
-            mapper = ChartArtistMapper,
-        ) { service.getTopArtists(it) }
+            fetcher = { page -> ChartArtistMapper.forLists()(service.getTopArtists(page)) },
+            writer = { toplist, isRefresh ->
+                artistDao.insertAll(toplist.map { it.value as LastFmEntity.Artist })
+                chartDao.forceInsertAll(toplist.map { it.listing })
+            }
+        )
     ) {
         chartDao.getTopArtistsPaging() as PagingSource<Int, Toplist>
     }.flow
 
     val trackChartPager = Pager(
         config = PagingConfig(pageSize, enablePlaceholders = true),
-        remoteMediator = ChartRemoteMediator(
+        remoteMediator = ChartRemoteMediator<LastFmEntity.Track, Toplist>(
             pageSize = pageSize,
-            entityDao = trackDao,
-            chartDao = chartDao,
-            mapper = ChartTrackMapper,
-        ) { service.getTopTracks(it) }
+            fetcher = { page -> ChartTrackMapper.forLists()(service.getTopTracks(page)) },
+            writer = { toplist, isRefresh ->
+                trackDao.insertAll(toplist.map { it.value as LastFmEntity.Track })
+                chartDao.forceInsertAll(toplist.map { it.listing })
+            }
+        )
     ) {
         chartDao.getTopTracksPaging() as PagingSource<Int, Toplist>
     }.flow

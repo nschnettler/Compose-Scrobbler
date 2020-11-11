@@ -3,8 +3,8 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import de.schnettler.database.models.TopListAlbum
-import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
 import de.schnettler.repo.TopListRepository
@@ -15,9 +15,13 @@ import de.schnettler.scrobbler.util.freshFrom
 import de.schnettler.scrobbler.util.refreshStateFlowFromStore
 import de.schnettler.scrobbler.util.streamFrom
 import de.schnettler.scrobbler.util.updateValue
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flattenMerge
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 class UserViewModel @ViewModelInject constructor(
@@ -33,11 +37,6 @@ class UserViewModel @ViewModelInject constructor(
     val albumState: StateFlow<RefreshableUiState<List<TopListAlbum>>>
         get() = _albumState
 
-    private val _artistState: MutableStateFlow<RefreshableUiState<List<TopListArtist>>> =
-        MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val artistState: StateFlow<RefreshableUiState<List<TopListArtist>>>
-        get() = _artistState
-
     private val _trackState: MutableStateFlow<RefreshableUiState<List<TopListTrack>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
     val trackState: StateFlow<RefreshableUiState<List<TopListTrack>>>
@@ -52,12 +51,18 @@ class UserViewModel @ViewModelInject constructor(
     val showFilterDialog: StateFlow<Boolean>
         get() = _showFilterDialog
 
+    private val clearListCh = Channel<Unit>(Channel.CONFLATED)
+
+    val topArtists = flowOf(
+        //clearListCh.receiveAsFlow().map { PagingData.empty() },
+        timePeriod.flatMapLatest { topListRepo.userArtistPager(it.period) }.cachedIn(viewModelScope)
+    ).flattenMerge(2)
+
     init {
         viewModelScope.launch {
             launch { _userState.streamFrom(userRepo.userStore, "") }
             launch { refreshStateFlowFromStore(null, userRepo.lovedTracksStore, "") }
             timePeriod.collectLatest { uiTime ->
-                launch { _artistState.streamFrom(topListRepo.topArtistStore, uiTime.period) }
                 launch { _albumState.streamFrom(topListRepo.topAlbumStore, uiTime.period) }
                 launch { _trackState.streamFrom(topListRepo.topTracksStore, uiTime.period) }
             }
@@ -66,7 +71,6 @@ class UserViewModel @ViewModelInject constructor(
 
     fun refresh() {
         viewModelScope.apply {
-            launch { _artistState.freshFrom(topListRepo.topArtistStore, timePeriod.value.period) }
             launch { _albumState.freshFrom(topListRepo.topAlbumStore, timePeriod.value.period) }
             launch { _trackState.freshFrom(topListRepo.topTracksStore, timePeriod.value.period) }
             launch { _userState.freshFrom(userRepo.userStore, "") }
@@ -74,7 +78,12 @@ class UserViewModel @ViewModelInject constructor(
         }
     }
 
-    fun updatePeriod(period: UITimePeriod) = _timePeriod.updateValue(period)
+    fun updatePeriod(period: UITimePeriod) {
+        if (_timePeriod.value != period) {
+            clearListCh.offer(Unit)
+            _timePeriod.value = period
+        }
+    }
 
     fun showDialog(show: Boolean) = _showFilterDialog.updateValue(show)
 }
