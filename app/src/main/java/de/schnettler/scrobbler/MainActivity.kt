@@ -121,6 +121,7 @@ class MainActivity : AppCompatActivity() {
     @Composable
     private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
         MainRouteContent(
+            model = model,
             navController = controller,
             chartsModel = chartsModel,
             userViewModel = userViewModel,

@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -9,16 +10,20 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.util.SessionState
+import androidx.compose.runtime.getValue
 import de.schnettler.scrobbler.viewmodels.AlbumViewModel
 import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
+import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.TrackViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 
 @Composable
 fun MainRouteContent(
+    model: MainViewModel,
     navController: NavHostController,
     chartsModel: ChartsViewModel,
     userViewModel: UserViewModel,
@@ -31,6 +36,8 @@ fun MainRouteContent(
     errorer: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedIn)
+
     NavHost(navController = navController, startDestination = Screen.History.routeId) {
         composable(Screen.Charts.routeId) {
             ChartScreen(model = chartsModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
