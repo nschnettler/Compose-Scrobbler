@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

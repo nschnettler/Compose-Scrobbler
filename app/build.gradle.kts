@@ -34,7 +34,7 @@ android {
 
     composeOptions {
         kotlinCompilerVersion = "1.4.0"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha06"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha07"
     }
 
     compileOptions {
@@ -93,6 +93,7 @@ dependencies {
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
+    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
     coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
     // Testing

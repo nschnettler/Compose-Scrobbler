@@ -1,12 +1,11 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Context
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
@@ -48,8 +47,8 @@ import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
 import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
 import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.util.notificationListenerEnabled
-import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HistoryScreen(
@@ -160,7 +159,6 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
     if (!loggedIn) HistoryError.LoggedOut else null
 )
 
-@OptIn(ExperimentalLazyDsl::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,

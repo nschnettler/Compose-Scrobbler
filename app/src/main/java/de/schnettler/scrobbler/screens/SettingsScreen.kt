@@ -39,7 +39,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.util.getMediaBrowserServices
-import de.schnettler.scrobbler.util.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

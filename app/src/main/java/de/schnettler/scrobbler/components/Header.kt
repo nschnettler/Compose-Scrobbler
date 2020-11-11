@@ -2,7 +2,7 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
@@ -12,8 +12,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.WithConstraints
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.DensityAmbient
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min

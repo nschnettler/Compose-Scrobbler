@@ -1,9 +1,10 @@
 package de.schnettler.scrobbler.screens.details
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
@@ -26,7 +27,7 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.rememberDominantColorCache
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.abbreviate
-import de.schnettler.scrobbler.util.navigationBarsHeightPlus
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ArtistDetailScreen(
@@ -88,7 +89,8 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
         }
     }
 
-    Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.navigationBarsHeight())
 }
 
 @Composable

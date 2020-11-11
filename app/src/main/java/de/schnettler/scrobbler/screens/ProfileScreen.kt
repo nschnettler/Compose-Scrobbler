@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,10 +59,10 @@ import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.UITimePeriod
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
-import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

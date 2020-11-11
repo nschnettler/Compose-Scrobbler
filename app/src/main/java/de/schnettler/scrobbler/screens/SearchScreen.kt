@@ -1,14 +1,15 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Album
@@ -38,8 +39,8 @@ import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
 import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.abbreviate
-import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun SearchScreen(
@@ -69,13 +70,13 @@ fun SearchScreen(
                     searchInputState.value = it
                     model.updateQuery(it.text)
                 },
-                label = { Text(stringResource(id = R.string.search_hint)) },
+                label = { Text(text = stringResource(id = R.string.search_hint)) },
                 modifier = Modifier.fillMaxWidth(),
-                imeAction = ImeAction.Search,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 onImeActionPerformed = { _, controller ->
                     controller?.hideSoftwareKeyboard()
                 },
-                backgroundColor = AppColor.BackgroundElevated
+                backgroundColor = AppColor.BackgroundElevated,
             )
         }
         SelectableChipRow(

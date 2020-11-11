@@ -29,7 +29,6 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.theme.AppTheme
-import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab
@@ -44,6 +43,7 @@ import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.TrackViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
-                    ProvideDisplayInsets {
+                    ProvideWindowInsets {
                         val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
                         onListingClicked = {

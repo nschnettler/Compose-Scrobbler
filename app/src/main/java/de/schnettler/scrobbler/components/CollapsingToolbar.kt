@@ -2,7 +2,7 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
@@ -29,18 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.onSizeChanged
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.UIAction
-import de.schnettler.scrobbler.util.InsetsAmbient
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.lerp
 import de.schnettler.scrobbler.util.offset
-import de.schnettler.scrobbler.util.statusBarsHeight
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun CollapsingToolbar(
@@ -129,7 +130,7 @@ private fun OverlaidStatusBarAppBar(
     appBar: @Composable () -> Unit
 ) {
 
-    val insets = InsetsAmbient.current
+    val insets = AmbientWindowInsets.current
     val trigger = (backdropHeight - insets.systemBars.top).coerceAtLeast(0)
 
     val alpha = lerp(

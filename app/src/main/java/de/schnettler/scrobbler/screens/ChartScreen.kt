@@ -1,6 +1,6 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumnForIndexed
@@ -31,8 +31,8 @@ import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.charts.ChartTab
 import de.schnettler.scrobbler.util.abbreviate
-import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun ChartScreen(

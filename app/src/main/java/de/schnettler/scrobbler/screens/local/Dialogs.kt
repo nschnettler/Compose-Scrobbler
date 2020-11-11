@@ -2,7 +2,7 @@ package de.schnettler.scrobbler.screens.local
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight

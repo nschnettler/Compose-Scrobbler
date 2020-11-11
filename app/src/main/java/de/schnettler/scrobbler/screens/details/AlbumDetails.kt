@@ -1,11 +1,10 @@
 package de.schnettler.scrobbler.screens.details
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,13 +26,13 @@ import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.asMinSec
 import de.schnettler.scrobbler.util.fromHtmlLastFm
-import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class, ExperimentalTime::class)
+@OptIn(ExperimentalLayout::class, ExperimentalTime::class)
 @Composable
 fun AlbumDetailScreen(
     details: AlbumDetails,
@@ -77,7 +76,8 @@ fun AlbumDetailScreen(
             }
         }
 
-        Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        Spacer(modifier = Modifier.navigationBarsHeight())
     }
 }
 
