@@ -6,12 +6,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.util.SessionState
+import de.schnettler.scrobbler.util.destination
+import de.schnettler.scrobbler.util.secondOrNull
 import de.schnettler.scrobbler.viewmodels.AlbumViewModel
 import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
@@ -39,52 +40,39 @@ fun MainRouteContent(
     val sessionStatus by model.sessionStatus.observeAsState(SessionState.LoggedIn)
 
     NavHost(navController = navController, startDestination = Screen.History.routeId) {
-        composable(Screen.Charts.routeId) {
+        destination(Screen.Charts) {
             ChartScreen(model = chartsModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
-        composable(Screen.History.routeId) {
+        destination(Screen.History) {
             HistoryScreen(
-                model = localViewModel,
-                actionHandler = actioner,
-                errorHandler = errorer,
-                modifier = modifier,
+                model = localViewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier,
                 loggedIn = sessionStatus is SessionState.LoggedIn
             )
         }
-        composable(Screen.Search.routeId) {
+        destination(Screen.Search) {
             SearchScreen(model = searchViewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
-        composable(Screen.Profile.routeId) {
+        destination(Screen.Profile) {
             ProfileScreen(model = userViewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
-        composable(Screen.Settings.routeId) {
-            SettingsScreen(modifier = modifier)
-        }
-        composable(Screen.ArtistDetails.argRoute, arguments = Screen.ArtistDetails.navArgs) { screen ->
-            screen.arguments?.getString(Screen.ArtistDetails.args.first().name)?.let {
+        destination(Screen.Settings) { SettingsScreen(modifier = modifier) }
+        destination(Screen.ArtistDetails) { args ->
+            args.firstOrNull()?.let {
                 artistViewModel.updateKey(LastFmEntity.Artist(it))
                 DetailScreen(model = artistViewModel, actioner = actioner, errorer = errorer)
             }
         }
-        composable(
-            Screen.AlbumDetails.argRoute,
-            arguments = Screen.AlbumDetails.navArgs
-        ) {
-            val artist = it.arguments?.getString(Screen.AlbumDetails.args.first().name)
-            val album = it.arguments?.getString(Screen.AlbumDetails.args[1].name)
-
+        destination(screen = Screen.AlbumDetails) { args ->
+            val artist = args.firstOrNull()
+            val album = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !album.isNullOrEmpty()) {
                 albumViewModel.updateKey(LastFmEntity.Album(name = album, artist = artist))
                 DetailScreen(model = albumViewModel, actioner = actioner, errorer = errorer)
             }
         }
-        composable(
-            Screen.TrackDetails.argRoute,
-            arguments = Screen.TrackDetails.navArgs
-        ) {
-            val artist = it.arguments?.getString(Screen.TrackDetails.args.first().name)
-            val track = it.arguments?.getString(Screen.TrackDetails.args[1].name)
-
+        destination(screen = Screen.TrackDetails) { args ->
+            val artist = args.firstOrNull()
+            val track = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !track.isNullOrEmpty()) {
                 trackViewModel.updateKey(LastFmEntity.Track(name = track, artist = artist))
                 DetailScreen(model = trackViewModel, actioner = actioner, errorer = errorer)
