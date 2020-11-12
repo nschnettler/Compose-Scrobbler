@@ -44,7 +44,6 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
     }
 }
 
-
 open class RefreshableStateViewModel2<Key : Any, StateType : Any, Output : StateType>(
     private val store: Store<Key, Output>,
 ) : ViewModel() {
