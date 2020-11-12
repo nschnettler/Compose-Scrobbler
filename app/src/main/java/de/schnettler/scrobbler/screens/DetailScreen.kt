@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayout
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ListItem
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,7 +36,6 @@ fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
     model: RefreshableStateViewModel2<Key, StateType, Output>,
     actioner: (UIAction) -> Unit,
     errorer: @Composable (UIError) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     val state by model.state.collectAsState()
     RefreshableScreen(
@@ -48,12 +47,7 @@ fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
         when (details) {
             is EntityWithStatsAndInfo.ArtistWithStatsAndInfo -> ArtistDetailScreen(info = details, actioner = actioner)
             is EntityWithStatsAndInfo.AlbumDetails -> AlbumDetailScreen(details = details, actioner = actioner)
-            is EntityWithStatsAndInfo.TrackWithStatsAndInfo -> TrackDetailScreen(
-                details = details,
-                actioner = actioner,
-                modifier = modifier
-            )
-            else -> Text(text = "ERROR")
+            is EntityWithStatsAndInfo.TrackWithStatsAndInfo -> TrackDetailScreen(details = details, actioner = actioner)
         }
     }
 }

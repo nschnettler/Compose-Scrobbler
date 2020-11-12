@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -11,7 +12,6 @@ import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.util.SessionState
-import androidx.compose.runtime.getValue
 import de.schnettler.scrobbler.viewmodels.AlbumViewModel
 import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
@@ -63,7 +63,7 @@ fun MainRouteContent(
         composable(Screen.ArtistDetails.argRoute, arguments = Screen.ArtistDetails.navArgs) { screen ->
             screen.arguments?.getString(Screen.ArtistDetails.args.first().name)?.let {
                 artistViewModel.updateKey(LastFmEntity.Artist(it))
-                DetailScreen(model = artistViewModel, actioner = actioner, errorer = errorer, modifier = modifier)
+                DetailScreen(model = artistViewModel, actioner = actioner, errorer = errorer)
             }
         }
         composable(
@@ -75,7 +75,7 @@ fun MainRouteContent(
 
             if (!artist.isNullOrEmpty() && !album.isNullOrEmpty()) {
                 albumViewModel.updateKey(LastFmEntity.Album(name = album, artist = artist))
-                DetailScreen(model = albumViewModel, actioner = actioner, errorer = errorer, modifier = modifier)
+                DetailScreen(model = albumViewModel, actioner = actioner, errorer = errorer)
             }
         }
         composable(
@@ -87,7 +87,7 @@ fun MainRouteContent(
 
             if (!artist.isNullOrEmpty() && !track.isNullOrEmpty()) {
                 trackViewModel.updateKey(LastFmEntity.Track(name = track, artist = artist))
-                DetailScreen(model = trackViewModel, actioner = actioner, errorer = errorer, modifier = modifier)
+                DetailScreen(model = trackViewModel, actioner = actioner, errorer = errorer)
             }
         }
     }

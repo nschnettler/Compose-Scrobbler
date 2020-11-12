@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Event
@@ -50,7 +50,6 @@ import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.Carousel
 import de.schnettler.scrobbler.components.PlainListIconBackground
-import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -149,7 +148,6 @@ private fun ProfileContent(
             ) { topTracks, padding ->
                 TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
             }
-            Spacer(56.dp)
         })
 
         ExtendedFloatingActionButton(

@@ -98,7 +98,9 @@ class MainActivity : AppCompatActivity() {
                         Scaffold(
                             scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
                             bottomBar = {
-                                if (mainScreens.map { it.routeId }.contains(navBackStackEntry?.route())) {
+                                // navBackStackEntry == null is needed because otherwise innerPadding stays zero
+                                if (mainScreens.map { it.routeId }
+                                        .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
                                     BottomNavigationBar(
                                         currentRoute = navBackStackEntry?.route(),
                                         screens = mainScreens,
@@ -120,6 +122,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
+        Timber.d("InnerPadding $innerPadding")
         MainRouteContent(
             model = model,
             navController = controller,
