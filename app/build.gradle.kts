@@ -57,6 +57,15 @@ android {
             storeFile = file("debug.keystore")
         }
     }
+
+    packagingOptions {
+        resources {
+            excludes.apply {
+                add("/META-INF/AL2.0")
+                add("/META-INF/LGPL2.1")
+            }
+        }
+    }
 }
 
 dependencies {
