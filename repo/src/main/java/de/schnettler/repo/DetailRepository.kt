@@ -44,7 +44,9 @@ class DetailRepository @Inject constructor(
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { artist: Artist ->
-            if (artist.imageUrl == null) imageRepo.retrieveArtistImage(artist)
+            // Refresh Image
+            imageRepo.updateArtistImage(artist)
+
             coroutineScope {
                 val infoResult = async {
                     service.getArtistInfo(artist.name, authProvider.sessionKey)

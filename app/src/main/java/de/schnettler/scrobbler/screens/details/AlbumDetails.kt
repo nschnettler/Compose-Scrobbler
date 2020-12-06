@@ -1,11 +1,10 @@
 package de.schnettler.scrobbler.screens.details
 
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.lazy.ExperimentalLazyDsl
 import androidx.compose.material.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -27,31 +26,31 @@ import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.asMinSec
 import de.schnettler.scrobbler.util.fromHtmlLastFm
-import de.schnettler.scrobbler.util.navigationBarsHeightPlus
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayout::class, ExperimentalLazyDsl::class, ExperimentalTime::class)
+@OptIn(ExperimentalLayout::class, ExperimentalTime::class)
 @Composable
 fun AlbumDetailScreen(
-    albumDetails: AlbumDetails,
-    actionHandler: (UIAction) -> Unit,
+    details: AlbumDetails,
+    actioner: (UIAction) -> Unit,
 ) {
-    val (album, stats, info, artist) = albumDetails
+    val (album, stats, info, artist) = details
     CollapsingToolbar(
         imageUrl = album.imageUrl,
         title = album.name,
         statusBarGuardAlpha = 0F,
-        actionHandler = actionHandler,
+        actionHandler = actioner,
         menuActions = listOf(MenuAction.OpenInBrowser(album.url))
     ) {
         ArtistItem(
             artist = artist ?: LastFmEntity.Artist(album.artist, ""),
-            albumDetails.trackNumber,
-            albumDetails.runtime,
-            actionHandler
+            details.trackNumber,
+            details.runtime,
+            actioner
         )
 
         ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
@@ -60,24 +59,25 @@ fun AlbumDetailScreen(
 
         ListeningStats(item = stats)
 
-        ListWithTitle(title = stringResource(id = R.string.header_tags), list = albumDetails.info?.tags) { tags ->
-            ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
+        ListWithTitle(title = stringResource(id = R.string.header_tags), list = details.info?.tags) { tags ->
+            ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) })
         }
 
         Spacer(modifier = Modifier.preferredHeight(16.dp))
 
-        ListWithTitle(title = "Tracks", list = albumDetails.tracks) { tracks ->
+        ListWithTitle(title = "Tracks", list = details.tracks) { tracks ->
             tracks.forEachIndexed { index, (track, info) ->
                 ListItem(
                     text = { Text(track.name) },
                     secondaryText = { Text(text = info.duration.asMinSec()) },
                     icon = { IndexListIconBackground(index = index) },
-                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track)) })
+                    modifier = Modifier.clickable(onClick = { actioner(ListingSelected(track)) })
                 )
             }
         }
 
-        Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        Spacer(modifier = Modifier.navigationBarsHeight())
     }
 }
 

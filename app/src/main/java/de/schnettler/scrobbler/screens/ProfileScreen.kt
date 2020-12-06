@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.screens
 
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +22,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Event
@@ -50,7 +50,6 @@ import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIError
 import de.schnettler.scrobbler.components.Carousel
 import de.schnettler.scrobbler.components.PlainListIconBackground
-import de.schnettler.scrobbler.components.Spacer
 import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -59,10 +58,10 @@ import de.schnettler.scrobbler.theme.AppColor
 import de.schnettler.scrobbler.util.UITimePeriod
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
-import de.schnettler.scrobbler.util.statusBarsHeight
 import de.schnettler.scrobbler.util.toFlagEmoji
 import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -108,16 +107,18 @@ fun ProfileScreen(
         onRefresh = model::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
-        ProfileContent(
-            modifier = modifier,
-            user = userState.currentData,
-            artists = artistState.currentData,
-            albums = albumState.currentData,
-            tracks = trackState.currentData,
-            timePeriod = timePeriod,
-            onFabClicked = { model.showDialog(true) },
-            actioner = actionHandler,
-        )
+        userState.currentData?.let {
+            ProfileContent(
+                modifier = modifier,
+                user = userState.currentData,
+                artists = artistState.currentData,
+                albums = albumState.currentData,
+                tracks = trackState.currentData,
+                timePeriod = timePeriod,
+                onFabClicked = { model.showDialog(true) },
+                actioner = actionHandler,
+            )
+        } ?: LoginScreen()
     }
 }
 
@@ -147,7 +148,6 @@ private fun ProfileContent(
             ) { topTracks, padding ->
                 TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
             }
-            Spacer(56.dp)
         })
 
         ExtendedFloatingActionButton(

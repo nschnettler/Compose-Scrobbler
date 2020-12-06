@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -20,36 +21,37 @@ import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListeningStats
 import de.schnettler.scrobbler.screens.AlbumCategory
 import de.schnettler.scrobbler.screens.TagCategory
-import de.schnettler.scrobbler.util.navigationBarsHeightPlus
-import de.schnettler.scrobbler.util.navigationBarsPadding
-import de.schnettler.scrobbler.util.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun TrackDetailScreen(
-    trackDetails: TrackWithStatsAndInfo,
-    actionHandler: (UIAction) -> Unit,
+    details: TrackWithStatsAndInfo,
+    actioner: (UIAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val (track, stats, info, album) = trackDetails
+    val (track, stats, info, album) = details
     Box(modifier.fillMaxSize()) {
         ScrollableColumn(children = {
             Spacer(modifier = Modifier.statusBarsHeight())
             AlbumCategory(
                 album = album,
                 artistPlaceholder = track.artist,
-                actionHandler = actionHandler
+                actionHandler = actioner
             )
             ExpandingInfoCard(info = info?.wiki)
             ListeningStats(item = stats)
             if (info?.tags?.isNotEmpty() == true) {
-                TagCategory(tags = info.tags, actionHandler = actionHandler)
+                TagCategory(tags = info.tags, actionHandler = actioner)
             }
-            Spacer(modifier = Modifier.navigationBarsHeightPlus(8.dp))
+            Spacer(modifier = Modifier.preferredHeight(8.dp))
+            Spacer(modifier = Modifier.navigationBarsHeight())
         })
         info?.let {
             FloatingActionButton(
                 onClick = {
-                    actionHandler(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
+                    actioner(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
                 },
                 Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
             ) {

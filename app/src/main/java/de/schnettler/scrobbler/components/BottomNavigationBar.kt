@@ -1,38 +1,37 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.foundation.Text
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import de.schnettler.scrobbler.AppRoute
-import de.schnettler.scrobbler.util.navigationBarsPadding
+import de.schnettler.scrobbler.Screen
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun BottomNavigationBar(
-    items: List<AppRoute>,
-    currentScreen: AppRoute,
-    onDestinationSelected: (AppRoute) -> Unit
+    screens: List<Screen>,
+    currentRoute: String?,
+    onClicked: (Screen) -> Unit
 ) {
     CustomBottomNavigation(
         backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
             .navigationBarsPadding()
     ) {
-        items.forEach { screen ->
+        screens.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(screen.icon) },
                 label = {
-                    Text(
-                        text = stringResource(id = screen.title),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Text(text = stringResource(id = screen.titleId), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 },
-                selected = currentScreen::class == screen::class,
-                onClick = { onDestinationSelected.invoke(screen) }
+                selected = currentRoute == screen.routeId,
+                onClick = {
+                    if (currentRoute == screen.routeId) return@BottomNavigationItem
+                    onClicked(screen)
+                }
             )
         }
     }

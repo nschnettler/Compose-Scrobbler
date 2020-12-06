@@ -6,7 +6,10 @@ import com.dropbox.android.external.store4.Store
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.freshFrom
 import de.schnettler.scrobbler.util.streamFrom
+import de.schnettler.scrobbler.util.updateValue
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateType>(
@@ -37,6 +40,41 @@ open class RefreshableStateViewModel<Key : Any, StateType : Any, Output : StateT
             viewModelScope.launch {
                 state.streamFrom(store, key)
             }
+        }
+    }
+}
+
+open class RefreshableStateViewModel2<Key : Any, StateType : Any, Output : StateType>(
+    private val store: Store<Key, Output>,
+) : ViewModel() {
+    private val keyState: MutableStateFlow<Key?> = MutableStateFlow(null)
+
+    val state: MutableStateFlow<RefreshableUiState<StateType>> by lazy {
+        MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
+    }
+
+    init {
+        viewModelScope.launch {
+            keyState.filterNotNull().collectLatest { key ->
+                state.streamFrom(store, key)
+            }
+        }
+    }
+
+    /**
+     * Refreshes Data
+     */
+    fun refresh() {
+        keyState.value?.let { key ->
+            viewModelScope.launch {
+                state.freshFrom(store, key)
+            }
+        }
+    }
+
+    fun updateKey(new: Key) {
+        if (keyState.updateValue(new)) {
+            state.value = RefreshableUiState.Success(data = null, loading = true)
         }
     }
 }

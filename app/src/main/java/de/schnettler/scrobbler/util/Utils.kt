@@ -29,3 +29,7 @@ fun Duration.asMinSec() = this.toComponents { min, s, _ ->
     val padded = s.toString().padStart(2, '0')
     "$min:$padded"
 }
+
+ fun <T> List<T>.secondOrNull(): T? {
+    return if (size < 2) null else this[1]
+}

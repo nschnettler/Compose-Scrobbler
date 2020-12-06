@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -14,11 +13,15 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.savedinstancestate.rememberSavedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.setContent
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
@@ -26,18 +29,21 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.theme.AppTheme
-import de.schnettler.scrobbler.util.Navigator
-import de.schnettler.scrobbler.util.ProvideDisplayInsets
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
+import de.schnettler.scrobbler.util.route
+import de.schnettler.scrobbler.viewmodels.AlbumViewModel
+import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
+import de.schnettler.scrobbler.viewmodels.TrackViewModel
 import de.schnettler.scrobbler.viewmodels.UserViewModel
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -51,15 +57,18 @@ class MainActivity : AppCompatActivity() {
     private val userViewModel: UserViewModel by viewModels()
     private val localViewModel: LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
+    private val artistViewModel: ArtistViewModel by viewModels()
+    private val albumViewModel: AlbumViewModel by viewModels()
+    private val trackViewModel: TrackViewModel by viewModels()
 
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
-    private val bottomNavDestinations = listOf(
-        MainRoute.ChartRoute,
-        MainRoute.LocalRoute,
-        MainRoute.SearchRoute,
-        MainRoute.ProfileRoute,
-        MainRoute.SettingsRoute
+    private val mainScreens = listOf(
+        Screen.Charts,
+        Screen.History,
+        Screen.Search,
+        Screen.Profile,
+        Screen.Settings
     )
 
     @Inject
@@ -74,42 +83,35 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
-                    ProvideDisplayInsets {
-                        val navigator: Navigator<AppRoute> = rememberSavedInstanceState(
-                            saver = Navigator.saver(onBackPressedDispatcher)
-                        ) {
-                            Navigator(MainRoute.LocalRoute, onBackPressedDispatcher)
-                        }
+                    ProvideWindowInsets {
+                        val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
+                        onListingClicked = {
+                            navController.navigate(when (it) {
+                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
+                                is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
+                            })
+                        }
 
-                        Crossfade(current = navigator.current) { screen ->
-                            onListingClicked = {
-                                navigator.navigate(NestedRoute.DetailRoute(it))
-                            }
-                            when (screen) {
-                                is NestedRoute -> {
-                                    Scaffold(
-                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        bodyContent = {
-                                            Content(screen = screen, host = snackHost, innerPadding = it)
-                                        },
-                                    )
-                                }
-                                is MainRoute -> {
-                                    Scaffold(
-                                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                                        bodyContent = {
-                                            Content(screen = screen, host = snackHost, innerPadding = it)
-                                        },
-                                        bottomBar = {
-                                            BottomNavigationBar(
-                                                items = bottomNavDestinations,
-                                                currentScreen = screen
-                                            ) { newScreen -> navigator.replace(newScreen as MainRoute) }
-                                        }
-                                    )
+                        val navBackStackEntry by navController.currentBackStackEntryAsState()
+                        Scaffold(
+                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                            bottomBar = {
+                                // navBackStackEntry == null is needed because otherwise innerPadding stays zero
+                                if (mainScreens.map { it.routeId }
+                                        .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
+                                    BottomNavigationBar(
+                                        currentRoute = navBackStackEntry?.route(),
+                                        screens = mainScreens,
+                                    ) {
+                                        navController.popBackStack(navController.graph.startDestination, false)
+                                        navController.navigate(it.routeId)
+                                    }
                                 }
                             }
+                        ) {
+                            Content(controller = navController, host = snackHost, innerPadding = it)
                         }
                     }
                 }
@@ -119,19 +121,19 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    private fun Content(screen: AppRoute, host: SnackbarHostState, innerPadding: PaddingValues) {
+    private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
         MainRouteContent(
-            currentScreen = screen,
             model = model,
+            navController = controller,
             chartsModel = chartsModel,
             userViewModel = userViewModel,
             localViewModel = localViewModel,
             searchViewModel = searchViewModel,
-            detailsViewModel = detailsViewModel,
-            actionHandler = ::handleAction,
-            errorHandler = { error ->
-                handleError(host = host, error = error)
-            },
+            artistViewModel = artistViewModel,
+            albumViewModel = albumViewModel,
+            trackViewModel = trackViewModel,
+            actioner = ::handleAction,
+            errorer = { error -> handleError(host = host, error = error) },
             modifier = Modifier.padding(innerPadding)
         )
     }
