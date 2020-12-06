@@ -34,7 +34,7 @@ fun CustomBottomNavigation(
         Row(
             modifier.fillMaxWidth().preferredHeight(BottomNavigationHeight),
             horizontalArrangement = Arrangement.SpaceBetween,
-            children = content
+            content = content
         )
     }
 }

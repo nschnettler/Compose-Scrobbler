@@ -134,7 +134,7 @@ private fun ProfileContent(
     actioner: (UIAction) -> Unit,
 ) {
     Box {
-        ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
+        ScrollableColumn(modifier = modifier.fillMaxSize(), content = {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
             user?.let { UserInfo(it) }
             TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)

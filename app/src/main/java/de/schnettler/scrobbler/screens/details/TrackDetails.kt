@@ -33,7 +33,7 @@ fun TrackDetailScreen(
 ) {
     val (track, stats, info, album) = details
     Box(modifier.fillMaxSize()) {
-        ScrollableColumn(children = {
+        ScrollableColumn(content = {
             Spacer(modifier = Modifier.statusBarsHeight())
             AlbumCategory(
                 album = album,
@@ -58,7 +58,7 @@ fun TrackDetailScreen(
                 if (info.loved) {
                     Icon(Icons.Rounded.Favorite)
                 } else {
-                    Icon(asset = Icons.Rounded.FavoriteBorder)
+                    Icon(imageVector = Icons.Rounded.FavoriteBorder)
                 }
             }
         }

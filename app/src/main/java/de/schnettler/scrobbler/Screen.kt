@@ -10,7 +10,7 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.navArgument
 
@@ -24,7 +24,7 @@ sealed class Screen(
     val routeId: String,
     val args: List<NavArgument> = emptyList(),
     @StringRes val titleId: Int,
-    val icon: VectorAsset,
+    val icon: ImageVector,
 
     val argRoute: String = generateRouteWithArgPlaceholders(routeId, args),
     val navArgs: List<NamedNavArgument> = args.map { it.navArg },

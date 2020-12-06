@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,6 +11,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Hearing
 import androidx.compose.runtime.Composable
@@ -47,7 +47,7 @@ fun MediaCard(
     Card(modifier = modifier) {
         Box(
             modifier = Modifier.clickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
-            alignment = Alignment.BottomEnd
+            contentAlignment = Alignment.BottomEnd
         ) {
             ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
                 Text(
@@ -103,7 +103,7 @@ private fun StatChip(
         contentColor = onColor
     ) {
         Box(
-            alignment = Alignment.Center,
+            contentAlignment = Alignment.Center,
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {

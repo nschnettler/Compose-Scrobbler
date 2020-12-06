@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun LoadingScreen(modifier: Modifier = Modifier.fillMaxSize()) {
-    Box(modifier = modifier, alignment = Alignment.Center) {
+fun LoadingScreen(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
             color = MaterialTheme.colors.secondary,
             modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally)
