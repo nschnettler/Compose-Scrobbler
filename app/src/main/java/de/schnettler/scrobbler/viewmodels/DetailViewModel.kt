@@ -13,7 +13,6 @@ import de.schnettler.repo.DetailRepository
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.freshFrom
 import de.schnettler.scrobbler.util.streamFrom
-import de.schnettler.scrobbler.util.updateValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -26,12 +25,6 @@ class DetailViewModel @ViewModelInject constructor(
     private val entry: MutableStateFlow<LastFmEntity?> = MutableStateFlow(null)
     val state: MutableStateFlow<RefreshableUiState<EntityWithStatsAndInfo>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-
-    fun updateEntry(new: LastFmEntity) {
-        if (entry.updateValue(new)) {
-            state.value = RefreshableUiState.Success(data = null, loading = true)
-        }
-    }
 
     init {
         viewModelScope.launch {

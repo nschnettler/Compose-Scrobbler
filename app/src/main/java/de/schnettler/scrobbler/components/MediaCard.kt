@@ -5,17 +5,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Hearing
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +50,7 @@ fun MediaCard(
             modifier = Modifier.clickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
             contentAlignment = Alignment.BottomEnd
         ) {
-            ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+            Providers(AmbientContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = name,
                     style = when (name.length) {
@@ -78,7 +79,7 @@ fun MediaCard(
                         modifier = Modifier.matchParentSize()
                     )
                 }
-                LaunchedTask(imageUrl) {
+                LaunchedEffect(imageUrl) {
                     colors = colorCache.getColorsFromImageUrl(imageUrl)
                 }
             }
@@ -107,7 +108,7 @@ private fun StatChip(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ProvideEmphasis(AmbientEmphasisLevels.current.medium) {
+                Providers(AmbientContentAlpha provides ContentAlpha.high) {
                     Icon(Icons.Outlined.Hearing.copy(defaultHeight = 16.dp, defaultWidth = 16.dp))
                     Spacer(size = 4.dp, orientation = Orientation.Horizontal)
                     Text(text = plays.abbreviate(), style = MaterialTheme.typography.caption)

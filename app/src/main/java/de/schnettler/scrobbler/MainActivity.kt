@@ -12,7 +12,7 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedTask
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -133,7 +133,11 @@ class MainActivity : AppCompatActivity() {
             albumViewModel = albumViewModel,
             trackViewModel = trackViewModel,
             actioner = ::handleAction,
-            errorer = { error -> handleError(host = host, error = error) },
+            errorer = { error ->
+                when (error) {
+                    is UIError.ShowErrorSnackbar -> ErrorSnackbar(host = host, error = error)
+                }
+             },
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -150,19 +154,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @ExperimentalMaterialApi
-    @Composable
-    fun handleError(host: SnackbarHostState, error: UIError) {
-        when (error) {
-            is UIError.ShowErrorSnackbar -> showErrorSnackbar(host = host, error = error)
-        }
-    }
-
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun showErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
+    fun ErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
         if (error.state is RefreshableUiState.Error) {
-            LaunchedTask {
+            LaunchedEffect(error.state) {
                 val result = host.showSnackbar(
                     message = error.state.errorMessage
                         ?: error.state.exception?.message

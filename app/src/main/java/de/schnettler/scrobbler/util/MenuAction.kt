@@ -10,6 +10,6 @@ import de.schnettler.scrobbler.UIAction
 
 sealed class MenuAction(@StringRes val label: Int, val icon: ImageVector, val action: UIAction?) {
     object Period : MenuAction(R.string.ic_period, Icons.Rounded.Event, null)
-    class OpenInBrowser(val url: String) :
+    class OpenInBrowser(url: String) :
         MenuAction(R.string.ic_open_in, Icons.Rounded.OpenInBrowser, UIAction.OpenInBrowser(url))
 }

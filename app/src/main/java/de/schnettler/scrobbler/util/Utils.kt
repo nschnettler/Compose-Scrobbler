@@ -7,8 +7,6 @@ import de.schnettler.database.models.Scrobble
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-val defaultSpacerSize = 16.dp
-
 fun Scrobble.copyByState(
     trackState: State<TextFieldValue>,
     artistState: State<TextFieldValue>,

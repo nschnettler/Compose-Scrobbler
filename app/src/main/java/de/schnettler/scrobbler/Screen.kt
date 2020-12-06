@@ -64,11 +64,6 @@ sealed class Screen(
             icon = Outlined.MusicNote
         )
 
-    companion object {
-        val mainRoutes
-            get() = listOf(Charts, History, Search, Profile, Settings)
-    }
-
     fun withArgs(args: List<String>) = routeId + if (args.isNotEmpty()) args.joinToString("/", "/") {
         it
     } else ""
