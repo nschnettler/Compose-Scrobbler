@@ -122,7 +122,6 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     private fun Content(controller: NavHostController, host: SnackbarHostState, innerPadding: PaddingValues) {
-        Timber.d("InnerPadding $innerPadding")
         MainRouteContent(
             model = model,
             navController = controller,
