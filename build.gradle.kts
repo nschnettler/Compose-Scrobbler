@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application") version "4.2.0-alpha16" apply false
+    id("com.android.application") version "7.0.0-alpha02" apply false
     id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
     kotlin("android") version "1.4.0" apply false
 }

@@ -30,13 +30,6 @@ android {
         isReturnDefaultValues = true
     }
 
-    packagingOptions {
-        exclude("**/attach_hotspot_windows.dll")
-        exclude("META-INF/licenses/**")
-        exclude("META-INF/AL2.0")
-        exclude("META-INF/LGPL2.1")
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
