@@ -26,3 +26,5 @@ tasks {
         delete(buildDir)
     }
 }
+
+apply(plugin = "android-reporting")
