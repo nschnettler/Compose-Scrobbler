@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens.details
+package de.schnettler.scrobbler.ui.detail.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
@@ -12,20 +12,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.ChipRow
-import de.schnettler.scrobbler.components.CollapsingToolbar
-import de.schnettler.scrobbler.components.ExpandingInfoCard
-import de.schnettler.scrobbler.components.ListWithTitle
-import de.schnettler.scrobbler.ui.common.compose.ListeningStats
-import de.schnettler.scrobbler.ui.common.compose.Spacer
+import de.schnettler.scrobbler.ui.common.compose.CollapsingToolbar
 import de.schnettler.scrobbler.ui.common.compose.IndexListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.ListeningStats
+import de.schnettler.scrobbler.ui.common.compose.MenuAction
 import de.schnettler.scrobbler.ui.common.compose.PlainListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.Spacer
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.util.asMinSec
 import de.schnettler.scrobbler.ui.common.util.fromHtmlLastFm
-import de.schnettler.scrobbler.util.MenuAction
-import de.schnettler.scrobbler.util.asMinSec
+import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.widget.ChipRow
+import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
+import de.schnettler.scrobbler.ui.detail.widget.ListWithTitle
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import kotlin.math.roundToInt

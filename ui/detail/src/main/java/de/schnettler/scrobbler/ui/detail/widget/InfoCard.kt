@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.detail.widget
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
@@ -20,8 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
+import de.schnettler.scrobbler.ui.detail.R
 
 @Composable
 fun ExpandingInfoCard(info: String?) {

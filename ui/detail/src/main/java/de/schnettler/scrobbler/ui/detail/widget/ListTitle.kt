@@ -1,7 +1,7 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.detail.widget
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle

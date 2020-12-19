@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,17 +18,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.R
+import de.schnettler.scrobbler.screens.RefreshableScreen
+import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel2
+import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.UIError
-import de.schnettler.scrobbler.components.ChipRow
-import de.schnettler.scrobbler.components.ListTitle
-import de.schnettler.scrobbler.screens.details.AlbumDetailScreen
-import de.schnettler.scrobbler.screens.details.ArtistDetailScreen
-import de.schnettler.scrobbler.screens.details.TrackDetailScreen
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
-import de.schnettler.scrobbler.viewmodels.RefreshableStateViewModel2
+import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
+import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen
+import de.schnettler.scrobbler.ui.detail.widget.ChipRow
+import de.schnettler.scrobbler.ui.detail.widget.ListTitle
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable

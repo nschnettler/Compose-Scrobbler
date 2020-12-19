@@ -11,17 +11,18 @@ import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.ui.charts.ChartScreen
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.detail.DetailScreen
+import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
+import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
+import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileScreen
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
 import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.destination
 import de.schnettler.scrobbler.util.secondOrNull
-import de.schnettler.scrobbler.viewmodels.AlbumViewModel
-import de.schnettler.scrobbler.viewmodels.ArtistViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
-import de.schnettler.scrobbler.viewmodels.TrackViewModel
 
 @Composable
 fun MainRouteContent(

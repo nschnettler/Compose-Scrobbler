@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.viewmodels
+package de.schnettler.scrobbler.ui.detail
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel

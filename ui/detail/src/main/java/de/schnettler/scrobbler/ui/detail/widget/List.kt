@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.detail.widget
 
 import androidx.compose.runtime.Composable
 
