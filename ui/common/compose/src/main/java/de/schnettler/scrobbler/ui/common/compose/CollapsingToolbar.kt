@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.common.compose
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
@@ -34,10 +34,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.util.MenuAction
-import de.schnettler.scrobbler.util.lerp
-import de.schnettler.scrobbler.util.offset
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.AmbientWindowInsets
 import dev.chrisbanes.accompanist.insets.statusBarsHeight

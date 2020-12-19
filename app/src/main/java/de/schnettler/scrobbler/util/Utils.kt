@@ -3,8 +3,6 @@ package de.schnettler.scrobbler.util
 import androidx.compose.runtime.State
 import androidx.compose.ui.text.input.TextFieldValue
 import de.schnettler.database.models.Scrobble
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 fun Scrobble.copyByState(
     trackState: State<TextFieldValue>,
@@ -15,12 +13,6 @@ fun Scrobble.copyByState(
     artist = artistState.value.text,
     album = albumState.value.text
 )
-
-@ExperimentalTime
-fun Duration.asMinSec() = this.toComponents { min, s, _ ->
-    val padded = s.toString().padStart(2, '0')
-    "$min:$padded"
-}
 
  fun <T> List<T>.secondOrNull(): T? {
     return if (size < 2) null else this[1]

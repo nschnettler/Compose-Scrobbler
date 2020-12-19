@@ -6,6 +6,7 @@ import de.schnettler.database.models.Scrobble
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.ScrobbleRepository
 import de.schnettler.repo.mapping.response.LastFmResponse
+import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

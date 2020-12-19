@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.common.compose
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset

@@ -62,30 +62,3 @@ fun SelectableChipRow(items: Array<String>, selectedIndex: Int, onSelectionChang
         }
     }
 }
-
-@Composable
-fun Chip(
-    text: String,
-    selected: Boolean = false,
-    colorSelected: Color = MaterialTheme.colors.secondary.copy(COLOR_ACTIVATED_ALPHA),
-    colorNormal: Color = AppColor.BackgroundElevated,
-    onSelected: () -> Unit
-) {
-
-    Surface(
-        shape = RoundedCornerShape(CHIP_CORNER_RADIUS),
-        color = if (selected) colorSelected else colorNormal
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.clickable(onClick = { onSelected() }).preferredHeight(32.dp)
-        ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.body2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }
-    }
-}

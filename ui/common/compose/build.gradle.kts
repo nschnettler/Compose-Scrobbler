@@ -27,6 +27,8 @@ dependencies {
     implementation(project(":ui:common:util"))
     implementation(project(":ui:common:resources"))
 
+    implementation(AndroidX.lifecycle.viewModelKtx)
+
     implementation(AndroidX.compose.runtime)
     implementation(AndroidX.compose.foundation)
     implementation(AndroidX.compose.material)
@@ -36,4 +38,5 @@ dependencies {
     implementation(AndroidX.core.ktx)
 
     implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
+    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
 }
