@@ -17,8 +17,8 @@ import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.CollapsingToolbar
 import de.schnettler.scrobbler.components.ExpandingInfoCard
 import de.schnettler.scrobbler.components.ListWithTitle
-import de.schnettler.scrobbler.components.ListeningStats
-import de.schnettler.scrobbler.components.Spacer
+import de.schnettler.scrobbler.ui.common.compose.ListeningStats
+import de.schnettler.scrobbler.ui.common.compose.Spacer
 import de.schnettler.scrobbler.ui.common.compose.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.UIAction

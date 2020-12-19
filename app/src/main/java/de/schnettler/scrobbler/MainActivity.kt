@@ -33,7 +33,7 @@ import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
-import de.schnettler.scrobbler.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route

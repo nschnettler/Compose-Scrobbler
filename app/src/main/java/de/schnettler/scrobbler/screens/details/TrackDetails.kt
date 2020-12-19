@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.components.ExpandingInfoCard
-import de.schnettler.scrobbler.components.ListeningStats
+import de.schnettler.scrobbler.ui.common.compose.ListeningStats
 import de.schnettler.scrobbler.screens.AlbumCategory
 import de.schnettler.scrobbler.screens.TagCategory
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight

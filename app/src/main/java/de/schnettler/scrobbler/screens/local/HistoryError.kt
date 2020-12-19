@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import de.schnettler.common.BuildConfig
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.util.AUTH_ENDPOINT
-import de.schnettler.scrobbler.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.common.util.AUTH_ENDPOINT
+import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
 
 enum class HistoryError(
     @StringRes val titleRes: Int,

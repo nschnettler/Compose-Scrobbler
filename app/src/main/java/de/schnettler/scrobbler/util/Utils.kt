@@ -16,11 +16,6 @@ fun Scrobble.copyByState(
     album = albumState.value.text
 )
 
-enum class Orientation {
-    Vertical,
-    Horizontal
-}
-
 @ExperimentalTime
 fun Duration.asMinSec() = this.toComponents { min, s, _ ->
     val padded = s.toString().padStart(2, '0')

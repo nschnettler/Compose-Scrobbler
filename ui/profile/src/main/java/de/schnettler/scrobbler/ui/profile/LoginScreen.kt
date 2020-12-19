@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.profile
 
 import android.content.Context
 import android.net.Uri
@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import de.schnettler.common.BuildConfig
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.util.AUTH_ENDPOINT
-import de.schnettler.scrobbler.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.common.util.AUTH_ENDPOINT
+import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
 import timber.log.Timber
 
 @Composable

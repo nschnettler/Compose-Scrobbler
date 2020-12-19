@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.common.compose
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,8 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.ui.common.compose.UIAction
 
 @Composable
 fun <T> Carousel(

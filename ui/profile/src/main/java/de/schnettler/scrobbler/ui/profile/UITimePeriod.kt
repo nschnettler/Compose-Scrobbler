@@ -1,8 +1,7 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.profile
 
 import androidx.annotation.StringRes
 import de.schnettler.common.TimePeriod
-import de.schnettler.scrobbler.R
 
 enum class UITimePeriod(val period: TimePeriod, @StringRes val titleRes: Int, @StringRes val shortTitleRes: Int) {
     OVERALL(TimePeriod.OVERALL, R.string.period_overall, R.string.period_overall_short),
