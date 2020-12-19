@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens.local
 
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
