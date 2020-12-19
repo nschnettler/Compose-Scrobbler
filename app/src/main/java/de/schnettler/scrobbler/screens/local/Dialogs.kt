@@ -1,14 +1,14 @@
 package de.schnettler.scrobbler.screens.local
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.AmbientContentColor
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.AmbientContentColor
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
@@ -88,7 +88,7 @@ fun ConfirmDialog(
 private fun NegativeButton(@StringRes textRes: Int, onPressed: () -> Unit) {
     TextButton(
         onClick = onPressed,
-        colors = ButtonConstants.defaultTextButtonColors(contentColor = AmbientContentColor.current),
+        colors = ButtonDefaults.textButtonColors(contentColor = AmbientContentColor.current),
     ) {
         Text(text = stringResource(id = textRes))
     }
@@ -98,7 +98,7 @@ private fun NegativeButton(@StringRes textRes: Int, onPressed: () -> Unit) {
 private fun PositiveButton(@StringRes textRes: Int, onPressed: () -> Unit) {
     TextButton(
         onClick = onPressed,
-        colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
+        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
     ) {
         Text(text = stringResource(id = textRes))
     }

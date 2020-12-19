@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
@@ -266,7 +266,7 @@ private fun PeriodSelectDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSelect(selected) },
-                colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
             ) {
                 Text(text = stringResource(id = R.string.profile_perioddialog_select))
             }
