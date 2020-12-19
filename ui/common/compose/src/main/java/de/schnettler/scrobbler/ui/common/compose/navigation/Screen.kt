@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler
+package de.schnettler.scrobbler.ui.common.compose.navigation
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons.Outlined
@@ -13,6 +13,7 @@ import androidx.compose.material.icons.rounded.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.NamedNavArgument
 import androidx.navigation.compose.navArgument
+import de.schnettler.scrobbler.ui.common.compose.R
 
 data class NavArgument(
     val name: String,

@@ -29,14 +29,15 @@ dependencies {
 
     implementation(AndroidX.lifecycle.viewModelKtx)
 
-    implementation(AndroidX.compose.runtime)
-    implementation(AndroidX.compose.foundation)
-    implementation(AndroidX.compose.material)
-    implementation(AndroidX.compose.material.icons.extended)
+    api(AndroidX.compose.runtime)
+    api(AndroidX.compose.foundation)
+    api(AndroidX.compose.material)
+    api(AndroidX.compose.material.icons.extended)
+    implementation("androidx.navigation:navigation-compose:_")
 
     implementation(AndroidX.paletteKtx)
     implementation(AndroidX.core.ktx)
 
-    implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
+    api("dev.chrisbanes.accompanist", "accompanist-coil", "_")
+    api("dev.chrisbanes.accompanist", "accompanist-insets", "_")
 }

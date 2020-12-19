@@ -33,11 +33,6 @@ dependencies {
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.browser)
 
-    implementation(AndroidX.compose.material)
-    implementation(AndroidX.compose.material.icons.extended)
-    implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
-
     implementation(AndroidX.hilt.lifecycleViewModel)
     kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)

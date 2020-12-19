@@ -7,10 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.Screen
+import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
 import de.schnettler.scrobbler.ui.charts.ChartScreen
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.detail.DetailScreen
 import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel

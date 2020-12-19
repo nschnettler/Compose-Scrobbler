@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import de.schnettler.scrobbler.Screen
+import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable

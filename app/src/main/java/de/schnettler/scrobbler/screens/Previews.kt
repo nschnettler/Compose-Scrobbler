@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.ui.tooling.preview.Preview
 import de.schnettler.database.models.LastFmEntity.Artist
-import de.schnettler.scrobbler.ui.common.compose.MediaCard
+import de.schnettler.scrobbler.ui.common.compose.widget.MediaCard
 
 @Preview
 @Composable

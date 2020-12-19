@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

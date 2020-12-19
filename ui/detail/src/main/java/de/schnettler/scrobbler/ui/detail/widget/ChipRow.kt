@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import de.schnettler.scrobbler.ui.common.compose.Chip
+import de.schnettler.scrobbler.ui.common.compose.widget.Chip
 import de.schnettler.scrobbler.ui.common.compose.theme.PADDING_16
 import de.schnettler.scrobbler.ui.common.compose.theme.PADDING_8
 

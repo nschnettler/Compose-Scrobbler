@@ -32,11 +32,11 @@ import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.components.SelectableChipRow
-import de.schnettler.scrobbler.ui.common.compose.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.PlainListIconBackground
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.SearchViewModel

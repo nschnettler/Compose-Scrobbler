@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 
 @Composable
 fun <Data> RefreshableScreen(

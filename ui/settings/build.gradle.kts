@@ -28,9 +28,4 @@ dependencies {
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:resources"))
     implementation(project(":repo"))
-
-    implementation(AndroidX.compose.material)
-    implementation(AndroidX.compose.material.icons.extended)
-    implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
 }

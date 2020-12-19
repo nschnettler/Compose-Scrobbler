@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.ui.common.compose
+package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi

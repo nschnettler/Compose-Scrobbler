@@ -26,12 +26,13 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.components.BottomNavigationBar
+import de.schnettler.scrobbler.ui.common.compose.widget.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
 import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
 import de.schnettler.scrobbler.ui.detail.DetailViewModel

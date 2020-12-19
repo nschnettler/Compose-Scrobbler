@@ -36,7 +36,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
-import de.schnettler.scrobbler.ui.common.compose.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt

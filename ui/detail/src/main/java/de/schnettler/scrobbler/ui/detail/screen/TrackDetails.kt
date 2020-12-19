@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.scrobbler.ui.common.compose.ListeningStats
-import de.schnettler.scrobbler.ui.common.compose.UIAction
+import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
 import de.schnettler.scrobbler.ui.detail.TagCategory
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard

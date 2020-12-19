@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.ui.common.compose
+package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,6 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import de.schnettler.scrobbler.ui.common.compose.DominantColorCache
+import de.schnettler.scrobbler.ui.common.compose.DominantColors
+import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImage

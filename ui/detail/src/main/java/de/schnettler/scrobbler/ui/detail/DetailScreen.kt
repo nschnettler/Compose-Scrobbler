@@ -21,9 +21,9 @@ import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.screens.RefreshableScreen
 import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel2
 import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen

@@ -28,9 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
@@ -40,7 +40,7 @@ import de.schnettler.scrobbler.screens.local.HistoryError
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
-import de.schnettler.scrobbler.ui.common.compose.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT

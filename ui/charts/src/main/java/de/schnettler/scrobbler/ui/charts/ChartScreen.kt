@@ -21,14 +21,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.ui.common.compose.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.IndexListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
-import de.schnettler.scrobbler.ui.common.compose.UIAction
-import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
