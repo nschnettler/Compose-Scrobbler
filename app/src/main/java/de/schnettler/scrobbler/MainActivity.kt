@@ -28,7 +28,7 @@ import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
-import de.schnettler.scrobbler.theme.AppTheme
+import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
 import de.schnettler.scrobbler.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.RefreshableUiState
 import de.schnettler.scrobbler.util.openCustomTab

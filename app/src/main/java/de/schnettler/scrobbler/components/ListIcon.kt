@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.util.firstLetter
 
 @Composable

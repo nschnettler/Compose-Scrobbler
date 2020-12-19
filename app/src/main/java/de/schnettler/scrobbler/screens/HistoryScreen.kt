@@ -31,7 +31,6 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
-import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
@@ -41,6 +40,7 @@ import de.schnettler.scrobbler.screens.local.HistoryError
 import de.schnettler.scrobbler.screens.local.NowPlayingItem
 import de.schnettler.scrobbler.screens.local.ScrobbleItem
 import de.schnettler.scrobbler.screens.local.TrackEditDialog
+import de.schnettler.scrobbler.ui.common.compose.CustomDivider
 import de.schnettler.scrobbler.util.ScrobbleAction
 import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.util.ScrobbleAction.EDIT

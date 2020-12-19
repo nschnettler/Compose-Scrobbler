@@ -27,7 +27,7 @@ import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.screens.details.AlbumDetailScreen
 import de.schnettler.scrobbler.screens.details.ArtistDetailScreen
 import de.schnettler.scrobbler.screens.details.TrackDetailScreen
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.viewmodels.RefreshableStateViewModel2
 import dev.chrisbanes.accompanist.coil.CoilImage
 

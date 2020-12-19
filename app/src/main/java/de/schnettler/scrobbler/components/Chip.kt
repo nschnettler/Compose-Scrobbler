@@ -18,12 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.theme.AppColor
-import de.schnettler.scrobbler.theme.CHIP_CORNER_RADIUS
-import de.schnettler.scrobbler.theme.COLOR_ACTIVATED_ALPHA
-import de.schnettler.scrobbler.theme.DIVIDER_SIZE
-import de.schnettler.scrobbler.theme.PADDING_16
-import de.schnettler.scrobbler.theme.PADDING_8
+import de.schnettler.scrobbler.ui.common.compose.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.CHIP_CORNER_RADIUS
+import de.schnettler.scrobbler.ui.common.compose.theme.COLOR_ACTIVATED_ALPHA
+import de.schnettler.scrobbler.ui.common.compose.theme.DIVIDER_SIZE
+import de.schnettler.scrobbler.ui.common.compose.theme.PADDING_16
+import de.schnettler.scrobbler.ui.common.compose.theme.PADDING_8
 
 @OptIn(ExperimentalLayout::class)
 @Composable

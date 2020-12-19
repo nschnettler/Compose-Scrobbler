@@ -24,12 +24,12 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
-import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.IndexListIconBackground
 import de.schnettler.scrobbler.components.LoadingScreen
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.screens.charts.ChartTab
+import de.schnettler.scrobbler.ui.common.compose.CustomDivider
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import dev.chrisbanes.accompanist.insets.statusBarsHeight

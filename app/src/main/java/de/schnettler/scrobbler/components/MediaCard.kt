@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.util.Orientation
 import de.schnettler.scrobbler.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImage

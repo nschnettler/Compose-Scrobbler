@@ -72,6 +72,7 @@ dependencies {
     implementation(project(":repo"))
     implementation(project(":common"))
     implementation(project(":scrobble"))
+    implementation(project(":ui:common:compose"))
 
     // AndroidX
     implementation(AndroidX.browser)

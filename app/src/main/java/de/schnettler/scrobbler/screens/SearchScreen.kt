@@ -34,10 +34,10 @@ import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
 import de.schnettler.scrobbler.UIAction.ListingSelected
 import de.schnettler.scrobbler.UIError
-import de.schnettler.scrobbler.components.CustomDivider
 import de.schnettler.scrobbler.components.PlainListIconBackground
 import de.schnettler.scrobbler.components.SelectableChipRow
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import dev.chrisbanes.accompanist.insets.statusBarsHeight

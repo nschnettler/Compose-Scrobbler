@@ -21,7 +21,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 
 @Composable
 fun ExpandingInfoCard(info: String?) {

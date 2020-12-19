@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.theme
+package de.schnettler.scrobbler.ui.common.compose.theme
 
 import androidx.compose.ui.unit.dp
 

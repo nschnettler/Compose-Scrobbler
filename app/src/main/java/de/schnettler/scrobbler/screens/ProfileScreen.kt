@@ -54,7 +54,7 @@ import de.schnettler.scrobbler.components.StatsRow
 import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.components.SwipeToRefreshLayout
 import de.schnettler.scrobbler.components.TopListCarousel
-import de.schnettler.scrobbler.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.util.UITimePeriod
 import de.schnettler.scrobbler.util.abbreviate
 import de.schnettler.scrobbler.util.firstLetter
