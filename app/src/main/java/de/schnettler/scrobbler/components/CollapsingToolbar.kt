@@ -34,7 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.UIAction
+import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.util.MenuAction
 import de.schnettler.scrobbler.util.lerp
 import de.schnettler.scrobbler.util.offset

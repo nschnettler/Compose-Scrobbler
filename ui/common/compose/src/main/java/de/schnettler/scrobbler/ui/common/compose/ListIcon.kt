@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.common.compose
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.preferredSize
@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
-import de.schnettler.scrobbler.util.firstLetter
+import de.schnettler.scrobbler.ui.common.util.firstLetter
 
 @Composable
 fun NameListIcon(title: String) {

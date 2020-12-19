@@ -23,6 +23,9 @@ android {
 }
 
 dependencies {
+    implementation(project(":repo"))
+    implementation(project(":ui:common:util"))
+
     implementation(AndroidX.compose.runtime)
     implementation(AndroidX.compose.foundation)
     implementation(AndroidX.compose.material)

@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.common.compose
 
 /**
  * Model for UiStates that can refresh. The Success state contains whether there's data loading

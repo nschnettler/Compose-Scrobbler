@@ -10,9 +10,9 @@ import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.repo.DetailRepository
-import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.freshFrom
-import de.schnettler.scrobbler.util.streamFrom
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.freshFrom
+import de.schnettler.scrobbler.ui.common.compose.streamFrom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest

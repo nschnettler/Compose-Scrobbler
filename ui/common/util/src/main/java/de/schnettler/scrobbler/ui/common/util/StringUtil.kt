@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.common.util
 
 import androidx.core.text.HtmlCompat
 import java.util.Locale

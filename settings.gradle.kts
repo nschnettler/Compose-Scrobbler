@@ -1,5 +1,6 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":ui:common:util")
 include(":ui:common:compose")
 include(":ui:common:resources")
 include(":ui:settings")

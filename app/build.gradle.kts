@@ -73,6 +73,7 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":scrobble"))
     implementation(project(":ui:common:compose"))
+    implementation(project(":ui:common:util"))
     implementation(project(":ui:settings"))
 
     // AndroidX

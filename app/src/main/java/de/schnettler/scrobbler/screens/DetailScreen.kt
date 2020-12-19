@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.UIAction
-import de.schnettler.scrobbler.UIAction.ListingSelected
-import de.schnettler.scrobbler.UIError
+import de.schnettler.scrobbler.ui.common.compose.UIAction
+import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.UIError
 import de.schnettler.scrobbler.components.ChipRow
 import de.schnettler.scrobbler.components.ListTitle
 import de.schnettler.scrobbler.screens.details.AlbumDetailScreen

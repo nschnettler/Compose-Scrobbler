@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.common.compose
 
 import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreRequest

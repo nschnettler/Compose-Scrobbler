@@ -9,12 +9,12 @@ import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
-import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.freshFrom
+import de.schnettler.scrobbler.ui.common.compose.refreshStateFlowFromStore
+import de.schnettler.scrobbler.ui.common.compose.streamFrom
+import de.schnettler.scrobbler.ui.common.compose.updateValue
 import de.schnettler.scrobbler.util.UITimePeriod
-import de.schnettler.scrobbler.util.freshFrom
-import de.schnettler.scrobbler.util.refreshStateFlowFromStore
-import de.schnettler.scrobbler.util.streamFrom
-import de.schnettler.scrobbler.util.updateValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest

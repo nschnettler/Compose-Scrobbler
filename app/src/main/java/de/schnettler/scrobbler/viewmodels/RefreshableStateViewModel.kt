@@ -3,10 +3,10 @@ package de.schnettler.scrobbler.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.Store
-import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.freshFrom
-import de.schnettler.scrobbler.util.streamFrom
-import de.schnettler.scrobbler.util.updateValue
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.freshFrom
+import de.schnettler.scrobbler.ui.common.compose.streamFrom
+import de.schnettler.scrobbler.ui.common.compose.updateValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filterNotNull

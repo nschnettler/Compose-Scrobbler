@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Stats
-import de.schnettler.scrobbler.util.abbreviate
+import de.schnettler.scrobbler.ui.common.util.abbreviate
 
 @Composable
 fun StatsRow(

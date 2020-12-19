@@ -7,8 +7,8 @@ import com.dropbox.android.external.store4.StoreRequest
 import de.schnettler.database.models.BaseEntity
 import de.schnettler.repo.SearchQuery
 import de.schnettler.repo.SearchRepository
-import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.update
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.update
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
