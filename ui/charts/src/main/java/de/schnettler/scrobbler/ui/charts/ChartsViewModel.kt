@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.viewmodels
+package de.schnettler.scrobbler.ui.charts
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -6,10 +6,9 @@ import androidx.lifecycle.viewModelScope
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.repo.ChartRepository
-import de.schnettler.scrobbler.screens.charts.ChartTab
-import de.schnettler.scrobbler.util.RefreshableUiState
-import de.schnettler.scrobbler.util.freshFrom
-import de.schnettler.scrobbler.util.streamFrom
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.freshFrom
+import de.schnettler.scrobbler.ui.common.compose.streamFrom
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -32,7 +31,7 @@ class ChartsViewModel @ViewModelInject constructor(private val repo: ChartReposi
         }
     }
 
-    fun refresh(tab: ChartTab) {
+    fun refresh(tab: de.schnettler.scrobbler.ui.charts.ChartTab) {
         viewModelScope.launch {
             when (tab) {
                 ChartTab.Track -> _trackState.freshFrom(repo.chartTrackStore, "")

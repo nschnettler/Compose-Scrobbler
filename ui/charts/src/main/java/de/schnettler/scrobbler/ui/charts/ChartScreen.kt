@@ -1,7 +1,8 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.charts
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -20,18 +21,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.UIAction
-import de.schnettler.scrobbler.UIAction.ListingSelected
-import de.schnettler.scrobbler.UIError
-import de.schnettler.scrobbler.components.IndexListIconBackground
-import de.schnettler.scrobbler.components.LoadingScreen
-import de.schnettler.scrobbler.components.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.components.SwipeToRefreshLayout
-import de.schnettler.scrobbler.screens.charts.ChartTab
 import de.schnettler.scrobbler.ui.common.compose.CustomDivider
-import de.schnettler.scrobbler.util.abbreviate
-import de.schnettler.scrobbler.viewmodels.ChartsViewModel
+import de.schnettler.scrobbler.ui.common.compose.IndexListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
+import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
+import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
+import de.schnettler.scrobbler.ui.common.compose.UIAction
+import de.schnettler.scrobbler.ui.common.compose.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
@@ -51,7 +49,8 @@ fun ChartScreen(
     }
 
     if (chartState.isError) {
-        errorHandler(UIError.ShowErrorSnackbar(
+        errorHandler(
+            UIError.ShowErrorSnackbar(
             state = chartState,
             fallbackMessage = stringResource(id = R.string.error_charts),
             onAction = { model.refresh(selectedTab) }
@@ -67,7 +66,7 @@ fun ChartScreen(
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
             Column {
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+                Spacer(modifier = Modifier.statusBarsHeight())
                 TabRow(
                     selectedTabIndex = selectedTab.index,
                     backgroundColor = MaterialTheme.colors.surface

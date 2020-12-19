@@ -28,6 +28,7 @@ import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.components.BottomNavigationBar
 import de.schnettler.scrobbler.screens.MainRouteContent
+import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
@@ -38,7 +39,6 @@ import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
 import de.schnettler.scrobbler.viewmodels.AlbumViewModel
 import de.schnettler.scrobbler.viewmodels.ArtistViewModel
-import de.schnettler.scrobbler.viewmodels.ChartsViewModel
 import de.schnettler.scrobbler.viewmodels.DetailViewModel
 import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel

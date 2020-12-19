@@ -1,7 +1,6 @@
-package de.schnettler.scrobbler.screens.charts
+package de.schnettler.scrobbler.ui.charts
 
 import androidx.annotation.StringRes
-import de.schnettler.scrobbler.R
 
 enum class ChartTab(val index: Int, @StringRes val text: Int) {
     Artist(0, R.string.tab_artist),
