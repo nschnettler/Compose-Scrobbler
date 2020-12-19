@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.settings
 
 import android.app.Activity
 import android.content.Intent
@@ -36,9 +36,7 @@ import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.CustomDivider
-import de.schnettler.scrobbler.util.getMediaBrowserServices
+import de.schnettler.scrobbler.ui.common.compose.CustomDivider
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
