@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.viewmodels
+package de.schnettler.scrobbler.ui.profile
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
@@ -14,7 +14,6 @@ import de.schnettler.scrobbler.ui.common.compose.freshFrom
 import de.schnettler.scrobbler.ui.common.compose.refreshStateFlowFromStore
 import de.schnettler.scrobbler.ui.common.compose.streamFrom
 import de.schnettler.scrobbler.ui.common.compose.updateValue
-import de.schnettler.scrobbler.util.UITimePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest

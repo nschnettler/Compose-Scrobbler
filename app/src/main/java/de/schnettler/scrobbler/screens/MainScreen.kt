@@ -11,6 +11,7 @@ import de.schnettler.scrobbler.Screen
 import de.schnettler.scrobbler.ui.charts.ChartScreen
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
+import de.schnettler.scrobbler.ui.profile.ProfileScreen
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
 import de.schnettler.scrobbler.util.SessionState
 import de.schnettler.scrobbler.util.destination
@@ -21,14 +22,13 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.TrackViewModel
-import de.schnettler.scrobbler.viewmodels.UserViewModel
 
 @Composable
 fun MainRouteContent(
     model: MainViewModel,
     navController: NavHostController,
     chartsModel: de.schnettler.scrobbler.ui.charts.ChartsViewModel,
-    userViewModel: UserViewModel,
+    userViewModel: de.schnettler.scrobbler.ui.profile.UserViewModel,
     localViewModel: LocalViewModel,
     searchViewModel: SearchViewModel,
     artistViewModel: ArtistViewModel,

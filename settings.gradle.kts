@@ -1,5 +1,6 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":ui:profile")
 include(":ui:common:util")
 include(":ui:charts")
 include(":ui:common:compose")

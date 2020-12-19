@@ -76,6 +76,7 @@ dependencies {
     implementation(project(":ui:common:util"))
     implementation(project(":ui:settings"))
     implementation(project(":ui:charts"))
+    implementation(project(":ui:profile"))
 
     // AndroidX
     implementation(AndroidX.browser)

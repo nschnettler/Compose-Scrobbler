@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.profile
 
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
@@ -45,21 +45,18 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.Carousel
-import de.schnettler.scrobbler.components.StatsRow
-import de.schnettler.scrobbler.components.TopListCarousel
+import de.schnettler.scrobbler.ui.common.compose.Carousel
 import de.schnettler.scrobbler.ui.common.compose.PlainListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.StatsRow
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
+import de.schnettler.scrobbler.ui.common.compose.TopListCarousel
 import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.common.util.firstLetter
 import de.schnettler.scrobbler.ui.common.util.toFlagEmoji
-import de.schnettler.scrobbler.util.UITimePeriod
-import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Instant
