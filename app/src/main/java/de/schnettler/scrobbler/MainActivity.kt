@@ -34,6 +34,7 @@ import de.schnettler.scrobbler.ui.common.compose.UIAction
 import de.schnettler.scrobbler.ui.common.compose.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
 import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.profile.UserViewModel
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
@@ -44,7 +45,6 @@ import de.schnettler.scrobbler.viewmodels.LocalViewModel
 import de.schnettler.scrobbler.viewmodels.MainViewModel
 import de.schnettler.scrobbler.viewmodels.SearchViewModel
 import de.schnettler.scrobbler.viewmodels.TrackViewModel
-import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
