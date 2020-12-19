@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -30,8 +30,6 @@ import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.components.SelectableChipRow
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
@@ -39,7 +37,7 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSele
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
-import de.schnettler.scrobbler.viewmodels.SearchViewModel
+import de.schnettler.scrobbler.ui.search.widget.SelectableChipRow
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable

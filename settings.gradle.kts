@@ -1,5 +1,6 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":ui:search")
 include(":ui:detail")
 include(":ui:profile")
 include(":ui:common:util")

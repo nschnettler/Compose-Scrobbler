@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.components
+package de.schnettler.scrobbler.ui.search.widget
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.ui.common.compose.Chip
-import de.schnettler.scrobbler.ui.common.compose.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.Chip
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.compose.theme.CHIP_CORNER_RADIUS
 import de.schnettler.scrobbler.ui.common.compose.theme.DIVIDER_SIZE

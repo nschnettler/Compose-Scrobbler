@@ -78,6 +78,7 @@ dependencies {
     implementation(project(":ui:charts"))
     implementation(project(":ui:profile"))
     implementation(project(":ui:detail"))
+    implementation(project(":ui:search"))
 
     // AndroidX
     implementation(AndroidX.browser)
@@ -102,8 +103,6 @@ dependencies {
 
     // Other
     debugImplementation(Square.leakCanary.android)
-    implementation("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    implementation("dev.chrisbanes.accompanist", "accompanist-insets", "_")
     coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 
     // Testing
