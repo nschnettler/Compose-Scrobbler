@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens.local
+package de.schnettler.scrobbler.ui.history.model
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
@@ -6,10 +6,10 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.NotificationImportant
 import androidx.compose.ui.graphics.vector.ImageVector
 import de.schnettler.common.BuildConfig
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.util.AUTH_ENDPOINT
 import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.history.R
 
 enum class HistoryError(
     @StringRes val titleRes: Int,

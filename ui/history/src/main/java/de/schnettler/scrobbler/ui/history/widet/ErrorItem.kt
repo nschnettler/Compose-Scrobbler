@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens.local
+package de.schnettler.scrobbler.ui.history
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.scrobbler.ui.history.model.HistoryError
 
 @Composable
 fun ErrorItem(item: HistoryError, onSelect: () -> Unit) {

@@ -26,7 +26,6 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.screens.MainRouteContent
 import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
@@ -44,8 +43,6 @@ import de.schnettler.scrobbler.ui.search.SearchViewModel
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
-import de.schnettler.scrobbler.viewmodels.LocalViewModel
-import de.schnettler.scrobbler.viewmodels.MainViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
@@ -58,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel: ChartsViewModel by viewModels()
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
-    private val localViewModel: LocalViewModel by viewModels()
+    private val localViewModel: de.schnettler.scrobbler.ui.history.LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
     private val artistViewModel: ArtistViewModel by viewModels()
     private val albumViewModel: AlbumViewModel by viewModels()

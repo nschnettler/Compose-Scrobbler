@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens.local
+package de.schnettler.scrobbler.ui.history
 
 import androidx.compose.material.Text
 import androidx.compose.foundation.clickable

@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.viewmodels
+package de.schnettler.scrobbler
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
-import de.schnettler.scrobbler.util.SessionState
+import de.schnettler.scrobbler.model.SessionState
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

@@ -15,7 +15,6 @@ android {
         compose = true
     }
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -32,12 +31,10 @@ dependencies {
     implementation(project(":repo"))
 
     implementation(AndroidX.lifecycle.viewModelKtx)
-    api(AndroidX.browser)
+    implementation(AndroidX.browser)
 
     implementation(AndroidX.hilt.lifecycleViewModel)
     kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
-
-    coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
 }

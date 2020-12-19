@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens
+package de.schnettler.scrobbler.ui.history
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
@@ -27,27 +27,22 @@ import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
-import de.schnettler.scrobbler.screens.local.ConfirmDialog
-import de.schnettler.scrobbler.screens.local.ErrorItem
-import de.schnettler.scrobbler.screens.local.HistoryError
-import de.schnettler.scrobbler.screens.local.NowPlayingItem
-import de.schnettler.scrobbler.screens.local.ScrobbleItem
-import de.schnettler.scrobbler.screens.local.TrackEditDialog
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.util.ScrobbleAction
-import de.schnettler.scrobbler.util.ScrobbleAction.DELETE
-import de.schnettler.scrobbler.util.ScrobbleAction.EDIT
-import de.schnettler.scrobbler.util.ScrobbleAction.OPEN
-import de.schnettler.scrobbler.util.ScrobbleAction.SUBMIT
-import de.schnettler.scrobbler.util.notificationListenerEnabled
-import de.schnettler.scrobbler.viewmodels.LocalViewModel
+import de.schnettler.scrobbler.ui.history.dialog.ConfirmDialog
+import de.schnettler.scrobbler.ui.history.dialog.TrackEditDialog
+import de.schnettler.scrobbler.ui.history.model.HistoryError
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.DELETE
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.EDIT
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.OPEN
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.SUBMIT
+import de.schnettler.scrobbler.ui.history.widet.ScrobbleItem
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable

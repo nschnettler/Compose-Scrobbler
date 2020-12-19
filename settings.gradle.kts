@@ -1,5 +1,8 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":ui:history")
+
+
 include(":ui:search")
 include(":ui:detail")
 include(":ui:profile")

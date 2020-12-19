@@ -1,15 +1,10 @@
-package de.schnettler.scrobbler.screens.local
+package de.schnettler.scrobbler.ui.history.dialog
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.AmbientContentColor
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -19,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.R
-import de.schnettler.scrobbler.util.copyByState
+import de.schnettler.scrobbler.ui.history.R
+import de.schnettler.scrobbler.ui.history.copyByState
 
 @Composable
 fun TrackEditDialog(
@@ -66,40 +61,5 @@ fun TrackEditDialog(
             },
             dismissButton = { NegativeButton(textRes = R.string.edit_cancel, onPressed = onDismiss) }
         )
-    }
-}
-
-@Composable
-fun ConfirmDialog(
-    title: String,
-    description: String,
-    onDismiss: (Boolean) -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = { onDismiss(false) },
-        title = { Text(text = title) },
-        text = { Text(text = description) },
-        confirmButton = { PositiveButton(textRes = R.string.confirmdialog_confirm, onPressed = { onDismiss(true) }) },
-        dismissButton = { NegativeButton(textRes = R.string.confirmdialog_cancel, onPressed = { onDismiss(false) }) }
-    )
-}
-
-@Composable
-private fun NegativeButton(@StringRes textRes: Int, onPressed: () -> Unit) {
-    TextButton(
-        onClick = onPressed,
-        colors = ButtonDefaults.textButtonColors(contentColor = AmbientContentColor.current),
-    ) {
-        Text(text = stringResource(id = textRes))
-    }
-}
-
-@Composable
-private fun PositiveButton(@StringRes textRes: Int, onPressed: () -> Unit) {
-    TextButton(
-        onClick = onPressed,
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
-    ) {
-        Text(text = stringResource(id = textRes))
     }
 }

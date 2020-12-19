@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.model
 
 sealed class SessionState {
     object LoggedIn : SessionState()

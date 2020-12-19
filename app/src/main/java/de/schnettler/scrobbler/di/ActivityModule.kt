@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler
+package de.schnettler.scrobbler.di
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity

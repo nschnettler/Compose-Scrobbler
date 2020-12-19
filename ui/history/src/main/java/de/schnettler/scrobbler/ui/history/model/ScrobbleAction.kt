@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.history.model
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload

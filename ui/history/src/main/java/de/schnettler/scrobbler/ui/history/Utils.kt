@@ -1,7 +1,9 @@
-package de.schnettler.scrobbler.util
+package de.schnettler.scrobbler.ui.history
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.core.app.NotificationManagerCompat
 import de.schnettler.database.models.Scrobble
 
 fun Scrobble.copyByState(
@@ -13,7 +15,5 @@ fun Scrobble.copyByState(
     artist = artistState.value.text,
     album = albumState.value.text
 )
-
- fun <T> List<T>.secondOrNull(): T? {
-    return if (size < 2) null else this[1]
-}
+fun Context.notificationListenerEnabled() =
+    NotificationManagerCompat.getEnabledListenerPackages(this).contains(this.packageName)

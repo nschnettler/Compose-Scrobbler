@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.screens.local
+package de.schnettler.scrobbler.ui.history.widet
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,13 +31,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.common.compose.widget.NameListIcon
 import de.schnettler.scrobbler.ui.common.util.asMinSec
 import de.schnettler.scrobbler.ui.common.util.milliSecondsToDate
 import de.schnettler.scrobbler.ui.common.util.packageNameToAppName
-import de.schnettler.scrobbler.util.ScrobbleAction
+import de.schnettler.scrobbler.ui.history.R
+import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
