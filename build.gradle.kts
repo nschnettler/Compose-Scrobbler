@@ -1,7 +1,15 @@
 plugins {
-    id("com.android.application") version "7.0.0-alpha02" apply false
     id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
     kotlin("android") version "1.4.20  " apply false
+}
+
+buildscript {
+    repositories {
+        google()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.0.0-alpha03")
+    }
 }
 
 allprojects {
