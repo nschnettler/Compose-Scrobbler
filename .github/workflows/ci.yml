@@ -84,21 +84,19 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedDebugAndroidTest
+          script: ./gradlew connectedAndroidTest mergeAndroidReports --continue
 
-      - name: Copy Test Results
+      - name: Rename Test Results
         if: always()
         run: |
-          mkdir -p instrumented
-          find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec sh -c 'x="{}"; mv "$x" "${x// /}"' \;
-          find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec cp {} instrumented/ \;
+          find . -type f -regex "./build/androidTest-results/.*xml" -exec sh -c 'x="{}"; mv "$x" "${x// /}"' \;
           
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v1
         with:
           name: instrumented-results
-          path: instrumented
+          path: build/androidTest-results
  
   report:
     name: Report test results
