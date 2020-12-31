@@ -31,7 +31,7 @@ class ChartsViewModel @ViewModelInject constructor(private val repo: ChartReposi
         }
     }
 
-    fun refresh(tab: de.schnettler.scrobbler.ui.charts.ChartTab) {
+    fun refresh(tab: ChartTab) {
         viewModelScope.launch {
             when (tab) {
                 ChartTab.Track -> _trackState.freshFrom(repo.chartTrackStore, "")
