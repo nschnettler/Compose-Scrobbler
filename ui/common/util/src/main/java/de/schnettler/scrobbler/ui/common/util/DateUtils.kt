@@ -2,7 +2,8 @@ package de.schnettler.scrobbler.ui.common.util
 
 import android.icu.text.CompactDecimalFormat
 import android.icu.text.DateFormat
-import java.util.*
+import java.util.Locale
+import java.util.Date
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
