@@ -1,6 +1,6 @@
 plugins {
     id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
-    kotlin("android") version "1.4.20  " apply false
+    kotlin("android") version "1.4.21" apply false
 }
 
 buildscript {
@@ -9,7 +9,6 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.0-alpha03")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
     }
 }
 
