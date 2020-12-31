@@ -14,7 +14,6 @@ android {
         targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
 
     buildTypes {
@@ -94,10 +93,4 @@ dependencies {
 
     // Other
     debugImplementation(Square.leakCanary.android)
-
-    // Testing
-    testImplementation(Testing.junit4)
-    androidTestImplementation(KotlinX.coroutines.test)
-    androidTestImplementation(AndroidX.test.ext.junit)
-    testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }
