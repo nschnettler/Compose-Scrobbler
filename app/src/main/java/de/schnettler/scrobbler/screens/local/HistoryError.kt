@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.NotificationImportant
-import androidx.compose.ui.graphics.vector.VectorAsset
+import androidx.compose.ui.graphics.vector.ImageVector
 import de.schnettler.common.BuildConfig
 import de.schnettler.scrobbler.R
 import de.schnettler.scrobbler.UIAction
@@ -14,7 +14,7 @@ import de.schnettler.scrobbler.util.REDIRECT_URL
 enum class HistoryError(
     @StringRes val titleRes: Int,
     @StringRes val subtitleRes: Int,
-    val icon: VectorAsset,
+    val icon: ImageVector,
     val action: UIAction
 ) {
     NotificationAccessDisabled(

@@ -2,7 +2,6 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ConstraintLayout
 import androidx.compose.foundation.layout.Spacer
@@ -10,13 +9,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack

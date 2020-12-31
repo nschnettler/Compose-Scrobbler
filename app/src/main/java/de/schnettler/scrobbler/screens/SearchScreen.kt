@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
@@ -94,51 +94,53 @@ fun SearchScreen(
 
 @Composable
 fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) {
-    LazyColumnFor(items = results) {
-        when (it) {
-            is EntityWithStats -> {
-                ListItem(
-                    text = { Text(it.entity.name) },
-                    secondaryText = {
-                        Text("${it.stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
-                    },
-                    icon = {
-                        PlainListIconBackground {
-                            Icon(Icons.Outlined.Face)
-                        }
-                    },
-                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it.entity)) })
-                )
+    LazyColumn {
+        items(items = results, itemContent = {
+            when (it) {
+                is EntityWithStats -> {
+                    ListItem(
+                        text = { Text(it.entity.name) },
+                        secondaryText = {
+                            Text("${it.stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
+                        },
+                        icon = {
+                            PlainListIconBackground {
+                                Icon(Icons.Outlined.Face)
+                            }
+                        },
+                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it.entity)) })
+                    )
+                }
+                is Album -> {
+                    ListItem(
+                        text = { Text(it.name) },
+                        secondaryText = {
+                            Text(it.artist)
+                        },
+                        icon = {
+                            PlainListIconBackground {
+                                Icon(Icons.Outlined.Album)
+                            }
+                        },
+                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
+                    )
+                }
+                is Track -> {
+                    ListItem(
+                        text = { Text(it.name) },
+                        secondaryText = {
+                            Text(it.artist)
+                        },
+                        icon = {
+                            PlainListIconBackground {
+                                Icon(Icons.Rounded.MusicNote)
+                            }
+                        },
+                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
+                    )
+                }
             }
-            is Album -> {
-                ListItem(
-                    text = { Text(it.name) },
-                    secondaryText = {
-                        Text(it.artist)
-                    },
-                    icon = {
-                        PlainListIconBackground {
-                            Icon(Icons.Outlined.Album)
-                        }
-                    },
-                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
-                )
-            }
-            is Track -> {
-                ListItem(
-                    text = { Text(it.name) },
-                    secondaryText = {
-                        Text(it.artist)
-                    },
-                    icon = {
-                        PlainListIconBackground {
-                            Icon(Icons.Rounded.MusicNote)
-                        }
-                    },
-                    modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
-                )
-            }
-        }
-        CustomDivider(startIndent = 72.dp)
+            CustomDivider(startIndent = 72.dp)
+        })
     }
 }

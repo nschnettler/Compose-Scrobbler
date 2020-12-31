@@ -33,8 +33,8 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.0"
-        kotlinCompilerExtensionVersion = "1.0.0-alpha07"
+        kotlinCompilerVersion = "1.4.21"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha09"
     }
 
     compileOptions {
@@ -44,9 +44,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         freeCompilerArgs += listOf(
-            "-Xopt-in=kotlin.RequiresOptIn",
             "-Xallow-jvm-ir-dependencies",
             "-Xskip-prerelease-check"
         )
@@ -55,6 +53,15 @@ android {
     signingConfigs {
         getByName("debug") {
             storeFile = file("debug.keystore")
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes.apply {
+                add("/META-INF/AL2.0")
+                add("/META-INF/LGPL2.1")
+            }
         }
     }
 }

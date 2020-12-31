@@ -17,7 +17,6 @@
     <string name="nav_settings">Settings</string>
 
     <!-- Album Details -->
-    <string name="albumdetails_by">by</string>
     <string name="albumdetails_tracks">tracks</string>
     <string name="albumdetails_minutes">minutes</string>
 
@@ -36,7 +35,6 @@
     <string name="header_tags">Tags</string>
 
     <string name="stats_listeners">Listeners</string>
-    <string name="stats_plays">Plays</string>
     <string name="bio_unavailable">No Bio available</string>
     <string name="login_button">Login</string>
     <string name="profile_scrobblingsince">scrobbling since</string>

@@ -9,7 +9,6 @@ import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
-import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
@@ -31,12 +30,6 @@ class MediaListenerService : NotificationListenerService(),
         hashMapOf()
     @Inject lateinit var tracker: PlayBackTracker
     private lateinit var prefs: SharedPreferences
-
-    companion object {
-        fun isEnabled(context: Context) = NotificationManagerCompat
-            .getEnabledListenerPackages(context)
-            .contains(context.packageName)
-    }
 
     override fun onCreate() {
         dispatcher.onServicePreSuperOnCreate()

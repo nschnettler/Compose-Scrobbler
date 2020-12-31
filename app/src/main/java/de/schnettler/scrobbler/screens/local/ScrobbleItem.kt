@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.screens.local
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.HapticFeedBackAmbient
+import androidx.compose.ui.platform.AmbientHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,7 +45,7 @@ import kotlin.time.ExperimentalTime
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val feedback = HapticFeedBackAmbient.current
+    val feedback = AmbientHapticFeedback.current
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {

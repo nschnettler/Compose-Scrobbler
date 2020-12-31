@@ -2,19 +2,20 @@ package de.schnettler.scrobbler.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.material.AmbientEmphasisLevels
+import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideEmphasis
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Providers
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.WithConstraints
-import androidx.compose.ui.platform.DensityAmbient
+import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import de.schnettler.scrobbler.util.Orientation
@@ -30,7 +31,7 @@ fun Header(
     Row(modifier) {
         Spacer(size = 16.dp, orientation = Orientation.Horizontal)
 
-        ProvideEmphasis(AmbientEmphasisLevels.current.high) {
+        Providers(AmbientContentAlpha provides ContentAlpha.high) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.subtitle1,
@@ -68,7 +69,7 @@ fun AutoSizedCircularProgressIndicator(
     color: Color = MaterialTheme.colors.primary
 ) {
     WithConstraints(modifier) {
-        val diameter = with(DensityAmbient.current) {
+        val diameter = with(AmbientDensity.current) {
             // We need to minus the padding added within CircularProgressIndicator
             min(constraints.maxWidth.toDp(), constraints.maxHeight.toDp()) - InternalPadding
         }

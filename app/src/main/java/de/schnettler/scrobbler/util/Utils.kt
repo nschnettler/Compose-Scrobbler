@@ -2,12 +2,9 @@ package de.schnettler.scrobbler.util
 
 import androidx.compose.runtime.State
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
-
-val defaultSpacerSize = 16.dp
 
 fun Scrobble.copyByState(
     trackState: State<TextFieldValue>,

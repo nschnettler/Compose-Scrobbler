@@ -1,13 +1,13 @@
 package de.schnettler.scrobbler.screens
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -93,22 +93,24 @@ fun ChartScreen(
 @Composable
 private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, modifier: Modifier = Modifier) {
     chartData?.let { charts ->
-        LazyColumnForIndexed(items = charts, modifier) { index, entry ->
-            when (entry) {
-                is TopListArtist -> ChartArtistListItem(
-                    name = entry.value.name,
-                    listener = entry.listing.count,
-                    index = index,
-                    onClicked = { handler(ListingSelected(entry.value)) }
-                )
-                is TopListTrack -> ChartTrackListItem(
-                    name = entry.value.name,
-                    artist = entry.value.artist,
-                    index = index,
-                    onClicked = { handler(ListingSelected(entry.value)) }
-                )
-            }
-            CustomDivider()
+        LazyColumn(modifier) {
+            itemsIndexed(items = charts, itemContent = { index, entry ->
+                when (entry) {
+                    is TopListArtist -> ChartArtistListItem(
+                        name = entry.value.name,
+                        listener = entry.listing.count,
+                        index = index,
+                        onClicked = { handler(ListingSelected(entry.value)) }
+                    )
+                    is TopListTrack -> ChartTrackListItem(
+                        name = entry.value.name,
+                        artist = entry.value.artist,
+                        index = index,
+                        onClicked = { handler(ListingSelected(entry.value)) }
+                    )
+                }
+                CustomDivider()
+            })
         }
     }
 }

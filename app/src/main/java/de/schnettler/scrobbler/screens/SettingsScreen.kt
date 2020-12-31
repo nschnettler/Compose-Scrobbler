@@ -16,7 +16,7 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
 import de.schnettler.composepreferences.AmbientPreference
@@ -46,7 +46,7 @@ import kotlin.math.roundToInt
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
-    val context = ContextAmbient.current
+    val context = AmbientContext.current
 
     val mediaServices = mutableStateMapOf<String, String>()
     val constraints: Map<String, Int> = remember {

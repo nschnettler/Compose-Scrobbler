@@ -18,6 +18,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        resources {
+            excludes.apply {
+                add("/META-INF/AL2.0")
+                add("/META-INF/LGPL2.1")
+            }
+        }
+    }
 }
 
 dependencies {

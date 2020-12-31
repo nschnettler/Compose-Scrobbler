@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.components
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,7 +76,7 @@ fun Chip(
         color = if (selected) colorSelected else colorNormal
     ) {
         Box(
-            alignment = Alignment.Center,
+            contentAlignment = Alignment.Center,
             modifier = Modifier.clickable(onClick = { onSelected() }).preferredHeight(32.dp)
         ) {
             Text(

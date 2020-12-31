@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
@@ -134,7 +134,7 @@ private fun ProfileContent(
     actioner: (UIAction) -> Unit,
 ) {
     Box {
-        ScrollableColumn(modifier = modifier.fillMaxSize(), children = {
+        ScrollableColumn(modifier = modifier.fillMaxSize(), content = {
             androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
             user?.let { UserInfo(it) }
             TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
@@ -266,7 +266,7 @@ private fun PeriodSelectDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSelect(selected) },
-                colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
             ) {
                 Text(text = stringResource(id = R.string.profile_perioddialog_select))
             }

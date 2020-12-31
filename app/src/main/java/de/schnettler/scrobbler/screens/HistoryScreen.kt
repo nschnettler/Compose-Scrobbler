@@ -1,7 +1,6 @@
 package de.schnettler.scrobbler.screens
 
 import android.content.Context
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.runtime.Composable
@@ -23,7 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
@@ -116,7 +116,7 @@ fun Content(
                             }
                         },
                         onNowPlayingSelected = { },
-                        errors = getErrors(ContextAmbient.current, loggedIn),
+                        errors = getErrors(AmbientContext.current, loggedIn),
                         onErrorClicked = { error -> actionHandler(error.action) }
                     )
                 }

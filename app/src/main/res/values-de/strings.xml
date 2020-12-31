@@ -6,7 +6,6 @@
     <string name="nav_search">Suche</string>
     <string name="nav_history">Verlauf</string>
     <string name="nav_charts">Charts</string>
-    <string name="albumdetails_by">von</string>
     <string name="albumdetails_tracks">Titel</string>
     <string name="albumdetails_minutes">Minuten</string>
     <string name="header_toptracks">Top-Titel</string>
@@ -65,7 +64,6 @@
     <string name="setting_list_scrobbleconstraints_network">Kostenloses Netzwerk</string>
     <string name="setting_list_scrobbleconstraints_battery">Akku nicht leer</string>
     <string name="header_more">Mehr</string>
-    <string name="stats_plays">Wiedergaben</string>
     <string name="period_overall">Insgesamt</string>
     <string name="period_week">Letzte Woche</string>
     <string name="period_month">Letzter Monat</string>

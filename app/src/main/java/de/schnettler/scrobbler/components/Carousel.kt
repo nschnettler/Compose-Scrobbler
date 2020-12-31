@@ -1,15 +1,15 @@
 package de.schnettler.scrobbler.components
 
 import androidx.annotation.StringRes
-import androidx.compose.material.Text
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyRowFor
-import androidx.compose.material.ButtonConstants
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,16 +45,18 @@ fun <T> Carousel(
         )
     }
 
-    LazyRowFor(
-        items = items ?: emptyList(),
+    LazyRow(
         modifier = modifier,
         contentPadding = contentPadding.copy(
             start = (contentPadding.start - halfSpacing).coerceAtLeast(0.dp),
             end = (contentPadding.end - halfSpacing).coerceAtLeast(0.dp)
         ),
-        verticalAlignment = verticalGravity,
-        itemContent = { item -> itemContent(item, spacingContent) }
-    )
+        verticalAlignment = verticalGravity
+    ) {
+        items(items = items ?: emptyList(),
+            itemContent = { item -> itemContent(item, spacingContent) }
+        )
+    }
 }
 
 @Composable
@@ -74,7 +76,7 @@ fun <T : Toplist> TopListCarousel(
         action = {
             TextButton(
                 onClick = { },
-                colors = ButtonConstants.defaultTextButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
             ) {
                 Text(text = stringResource(id = R.string.header_more))
             }
