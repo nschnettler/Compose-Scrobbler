@@ -84,7 +84,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedAndroidTest mergeAndroidReports --continue
+          script: ./gradlew database:connectedAndroidTest mergeAndroidReports --continue
 
       - name: Rename Test Results
         if: always()
