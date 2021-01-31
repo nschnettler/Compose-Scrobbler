@@ -26,23 +26,23 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.components.BottomNavigationBar
-import de.schnettler.scrobbler.screens.MainRouteContent
-import de.schnettler.scrobbler.theme.AppTheme
-import de.schnettler.scrobbler.util.REDIRECT_URL
-import de.schnettler.scrobbler.util.RefreshableUiState
+import de.schnettler.scrobbler.ui.charts.ChartsViewModel
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
+import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
+import de.schnettler.scrobbler.ui.common.compose.widget.BottomNavigationBar
+import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
+import de.schnettler.scrobbler.ui.detail.DetailViewModel
+import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
+import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
+import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
+import de.schnettler.scrobbler.ui.profile.UserViewModel
+import de.schnettler.scrobbler.ui.search.SearchViewModel
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
-import de.schnettler.scrobbler.viewmodels.AlbumViewModel
-import de.schnettler.scrobbler.viewmodels.ArtistViewModel
-import de.schnettler.scrobbler.viewmodels.ChartsViewModel
-import de.schnettler.scrobbler.viewmodels.DetailViewModel
-import de.schnettler.scrobbler.viewmodels.LocalViewModel
-import de.schnettler.scrobbler.viewmodels.MainViewModel
-import de.schnettler.scrobbler.viewmodels.SearchViewModel
-import de.schnettler.scrobbler.viewmodels.TrackViewModel
-import de.schnettler.scrobbler.viewmodels.UserViewModel
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel: ChartsViewModel by viewModels()
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
-    private val localViewModel: LocalViewModel by viewModels()
+    private val localViewModel: de.schnettler.scrobbler.ui.history.LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
     private val artistViewModel: ArtistViewModel by viewModels()
     private val albumViewModel: AlbumViewModel by viewModels()
@@ -157,11 +157,12 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun ErrorSnackbar(host: SnackbarHostState, error: UIError.ShowErrorSnackbar) {
-        if (error.state is RefreshableUiState.Error) {
-            LaunchedEffect(error.state) {
+        val state = error.state
+        if (state is RefreshableUiState.Error) {
+            LaunchedEffect(state) {
                 val result = host.showSnackbar(
-                    message = error.state.errorMessage
-                        ?: error.state.exception?.message
+                    message = state.errorMessage
+                        ?: state.exception?.message
                         ?: error.fallbackMessage,
                     actionLabel = error.actionMessage
                 )

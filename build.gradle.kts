@@ -1,6 +1,6 @@
 plugins {
     id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
-    kotlin("android") version "1.4.20  " apply false
+    kotlin("android") version "1.4.21" apply false
 }
 
 buildscript {
@@ -25,6 +25,8 @@ allprojects {
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        kotlinOptions.freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
+        kotlinOptions.freeCompilerArgs += "-Xskip-prerelease-check"
         kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
