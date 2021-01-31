@@ -136,8 +136,9 @@ class MainActivity : AppCompatActivity() {
             errorer = { error ->
                 when (error) {
                     is UIError.ShowErrorSnackbar -> ErrorSnackbar(host = host, error = error)
+                    is UIError.ScrobbleSubmissionResult -> InfoSnackbar(host = host, error = error)
                 }
-             },
+            },
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -170,6 +171,21 @@ class MainActivity : AppCompatActivity() {
                     SnackbarResult.ActionPerformed -> error.onAction()
                     SnackbarResult.Dismissed -> error.onDismiss()
                 }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun InfoSnackbar(host: SnackbarHostState, error: UIError.ScrobbleSubmissionResult) {
+        LaunchedEffect(error) {
+            val result = host.showSnackbar(
+                message = "Result: ${error.accepted} accepted, ${error.ignored} rejected.",
+                actionLabel = error.actionMessage
+            )
+            when (result) {
+                SnackbarResult.ActionPerformed -> error.onAction()
+                SnackbarResult.Dismissed -> error.onDismiss()
             }
         }
     }

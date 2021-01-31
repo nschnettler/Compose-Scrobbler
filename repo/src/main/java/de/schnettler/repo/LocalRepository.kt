@@ -37,4 +37,6 @@ class LocalRepository @Inject constructor(
     ).build()
 
     fun getNumberOfCachedScrobbles() = localTrackDao.getNumberOfCachedScrobbles()
+
+    suspend fun getScrobblesById(ids: List<Long>) = localTrackDao.getScrobblesWithTimestamp(ids)
 }

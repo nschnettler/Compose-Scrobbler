@@ -17,14 +17,18 @@ import de.schnettler.lastfm.models.SingleScrobbleResponse
 import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.mapping.response.map
+import de.schnettler.repo.model.SubmissionResult
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.util.createBody
 import de.schnettler.repo.util.createSignature
+import de.schnettler.repo.util.safePost
+import de.schnettler.repo.work.MAX_SCROBBLE_BATCH_SIZE
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
 import de.schnettler.repo.work.ScrobbleWorker
+import timber.log.Timber
 import javax.inject.Inject
 
 class ScrobbleRepository @Inject constructor(
@@ -35,6 +39,33 @@ class ScrobbleRepository @Inject constructor(
     private val prefs: FlowSharedPreferences
 ) {
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
+
+    suspend fun submitCachedScrobbles(): SubmissionResult {
+        Timber.d("[Scrobble] Started cached scrobble submission")
+        val cachedTracks = localTrackDao.getCachedTracks()
+        Timber.d("[Scrobble] Found ${cachedTracks.size} cached scrobbles")
+
+        val acceptedResult = mutableListOf<ScrobbleResponse>()
+        val ignoredResult = mutableListOf<ScrobbleResponse>()
+        val errors = mutableListOf<Errors>()
+        val exceptions = mutableListOf<Throwable>()
+
+        cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { input ->
+            when (val submissionResponse = submitScrobbles(input)) {
+                is LastFmResponse.SUCCESS -> {
+                    submissionResponse.data?.also { response ->
+                        val (accepted, ignored) = response.scrobble.partition { it.ignoredMessage.code == 0L }
+                        localTrackDao.updateScrobbleStatus(accepted.map { it.timestamp })
+                        acceptedResult.addAll(accepted)
+                        ignoredResult.addAll(ignored)
+                    }
+                }
+                is LastFmResponse.ERROR -> submissionResponse.error?.let { errors.add(it) }
+                is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
+            }
+        }
+        return SubmissionResult(acceptedResult, ignoredResult, errors)
+    }
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
         val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
@@ -86,9 +117,7 @@ class ScrobbleRepository @Inject constructor(
         }
     }
 
-    suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
-
-    suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
+    private suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
         val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
         val result: MutableMap<String, String> = mutableMapOf(
             "method" to LastFmService.METHOD_SCROBBLE,
@@ -114,7 +143,7 @@ class ScrobbleRepository @Inject constructor(
         return safePost { service.submitMultipleScrobbles(createBody(result)).map() }
     }
 
-    suspend fun markScrobblesAsSubmitted(tracks: List<Scrobble>) {
+    suspend fun markScrobblesAsSubmitted(vararg tracks: Scrobble) {
         localTrackDao.updateScrobbleStatus(tracks.map { it.timestamp })
     }
 
@@ -142,11 +171,3 @@ class ScrobbleRepository @Inject constructor(
 
 private fun listToMap(list: List<String>, key: String) =
     list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })
-
-@Suppress("TooGenericExceptionCaught")
-inline fun <T> safePost(post: () -> LastFmResponse<T>): LastFmResponse<T> =
-    try {
-        post()
-    } catch (ex: Exception) {
-        LastFmResponse.EXCEPTION(ex)
-    }
