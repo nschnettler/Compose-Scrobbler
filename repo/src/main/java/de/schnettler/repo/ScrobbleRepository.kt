@@ -64,7 +64,7 @@ class ScrobbleRepository @Inject constructor(
                 is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
             }
         }
-        return SubmissionResult(acceptedResult, ignoredResult, errors)
+        return SubmissionResult(acceptedResult, ignoredResult, errors, exceptions)
     }
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {

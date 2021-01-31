@@ -99,7 +99,7 @@ fun Content(
                 ))
             }
             is SubmissionEvent.ShowDetails -> {
-                SubmissionResultDetailsDialog("Details", event.accepted, event.ignored, {})
+                SubmissionResultDetailsDialog("Details", event.accepted, event.ignored, event.errorMessage) { }
             }
         }
     }

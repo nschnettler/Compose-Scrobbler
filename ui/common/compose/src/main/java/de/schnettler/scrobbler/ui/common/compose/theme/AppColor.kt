@@ -8,6 +8,7 @@ object AppColor {
     val Blue400 = Color(0xFF7E8ACD)
     val Blue200 = Color(0xFFA4B0D9)
     val Jaguar = Color(0xFF202030)
+    val Error = Color(0xFFEC979A)
     @Composable
     val Divider: Color
         get() = BackgroundElevated

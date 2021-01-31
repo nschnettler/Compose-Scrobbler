@@ -33,9 +33,11 @@ class LocalViewModel @ViewModelInject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val result = scrobbleRepo.submitCachedScrobbles()
 
+            val errorMessage = result.errors.firstOrNull()?.description ?: result.exceptions.firstOrNull()?.message
             val mappedResult = SubmissionResult(
                 accepted = result.accepted.map { it.timestamp },
-                ignored = result.ignored.associateBy({ it.timestamp }, { it.ignoredMessage.code })
+                ignored = result.ignored.associateBy({ it.timestamp }, { it.ignoredMessage.code }),
+                error = errorMessage
             )
             events.postValue(Event(SubmissionEvent.Success(mappedResult)))
             isSubmitting.value = false
@@ -51,7 +53,7 @@ class LocalViewModel @ViewModelInject constructor(
                     submissionResult.ignored.getOrElse(scrobble.timestamp) { 0L }
                 )
             }
-            events.postValue(Event(SubmissionEvent.ShowDetails(accepted.await(), ignoredWithReason)))
+            events.postValue(Event(SubmissionEvent.ShowDetails(accepted.await(), ignoredWithReason, submissionResult.error)))
         }
     }
 

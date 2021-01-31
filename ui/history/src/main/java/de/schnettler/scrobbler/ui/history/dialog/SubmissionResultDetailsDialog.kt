@@ -2,9 +2,14 @@ package de.schnettler.scrobbler.ui.history.dialog
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ListItem
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,8 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.Orientation
+import de.schnettler.scrobbler.ui.common.compose.widget.Spacer
 import de.schnettler.scrobbler.ui.history.R
 import de.schnettler.scrobbler.ui.history.widet.SubmissionResultScrobbleItem
 import kotlin.time.ExperimentalTime
@@ -24,6 +33,7 @@ fun SubmissionResultDetailsDialog(
     title: String,
     accepted: List<Scrobble>,
     rejected: Map<Scrobble, Int>,
+    errorMessage: String?,
     onDismiss: (Boolean) -> Unit
 ) {
     var shown by remember { mutableStateOf(true) }
@@ -37,13 +47,20 @@ fun SubmissionResultDetailsDialog(
                         AcceptedCategory(accepted = accepted)
                         CustomDivider()
                         IgnoredCategory(rejected = rejected)
+
+                        Spacer(size = 16.dp, orientation = Orientation.Horizontal)
+
+                        errorMessage?.let { ErrorCategory(errorMessage = errorMessage) }
                     }
                 }
             },
             confirmButton = {
                 PositiveButton(
                     textRes = R.string.confirmdialog_confirm,
-                    onPressed = { onDismiss(true) })
+                    onPressed = {
+                        shown = false
+                        onDismiss(true)
+                    })
             },
             dismissButton = { NegativeButton(textRes = R.string.confirmdialog_cancel, onPressed = { shown = false }) }
         )
@@ -74,6 +91,22 @@ fun AcceptedCategory(accepted: List<Scrobble>) {
     )
 }
 
+@Composable
+fun ErrorCategory(errorMessage: String) {
+    Surface(
+        shape = RoundedCornerShape(8.dp),
+        color = AppColor.Error.copy(0.4F),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = errorMessage,
+            color = MaterialTheme.colors.onBackground,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
+        )
+    }
+}
+
 @OptIn(ExperimentalTime::class)
 @Composable
 fun IgnoredCategory(rejected: Map<Scrobble, Int>) {
@@ -83,7 +116,7 @@ fun IgnoredCategory(rejected: Map<Scrobble, Int>) {
         secondaryText = {
             Column {
                 if (rejected.isEmpty()) {
-                    Text(text = "All Scrobbles were accepted")
+                    Text(text = "No Scrobbles were rejected")
                 } else {
                     Text(text = "${rejected.size} Scrobbles were rejected")
                 }

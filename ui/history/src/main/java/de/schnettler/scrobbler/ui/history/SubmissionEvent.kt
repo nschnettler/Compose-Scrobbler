@@ -9,6 +9,7 @@ sealed class SubmissionEvent {
 
     class ShowDetails(
         val accepted: List<Scrobble>,
-        val ignored: Map<Scrobble, Int>
+        val ignored: Map<Scrobble, Int>,
+        val errorMessage: String?
     ) : SubmissionEvent()
 }

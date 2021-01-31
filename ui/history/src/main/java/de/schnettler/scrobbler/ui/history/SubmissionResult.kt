@@ -4,5 +4,6 @@ import kotlin.collections.Map as IdToReasonMap
 
 data class SubmissionResult(
     val accepted: List<Long>,
-    val ignored: IdToReasonMap<Long, Long>
+    val ignored: IdToReasonMap<Long, Long>,
+    val error: String?
 )

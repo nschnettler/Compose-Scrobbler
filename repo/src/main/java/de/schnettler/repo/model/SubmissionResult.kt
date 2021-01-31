@@ -6,5 +6,6 @@ import de.schnettler.lastfm.models.ScrobbleResponse
 data class SubmissionResult(
     val accepted: List<ScrobbleResponse>,
     val ignored: List<ScrobbleResponse>,
-    val errors: List<Errors>
+    val errors: List<Errors>,
+    val exceptions: List<Throwable>
 )
