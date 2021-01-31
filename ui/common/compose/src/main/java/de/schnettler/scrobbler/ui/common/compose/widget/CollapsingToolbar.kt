@@ -82,7 +82,9 @@ fun CollapsingToolbar(
                 menuActions = menuActions
             )
         },
-        modifier = Modifier.fillMaxWidth().constrainAs(appbar) { top.linkTo(parent.top) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .constrainAs(appbar) { top.linkTo(parent.top) },
         statusBarGuardAlpha = statusBarGuardAlpha
     )
 }
@@ -100,7 +102,7 @@ private fun Toolbar(
         title = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         navigationIcon = {
             IconButton(onClick = { actionHandler(UIAction.NavigateUp) }) {
-                Icon(Icons.Default.ArrowBack)
+                Icon(Icons.Default.ArrowBack, null)
             }
         },
         elevation = elevation,
@@ -113,7 +115,7 @@ private fun Toolbar(
                         actionHandler(it)
                     }
                 }) {
-                    Icon(menuItem.icon)
+                    Icon(menuItem.icon, null)
                 }
             }
         }
@@ -164,7 +166,8 @@ private fun Content(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Surface(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .aspectRatio(16f / 10)
                 .onSizeChanged(onBackdropSizeChanged)
         ) {
@@ -173,20 +176,25 @@ private fun Content(
                     data = it,
                     fadeIn = true,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().offset { size ->
-                        Offset(
-                            x = 0f,
-                            y = (scrollState.value / 2)
-                                .coerceIn(-size.height.toFloat(), size.height.toFloat())
-                        )
-                    }
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .offset { size ->
+                            Offset(
+                                x = 0f,
+                                y = (scrollState.value / 2)
+                                    .coerceIn(-size.height.toFloat(), size.height.toFloat())
+                            )
+                        }
                 )
             }
         }
     }
 
     Surface(
-        modifier = Modifier.fillMaxWidth().wrapContentHeight(Alignment.Top),
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight(Alignment.Top),
         elevation = 0.dp
     ) {
         Column(Modifier.fillMaxWidth()) {

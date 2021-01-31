@@ -23,7 +23,7 @@ fun BottomNavigationBar(
     ) {
         screens.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(screen.icon) },
+                icon = { Icon(screen.icon, null) },
                 label = {
                     Text(text = stringResource(id = screen.titleId), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 },

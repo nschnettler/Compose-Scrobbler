@@ -138,7 +138,7 @@ private fun QuickActionsRow(items: List<ScrobbleAction>, onSelect: (ScrobbleActi
     Row(modifier = Modifier.fillMaxWidth()) {
         items.forEach {
             IconButton(onClick = { onSelect(it) }) {
-                Icon(it.asset)
+                Icon(it.asset, null)
             }
             Spacer(modifier = Modifier.width(24.dp))
         }

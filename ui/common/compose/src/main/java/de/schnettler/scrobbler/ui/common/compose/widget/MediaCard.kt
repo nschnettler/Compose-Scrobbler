@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Card
@@ -60,7 +61,9 @@ fun MediaCard(
                         in 20..Int.MAX_VALUE -> MaterialTheme.typography.h6
                         else -> MaterialTheme.typography.h4
                     },
-                    modifier = Modifier.padding(16.dp).align(Alignment.Center),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.Center),
                     maxLines = if (longClicked) 4 else 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -78,6 +81,7 @@ fun MediaCard(
                         data = it,
                         fadeIn = true,
                         contentScale = ContentScale.Crop,
+                        contentDescription = null,
                         modifier = Modifier.matchParentSize()
                     )
                 }
@@ -111,7 +115,7 @@ private fun StatChip(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Providers(AmbientContentAlpha provides ContentAlpha.high) {
-                    Icon(Icons.Outlined.Hearing.copy(defaultHeight = 16.dp, defaultWidth = 16.dp))
+                    Icon(Icons.Outlined.Hearing, null, modifier = Modifier.preferredSize(16.dp))
                     Spacer(size = 4.dp, orientation = Orientation.Horizontal)
                     Text(text = plays.abbreviate(), style = MaterialTheme.typography.caption)
                 }

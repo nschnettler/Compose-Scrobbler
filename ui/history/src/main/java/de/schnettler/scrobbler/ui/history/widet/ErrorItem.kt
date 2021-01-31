@@ -21,7 +21,7 @@ fun ErrorItem(item: HistoryError, onSelect: () -> Unit) {
         singleLineSecondaryText = false,
         icon = {
             Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
-                Icon(imageVector = item.icon)
+                Icon(imageVector = item.icon, null)
             }
         },
         modifier = Modifier.clickable(onClick = onSelect)
