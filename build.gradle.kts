@@ -8,7 +8,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha03")
+        classpath("com.android.tools.build:gradle:7.0.0-alpha05")
     }
 }
 
@@ -36,5 +36,3 @@ tasks {
         delete(buildDir)
     }
 }
-
-apply(plugin = "android-reporting")
