@@ -165,8 +165,7 @@ class DetailRepository @Inject constructor(
             method = method,
             track = track.name,
             artist = track.artist,
-            sessionKey = authProvider.getSessionKey(),
-            signature = sig
+//            signature = sig
         )
         if (result.isSuccessful) {
             entityInfoDao.update(info)

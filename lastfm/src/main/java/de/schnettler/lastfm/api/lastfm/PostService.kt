@@ -1,16 +1,19 @@
 package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
-import de.schnettler.common.BuildConfig
+import de.schnettler.lastfm.di.tag.SessionAuthentication
+import de.schnettler.lastfm.di.tag.SignatureAuthentication
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import retrofit2.http.Query
 
+@SessionAuthentication
+@SignatureAuthentication
 interface PostService {
     companion object {
         const val METHOD_SCROBBLE = "track.scrobble"
@@ -18,35 +21,23 @@ interface PostService {
         const val METHOD_LOVE = "track.love"
         const val METHOD_UNLOVE = "track.unlove"
     }
-    @POST(LastFmService.ENDPOINT)
-    @FormUrlEncoded
+    @POST("?method=$METHOD_SCROBBLE")
     @Wrapped(path = ["scrobbles"])
     suspend fun submitScrobble(
-        @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
-        @Field("method") method: String,
         @Field("track") track: String,
         @Field("artist") artist: String,
         @Field("album") album: String,
         @Field("duration") duration: String,
         @Field("timestamp") timestamp: String,
-        @Field("sk") sessionKey: String,
-        @Field("api_sig") signature: String,
-        @Field("format") format: String = "json"
     ): Response<SingleScrobbleResponse>
 
-    @POST(LastFmService.ENDPOINT)
+    @POST("?method=$METHOD_NOWPLAYING")
     @Wrapped(path = ["nowplaying"])
-    @FormUrlEncoded
     suspend fun submitNowPlaying(
-        @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
-        @Field("method") method: String,
-        @Field("track") track: String,
-        @Field("artist") artist: String,
-        @Field("album") album: String,
-        @Field("duration") duration: String,
-        @Field("sk") sessionKey: String,
-        @Field("api_sig") signature: String,
-        @Field("format") format: String = "json"
+        @Query("track") track: String,
+        @Query("artist") artist: String,
+        @Query("album") album: String,
+        @Query("duration") duration: String,
     ): Response<ScrobbleResponse>
 
     @POST(LastFmService.ENDPOINT)
@@ -56,14 +47,9 @@ interface PostService {
     ): Response<MutlipleScrobblesResponse>
 
     @POST(LastFmService.ENDPOINT)
-    @FormUrlEncoded
     suspend fun toggleTrackLoveStatus(
-        @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
-        @Field("method") method: String = METHOD_LOVE,
-        @Field("track") track: String,
-        @Field("artist") artist: String,
-        @Field("sk") sessionKey: String,
-        @Field("api_sig") signature: String,
-        @Field("format") format: String = "json"
+        @Query("method") method: String,
+        @Query("track") track: String,
+        @Query("artist") artist: String,
     ): Response<Any>
 }

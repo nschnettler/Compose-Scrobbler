@@ -8,16 +8,23 @@ import de.schnettler.lastfm.api.lastfm.ArtistService
 import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.lastfm.api.lastfm.DetailService
 import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.api.lastfm.SearchService
 import de.schnettler.lastfm.api.lastfm.SessionService
 import de.schnettler.lastfm.api.lastfm.UserService
 import de.schnettler.lastfm.di.retrofit.AuthorizedRetrofitClient
 import de.schnettler.lastfm.di.retrofit.BasicRetrofitClient
+import de.schnettler.lastfm.di.retrofit.SignedRetrofitClient
 import retrofit2.Retrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
 class ServiceModule {
+    @Provides
+    fun providesPostService(
+        @SignedRetrofitClient retrofit: Retrofit
+    ): PostService = retrofit.create(PostService::class.java)
+
     @Provides
     fun providesLastFmService(
         @AuthorizedRetrofitClient retrofit: Retrofit
