@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
@@ -121,7 +122,7 @@ fun Content(
             ExtendedFloatingActionButton(
                 text = { Text(text = "$cachedNumber ${stringResource(id = R.string.scrobbles)}") },
                 onClick = { localViewModel.scheduleScrobbleSubmission() },
-                icon = { Icon(Icons.Outlined.CloudUpload) },
+                icon = { Icon(Icons.Outlined.CloudUpload, null) },
                 contentColor = Color.White,
                 modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
             )

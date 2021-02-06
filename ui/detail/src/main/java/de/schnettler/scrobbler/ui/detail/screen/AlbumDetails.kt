@@ -97,7 +97,7 @@ private fun ArtistItem(
                         "${albumLength.inMinutes.roundToInt()} ${stringResource(id = R.string.albumdetails_minutes)}"
             )
         },
-        icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "") } },
+        icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "", contentDescription = null) } },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(artist)) })
     )
 }

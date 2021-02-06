@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -21,14 +22,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
@@ -93,7 +94,7 @@ fun ChartScreen(
 private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, modifier: Modifier = Modifier) {
     chartData?.let { charts ->
         LazyColumn(modifier) {
-            itemsIndexed(items = charts, itemContent = { index, entry ->
+            itemsIndexed(items = charts) { index, entry ->
                 when (entry) {
                     is TopListArtist -> ChartArtistListItem(
                         name = entry.value.name,
@@ -109,7 +110,7 @@ private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, mo
                     )
                 }
                 CustomDivider()
-            })
+            }
         }
     }
 }

@@ -20,12 +20,12 @@ import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.screens.RefreshableScreen
 import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel2
-import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
+import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen
 import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ListTitle
@@ -84,6 +84,7 @@ fun AlbumCategory(
                             data = it,
                             fadeIn = true,
                             contentScale = ContentScale.Crop,
+                            contentDescription = null,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
