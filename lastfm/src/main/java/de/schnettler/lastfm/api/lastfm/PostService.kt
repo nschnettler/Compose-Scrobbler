@@ -12,6 +12,12 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
 interface PostService {
+    companion object {
+        const val METHOD_SCROBBLE = "track.scrobble"
+        const val METHOD_NOWPLAYING = "track.updateNowPlaying"
+        const val METHOD_LOVE = "track.love"
+        const val METHOD_UNLOVE = "track.unlove"
+    }
     @POST(LastFmService.ENDPOINT)
     @FormUrlEncoded
     @Wrapped(path = ["scrobbles"])
@@ -53,7 +59,7 @@ interface PostService {
     @FormUrlEncoded
     suspend fun toggleTrackLoveStatus(
         @Field("api_key") apiKey: String = BuildConfig.LASTFM_API_KEY,
-        @Field("method") method: String = LastFmService.METHOD_LOVE,
+        @Field("method") method: String = METHOD_LOVE,
         @Field("track") track: String,
         @Field("artist") artist: String,
         @Field("sk") sessionKey: String,

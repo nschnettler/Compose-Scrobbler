@@ -10,6 +10,8 @@ import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.PostService
+import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_NOWPLAYING
+import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_SCROBBLE
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
@@ -37,10 +39,10 @@ class ScrobbleRepository @Inject constructor(
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
-        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
+        val key = authProvider.getSessionKey() ?: return LastFmResponse.ERROR(Errors.SESSION)
         return safePost {
             service.submitScrobble(
-                method = LastFmService.METHOD_SCROBBLE,
+                method = METHOD_SCROBBLE,
                 artist = track.artist,
                 track = track.name,
                 timestamp = track.timeStampString(),
@@ -49,7 +51,7 @@ class ScrobbleRepository @Inject constructor(
                 sessionKey = key,
                 signature = createSignature(
                     mutableMapOf(
-                        "method" to LastFmService.METHOD_SCROBBLE,
+                        "method" to METHOD_SCROBBLE,
                         "artist" to track.artist,
                         "track" to track.name,
                         "album" to track.album,
@@ -63,10 +65,10 @@ class ScrobbleRepository @Inject constructor(
     }
 
     suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<ScrobbleResponse> {
-        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
+        val key = authProvider.getSessionKey() ?: return LastFmResponse.ERROR(Errors.SESSION)
         return safePost {
             service.submitNowPlaying(
-                method = LastFmService.METHOD_NOWPLAYING,
+                method = METHOD_NOWPLAYING,
                 artist = track.artist,
                 track = track.name,
                 album = track.album,
@@ -74,7 +76,7 @@ class ScrobbleRepository @Inject constructor(
                 sessionKey = key,
                 signature = createSignature(
                     mutableMapOf(
-                        "method" to LastFmService.METHOD_NOWPLAYING,
+                        "method" to METHOD_NOWPLAYING,
                         "artist" to track.artist,
                         "track" to track.name,
                         "album" to track.album,
@@ -89,9 +91,9 @@ class ScrobbleRepository @Inject constructor(
     suspend fun getCachedTracks() = localTrackDao.getCachedTracks()
 
     suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
-        val key = authProvider.session?.key ?: return LastFmResponse.ERROR(Errors.SESSION)
+        val key = authProvider.getSessionKey() ?: return LastFmResponse.ERROR(Errors.SESSION)
         val result: MutableMap<String, String> = mutableMapOf(
-            "method" to LastFmService.METHOD_SCROBBLE,
+            "method" to METHOD_SCROBBLE,
             "sk" to key
         )
         val artists = tracks.map { it.artist }

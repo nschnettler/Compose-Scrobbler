@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -22,7 +23,7 @@ dependencies {
     api(project(":common"))
 
     api(Square.retrofit2.retrofit)
-    implementation(Square.retrofit2.converter.moshi)
+    api(Square.retrofit2.converter.moshi)
     implementation(Square.retrofit2.converter.scalars)
     implementation(Square.okHttp3.okHttp)
     api(Square.okHttp3.loggingInterceptor)
@@ -32,4 +33,10 @@ dependencies {
     kapt(Square.moshi.kotlinCodegen)
     implementation(Square.moshi.kotlinReflect)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
+
+    implementation(Google.dagger.hilt.android)
+    kapt(AndroidX.hilt.compiler)
+    kapt(Google.dagger.hilt.android.compiler)
+
+    implementation(KotlinX.coroutines.android)
 }

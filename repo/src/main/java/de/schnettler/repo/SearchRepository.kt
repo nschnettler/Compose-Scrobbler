@@ -2,14 +2,14 @@ package de.schnettler.repo
 
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.StoreBuilder
-import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.SearchService
 import de.schnettler.repo.mapping.search.mapToAlbum
 import de.schnettler.repo.mapping.search.mapToArtist
 import de.schnettler.repo.mapping.search.mapToTrack
 import javax.inject.Inject
 
 class SearchRepository @Inject constructor(
-    private val service: LastFmService
+    private val service: SearchService
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { query: SearchQuery ->

@@ -6,17 +6,6 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 
-class LastFMInterceptor : Interceptor {
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val original = chain.request()
-        val url = original.url.newBuilder()
-            .addQueryParameter("api_key", LastFmService.API_KEY)
-            .addQueryParameter("format", "json")
-            .build()
-        return chain.proceed(original.newBuilder().url(url).build())
-    }
-}
-
 class SpotifyAuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val req = chain.request()
