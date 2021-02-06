@@ -7,7 +7,6 @@ import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -43,7 +42,11 @@ interface PostService {
     @POST(LastFmService.ENDPOINT)
     @Wrapped(path = ["scrobbles"])
     suspend fun submitMultipleScrobbles(
-        @Body body: String
+        @Field("track") track: String,
+        @Field("artist") artist: String,
+        @Field("album") album: String,
+        @Field("duration") duration: String,
+        @Field("timestamp") timestamp: String,
     ): Response<MutlipleScrobblesResponse>
 
     @POST(LastFmService.ENDPOINT)

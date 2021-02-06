@@ -16,7 +16,7 @@ class SessionInterceptor @Inject constructor(private val authProvider: AuthProvi
 
         val methodClass = original.tag(Invocation::class.java)?.method()?.declaringClass
         if (methodClass?.isAnnotationPresent(SessionAuthentication::class.java) == false) {
-            Timber.e("${methodClass.simpleName} needs " + "${SessionAuthentication::class.java.simpleName} tag")
+            Timber.e("${methodClass.simpleName} needs ${SessionAuthentication::class.java.simpleName} tag")
             return chain.proceed(original)
         }
         val url = original.url.newBuilder()

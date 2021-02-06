@@ -20,14 +20,12 @@ import de.schnettler.lastfm.api.lastfm.DetailService
 import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_LOVE
 import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_UNLOVE
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
 import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.TrackInfoMapper
-import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
@@ -43,7 +41,6 @@ class DetailRepository @Inject constructor(
     private val detailService: DetailService,
     private val artistService: ArtistService,
     private val imageRepo: ImageRepo,
-    private val authProvider: LastFmAuthProvider,
     private val postService: PostService,
 ) {
     val artistStore = StoreBuilder.from(
@@ -153,19 +150,10 @@ class DetailRepository @Inject constructor(
 
     suspend fun toggleTrackLikeStatus(track: Track, info: EntityInfo) {
         val method = if (info.loved) METHOD_LOVE else METHOD_UNLOVE
-        val sig = createSignature(
-            mutableMapOf(
-                "method" to method,
-                "track" to track.name,
-                "artist" to track.artist,
-                "sk" to authProvider.getSessionKey()
-            )
-        )
         val result = postService.toggleTrackLoveStatus(
             method = method,
             track = track.name,
             artist = track.artist,
-//            signature = sig
         )
         if (result.isSuccessful) {
             entityInfoDao.update(info)

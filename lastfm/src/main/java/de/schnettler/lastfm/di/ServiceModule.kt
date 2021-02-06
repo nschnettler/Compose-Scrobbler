@@ -57,6 +57,6 @@ class ServiceModule {
 
     @Provides
     fun providesSessionService(
-        @BasicRetrofitClient retrofit: Retrofit
+        @SignedRetrofitClient retrofit: Retrofit
     ): SessionService = retrofit.create(SessionService::class.java)
 }

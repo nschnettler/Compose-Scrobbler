@@ -1,14 +1,23 @@
 package de.schnettler.lastfm.interceptor
 
 import de.schnettler.lastfm.createSignature
+import de.schnettler.lastfm.di.tag.SignatureAuthentication
 import okhttp3.Interceptor
 import okhttp3.Response
+import retrofit2.Invocation
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class SignatureInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
+
+        val methodClass = original.tag(Invocation::class.java)?.method()?.declaringClass
+        if (methodClass?.isAnnotationPresent(SignatureAuthentication::class.java) == false) {
+            Timber.e("${methodClass.simpleName} needs ${SignatureAuthentication::class.java.simpleName} tag")
+            return chain.proceed(original)
+        }
 
         val parameterMap = original.url.queryParameterNames.filterNot { it == "format" }.associateWith {
             original.url.queryParameter(it).orEmpty()
