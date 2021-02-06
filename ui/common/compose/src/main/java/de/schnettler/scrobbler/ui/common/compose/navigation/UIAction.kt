@@ -22,4 +22,12 @@ sealed class UIError {
         val onAction: () -> Unit = { },
         val onDismiss: () -> Unit = { }
     ) : UIError()
+
+    class ScrobbleSubmissionResult(
+        val accepted: Int,
+        val ignored: Int,
+        val actionMessage: String = "Details",
+        val onAction: () -> Unit = { },
+        val onDismiss: () -> Unit = { }
+    ) : UIError()
 }

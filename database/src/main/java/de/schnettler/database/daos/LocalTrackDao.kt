@@ -31,4 +31,7 @@ abstract class LocalTrackDao : BaseDao<Scrobble> {
 
     @Query("UPDATE localTracks SET status = :status WHERE timestamp in (:timestamps)")
     abstract suspend fun updateScrobbleStatus(timestamps: List<Long>, status: ScrobbleStatus = ScrobbleStatus.SCROBBLED)
+
+    @Query("SELECT * FROM localTracks WHERE timestamp in (:timestamps)")
+    abstract suspend fun getScrobblesWithTimestamp(timestamps: List<Long>): List<Scrobble>
 }

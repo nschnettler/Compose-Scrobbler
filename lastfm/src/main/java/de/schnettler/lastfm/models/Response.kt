@@ -11,7 +11,7 @@ data class StatusResponse(
 
 @JsonClass(generateAdapter = true)
 data class CorrectionResponse(
-    val corrected: String,
+    val corrected: Long,
     @Json(name = "#text") val correctValue: String
 )
 

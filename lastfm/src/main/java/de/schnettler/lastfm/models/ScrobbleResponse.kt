@@ -21,6 +21,7 @@ data class SingleScrobbleResponse(
 
 @JsonClass(generateAdapter = true)
 data class ScrobbleResponse(
+    val timestamp: Long,
     val artist: CorrectionResponse,
     val album: CorrectionResponse,
     val albumArtist: CorrectionResponse,

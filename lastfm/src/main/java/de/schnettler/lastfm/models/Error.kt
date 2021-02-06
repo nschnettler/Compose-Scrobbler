@@ -39,7 +39,7 @@ data class ErrorResponse(
     }
 }
 
-enum class Errors(private val num: Long, val title: String, private val description: String) {
+enum class Errors(private val num: Long, val title: String, val description: String) {
     UNKNOWN(1, "Unknown Error", "This error does not exist"),
     SERVICE(2, "Invalid service", "This service does not exist"),
     METHOD(3, "Invalid Method", "No method with that name in this package"),
