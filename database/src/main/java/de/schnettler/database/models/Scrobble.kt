@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -78,6 +78,9 @@ data class Scrobble(
         artist = artist,
         album = album
     )
+
+    fun getArtistOrPlaceholder() = if (artist.isBlank()) "unknown" else artist
+    fun getNameOrPlaceholder() = if (name.isBlank()) "unknown" else name
 
     companion object {
         fun fromMetadata(metadata: MediaMetadata, packageName: String): Scrobble {

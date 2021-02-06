@@ -33,6 +33,7 @@ dependencies {
     api(AndroidX.compose.material)
     api(AndroidX.compose.material.icons.extended)
     implementation("androidx.navigation:navigation-compose:_")
+    api(AndroidX.compose.runtime.liveData)
 
     implementation(AndroidX.paletteKtx)
     implementation(AndroidX.core.ktx)

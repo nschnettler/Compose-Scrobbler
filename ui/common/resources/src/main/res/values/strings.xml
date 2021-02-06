@@ -117,4 +117,11 @@
 
     <string name="error_login_title">Not logged in</string>
     <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
+
+    <string name="rejectionArtist">Artist was rejected</string>
+    <string name="rejectionTrack">Track was rejected</string>
+    <string name="rejectionTimestampOld">Timestamp was too old</string>
+    <string name="rejectionTimestampNew">Timestamp was too new</string>
+    <string name="rejectionLimit">Daily scrobble limit exceeded</string>
+    <string name="rejectionUnknown">Unknown rejection reason</string>
 </resources>

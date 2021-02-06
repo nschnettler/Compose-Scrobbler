@@ -19,7 +19,7 @@ fun NameListIcon(title: String) {
         try {
             title.firstLetter()
         } catch (e: NoSuchElementException) {
-            title.first().toString()
+            title.firstOrNull()?.toString() ?: "?"
         }.also {
             Text(text = it)
         }

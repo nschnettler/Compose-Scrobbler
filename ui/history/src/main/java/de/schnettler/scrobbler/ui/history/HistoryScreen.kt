@@ -2,12 +2,15 @@ package de.schnettler.scrobbler.ui.history
 
 import android.content.Context
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -17,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
@@ -36,6 +40,7 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSele
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.history.dialog.ConfirmDialog
+import de.schnettler.scrobbler.ui.history.dialog.SubmissionResultDetailsDialog
 import de.schnettler.scrobbler.ui.history.dialog.TrackEditDialog
 import de.schnettler.scrobbler.ui.history.model.HistoryError
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
@@ -82,6 +87,24 @@ fun Content(
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
+    val isSubmitting by localViewModel.isSubmitting.collectAsState()
+    val events by localViewModel.events.observeAsState()
+
+    events?.getContentIfNotHandled()?.let { event ->
+        when (event) {
+            is SubmissionEvent.Success -> {
+                errorHandler(UIError.ScrobbleSubmissionResult(
+                    event.result.accepted.size,
+                    event.result.ignored.size,
+                    onAction = { localViewModel.showDetails(event.result) }
+                ))
+            }
+            is SubmissionEvent.ShowDetails -> {
+                SubmissionResultDetailsDialog("Details", event.accepted, event.ignored, event.errorMessage) { }
+            }
+        }
+    }
+
     if (recentTracksState.isError && loggedIn) {
         errorHandler(
             UIError.ShowErrorSnackbar(
@@ -119,12 +142,10 @@ fun Content(
             }
         }
         if (cachedNumber > 0) {
-            ExtendedFloatingActionButton(
-                text = { Text(text = "$cachedNumber ${stringResource(id = R.string.scrobbles)}") },
-                onClick = { localViewModel.scheduleScrobbleSubmission() },
-                icon = { Icon(Icons.Outlined.CloudUpload, null) },
-                contentColor = Color.White,
-                modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+            SubmissionFab(
+                submitting = isSubmitting,
+                number = cachedNumber,
+                onClick = localViewModel::scheduleScrobbleSubmission
             )
         }
     }
@@ -148,6 +169,34 @@ fun Content(
             showConfirmDialog = false
         }
     }
+}
+
+@Composable
+private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: () -> Unit) {
+    ExtendedFloatingActionButton(
+        text = {
+            if (submitting) {
+                Text(text = "Submitting")
+            } else {
+                Text(text = "$number ${stringResource(id = R.string.scrobbles)}")
+            }
+        },
+        onClick = onClick,
+        icon = {
+            if (submitting) {
+                CircularProgressIndicator(
+                    color = Color.White,
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 2.5.dp
+                )
+            } else {
+                Icon(Icons.Outlined.CloudUpload, null)
+            }
+        },
+        contentColor = Color.White,
+        modifier = Modifier.align(Alignment.BottomEnd)
+            .padding(end = 16.dp, bottom = 16.dp)
+    )
 }
 
 private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
