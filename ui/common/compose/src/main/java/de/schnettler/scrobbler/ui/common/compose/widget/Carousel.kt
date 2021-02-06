@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -54,9 +55,9 @@ fun <T> Carousel(
         ),
         verticalAlignment = verticalGravity
     ) {
-        items(items = items ?: emptyList(),
-            itemContent = { item -> itemContent(item, spacingContent) }
-        )
+        items(items = items ?: emptyList()) { item ->
+            itemContent(item, spacingContent)
+        }
     }
 }
 

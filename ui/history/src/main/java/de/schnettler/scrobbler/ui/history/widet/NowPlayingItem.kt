@@ -1,12 +1,12 @@
 package de.schnettler.scrobbler.ui.history
 
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.runtime.Composable
@@ -22,7 +22,7 @@ fun NowPlayingItem(name: String, artist: String, onClick: () -> Unit) {
             secondaryText = { Text(artist) },
             icon = {
                 PlainListIconBackground(MaterialTheme.colors.secondary) {
-                    Icon(Icons.Rounded.MusicNote)
+                    Icon(Icons.Rounded.MusicNote, null)
                 }
             },
             modifier = Modifier.clickable(onClick = onClick)

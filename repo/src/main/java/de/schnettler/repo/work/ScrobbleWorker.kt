@@ -1,11 +1,11 @@
 package de.schnettler.repo.work
 
 import android.content.Context
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.repo.ScrobbleRepository
@@ -19,7 +19,7 @@ const val RESULT_COUNT = "count"
 const val RESULT_DESCRIPTION = "description"
 const val RESULT_TRACKS = "tracks"
 
-class ScrobbleWorker @WorkerInject constructor(
+class ScrobbleWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
     private val repo: ScrobbleRepository

@@ -45,15 +45,15 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
-import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
-import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
-import de.schnettler.scrobbler.ui.common.compose.widget.StatsRow
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
-import de.schnettler.scrobbler.ui.common.compose.widget.TopListCarousel
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
+import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.widget.StatsRow
+import de.schnettler.scrobbler.ui.common.compose.widget.TopListCarousel
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.common.util.firstLetter
 import de.schnettler.scrobbler.ui.common.util.toFlagEmoji
@@ -150,7 +150,7 @@ private fun ProfileContent(
         ExtendedFloatingActionButton(
             text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
             onClick = onFabClicked,
-            icon = { Icon(Icons.Outlined.Event) },
+            icon = { Icon(Icons.Outlined.Event, null) },
             contentColor = Color.White,
             modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
         )
@@ -169,7 +169,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
                 icon = {
                     PlainListIconBackground {
                         track.imageUrl?.let {
-                            CoilImage(data = it)
+                            CoilImage(data = it, null)
                         } ?: Text(text = track.name.firstLetter())
                     }
                 },
@@ -209,7 +209,7 @@ private fun UserInfo(user: User) {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
                         Box(Modifier.preferredSize(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
-                                CoilImage(data = user.imageUrl, modifier = Modifier.fillMaxSize())
+                                CoilImage(data = user.imageUrl, null, modifier = Modifier.fillMaxSize())
                             }
                         }
                     }

@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
 import de.schnettler.scrobbler.ui.detail.TagCategory
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
@@ -56,9 +56,9 @@ fun TrackDetailScreen(
                 Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
             ) {
                 if (info.loved) {
-                    Icon(Icons.Rounded.Favorite)
+                    Icon(Icons.Rounded.Favorite, null)
                 } else {
-                    Icon(imageVector = Icons.Rounded.FavoriteBorder)
+                    Icon(imageVector = Icons.Rounded.FavoriteBorder, null)
                 }
             }
         }

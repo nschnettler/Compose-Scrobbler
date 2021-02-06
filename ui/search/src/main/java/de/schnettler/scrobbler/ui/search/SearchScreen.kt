@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
@@ -30,12 +31,12 @@ import de.schnettler.database.models.BaseEntity
 import de.schnettler.database.models.EntityWithStats
 import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Track
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.search.widget.SelectableChipRow
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
@@ -93,7 +94,7 @@ fun SearchScreen(
 @Composable
 fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) {
     LazyColumn {
-        items(items = results, itemContent = {
+        items(items = results) {
             when (it) {
                 is EntityWithStats -> {
                     ListItem(
@@ -103,7 +104,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                         },
                         icon = {
                             PlainListIconBackground {
-                                Icon(Icons.Outlined.Face)
+                                Icon(Icons.Outlined.Face, null)
                             }
                         },
                         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it.entity)) })
@@ -117,7 +118,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                         },
                         icon = {
                             PlainListIconBackground {
-                                Icon(Icons.Outlined.Album)
+                                Icon(Icons.Outlined.Album, null)
                             }
                         },
                         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
@@ -131,7 +132,7 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                         },
                         icon = {
                             PlainListIconBackground {
-                                Icon(Icons.Rounded.MusicNote)
+                                Icon(Icons.Rounded.MusicNote, null)
                             }
                         },
                         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
@@ -139,6 +140,6 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                 }
             }
             CustomDivider(startIndent = 72.dp)
-        })
+        }
     }
 }
