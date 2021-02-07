@@ -4,7 +4,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import de.schnettler.common.TimePeriod
-import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.models.AlbumDto
 import de.schnettler.lastfm.models.AlbumInfoDto
 import de.schnettler.lastfm.models.ArtistInfoDto

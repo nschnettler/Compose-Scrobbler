@@ -7,16 +7,17 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface ArtistService {
-
-    @GET("?method=${LastFmService.METHOD_ARTIST_ALBUMS}&limit=10")
+    @GET("?method=artist.getTopAlbums")
     @Wrapped(path = ["topalbums", "album"])
     suspend fun getArtistAlbums(
-        @Query("artist") name: String
+        @Query("artist") name: String,
+        @Query("limit") limit: Int = 10,
     ): List<AlbumDto>
 
-    @GET("?method=${LastFmService.METHOD_ARTIST_TRACKS}&limit=5")
+    @GET("?method=artist.getTopTracks")
     @Wrapped(path = ["toptracks", "track"])
     suspend fun getArtistTracks(
-        @Query("artist") name: String
+        @Query("artist") name: String,
+        @Query("limit") limit: Int = 5,
     ): List<ArtistTracksDto>
 }

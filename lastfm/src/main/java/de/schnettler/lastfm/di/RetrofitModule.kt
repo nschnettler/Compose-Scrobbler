@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.di.okhttp.AuthorizedOkHttpClient
 import de.schnettler.lastfm.di.okhttp.BasicOkHttpClient
 import de.schnettler.lastfm.di.okhttp.SignatureOkHttpClient
@@ -43,7 +42,7 @@ class RetrofitModule {
         converterFactory: MoshiConverterFactory
     ): Retrofit = Retrofit.Builder()
         .client(okHttpClient)
-        .baseUrl(LastFmService.ENDPOINT)
+        .baseUrl("https://ws.audioscrobbler.com/2.0/")
         .addConverterFactory(converterFactory)
         .build()
 }

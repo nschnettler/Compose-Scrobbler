@@ -13,6 +13,7 @@ import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
+import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.mapping.response.map
 import de.schnettler.repo.model.SubmissionResult
@@ -31,7 +32,8 @@ class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
     private val service: PostService,
     private val workManager: WorkManager,
-    private val prefs: FlowSharedPreferences
+    private val prefs: FlowSharedPreferences,
+    private val authProvider: LastFmAuthProvider
 ) {
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
@@ -86,19 +88,17 @@ class ScrobbleRepository @Inject constructor(
     }
 
     private suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
-        val artists = tracks.map { it.artist }
-        val albums = tracks.map { it.album }
-        val names = tracks.map { it.name }
-        val durations = tracks.map { it.durationUnix() }
-        val timestamps = tracks.map { it.timeStampString() }
+        val parameters = tracks.mapIndexed { index: Int, scrobble: Scrobble ->
+            mapOf(
+                "artist[$index]" to scrobble.artist,
+                "track[$index]" to scrobble.name,
+                "album[$index]" to scrobble.album,
+                "duration[$index]" to scrobble.durationUnix(),
+                "timestamp[$index]" to scrobble.timeStampString(),
+            )
+        }.reduce { acc, map -> acc + map }
 
-        return safePost { service.submitMultipleScrobbles(
-            track = names.mapIndexed { index, name -> "track[$index]=$name" }.joinToString("&"),
-            artist = artists.mapIndexed { index, name -> "artist[$index]=$name" }.joinToString("&"),
-            album = albums.mapIndexed { index, name -> "album[$index]=$name" }.joinToString("&"),
-            duration = durations.mapIndexed { index, name -> "duration[$index]=$name" }.joinToString("&"),
-            timestamp = timestamps.mapIndexed { index, name -> "timestamp[$index]=$name" }.joinToString("&"),
-        ).map() }
+        return safePost { service.submitMultipleScrobbles(parameters).map() }
     }
 
     suspend fun markScrobblesAsSubmitted(vararg tracks: Scrobble) {

@@ -1,13 +1,13 @@
 package de.schnettler.lastfm.interceptor
 
-import de.schnettler.lastfm.createSignature
+import de.schnettler.common.BuildConfig
 import de.schnettler.lastfm.di.tag.SignatureAuthentication
+import de.schnettler.lastfm.md5
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Invocation
 import timber.log.Timber
 import javax.inject.Inject
-
 
 class SignatureInterceptor @Inject constructor() : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -28,5 +28,17 @@ class SignatureInterceptor @Inject constructor() : Interceptor {
             .build()
 
         return chain.proceed(original.newBuilder().url(url).build())
+    }
+
+    private fun createSignature(params: MutableMap<String, String>): String {
+        params["api_key"] = BuildConfig.LASTFM_API_KEY
+        val sorted = params.toSortedMap()
+        val signature = StringBuilder()
+        sorted.forEach { (key, value) ->
+            signature.append(key)
+            signature.append(value)
+        }
+        signature.append(BuildConfig.LASTFM_SECRET)
+        return signature.toString().md5()
     }
 }

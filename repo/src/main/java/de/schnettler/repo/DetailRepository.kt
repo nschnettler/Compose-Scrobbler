@@ -18,8 +18,6 @@ import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.ArtistService
 import de.schnettler.lastfm.api.lastfm.DetailService
 import de.schnettler.lastfm.api.lastfm.PostService
-import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_LOVE
-import de.schnettler.lastfm.api.lastfm.PostService.Companion.METHOD_UNLOVE
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
 import de.schnettler.repo.mapping.artist.ArtistInfoMapper
@@ -149,12 +147,11 @@ class DetailRepository @Inject constructor(
     ).build()
 
     suspend fun toggleTrackLikeStatus(track: Track, info: EntityInfo) {
-        val method = if (info.loved) METHOD_LOVE else METHOD_UNLOVE
-        val result = postService.toggleTrackLoveStatus(
-            method = method,
-            track = track.name,
-            artist = track.artist,
-        )
+        val result = if (info.loved) {
+            postService.loveTrack(track = track.name, artist = track.artist)
+        } else {
+            postService.unloveTrack(track = track.name, artist = track.artist)
+        }
         if (result.isSuccessful) {
             entityInfoDao.update(info)
         }

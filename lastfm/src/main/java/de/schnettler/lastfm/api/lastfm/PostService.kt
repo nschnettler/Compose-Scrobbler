@@ -7,30 +7,24 @@ import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import retrofit2.Response
-import retrofit2.http.Field
 import retrofit2.http.POST
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 @SessionAuthentication
 @SignatureAuthentication
 interface PostService {
-    companion object {
-        const val METHOD_SCROBBLE = "track.scrobble"
-        const val METHOD_NOWPLAYING = "track.updateNowPlaying"
-        const val METHOD_LOVE = "track.love"
-        const val METHOD_UNLOVE = "track.unlove"
-    }
-    @POST("?method=$METHOD_SCROBBLE")
+    @POST("?method=track.scrobble")
     @Wrapped(path = ["scrobbles"])
     suspend fun submitScrobble(
-        @Field("track") track: String,
-        @Field("artist") artist: String,
-        @Field("album") album: String,
-        @Field("duration") duration: String,
-        @Field("timestamp") timestamp: String,
+        @Query("track") track: String,
+        @Query("artist") artist: String,
+        @Query("album") album: String,
+        @Query("duration") duration: String,
+        @Query("timestamp") timestamp: String,
     ): Response<SingleScrobbleResponse>
 
-    @POST("?method=$METHOD_NOWPLAYING")
+    @POST("?method=track.updateNowPlaying")
     @Wrapped(path = ["nowplaying"])
     suspend fun submitNowPlaying(
         @Query("track") track: String,
@@ -39,19 +33,20 @@ interface PostService {
         @Query("duration") duration: String,
     ): Response<ScrobbleResponse>
 
-    @POST(LastFmService.ENDPOINT)
+    @POST("?method=track.scrobble")
     @Wrapped(path = ["scrobbles"])
     suspend fun submitMultipleScrobbles(
-        @Field("track") track: String,
-        @Field("artist") artist: String,
-        @Field("album") album: String,
-        @Field("duration") duration: String,
-        @Field("timestamp") timestamp: String,
+        @QueryMap body: Map<String, String>
     ): Response<MutlipleScrobblesResponse>
 
-    @POST(LastFmService.ENDPOINT)
-    suspend fun toggleTrackLoveStatus(
-        @Query("method") method: String,
+    @POST("?method=track.love")
+    suspend fun loveTrack(
+        @Query("track") track: String,
+        @Query("artist") artist: String,
+    ): Response<Any>
+
+    @POST("?method=track.unlove")
+    suspend fun unloveTrack(
         @Query("track") track: String,
         @Query("artist") artist: String,
     ): Response<Any>

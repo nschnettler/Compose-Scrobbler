@@ -7,7 +7,6 @@ import dagger.hilt.components.SingletonComponent
 import de.schnettler.lastfm.api.lastfm.ArtistService
 import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.lastfm.api.lastfm.DetailService
-import de.schnettler.lastfm.api.lastfm.LastFmService
 import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.api.lastfm.SearchService
 import de.schnettler.lastfm.api.lastfm.SessionService
@@ -24,11 +23,6 @@ class ServiceModule {
     fun providesPostService(
         @SignedRetrofitClient retrofit: Retrofit
     ): PostService = retrofit.create(PostService::class.java)
-
-    @Provides
-    fun providesLastFmService(
-        @AuthorizedRetrofitClient retrofit: Retrofit
-    ): LastFmService = retrofit.create(LastFmService::class.java)
 
     @Provides
     fun providesUserService(
