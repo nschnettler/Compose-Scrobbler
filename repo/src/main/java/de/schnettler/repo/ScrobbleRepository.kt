@@ -45,18 +45,36 @@ class ScrobbleRepository @Inject constructor(
         val errors = mutableListOf<Errors>()
         val exceptions = mutableListOf<Throwable>()
 
-        cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { input ->
-            when (val submissionResponse = submitScrobbles(input)) {
+        if (cachedTracks.size == 1) {
+            when (val submissionResponse = submitScrobble(cachedTracks.first())) {
                 is LastFmResponse.SUCCESS -> {
                     submissionResponse.data?.also { response ->
-                        val (accepted, ignored) = response.scrobble.partition { it.ignoredMessage.code == 0L }
-                        localTrackDao.updateScrobbleStatus(accepted.map { it.timestamp })
-                        acceptedResult.addAll(accepted)
-                        ignoredResult.addAll(ignored)
+                        val scrobbleResponse = response.scrobble
+                        localTrackDao.updateScrobbleStatus(listOf(response.scrobble.timestamp))
+                        if (scrobbleResponse.ignoredMessage.code == 0L) {
+                            acceptedResult.add(scrobbleResponse)
+                        } else {
+                            ignoredResult.add(scrobbleResponse)
+                        }
                     }
                 }
                 is LastFmResponse.ERROR -> submissionResponse.error?.let { errors.add(it) }
                 is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
+            }
+        } else {
+            cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { input ->
+                when (val submissionResponse = submitScrobbles(input)) {
+                    is LastFmResponse.SUCCESS -> {
+                        submissionResponse.data?.also { response ->
+                            val (accepted, ignored) = response.scrobble.partition { it.ignoredMessage.code == 0L }
+                            localTrackDao.updateScrobbleStatus(accepted.map { it.timestamp })
+                            acceptedResult.addAll(accepted)
+                            ignoredResult.addAll(ignored)
+                        }
+                    }
+                    is LastFmResponse.ERROR -> submissionResponse.error?.let { errors.add(it) }
+                    is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
+                }
             }
         }
         return SubmissionResult(acceptedResult, ignoredResult, errors, exceptions)
