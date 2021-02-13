@@ -62,6 +62,10 @@ android {
     }
 }
 
+hilt {
+    enableExperimentalClasspathAggregation = true
+}
+
 dependencies {
     implementation(project(":repo"))
     implementation(project(":common"))

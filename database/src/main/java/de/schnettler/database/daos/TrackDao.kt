@@ -15,12 +15,15 @@ abstract class TrackDao : BaseDao<Track> {
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract fun getTrack(id: String, artist: String): Track?
 
+    @Transaction
     @Query("SELECT * FROM tracks WHERE id = :id and artist = :artist")
     abstract fun getTrackWithMetadata(id: String, artist: String): Flow<TrackWithStatsAndInfo?>
 
+    @Transaction
     @Query("SELECT * FROM tracks INNER JOIN stats ON tracks.id = stats.id WHERE tracks.artist = :artist ORDER BY stats.plays DESC LIMIT 5")
     abstract fun getTopTracksOfArtist(artist: String): Flow<List<TrackWithStats>>
 
+    @Transaction
     @Query("SELECT * FROM tracks WHERE artist = :artist and album = :album")
     abstract fun getTracksFromAlbum(artist: String, album: String): Flow<List<EntityWithInfo.TrackWithInfo>>
 

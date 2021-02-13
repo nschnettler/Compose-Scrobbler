@@ -1,8 +1,8 @@
 package de.schnettler.scrobbler.ui.history
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.database.models.Scrobble
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.ScrobbleRepository
@@ -13,8 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocalViewModel @ViewModelInject constructor(
+@HiltViewModel
+class LocalViewModel @Inject constructor(
     private val repo: LocalRepository,
     private val scrobbleRepo: ScrobbleRepository,
     private val rejectionCodeToReasonMapper: RejectionCodeToReasonMapper
@@ -53,7 +55,15 @@ class LocalViewModel @ViewModelInject constructor(
                     submissionResult.ignored.getOrElse(scrobble.timestamp) { 0L }
                 )
             }
-            events.postValue(Event(SubmissionEvent.ShowDetails(accepted.await(), ignoredWithReason, submissionResult.error)))
+            events.postValue(
+                Event(
+                    SubmissionEvent.ShowDetails(
+                        accepted.await(),
+                        ignoredWithReason,
+                        submissionResult.error
+                    )
+                )
+            )
         }
     }
 

@@ -1,5 +1,4 @@
 plugins {
-    id("dagger.hilt.android.plugin") version "2.28-alpha" apply false
     kotlin("android") version "1.4.21" apply false
 }
 
@@ -8,7 +7,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha05")
+        classpath("com.android.tools.build:gradle:7.0.0-alpha06")
+        classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
 
@@ -31,8 +31,6 @@ allprojects {
     }
 }
 
-tasks {
-    val clean by registering(Delete::class) {
-        delete(buildDir)
-    }
+tasks.register<Delete>("clean") {
+    delete(rootProject.buildDir)
 }

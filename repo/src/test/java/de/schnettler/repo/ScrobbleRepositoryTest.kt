@@ -5,8 +5,9 @@ import ch.tutteli.atrium.api.fluent.en_GB.isA
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.repo.mapping.response.LastFmResponse
-import java.net.SocketTimeoutException
+import de.schnettler.repo.util.safePost
 import org.junit.Test
+import java.net.SocketTimeoutException
 
 class ScrobbleRepositoryTest {
     @Test

@@ -16,8 +16,8 @@ import de.schnettler.database.models.ListType
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
-import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.lastfm.api.lastfm.UserService
+import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.repo.mapping.album.TopUserAlbumMapper
 import de.schnettler.repo.mapping.artist.TopUserArtistMapper
 import de.schnettler.repo.mapping.forLists
@@ -31,16 +31,16 @@ class TopListRepository @Inject constructor(
     private val albumDao: AlbumDao,
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
-    private val service: LastFmService,
-    private val authProvider: LastFmAuthProvider,
+    private val userService: UserService,
+    private val authProvider: LastFmAuthProviderImpl,
     private val workManager: WorkManager,
 ) {
     val topArtistStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
-            val session = authProvider.getSessionOrThrow()
-            val response = service.getUserTopArtists(timePeriod, session.key)
+            val session = authProvider.getSession()
+            val response = userService.getTopArtists(timePeriod)
             if (timePeriod == TimePeriod.OVERALL) {
-                userDao.updateArtistCount(session.name, response.info.total)
+                userDao.updateArtistCount(session?.name.orEmpty(), response.info.total)
             }
             TopUserArtistMapper.forLists()(response.artist)
         },
@@ -57,7 +57,7 @@ class TopListRepository @Inject constructor(
     val topAlbumStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
             TopUserAlbumMapper.forLists()(
-                service.getUserTopAlbums(timePeriod, authProvider.getSessionKeyOrThrow())
+                userService.getTopAlbums(timePeriod)
             )
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -72,7 +72,7 @@ class TopListRepository @Inject constructor(
     val topTracksStore = StoreBuilder.from(
         fetcher = Fetcher.of { timePeriod: TimePeriod ->
             TopUserTrackMapper.forLists()(
-                service.getUserTopTracks(timePeriod, authProvider.getSessionKeyOrThrow())
+                userService.getTopTracks(timePeriod)
             )
         },
         sourceOfTruth = SourceOfTruth.of(

@@ -5,10 +5,7 @@ import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.lastfm.api.spotify.SpotifyService
-import de.schnettler.repo.authentication.AccessTokenAuthenticator
-import de.schnettler.repo.authentication.provider.SpotifyAuthProvider
-import de.schnettler.repo.util.provideSpotifyService
+import de.schnettler.scrobbler.network.spotify.api.SpotifySearchService
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -18,16 +15,14 @@ class ImageRepo @Inject constructor(
     private val chartDao: ChartDao,
     private val artistDao: ArtistDao,
     private val trackDao: TrackDao,
-    private val authProvider: SpotifyAuthProvider,
-    private val authenticator: AccessTokenAuthenticator,
-    private val albumDao: AlbumDao
+    private val albumDao: AlbumDao,
+    private val spotifyService: SpotifySearchService
 ) {
     suspend fun retrieveMissingArtistImages() {
         val needsImage = chartDao.getArtistsWithoutImages()
         Timber.d("[Spotify] Requesting images for ${needsImage.size} artists")
-        val service = provideSpotifyService(authProvider, authenticator)
         needsImage.forEach { artist ->
-            updateArtistImage(artist = artist, spotifyService = service)
+            updateArtistImage(artist)
         }
 
         val trackNeedsImage = chartDao.getTracksWithoutImages()
@@ -45,11 +40,12 @@ class ImageRepo @Inject constructor(
     suspend fun updateArtistImage(
         artist: LastFmEntity.Artist,
         maxRes: Long = 1000,
-        spotifyService: SpotifyService? = null
     ) {
-        val service = spotifyService ?: provideSpotifyService(authProvider, authenticator)
-        val image = service.searchArtist(artist.name)
-            .maxByOrNull { it.popularity }?.images?.firstOrNull { it.height < maxRes }
+        val image = spotifyService.searchArtist(artist.name).maxByOrNull {
+            it.popularity
+        }?.images?.firstOrNull {
+            it.height < maxRes
+        }
         Timber.d("[Work] Selected for ${artist.name}: $image")
         image?.url?.let { artistDao.updateArtistImageUrl(artist.id, it) }
     }

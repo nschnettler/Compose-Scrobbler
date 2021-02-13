@@ -68,7 +68,7 @@ fun HistoryScreen(
     )
 }
 
-@Suppress("LongMethod")
+@Suppress("LongMethod", "ComplexMethod")
 @Composable
 fun Content(
     localViewModel: LocalViewModel,
@@ -91,18 +91,7 @@ fun Content(
     val events by localViewModel.events.observeAsState()
 
     events?.getContentIfNotHandled()?.let { event ->
-        when (event) {
-            is SubmissionEvent.Success -> {
-                errorHandler(UIError.ScrobbleSubmissionResult(
-                    event.result.accepted.size,
-                    event.result.ignored.size,
-                    onAction = { localViewModel.showDetails(event.result) }
-                ))
-            }
-            is SubmissionEvent.ShowDetails -> {
-                SubmissionResultDetailsDialog("Details", event.accepted, event.ignored, event.errorMessage) { }
-            }
-        }
+        handleEvent(event, errorHandler, localViewModel)
     }
 
     if (recentTracksState.isError && loggedIn) {
@@ -167,6 +156,26 @@ fun Content(
                 selectedTrack.value?.let { localViewModel.deleteScrobble(it) }
             }
             showConfirmDialog = false
+        }
+    }
+}
+
+@Composable
+private fun handleEvent(
+    event: SubmissionEvent,
+    errorHandler: @Composable (UIError) -> Unit,
+    localViewModel: LocalViewModel
+) {
+    when (event) {
+        is SubmissionEvent.Success -> {
+            errorHandler(UIError.ScrobbleSubmissionResult(
+                event.result.accepted.size,
+                event.result.ignored.size,
+                onAction = { localViewModel.showDetails(event.result) }
+            ))
+        }
+        is SubmissionEvent.ShowDetails -> {
+            SubmissionResultDetailsDialog("Details", event.accepted, event.ignored, event.errorMessage) { }
         }
     }
 }

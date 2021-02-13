@@ -6,19 +6,17 @@ import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.lastfm.api.lastfm.LastFmService
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.lastfm.api.lastfm.UserService
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.ScrobbleMapper
 import javax.inject.Inject
 
 class LocalRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
-    private val service: LastFmService,
-    private val authProvider: LastFmAuthProvider
+    private val userService: UserService
 ) {
     val recentTracksStore = StoreBuilder.from(
-        fetcher = Fetcher.of { ScrobbleMapper.forLists()(service.getUserRecentTrack(authProvider.session!!.key)) },
+        fetcher = Fetcher.of { ScrobbleMapper.forLists()(userService.getUserRecentTrack()) },
         sourceOfTruth = SourceOfTruth.of(
             reader = { localTrackDao.getListeningHistory() },
             writer = { _: String, scrobbles: List<Scrobble> ->

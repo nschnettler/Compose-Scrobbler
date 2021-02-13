@@ -15,16 +15,15 @@ import de.schnettler.database.models.LastFmEntity.Album
 import de.schnettler.database.models.LastFmEntity.Artist
 import de.schnettler.database.models.LastFmEntity.Track
 import de.schnettler.database.models.RelatedArtistEntry
-import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.ArtistService
+import de.schnettler.lastfm.api.lastfm.DetailService
 import de.schnettler.lastfm.api.lastfm.PostService
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
 import de.schnettler.repo.mapping.album.AlbumInfoMapper
 import de.schnettler.repo.mapping.album.AlbumWithStatsMapper
 import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.TrackInfoMapper
-import de.schnettler.repo.util.createSignature
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine
@@ -37,9 +36,9 @@ class DetailRepository @Inject constructor(
     private val statsDao: StatsDao,
     private val entityInfoDao: EntityInfoDao,
     private val relationDao: ArtistRelationDao,
-    private val service: LastFmService,
+    private val detailService: DetailService,
+    private val artistService: ArtistService,
     private val imageRepo: ImageRepo,
-    private val authProvider: LastFmAuthProvider,
     private val postService: PostService,
 ) {
     val artistStore = StoreBuilder.from(
@@ -49,10 +48,10 @@ class DetailRepository @Inject constructor(
 
             coroutineScope {
                 val infoResult = async {
-                    service.getArtistInfo(artist.name, authProvider.sessionKey)
+                    detailService.getArtistInfo(artist.name)
                 }
-                val albums = async { service.getArtistAlbums(artist.name) }
-                val tracks = async { service.getArtistTracks(artist.name) }
+                val albums = async { artistService.getArtistAlbums(artist.name) }
+                val tracks = async { artistService.getArtistTracks(artist.name) }
 
                 val info = infoResult.await()
                 ArtistInfoMapper.map(info).apply {
@@ -104,7 +103,7 @@ class DetailRepository @Inject constructor(
     val trackStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Track ->
             TrackInfoMapper.map(
-                service.getTrackInfo(key.artist, key.name, authProvider.sessionKey)
+                detailService.getTrackInfo(key.artist, key.name)
             )
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -121,7 +120,7 @@ class DetailRepository @Inject constructor(
     val albumStore = StoreBuilder.from(
         fetcher = Fetcher.of { key: Album ->
             AlbumInfoMapper.map(
-                service.getAlbumInfo(name = key.artist, albumName = key.name, sessionKey = authProvider.sessionKey)
+                detailService.getAlbumInfo(name = key.artist, albumName = key.name)
             )
         },
         sourceOfTruth = SourceOfTruth.of(
@@ -148,22 +147,11 @@ class DetailRepository @Inject constructor(
     ).build()
 
     suspend fun toggleTrackLikeStatus(track: Track, info: EntityInfo) {
-        val method = if (info.loved) LastFmService.METHOD_LOVE else LastFmService.METHOD_UNLOVE
-        val sig = createSignature(
-            mutableMapOf(
-                "method" to method,
-                "track" to track.name,
-                "artist" to track.artist,
-                "sk" to authProvider.getSessionKeyOrThrow()
-            )
-        )
-        val result = postService.toggleTrackLoveStatus(
-            method = method,
-            track = track.name,
-            artist = track.artist,
-            sessionKey = authProvider.getSessionKeyOrThrow(),
-            signature = sig
-        )
+        val result = if (info.loved) {
+            postService.loveTrack(track = track.name, artist = track.artist)
+        } else {
+            postService.unloveTrack(track = track.name, artist = track.artist)
+        }
         if (result.isSuccessful) {
             entityInfoDao.update(info)
         }

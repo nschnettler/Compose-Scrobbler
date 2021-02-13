@@ -1,6 +1,7 @@
 package de.schnettler.repo.work
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.WorkerParameters
@@ -19,6 +20,7 @@ const val RESULT_COUNT = "count"
 const val RESULT_DESCRIPTION = "description"
 const val RESULT_TRACKS = "tracks"
 
+@HiltWorker
 class ScrobbleWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,

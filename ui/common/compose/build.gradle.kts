@@ -22,12 +22,20 @@ android {
 }
 
 dependencies {
+    // Modules
+    implementation(project(":common"))
     implementation(project(":repo"))
     implementation(project(":ui:common:util"))
     implementation(project(":ui:common:resources"))
+    implementation(project(":network:lastfm")) // TODO: This should not be here
 
+    // Retrofit TODO: This should not be here
+    implementation(Square.Retrofit2.retrofit)
+
+    // ViewModel
     implementation(AndroidX.lifecycle.viewModelKtx)
 
+    // Compose
     api(AndroidX.compose.runtime)
     api(AndroidX.compose.foundation)
     api(AndroidX.compose.material)
@@ -35,9 +43,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:_")
     api(AndroidX.compose.runtime.liveData)
 
+    // Other
     implementation(AndroidX.paletteKtx)
     implementation(AndroidX.core.ktx)
 
+    // Coil & Insets
     api("dev.chrisbanes.accompanist", "accompanist-coil", "_")
     api("dev.chrisbanes.accompanist", "accompanist-insets", "_")
 }

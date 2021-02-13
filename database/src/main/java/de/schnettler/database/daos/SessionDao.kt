@@ -9,4 +9,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class SessionDao : BaseDao<Session> {
     @Query("SELECT * FROM sessions LIMIT 1")
     abstract fun getSession(): Flow<Session?>
+
+    @Query("SELECT * FROM sessions LIMIT 1")
+    abstract suspend fun getSessionOnce(): Session?
 }

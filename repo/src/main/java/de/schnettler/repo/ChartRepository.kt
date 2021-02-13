@@ -7,7 +7,7 @@ import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.models.ListType
-import de.schnettler.lastfm.api.lastfm.LastFmService
+import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.artist.ChartTrackMapper
 import de.schnettler.repo.mapping.forLists
@@ -17,7 +17,7 @@ class ChartRepository @Inject constructor(
     private val chartDao: ChartDao,
     private val artistDao: ArtistDao,
     private val trackDao: TrackDao,
-    private val service: LastFmService
+    private val service: ChartService
 ) {
     val chartArtistsStore = StoreBuilder.from(
         fetcher = Fetcher.of {
