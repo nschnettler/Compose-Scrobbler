@@ -2,6 +2,8 @@ package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
@@ -15,6 +17,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -49,9 +52,11 @@ fun <T> Carousel(
 
     LazyRow(
         modifier = modifier,
-        contentPadding = contentPadding.copy(
-            start = (contentPadding.start - halfSpacing).coerceAtLeast(0.dp),
-            end = (contentPadding.end - halfSpacing).coerceAtLeast(0.dp)
+        contentPadding = PaddingValues(
+            start = (contentPadding.calculateStartPadding(LocalLayoutDirection.current) - halfSpacing)
+                .coerceAtLeast(0.dp),
+            end = (contentPadding.calculateEndPadding(LocalLayoutDirection.current) - halfSpacing)
+                .coerceAtLeast(0.dp)
         ),
         verticalAlignment = verticalGravity
     ) {

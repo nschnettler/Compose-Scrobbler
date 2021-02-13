@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
@@ -72,10 +74,10 @@ fun SearchScreen(
                 label = { Text(text = stringResource(id = R.string.search_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                onImeActionPerformed = { _, controller ->
-                    controller?.hideSoftwareKeyboard()
-                },
                 backgroundColor = AppColor.BackgroundElevated,
+                keyboardActions = KeyboardActions(onSearch = {
+                    // TODO: controller?.hideSoftwareKeyboard()
+                })
             )
         }
         SelectableChipRow(
@@ -91,6 +93,7 @@ fun SearchScreen(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) {
     LazyColumn {

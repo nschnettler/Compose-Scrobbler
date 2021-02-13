@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -67,7 +68,7 @@ fun SubmissionResultDetailsDialog(
     }
 }
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun AcceptedCategory(accepted: List<Scrobble>) {
     var expanded by remember { mutableStateOf(false) }
@@ -107,7 +108,7 @@ fun ErrorCategory(errorMessage: String) {
     }
 }
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun IgnoredCategory(rejected: Map<Scrobble, Int>) {
     var expanded by remember { mutableStateOf(false) }

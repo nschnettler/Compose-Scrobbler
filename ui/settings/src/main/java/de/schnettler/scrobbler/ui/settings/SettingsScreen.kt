@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.ui.settings
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
@@ -16,10 +17,10 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
-import de.schnettler.composepreferences.AmbientPreference
+import de.schnettler.composepreferences.LocalPreferences
 import de.schnettler.composepreferences.MultiSelectListPreference
 import de.schnettler.composepreferences.Preference
 import de.schnettler.composepreferences.PreferenceGroup
@@ -41,10 +42,11 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
 
     val mediaServices = mutableStateMapOf<String, String>()
     val constraints: Map<String, Int> = remember {
@@ -128,7 +130,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             )
             CustomDivider()
 
-            val prefs = AmbientPreference.current
+            val prefs = LocalPreferences.current
             Preference(
                 title = stringResource(id = R.string.setting_reset_title),
                 summary = stringResource(id = R.string.setting_reset_description),

@@ -1,9 +1,9 @@
 package de.schnettler.scrobbler.ui.search
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dropbox.android.external.store4.StoreRequest
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.database.models.BaseEntity
 import de.schnettler.repo.SearchQuery
 import de.schnettler.repo.SearchRepository
@@ -18,8 +18,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class SearchViewModel @ViewModelInject constructor(private val repo: SearchRepository) : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(private val repo: SearchRepository) : ViewModel() {
     private val _searchQuery: MutableStateFlow<SearchQuery> = MutableStateFlow(SearchQuery("", 0))
     val searchQuery: StateFlow<SearchQuery>
         get() = _searchQuery

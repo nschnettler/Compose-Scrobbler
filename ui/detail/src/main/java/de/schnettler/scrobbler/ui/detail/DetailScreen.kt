@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -59,6 +60,7 @@ fun TagCategory(tags: List<String>, actionHandler: (UIAction) -> Unit) {
     ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AlbumCategory(
     album: LastFmEntity.Album?,

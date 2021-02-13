@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredHeight
 import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,15 +14,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
 import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
 import de.schnettler.scrobbler.ui.common.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.common.compose.widget.MediaCard
-import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
 import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.widget.ChipRow
@@ -93,6 +94,7 @@ fun Content(artistInfo: ArtistWithStatsAndInfo, actioner: (UIAction) -> Unit) {
     Spacer(modifier = Modifier.navigationBarsHeight())
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TrackListWithStats(tracks: List<TrackWithStats>, actionHandler: (UIAction) -> Unit) {
     tracks.forEachIndexed { index, (track, stats) ->

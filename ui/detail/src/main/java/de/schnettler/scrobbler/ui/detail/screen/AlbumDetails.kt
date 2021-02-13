@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +33,7 @@ import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayout::class, ExperimentalTime::class)
+@OptIn(ExperimentalLayout::class, ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun AlbumDetailScreen(
     details: AlbumDetails,
@@ -81,7 +82,7 @@ fun AlbumDetailScreen(
     }
 }
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalLayout::class, ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 private fun ArtistItem(
     artist: LastFmEntity.Artist,

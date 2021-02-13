@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.ui.history.widet
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
@@ -26,7 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.AmbientHapticFeedback
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,11 +43,11 @@ import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val feedback = AmbientHapticFeedback.current
+    val feedback = LocalHapticFeedback.current
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {
@@ -70,7 +72,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
             }
         },
         icon = { NameListIcon(title = track.name) },
-        modifier = Modifier.clickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
+        modifier = Modifier.combinedClickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
             expanded = !expanded
             feedback.performHapticFeedback(HapticFeedbackType.LongPress)
         }),

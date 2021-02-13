@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.ui.profile
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
@@ -131,20 +132,19 @@ private fun ProfileContent(
     actioner: (UIAction) -> Unit,
 ) {
     Box {
-        ScrollableColumn(modifier = modifier.fillMaxSize(), content = {
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
-            user?.let { UserInfo(it) }
-            TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
-            TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums)
-
-            Carousel(
+        LazyColumn(content = {
+            item { androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight()) }
+            item { user?.let { UserInfo(it) } }
+            item { TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists) }
+            item { TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums) }
+            item { Carousel(
                 items = tracks?.chunked(5),
                 titleRes = R.string.header_toptracks,
                 itemSpacing = 16.dp,
                 contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
             ) { topTracks, padding ->
                 TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
-            }
+            } }
         })
 
         ExtendedFloatingActionButton(
@@ -157,6 +157,7 @@ private fun ProfileContent(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValues, actioner: (UIAction) -> Unit) {
     Column {
@@ -181,6 +182,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UserInfo(user: User) {
     Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {

@@ -1,15 +1,16 @@
 package de.schnettler.scrobbler.ui.common.compose.widget
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AmbientContentAlpha
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -35,6 +36,7 @@ import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.coil.CoilImage
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaCard(
     name: String,
@@ -50,10 +52,10 @@ fun MediaCard(
 
     Card(modifier = modifier) {
         Box(
-            modifier = Modifier.clickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
+            modifier = Modifier.combinedClickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
             contentAlignment = Alignment.BottomEnd
         ) {
-            Providers(AmbientContentAlpha provides ContentAlpha.high) {
+            Providers(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = name,
                     style = when (name.length) {
@@ -114,7 +116,7 @@ private fun StatChip(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Providers(AmbientContentAlpha provides ContentAlpha.high) {
+                Providers(LocalContentAlpha provides ContentAlpha.high) {
                     Icon(Icons.Outlined.Hearing, null, modifier = Modifier.preferredSize(16.dp))
                     Spacer(size = 4.dp, orientation = Orientation.Horizontal)
                     Text(text = plays.abbreviate(), style = MaterialTheme.typography.caption)

@@ -1,5 +1,5 @@
 plugins {
-    kotlin("android") version "1.4.21" apply false
+    kotlin("android") version "1.4.30" apply false
 }
 
 buildscript {
