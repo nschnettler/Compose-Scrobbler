@@ -24,27 +24,23 @@ dependencies {
     implementation(project(":common"))
     implementation(project(":network:common"))
 
-    // Retrofit & OkHttp
-    api(Square.retrofit2.retrofit)
-    api(Square.retrofit2.converter.moshi)
-    implementation(Square.retrofit2.converter.scalars)
-    implementation(Square.okHttp3.okHttp)
-    implementation(Square.okHttp3.loggingInterceptor)
+    // Retrofit
+    implementation(Square.Retrofit2.retrofit)
 
-    // Interceptor
-    debugApi("com.github.chuckerteam.chucker:library:3.3.0")
-    releaseApi("com.github.chuckerteam.chucker:library-no-op:3.3.0")
-
-    // Msohi
-    kapt(Square.moshi.kotlinCodegen)
-    implementation(Square.moshi.kotlinReflect)
+    // Moshi
+    implementation(Square.Moshi.kotlinCodegen)
+    implementation(Square.Retrofit2.converter.moshi)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
-    // Dagger
+    // Interceptor
+    implementation(Square.OkHttp3.loggingInterceptor)
+    debugImplementation("com.github.chuckerteam.chucker", "library", "_")
+    releaseImplementation("com.github.chuckerteam.chucker", "library-no-op", "_")
+
+    // Hilt
     implementation(Google.dagger.hilt.android)
-    kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
 
-    // Coroutines
-    implementation(KotlinX.coroutines.android)
+    // KotlinX
+    implementation(KotlinX.coroutines.core)
 }
