@@ -39,6 +39,7 @@ dependencies {
     // Hilt
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
+    kapt(AndroidX.hilt.compiler)
 
     // Work
     implementation(AndroidX.work.runtimeKtx)
