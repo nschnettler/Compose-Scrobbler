@@ -7,4 +7,3 @@ data class SpotifyArtist(
     val images: List<SpotifyImageDto>,
     val popularity: Long
 )
-

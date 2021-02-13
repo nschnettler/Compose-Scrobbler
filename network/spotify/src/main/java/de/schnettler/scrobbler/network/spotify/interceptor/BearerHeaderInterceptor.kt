@@ -6,6 +6,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
+@Suppress("TooGenericExceptionCaught")
 class BearerHeaderInterceptor @Inject constructor(private val provider: SpotifyAuthProvider) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         return try {
