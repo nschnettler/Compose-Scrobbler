@@ -6,11 +6,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.schnettler.scrobbler.network.common.annotation.okhttp.BaseOkHttpClient
+import de.schnettler.scrobbler.network.spotify.AccessTokenAuthenticator
 import de.schnettler.scrobbler.network.spotify.annotation.okhttp.AuthorizedSpotifyHttpClient
 import de.schnettler.scrobbler.network.spotify.annotation.okhttp.BasicSpotifyHttpClient
 import de.schnettler.scrobbler.network.spotify.interceptor.BasicHeaderInterceptor
 import de.schnettler.scrobbler.network.spotify.interceptor.BearerHeaderInterceptor
-import okhttp3.Authenticator
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -24,7 +24,7 @@ class OkHttpClientModule {
         loggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor,
         bearerHeaderInterceptor: BearerHeaderInterceptor,
-        spotifyAuthenticator: Authenticator,
+        spotifyAuthenticator: AccessTokenAuthenticator,
         @BaseOkHttpClient okHttpClient: OkHttpClient,
     ): OkHttpClient = okHttpClient.newBuilder()
         .addInterceptor(bearerHeaderInterceptor)

@@ -23,6 +23,7 @@ dependencies {
     // Modules
     implementation(project(":common"))
     implementation(project(":repo"))
+    implementation(project(":network:lastfm")) // TODO: This should not be here. Errors need to be mapped
 
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)

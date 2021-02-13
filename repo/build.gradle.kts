@@ -31,23 +31,28 @@ android {
 
 dependencies {
     // Modules
-    api(project(":database"))
-    api(project(":lastfm"))
     implementation(project(":common"))
-    api(project(":network:common"))
-    api(project(":network:spotify"))
+    implementation(project(":network:spotify"))
+    implementation(project(":network:lastfm"))
+    api(project(":database"))
 
-    implementation(KotlinX.coroutines.core)
-    implementation(Square.okHttp3.okHttp)
-    implementation(AndroidX.work.runtimeKtx)
-    implementation(AndroidX.hilt.work)
+    // Hilt
     implementation(Google.dagger.hilt.android)
-    kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
 
+    // Work
+    implementation(AndroidX.work.runtimeKtx)
+    implementation(AndroidX.hilt.work)
+
+    // Retrofit
+    implementation(Square.Retrofit2.retrofit)
+
+    // Other
+    implementation(KotlinX.coroutines.core)
     api("com.dropbox.mobile.store", "store4", "_")
     api("com.github.tfcporciuncula", "flow-preferences", "_")
 
+    // Instrumented Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
     androidTestImplementation(AndroidX.test.ext.junitKtx)
@@ -57,6 +62,7 @@ dependencies {
     androidTestImplementation(Square.moshi.kotlinReflect)
     androidTestImplementation("app.cash.turbine:turbine:0.2.0")
 
+    // Test
     testImplementation(Testing.junit4)
     testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

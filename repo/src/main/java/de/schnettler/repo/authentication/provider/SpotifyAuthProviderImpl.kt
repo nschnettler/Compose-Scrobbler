@@ -17,8 +17,8 @@ class SpotifyAuthProviderImpl @Inject constructor(
     private val service: SpotifyLoginService,
     private val dao: AuthDao
 ) : SpotifyAuthProvider {
-    suspend fun getToken() = spotifyTokenStore.get("")
-    suspend fun refreshToken() = spotifyTokenStore.fresh("")
+    private suspend fun getToken() = spotifyTokenStore.get("")
+    override suspend fun refreshToken() = spotifyTokenStore.fresh("").token
 
     private val spotifyTokenStore = StoreBuilder.from(
         fetcher = Fetcher.of {
