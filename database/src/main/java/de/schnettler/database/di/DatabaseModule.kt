@@ -1,16 +1,16 @@
-package de.schnettler.repo.di
+package de.schnettler.database.di
 
 import android.app.Application
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import de.schnettler.database.AppDatabase
 import javax.inject.Singleton
 
 @Suppress("TooManyFunctions")
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 class DatabaseModule {
     @Provides
     @Singleton

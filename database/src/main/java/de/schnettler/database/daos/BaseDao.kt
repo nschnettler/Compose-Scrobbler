@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.Transaction
 import androidx.room.Update
 
 @Dao
@@ -50,22 +49,4 @@ interface BaseDao<T> {
      */
     @Delete
     suspend fun delete(obj: T)
-
-    @Transaction
-    suspend fun upsert(obj: T) {
-        val id: Long = insert(obj)
-        if (id == -1L) {
-            // Get old value
-            update(obj)
-        }
-    }
-
-    @Transaction
-    suspend fun upsertAll(objList: List<@JvmSuppressWildcards T>) {
-        val insertResult: List<Long> = insertAll(objList)
-        val updateList = objList.filterIndexed { index, _ -> insertResult[index] == -1L }
-        if (updateList.isNotEmpty()) {
-            updateAll(updateList)
-        }
-    }
 }

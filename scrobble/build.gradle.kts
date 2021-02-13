@@ -20,6 +20,8 @@ android {
 }
 
 dependencies {
+    // Modules
+    implementation(project(":common"))
     implementation(project(":repo"))
 
     implementation(KotlinX.coroutines.core)

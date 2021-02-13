@@ -22,6 +22,8 @@ android {
 }
 
 dependencies {
+    // Modules
+    implementation(project(":common"))
     implementation(project(":repo"))
     implementation(project(":ui:common:util"))
     implementation(project(":ui:common:resources"))

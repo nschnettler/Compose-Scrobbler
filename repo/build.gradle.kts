@@ -30,6 +30,7 @@ android {
 }
 
 dependencies {
+    // Modules
     api(project(":database"))
     api(project(":lastfm"))
     implementation(project(":common"))

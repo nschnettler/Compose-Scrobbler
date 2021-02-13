@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     kotlin("android")
-    kotlin("android.extensions")
+    id("kotlin-parcelize")
     kotlin("kapt")
 }
 
@@ -46,12 +46,21 @@ android {
 }
 
 dependencies {
+    // Modules
+    implementation(project(":common"))
+
+    // Room
     implementation(AndroidX.room.ktx)
-    api(AndroidX.room.runtime)
+    implementation(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
     implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
     kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
 
+    // Hilt
+    implementation(Google.dagger.hilt.android)
+    kapt(Google.dagger.hilt.android.compiler)
+
+    // Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
     androidTestImplementation(AndroidX.test.ext.junitKtx)

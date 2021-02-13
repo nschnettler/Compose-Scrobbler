@@ -6,13 +6,13 @@ import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.components.SingletonComponent
 import de.schnettler.repo.util.defaultSharedPrefs
 import javax.inject.Singleton
 
 @Suppress("TooManyFunctions")
 @Module
-@InstallIn(ApplicationComponent::class)
+@InstallIn(SingletonComponent::class)
 class ApplicationModule {
     @Provides
     @Singleton
