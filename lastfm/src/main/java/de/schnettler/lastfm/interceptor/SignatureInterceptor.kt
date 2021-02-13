@@ -1,12 +1,12 @@
 package de.schnettler.lastfm.interceptor
 
 import de.schnettler.common.BuildConfig
-import de.schnettler.lastfm.di.tag.SignatureAuthentication
-import de.schnettler.lastfm.md5
+import de.schnettler.scrobbler.network.common.annotation.tag.SignatureAuthentication
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Invocation
 import timber.log.Timber
+import java.security.MessageDigest
 import javax.inject.Inject
 
 class SignatureInterceptor @Inject constructor() : Interceptor {
@@ -40,5 +40,12 @@ class SignatureInterceptor @Inject constructor() : Interceptor {
         }
         signature.append(BuildConfig.LASTFM_SECRET)
         return signature.toString().md5()
+    }
+
+    private fun String.md5(): String {
+        val bytes = MessageDigest.getInstance("MD5").digest(this.toByteArray())
+        return bytes.joinToString("") {
+            "%02x".format(it)
+        }
     }
 }

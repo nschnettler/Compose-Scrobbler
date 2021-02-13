@@ -1,11 +1,11 @@
 package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
-import de.schnettler.lastfm.di.tag.SessionAuthentication
-import de.schnettler.lastfm.di.tag.SignatureAuthentication
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
+import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
+import de.schnettler.scrobbler.network.common.annotation.tag.SignatureAuthentication
 import retrofit2.Response
 import retrofit2.http.POST
 import retrofit2.http.Query

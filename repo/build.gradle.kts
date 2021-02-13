@@ -33,6 +33,8 @@ dependencies {
     api(project(":database"))
     api(project(":lastfm"))
     implementation(project(":common"))
+    api(project(":network:common"))
+    api(project(":network:spotify"))
 
     implementation(KotlinX.coroutines.core)
     implementation(Square.okHttp3.okHttp)

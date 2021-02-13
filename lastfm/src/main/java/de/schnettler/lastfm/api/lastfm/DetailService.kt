@@ -1,7 +1,7 @@
 package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
-import de.schnettler.lastfm.di.tag.SessionAuthentication
+import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
 import de.schnettler.lastfm.models.AlbumInfoDto
 import de.schnettler.lastfm.models.ArtistInfoDto
 import de.schnettler.lastfm.models.TrackInfoDto

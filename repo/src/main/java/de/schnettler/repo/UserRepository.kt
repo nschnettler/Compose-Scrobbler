@@ -6,14 +6,14 @@ import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.User
 import de.schnettler.lastfm.api.lastfm.UserService
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.repo.mapping.user.UserMapper
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val userService: UserService,
-    private val authProvider: LastFmAuthProvider
+    private val authProvider: LastFmAuthProviderImpl
 ) {
     val userStore = StoreBuilder.from(
         fetcher = Fetcher.of {

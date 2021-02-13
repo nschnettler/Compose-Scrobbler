@@ -17,7 +17,7 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.lastfm.api.lastfm.UserService
-import de.schnettler.repo.authentication.provider.LastFmAuthProvider
+import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.repo.mapping.album.TopUserAlbumMapper
 import de.schnettler.repo.mapping.artist.TopUserArtistMapper
 import de.schnettler.repo.mapping.forLists
@@ -32,7 +32,7 @@ class TopListRepository @Inject constructor(
     private val trackDao: TrackDao,
     private val chartDao: ChartDao,
     private val userService: UserService,
-    private val authProvider: LastFmAuthProvider,
+    private val authProvider: LastFmAuthProviderImpl,
     private val workManager: WorkManager,
 ) {
     val topArtistStore = StoreBuilder.from(

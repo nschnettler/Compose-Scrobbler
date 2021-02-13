@@ -2,7 +2,7 @@ package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.TimePeriod
-import de.schnettler.lastfm.di.tag.SessionAuthentication
+import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
 import de.schnettler.lastfm.models.AlbumDto
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.ResponseInfo

@@ -4,6 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import de.schnettler.lastfm.annotation.retrofit.AuthorizedLastfmRetrofitClient
+import de.schnettler.lastfm.annotation.retrofit.BasicLastfmRetrofitClient
+import de.schnettler.lastfm.annotation.retrofit.SignedLastfmRetrofitClient
 import de.schnettler.lastfm.api.lastfm.ArtistService
 import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.lastfm.api.lastfm.DetailService
@@ -11,9 +14,6 @@ import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.api.lastfm.SearchService
 import de.schnettler.lastfm.api.lastfm.SessionService
 import de.schnettler.lastfm.api.lastfm.UserService
-import de.schnettler.lastfm.di.retrofit.AuthorizedRetrofitClient
-import de.schnettler.lastfm.di.retrofit.BasicRetrofitClient
-import de.schnettler.lastfm.di.retrofit.SignedRetrofitClient
 import retrofit2.Retrofit
 
 @Module
@@ -21,36 +21,36 @@ import retrofit2.Retrofit
 class ServiceModule {
     @Provides
     fun providesPostService(
-        @SignedRetrofitClient retrofit: Retrofit
+        @SignedLastfmRetrofitClient retrofit: Retrofit
     ): PostService = retrofit.create(PostService::class.java)
 
     @Provides
     fun providesUserService(
-        @AuthorizedRetrofitClient retrofit: Retrofit
+        @AuthorizedLastfmRetrofitClient retrofit: Retrofit
     ): UserService = retrofit.create(UserService::class.java)
 
     @Provides
     fun providesDetailService(
-        @AuthorizedRetrofitClient retrofit: Retrofit
+        @AuthorizedLastfmRetrofitClient retrofit: Retrofit
     ): DetailService = retrofit.create(DetailService::class.java)
 
     @Provides
     fun providesBasicService(
-        @BasicRetrofitClient retrofit: Retrofit
+        @BasicLastfmRetrofitClient retrofit: Retrofit
     ): ArtistService = retrofit.create(ArtistService::class.java)
 
     @Provides
     fun providesSearchService(
-        @BasicRetrofitClient retrofit: Retrofit
+        @BasicLastfmRetrofitClient retrofit: Retrofit
     ): SearchService = retrofit.create(SearchService::class.java)
 
     @Provides
     fun providesChartService(
-        @BasicRetrofitClient retrofit: Retrofit
+        @BasicLastfmRetrofitClient retrofit: Retrofit
     ): ChartService = retrofit.create(ChartService::class.java)
 
     @Provides
     fun providesSessionService(
-        @SignedRetrofitClient retrofit: Retrofit
+        @SignedLastfmRetrofitClient retrofit: Retrofit
     ): SessionService = retrofit.create(SessionService::class.java)
 }

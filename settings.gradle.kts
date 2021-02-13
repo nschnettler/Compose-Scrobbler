@@ -1,5 +1,9 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":network:common")
+
+
+include(":network:spotify")
 include(":ui:history")
 include(":ui:search")
 include(":ui:detail")

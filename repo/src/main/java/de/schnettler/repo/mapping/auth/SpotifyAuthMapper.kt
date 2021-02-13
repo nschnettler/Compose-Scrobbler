@@ -2,8 +2,8 @@ package de.schnettler.repo.mapping.auth
 
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.AuthTokenType
-import de.schnettler.lastfm.models.SpotifyTokenDto
 import de.schnettler.repo.mapping.Mapper
+import de.schnettler.scrobbler.network.spotify.models.SpotifyTokenDto
 
 object SpotifyAuthMapper : Mapper<SpotifyTokenDto, AuthToken> {
     override suspend fun map(from: SpotifyTokenDto) = AuthToken(
