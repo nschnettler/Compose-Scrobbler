@@ -5,9 +5,10 @@ plugins {
 buildscript {
     repositories {
         google()
+        mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha06")
+        classpath("com.android.tools.build:gradle:7.0.0-alpha08")
         classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
@@ -15,7 +16,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         mavenCentral()
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
