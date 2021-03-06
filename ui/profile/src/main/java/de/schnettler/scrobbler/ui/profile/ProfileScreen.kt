@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
@@ -175,7 +175,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
                     }
                 },
                 trailing = { Text(text = top.count.abbreviate()) },
-                modifier = Modifier.padding(padding).preferredWidth(300.dp)
+                modifier = Modifier.padding(padding).width(300.dp)
                     .clickable(onClick = { actioner(UIAction.ListingSelected(track)) })
             )
         }
@@ -209,7 +209,7 @@ private fun UserInfo(user: User) {
                 },
                 icon = {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
-                        Box(Modifier.preferredSize(56.dp)) {
+                        Box(Modifier.size(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
                                 CoilImage(data = user.imageUrl, null, modifier = Modifier.fillMaxSize())
                             }

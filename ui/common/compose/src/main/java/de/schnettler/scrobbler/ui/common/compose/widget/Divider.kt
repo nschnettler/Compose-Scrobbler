@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,8 +28,8 @@ fun CustomDivider(
         Modifier
     }
     if (vertical) {
-        Box(modifier.then(indentMod).fillMaxHeight().preferredWidth(thickness).background(color))
+        Box(modifier.then(indentMod).fillMaxHeight().width(thickness).background(color))
     } else {
-        Box(modifier.then(indentMod).fillMaxWidth().preferredHeight(thickness).background(color))
+        Box(modifier.then(indentMod).fillMaxWidth().height(thickness).background(color))
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.Face
@@ -23,7 +24,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -43,6 +46,7 @@ import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.search.widget.SelectableChipRow
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
     model: SearchViewModel,
@@ -64,6 +68,7 @@ fun SearchScreen(
 
     Column(modifier = modifier) {
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+        val softKeyboard = LocalSoftwareKeyboardController.current
         Box(modifier = Modifier.padding(16.dp)) {
             TextField(
                 value = searchInputState.value,
@@ -74,10 +79,8 @@ fun SearchScreen(
                 label = { Text(text = stringResource(id = R.string.search_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                backgroundColor = AppColor.BackgroundElevated,
-                keyboardActions = KeyboardActions(onSearch = {
-                    // TODO: controller?.hideSoftwareKeyboard()
-                })
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = AppColor.BackgroundElevated),
+                keyboardActions = KeyboardActions { softKeyboard?.hideSoftwareKeyboard() }
             )
         }
         SelectableChipRow(

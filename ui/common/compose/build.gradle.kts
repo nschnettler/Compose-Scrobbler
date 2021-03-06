@@ -17,7 +17,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha12"
+        kotlinCompilerExtensionVersion = "1.0.0-beta01"
     }
 }
 
@@ -40,6 +40,8 @@ dependencies {
     api(AndroidX.compose.foundation)
     api(AndroidX.compose.material)
     api(AndroidX.compose.material.icons.extended)
+    api("androidx.compose.ui:ui-tooling:_")
+    api("androidx.constraintlayout:constraintlayout-compose:_")
     implementation("androidx.navigation:navigation-compose:_")
     api(AndroidX.compose.runtime.liveData)
 

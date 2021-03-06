@@ -2,9 +2,8 @@ package de.schnettler.scrobbler.ui.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
@@ -53,7 +52,6 @@ fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
     }
 }
 
-@OptIn(ExperimentalLayout::class)
 @Composable
 fun TagCategory(tags: List<String>, actionHandler: (UIAction) -> Unit) {
     ListTitle(title = stringResource(id = R.string.header_tags))
@@ -80,7 +78,7 @@ fun AlbumCategory(
                 color = AppColor.BackgroundElevated,
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Box(modifier = Modifier.preferredSize(60.dp)) {
+                Box(modifier = Modifier.size(60.dp)) {
                     album?.imageUrl?.let {
                         CoilImage(
                             data = it,

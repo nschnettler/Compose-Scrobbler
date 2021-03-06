@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.contentColorFor
@@ -32,7 +32,7 @@ fun CustomBottomNavigation(
         elevation = elevation
     ) {
         Row(
-            modifier.fillMaxWidth().preferredHeight(BottomNavigationHeight),
+            modifier.fillMaxWidth().height(BottomNavigationHeight),
             horizontalArrangement = Arrangement.SpaceBetween,
             content = content
         )

@@ -5,17 +5,16 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Providers
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -31,7 +30,7 @@ fun Header(
     Row(modifier) {
         Spacer(size = 16.dp, orientation = Orientation.Horizontal)
 
-        Providers(LocalContentAlpha provides ContentAlpha.high) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.subtitle1,
@@ -44,7 +43,7 @@ fun Header(
         AnimatedVisibility(visible = loading) {
             AutoSizedCircularProgressIndicator(
                 color = MaterialTheme.colors.secondary,
-                modifier = Modifier.padding(8.dp).preferredSize(16.dp)
+                modifier = Modifier.padding(8.dp).size(16.dp)
             )
         }
 

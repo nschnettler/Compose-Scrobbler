@@ -1,16 +1,17 @@
 package de.schnettler.scrobbler.ui.common.compose.widget
 
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.compose.foundation.layout.Spacer as ComposeSpacer
 
 @Composable
 fun Spacer(size: Dp, orientation: Orientation = Orientation.Vertical) {
     when (orientation) {
-        Orientation.Vertical -> androidx.compose.foundation.layout.Spacer(modifier = Modifier.preferredHeight(size))
-        Orientation.Horizontal -> androidx.compose.foundation.layout.Spacer(modifier = Modifier.preferredWidth(size))
+        Orientation.Vertical -> ComposeSpacer(modifier = Modifier.height(size))
+        Orientation.Horizontal -> ComposeSpacer(modifier = Modifier.width(size))
     }
 }
 

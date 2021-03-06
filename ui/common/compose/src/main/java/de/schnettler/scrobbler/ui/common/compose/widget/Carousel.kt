@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -91,7 +91,7 @@ fun <T : Toplist> TopListCarousel(
     ) { toplist, padding ->
         MediaCard(
             name = toplist.value.name,
-            modifier = Modifier.padding(padding).preferredSize(itemSize),
+            modifier = Modifier.padding(padding).size(itemSize),
             imageUrl = toplist.value.imageUrl,
             plays = toplist.listing.count,
             colorCache = colorCache

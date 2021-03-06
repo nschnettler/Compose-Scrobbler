@@ -5,7 +5,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
@@ -17,8 +17,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Hearing
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Providers
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,7 +55,7 @@ fun MediaCard(
             modifier = Modifier.combinedClickable(onClick = onSelect, onLongClick = { longClicked = !longClicked }),
             contentAlignment = Alignment.BottomEnd
         ) {
-            Providers(LocalContentAlpha provides ContentAlpha.high) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = name,
                     style = when (name.length) {
@@ -116,8 +116,8 @@ private fun StatChip(
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 6.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Providers(LocalContentAlpha provides ContentAlpha.high) {
-                    Icon(Icons.Outlined.Hearing, null, modifier = Modifier.preferredSize(16.dp))
+                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                    Icon(Icons.Outlined.Hearing, null, modifier = Modifier.size(16.dp))
                     Spacer(size = 4.dp, orientation = Orientation.Horizontal)
                     Text(text = plays.abbreviate(), style = MaterialTheme.typography.caption)
                 }

@@ -24,7 +24,6 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.composepreferences.ProvidePreferences
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvidePreferences(sharedPreferences = sharedPrefs) {
+//            ProvidePreferences(sharedPreferences = sharedPrefs) {
                 AppTheme {
                     ProvideWindowInsets {
                         val navController = rememberNavController()
@@ -115,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-            }
+//            }
         }
     }
 

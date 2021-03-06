@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -30,7 +30,7 @@ fun StatsRow(
     ) {
         items.filter { it.second >= 0 }.forEach {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(imageVector = it.first, null, modifier = Modifier.preferredSize(28.dp))
+                Icon(imageVector = it.first, null, modifier = Modifier.size(28.dp))
                 Text(text = it.second.abbreviate())
             }
         }

@@ -2,7 +2,7 @@ package de.schnettler.scrobbler.ui.history.dialog
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -41,12 +41,12 @@ fun TrackEditDialog(
                         value = trackState.value,
                         onValueChange = { trackState.value = it },
                         label = { Text(stringResource(id = R.string.edit_track)) })
-                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     TextField(
                         value = artistState.value,
                         onValueChange = { artistState.value = it },
                         label = { Text(stringResource(id = R.string.edit_artist)) })
-                    Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
                     TextField(
                         value = albumState.value,
                         onValueChange = { albumState.value = it },

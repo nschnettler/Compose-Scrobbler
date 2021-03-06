@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -65,7 +64,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                         playPercent = track.playPercent,
                         timestamp = track.timestamp
                     )
-                    else Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    else Spacer(modifier = Modifier.height(16.dp))
                     CustomDivider()
                     QuickActions(track.isCached(), onActionClicked)
                 }
@@ -84,7 +83,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                         Surface(
                             color = MaterialTheme.colors.secondary,
                             shape = CircleShape,
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).preferredSize(8.dp).align(
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).size(8.dp).align(
                                 Alignment.End
                             )
                         ) { }
@@ -105,7 +104,7 @@ fun AdditionalInformation(
     playPercent: Int,
     timestamp: Long
 ) {
-    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     InformationItem(category = stringResource(id = R.string.scrobble_source), value = packageNameToAppName(playedBy))
     InformationItem(
         category = stringResource(id = R.string.scrobble_runtime),
@@ -115,14 +114,14 @@ fun AdditionalInformation(
         category = stringResource(id = R.string.scrobble_timestamp),
         value = (timestamp * 1000).milliSecondsToDate()
     )
-    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
 private fun InformationItem(category: String, value: String) {
     Row {
         Text(text = "$category:")
-        Spacer(modifier = Modifier.preferredWidth(4.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = value)
     }
 }

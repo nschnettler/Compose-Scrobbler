@@ -1,9 +1,8 @@
 package de.schnettler.scrobbler.ui.detail.screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Text
@@ -11,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.common.whenNotEmpty
 import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
@@ -26,14 +26,14 @@ import de.schnettler.scrobbler.ui.common.util.fromHtmlLastFm
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
-import de.schnettler.scrobbler.ui.detail.widget.ListWithTitle
+import de.schnettler.scrobbler.ui.detail.widget.ListTitle
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalLayout::class, ExperimentalTime::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun AlbumDetailScreen(
     details: AlbumDetails,
@@ -41,33 +41,41 @@ fun AlbumDetailScreen(
 ) {
     val (album, stats, info, artist) = details
     CollapsingToolbar(
-        imageUrl = album.imageUrl,
         title = album.name,
-        statusBarGuardAlpha = 0F,
-        actionHandler = actioner,
+        imageUrl = album.imageUrl,
+        actioner = actioner,
         menuActions = listOf(MenuAction.OpenInBrowser(album.url))
     ) {
-        ArtistItem(
-            artist = artist ?: LastFmEntity.Artist(album.artist, ""),
-            details.trackNumber,
-            details.runtime,
-            actioner
-        )
-
-        ExpandingInfoCard(info?.wiki?.fromHtmlLastFm())
-
-        Spacer(size = 16.dp)
-
-        ListeningStats(item = stats)
-
-        ListWithTitle(title = stringResource(id = R.string.header_tags), list = details.info?.tags) { tags ->
-            ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) })
+        // Album Info
+        item {
+            ArtistItem(
+                artist = artist ?: LastFmEntity.Artist(album.artist, ""),
+                details.trackNumber,
+                details.runtime,
+                actioner
+            )
         }
 
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        // Info
+        item { ExpandingInfoCard(info?.wiki?.fromHtmlLastFm()) }
 
-        ListWithTitle(title = "Tracks", list = details.tracks) { tracks ->
-            tracks.forEachIndexed { index, (track, info) ->
+        item { Spacer(size = 16.dp) }
+
+        // Stats
+        item { ListeningStats(item = stats) }
+
+        // Tags
+        details.info?.tags?.whenNotEmpty { tags ->
+            item { Spacer(size = 16.dp) }
+            item { ListTitle(title = stringResource(id = R.string.header_tags)) }
+            item { ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
+        }
+
+        // Tracks
+        details.tracks.whenNotEmpty { tracks ->
+            item { Spacer(size = 16.dp) }
+            item { ListTitle(title = "Tracks") }
+            itemsIndexed(tracks) { index, (track, info) ->
                 ListItem(
                     text = { Text(track.name) },
                     secondaryText = { Text(text = info.duration.asMinSec()) },
@@ -77,12 +85,11 @@ fun AlbumDetailScreen(
             }
         }
 
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
-        Spacer(modifier = Modifier.navigationBarsHeight())
+        item { Spacer(modifier = Modifier.navigationBarsHeight(8.dp)) }
     }
 }
 
-@OptIn(ExperimentalLayout::class, ExperimentalTime::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 private fun ArtistItem(
     artist: LastFmEntity.Artist,
