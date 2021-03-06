@@ -227,7 +227,8 @@ private fun UserInfo(user: User) {
                     Icons.Rounded.PlayCircleOutline to user.playcount,
                     Icons.Outlined.Face to user.artistCount,
                     Icons.Rounded.FavoriteBorder to user.lovedTracksCount
-                )
+                ),
+                modifier = Modifier.padding(16.dp)
             )
         }
     }

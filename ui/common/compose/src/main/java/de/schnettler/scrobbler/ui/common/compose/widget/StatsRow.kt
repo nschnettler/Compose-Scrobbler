@@ -22,10 +22,11 @@ import de.schnettler.scrobbler.ui.common.util.abbreviate
 
 @Composable
 fun StatsRow(
-    items: List<Pair<ImageVector, Long>>
+    items: List<Pair<ImageVector, Long>>,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.filter { it.second >= 0 }.forEach {
@@ -45,7 +46,8 @@ fun ListeningStats(item: Stats?) {
                 Icons.Rounded.PlayCircleOutline to stat.plays,
                 Icons.Rounded.Hearing to stat.userPlays,
                 Icons.Outlined.AccountCircle to stat.listeners
-            )
+            ),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
     }
 }
