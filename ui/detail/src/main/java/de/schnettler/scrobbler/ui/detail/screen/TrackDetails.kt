@@ -13,12 +13,17 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.common.whenNotEmpty
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.ui.common.compose.itemSpacer
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
-import de.schnettler.scrobbler.ui.detail.TagCategory
+import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -34,6 +39,8 @@ fun TrackDetailScreen(
     Box(modifier.fillMaxSize()) {
         LazyColumn {
             item { Spacer(modifier = Modifier.statusBarsHeight()) }
+
+            // Album
             item {
                 AlbumCategory(
                     album = album,
@@ -41,15 +48,26 @@ fun TrackDetailScreen(
                     actionHandler = actioner
                 )
             }
+
+            itemSpacer(16.dp)
+
+            // Info
             item { ExpandingInfoCard(info = info?.wiki) }
+
+            itemSpacer(24.dp)
+
+            // Stats
             item { ListeningStats(item = stats) }
-            item {
-                if (info?.tags?.isNotEmpty() == true) {
-                    TagCategory(tags = info.tags, actionHandler = actioner)
-                }
+
+            // Tags
+            info?.tags?.whenNotEmpty { tags ->
+                itemSpacer(16.dp)
+                item { Header(title = stringResource(id = R.string.header_tags)) }
+                item { ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
             }
+
             item {
-                Spacer(modifier = Modifier.navigationBarsHeight(8.dp))
+                Spacer(modifier = Modifier.navigationBarsHeight(16.dp))
             }
         }
         info?.let {

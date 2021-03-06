@@ -25,7 +25,7 @@ fun StatsRow(
     items: List<Pair<ImageVector, Long>>
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp, top = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items.filter { it.second >= 0 }.forEach {

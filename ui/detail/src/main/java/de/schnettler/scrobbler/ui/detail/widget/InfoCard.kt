@@ -27,7 +27,7 @@ import de.schnettler.scrobbler.ui.detail.R
 fun ExpandingInfoCard(info: String?) {
     if (!info.isNullOrBlank()) {
         Card(
-            modifier = Modifier.padding(16.dp).fillMaxSize(),
+            modifier = Modifier.padding(horizontal = 16.dp).fillMaxSize(),
             elevation = 0.dp,
             border = BorderStroke(1.dp, AppColor.Divider)
         ) {

@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.CircularProgressIndicator
@@ -27,9 +28,7 @@ fun Header(
     loading: Boolean = false,
     action: (@Composable () -> Unit)? = null
 ) {
-    Row(modifier) {
-        Spacer(size = 16.dp, orientation = Orientation.Horizontal)
-
+    Row(modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = title,
@@ -38,7 +37,7 @@ fun Header(
             )
         }
 
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f, true))
+        Spacer(modifier = Modifier.weight(1f, true))
 
         AnimatedVisibility(visible = loading) {
             AutoSizedCircularProgressIndicator(
@@ -48,8 +47,6 @@ fun Header(
         }
 
         if (action != null) action()
-
-        Spacer(size = 16.dp, orientation = Orientation.Horizontal)
     }
 }
 
