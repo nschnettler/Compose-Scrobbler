@@ -45,8 +45,11 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
+import de.schnettler.datastore.compose.LocalDataStoreManager
+import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
+import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
@@ -131,18 +134,45 @@ private fun ProfileContent(
     onFabClicked: () -> Unit,
     actioner: (UIAction) -> Unit,
 ) {
+    // TODO: Move to ViewModel
+    val dataStoreManager = LocalDataStoreManager.current
+    val size by dataStoreManager.getPreferenceFlow(PreferenceEntry.MediaCardSize)
+        .collectAsState(initial = MediaCardSize.MEDIUM.toString())
+    val sizeMapped =
+        try {
+            MediaCardSize.valueOf(size)
+        } catch (e: IllegalArgumentException) {
+            MediaCardSize.MEDIUM
+        }.size
+
     Box {
         LazyColumn(modifier = modifier) {
             item { androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight()) }
             item { user?.let { UserInfo(it) } }
-            item { TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists) }
-            item { TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums) }
-            item { Carousel(
-                items = tracks?.chunked(5),
-                titleRes = R.string.header_toptracks,
-            ) { topTracks ->
-                TopTracksChunkedList(list = topTracks, actioner = actioner)
-            } }
+            item {
+                TopListCarousel(
+                    topList = artists,
+                    actionHandler = actioner,
+                    titleRes = R.string.header_topartists,
+                    itemSize = sizeMapped
+                )
+            }
+            item {
+                TopListCarousel(
+                    topList = albums,
+                    actionHandler = actioner,
+                    titleRes = R.string.header_topalbums,
+                    itemSize = sizeMapped
+                )
+            }
+            item {
+                Carousel(
+                    items = tracks?.chunked(5),
+                    titleRes = R.string.header_toptracks,
+                ) { topTracks ->
+                    TopTracksChunkedList(list = topTracks, actioner = actioner)
+                }
+            }
             item { Spacer(size = 16.dp + 56.dp + 16.dp) }
         }
 
@@ -187,9 +217,11 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UserInfo(user: User) {
-    Card(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         val date = remember {
             Instant.ofEpochSecond(user.registerDate).atZone(ZoneId.systemDefault()).toLocalDateTime()
         }

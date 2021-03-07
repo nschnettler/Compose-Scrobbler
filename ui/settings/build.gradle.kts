@@ -22,6 +22,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":ui:common:util"))
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation(project(":ui:common:compose"))

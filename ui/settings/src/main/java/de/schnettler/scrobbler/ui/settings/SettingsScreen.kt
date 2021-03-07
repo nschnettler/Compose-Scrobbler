@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
@@ -23,6 +24,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import de.schnettler.datastore.compose.LocalDataStoreManager
 import de.schnettler.datastore.compose.PreferenceScreen
+import de.schnettler.datastore.compose.model.BasePreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceGroup
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.BasicPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
@@ -31,6 +33,7 @@ import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.S
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.preferences.PreferenceEntry
+import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -108,6 +111,21 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         )
     )
 
+    val uiGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_ui),
+        enabled = true,
+        preferenceItems = listOf(
+            BasePreferenceItem.PreferenceItem.RadioBoxListPreferenceItem(
+                PreferenceEntry.MediaCardSize,
+                title = stringResource(id = R.string.setting_mediacard_title),
+                summary = stringResource(id = R.string.setting_mediacard_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.Palette,
+                entries = MediaCardSize.values().associate { it.name to stringResource(id = it.nameRes) },
+            )
+        )
+    )
+
     val miscGroup = PreferenceGroup(
         title = stringResource(id = R.string.setting_group_misc),
         enabled = true,
@@ -148,6 +166,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         items = listOf(
             submissionGroup,
             scrobbleGroup,
+            uiGroup,
             miscGroup
         )
     )

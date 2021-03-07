@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import de.schnettler.datastore.manager.PreferenceMetaData
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
+import de.schnettler.repo.preferences.PreferenceConstants.MEDIA_CARD_SIZE_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
@@ -24,6 +25,7 @@ object PreferenceConstants {
     const val SUBMIT_NOWPLAYING_DEFAULT = true
 
     const val SCROBBLE_SOURCES_KEY = "scrobble_sources"
+    const val MEDIA_CARD_SIZE_KEY = "media_card_size"
 
     const val SCROBBLE_POINT_KEY = "scrobble_point"
     const val SCROBBLE_POINT_DEFAULT = 0.5F
@@ -52,4 +54,6 @@ sealed class PreferenceEntry<T>(
     )
 
     object Basic : PreferenceEntry<String>("", "", ::stringPreferencesKey)
+
+    object MediaCardSize : PreferenceEntry<String>(MEDIA_CARD_SIZE_KEY, "MEDIUM", ::stringPreferencesKey)
 }
