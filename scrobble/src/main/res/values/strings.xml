@@ -8,5 +8,7 @@
     <string name="np_description">Description</string>
     <string name="scrobble_title">Submitted</string>
     <string name="error_title">Error</string>
+    <string name="np_error_title">NowPlaying submission failed</string>
+    <string name="unknown_error">Unknown error</string>
     <string name="cache_title">Cached</string>
 </resources>

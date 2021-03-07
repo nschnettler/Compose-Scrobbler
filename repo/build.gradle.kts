@@ -27,9 +27,15 @@ android {
             }
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
+    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+
     // Modules
     implementation(project(":common"))
     implementation(project(":network:spotify"))
@@ -50,8 +56,8 @@ dependencies {
 
     // Other
     implementation(KotlinX.coroutines.core)
+    implementation("androidx.datastore:datastore-preferences:_")
     api("com.dropbox.mobile.store", "store4", "_")
-    api("com.github.tfcporciuncula", "flow-preferences", "_")
 
     // Instrumented Test
     androidTestImplementation(Testing.junit4)

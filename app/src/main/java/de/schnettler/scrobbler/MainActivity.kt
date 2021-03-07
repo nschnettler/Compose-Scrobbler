@@ -22,9 +22,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.datastore.manager.DataStoreManager
+import de.schnettler.datastorepreferences.ProvideDataStoreManager
 import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
@@ -37,6 +38,7 @@ import de.schnettler.scrobbler.ui.detail.DetailViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
+import de.schnettler.scrobbler.ui.history.LocalViewModel
 import de.schnettler.scrobbler.ui.profile.UserViewModel
 import de.schnettler.scrobbler.ui.search.SearchViewModel
 import de.schnettler.scrobbler.util.openCustomTab
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private val chartsModel: ChartsViewModel by viewModels()
     private val detailsViewModel: DetailViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
-    private val localViewModel: de.schnettler.scrobbler.ui.history.LocalViewModel by viewModels()
+    private val localViewModel: LocalViewModel by viewModels()
     private val searchViewModel: SearchViewModel by viewModels()
     private val artistViewModel: ArtistViewModel by viewModels()
     private val albumViewModel: AlbumViewModel by viewModels()
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
     )
 
     @Inject
-    lateinit var sharedPrefs: FlowSharedPreferences
+    lateinit var dataStoreManager: DataStoreManager
 
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-//            ProvidePreferences(sharedPreferences = sharedPrefs) {
+            ProvideDataStoreManager(dataStoreManager = dataStoreManager) {
                 AppTheme {
                     ProvideWindowInsets {
                         val navController = rememberNavController()
@@ -114,7 +116,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-//            }
+            }
         }
     }
 

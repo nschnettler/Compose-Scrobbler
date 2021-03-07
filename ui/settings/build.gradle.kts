@@ -27,4 +27,6 @@ dependencies {
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:resources"))
     implementation(project(":repo"))
+
+    api("androidx.datastore:datastore-preferences:_")
 }

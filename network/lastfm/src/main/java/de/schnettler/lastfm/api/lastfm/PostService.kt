@@ -2,7 +2,7 @@ package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
-import de.schnettler.lastfm.models.ScrobbleResponse
+import de.schnettler.lastfm.models.NowPlayingResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
 import de.schnettler.scrobbler.network.common.annotation.tag.SignatureAuthentication
@@ -31,7 +31,7 @@ interface PostService {
         @Query("artist") artist: String,
         @Query("album") album: String,
         @Query("duration") duration: String,
-    ): Response<ScrobbleResponse>
+    ): Response<NowPlayingResponse>
 
     @POST("?method=track.scrobble")
     @Wrapped(path = ["scrobbles"])

@@ -1,14 +1,10 @@
 package de.schnettler.scrobbler.ui.settings
 
-import android.app.Activity
-import android.content.Intent
-import androidx.compose.foundation.lazy.LazyColumn
+import android.content.Context
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
-import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.MusicNote
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
@@ -19,28 +15,22 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import de.schnettler.composepreferences.LocalPreferences
-import de.schnettler.composepreferences.MultiSelectListPreference
-import de.schnettler.composepreferences.Preference
-import de.schnettler.composepreferences.PreferenceGroup
-import de.schnettler.composepreferences.SeekBarPreference
-import de.schnettler.composepreferences.SwitchPreference
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import de.schnettler.datastore.compose.PreferenceScreen
+import de.schnettler.datastore.compose.model.MultiListPreferenceItem
+import de.schnettler.datastore.compose.model.SeekbarPreferenceItem
+import de.schnettler.datastore.compose.model.SwitchPreferenceItem
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import de.schnettler.repo.preferences.PreferenceEntry
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import androidx.compose.foundation.layout.Spacer as ComposeSpacer
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod")
@@ -59,96 +49,55 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
     scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
-    LazyColumn(modifier = modifier) {
-        item {
-            ComposeSpacer(modifier = Modifier.statusBarsHeight())
-        }
-        item {
-            PreferenceGroup(title = stringResource(id = R.string.setting_group_submission)) {
-                SwitchPreference(
-                    title = stringResource(id = R.string.setting_switch_autoscrobble_title),
-                    summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
-                    key = AUTO_SCROBBLE_KEY,
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.CloudUpload,
-                    defaultValue = AUTO_SCROBBLE_DEFAULT
-                )
+    PreferenceScreen(
+        modifier = modifier,
+        statusBarPadding = true,
+        items = listOf(
+            SwitchPreferenceItem(
+                PreferenceEntry.AutoScrobble,
+                title = stringResource(id = R.string.setting_switch_autoscrobble_title),
+                summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.CloudUpload,
+            ),
+            SwitchPreferenceItem(
+                PreferenceEntry.SubmitNowPlaying,
+                title = stringResource(id = R.string.setting_switch_submitnp_title),
+                summary = stringResource(id = R.string.setting_switch_submitnp_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.MusicNote,
+            ),
+            // Group 2
+            MultiListPreferenceItem(
+                PreferenceEntry.ScrobbleSources,
+                title = stringResource(id = R.string.setting_list_scrobblesource_title),
+                summary = stringResource(id = R.string.setting_list_scrobblesource_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.Speaker,
+                entries = mediaServices
+            ),
+            SeekbarPreferenceItem(
+                PreferenceEntry.ScrobblePoint,
+                title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
+                summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
+                defaultValue = SCROBBLE_POINT_DEFAULT,
+                singleLineTitle = true,
+                icon = Icons.Outlined.Speed,
+                steps = 4,
+                valueRange = 0.5F..1F,
+                valueRepresentation = { "${(it * 100).roundToInt()} %" }
+            ),
+            MultiListPreferenceItem(
+                PreferenceEntry.ScrobbleConstraints,
+                title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
+                summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.SettingsOverscan,
+                entries = constraints.mapValues { stringResource(id = it.value) },
+                defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
+            ),
 
-                SwitchPreference(
-                    title = stringResource(id = R.string.setting_switch_submitnp_title),
-                    summary = stringResource(id = R.string.setting_switch_submitnp_description),
-                    key = SUBMIT_NOWPLAYING_KEY,
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.MusicNote,
-                    defaultValue = SUBMIT_NOWPLAYING_DEFAULT
-                )
-            }
-        }
-
-        item {
-            PreferenceGroup(title = stringResource(id = R.string.settings_group_scrobble)) {
-                MultiSelectListPreference(
-                    title = stringResource(id = R.string.setting_list_scrobblesource_title),
-                    summary = stringResource(id = R.string.setting_list_scrobblesource_description),
-                    key = SCROBBLE_SOURCES_KEY,
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.Speaker,
-                    entries = mediaServices
-                )
-
-                SeekBarPreference(
-                    title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
-                    summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
-                    key = SCROBBLE_POINT_KEY,
-                    defaultValue = SCROBBLE_POINT_DEFAULT,
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.Speed,
-                    steps = 4,
-                    valueRange = 0.5F..1F,
-                    valueRepresentation = { "${(it * 100).roundToInt()} %" }
-                )
-
-                MultiSelectListPreference(
-                    title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
-                    summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
-                    key = SCROBBLE_CONSTRAINTS_KEY,
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.SettingsOverscan,
-                    entries = constraints.mapValues { stringResource(id = it.value) },
-                    defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
-                )
-            }
-        }
-
-        item {
-            PreferenceGroup(title = stringResource(id = R.string.setting_group_misc)) {
-                Preference(
-                    title = stringResource(id = R.string.setting_notifications_title),
-                    summary = stringResource(id = R.string.setting_notifications_description),
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.Notifications,
-                    onClick = {
-                        val intent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
-                            .putExtra("app_package", context.packageName) // Android 5-7
-                            .putExtra("app_uid", context.applicationInfo.uid)
-                            .putExtra("android.provider.extra.APP_PACKAGE", context.packageName) // Android 8+
-                        context.startActivity(intent, null)
-                    }
-                )
-                CustomDivider()
-
-                val prefs = LocalPreferences.current
-                Preference(
-                    title = stringResource(id = R.string.setting_reset_title),
-                    summary = stringResource(id = R.string.setting_reset_description),
-                    singleLineTitle = true,
-                    icon = Icons.Outlined.DeleteForever,
-                    onClick = {
-                        prefs.sharedPreferences.edit().clear().commit()
-                        if (context is Activity) context.recreate()
-                    }
-                )
-            }
-        }
-    }
+            // GROUP 3
+        )
+    )
 }

@@ -60,6 +60,10 @@ android {
             }
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 hilt {

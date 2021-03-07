@@ -3,7 +3,6 @@ package de.schnettler.scrobble
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
@@ -12,30 +11,38 @@ import android.service.notification.NotificationListenerService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ServiceLifecycleDispatcher
+import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.repo.preferences.PreferenceConstants
-import de.schnettler.repo.util.defaultSharedPrefs
+import de.schnettler.datastore.manager.DataStoreManager
+import de.schnettler.repo.preferences.PreferenceEntry
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MediaListenerService : NotificationListenerService(),
     MediaSessionManager.OnActiveSessionsChangedListener,
-    SharedPreferences.OnSharedPreferenceChangeListener,
     LifecycleOwner {
     private val dispatcher = ServiceLifecycleDispatcher(this)
 
     private var controllers: List<MediaController>? = null
     private val controllersMap: HashMap<MediaSession.Token, Pair<MediaController, MediaController.Callback>> =
         hashMapOf()
-    @Inject lateinit var tracker: PlayBackTracker
-    private lateinit var prefs: SharedPreferences
+    @Inject
+    lateinit var tracker: PlayBackTracker
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
 
     override fun onCreate() {
         dispatcher.onServicePreSuperOnCreate()
         super.onCreate()
-        prefs = application.defaultSharedPrefs()
-        prefs.registerOnSharedPreferenceChangeListener(this)
+
+        lifecycleScope.launch {
+            dataStoreManager.getPreferenceFlow(PreferenceEntry.ScrobbleSources).collect { sources ->
+                onSourcesChanged(sources)
+            }
+        }
         val manager: MediaSessionManager =
             application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
         val componentName = ComponentName(this, this.javaClass)
@@ -48,18 +55,21 @@ class MediaListenerService : NotificationListenerService(),
         controllers = activeControllers
         val tokens = hashSetOf<MediaSession.Token>()
         val packageNames = hashSetOf<String>()
-        val allowedControllers = prefs.getStringSet(PreferenceConstants.SCROBBLE_SOURCES_KEY, emptySet())
-        controllers?.forEach { controller ->
-            if (allowedControllers?.contains(controller.packageName) == true) {
-                tokens.add(controller.sessionToken)
-                packageNames.add(controller.packageName)
-                // New Session
-                if (!controllersMap.contains(controller.sessionToken)) {
-                    addNewSession(controller)
+
+        lifecycleScope.launch {
+            val allowedControllers = dataStoreManager.getPreference(PreferenceEntry.ScrobbleSources)
+            controllers?.forEach { controller ->
+                if (allowedControllers.contains(controller.packageName)) {
+                    tokens.add(controller.sessionToken)
+                    packageNames.add(controller.packageName)
+                    // New Session
+                    if (!controllersMap.contains(controller.sessionToken)) {
+                        addNewSession(controller)
+                    }
                 }
             }
+            removeSessions(tokens)
         }
-        removeSessions(tokens)
     }
 
     private fun addNewSession(controller: MediaController) {
@@ -99,18 +109,14 @@ class MediaListenerService : NotificationListenerService(),
         }
     }
 
-    override fun onSharedPreferenceChanged(prefs: SharedPreferences?, key: String?) {
-        if (key == PreferenceConstants.SCROBBLE_SOURCES_KEY) {
-            val enabledPlayers = prefs?.getStringSet(PreferenceConstants.SCROBBLE_SOURCES_KEY, emptySet()) ?: emptySet()
-
-            controllersMap.filter {
-                !enabledPlayers.contains(it.value.first.packageName)
-            }.forEach { token, (controller, callback) ->
-                controller.unregisterCallback(callback)
-                controllersMap.remove(token)
-            }
-            onActiveSessionsChanged(controllers)
+    private fun onSourcesChanged(enabledSources: Set<String>) {
+        controllersMap.filter {
+            !enabledSources.contains(it.value.first.packageName)
+        }.forEach { token, (controller, callback) ->
+            controller.unregisterCallback(callback)
+            controllersMap.remove(token)
         }
+        onActiveSessionsChanged(controllers)
     }
 
     override fun getLifecycle(): Lifecycle {

@@ -61,7 +61,7 @@ fun <T : Toplist> TopListCarousel(
     topList: List<T>?,
     @StringRes titleRes: Int? = null,
     spacing: Dp = 8.dp,
-    itemSize: Dp = 200.dp,
+    itemSize: Dp = 160.dp,
     actionHandler: (UIAction) -> Unit,
 ) {
     val colorCache = rememberDominantColorCache()
