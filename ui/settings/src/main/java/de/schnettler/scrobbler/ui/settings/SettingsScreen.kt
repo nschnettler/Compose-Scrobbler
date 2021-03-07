@@ -1,10 +1,13 @@
 package de.schnettler.scrobbler.ui.settings
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
@@ -18,13 +21,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
+import de.schnettler.datastore.compose.LocalDataStoreManager
 import de.schnettler.datastore.compose.PreferenceScreen
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceGroup
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.BasicPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SeekBarPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SwitchPreferenceItem
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.preferences.PreferenceEntry
 import kotlinx.coroutines.launch
@@ -37,6 +41,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    val dataStoreManager = LocalDataStoreManager.current
 
     val mediaServices = mutableStateMapOf<String, String>()
     val constraints: Map<String, Int> = remember {
@@ -99,18 +104,51 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 singleLineTitle = true,
                 icon = Icons.Outlined.SettingsOverscan,
                 entries = constraints.mapValues { stringResource(id = it.value) },
-                defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
             ),
         )
     )
 
+    val miscGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_misc),
+        enabled = true,
+        preferenceItems = listOf(
+            BasicPreferenceItem(
+                PreferenceEntry.Basic,
+                title = stringResource(id = R.string.setting_notifications_title),
+                summary = stringResource(id = R.string.setting_notifications_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.Notifications,
+                onClick = {
+                    val intent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
+                        .putExtra("app_package", context.packageName) // Android 5-7
+                        .putExtra("app_uid", context.applicationInfo.uid)
+                        .putExtra("android.provider.extra.APP_PACKAGE", context.packageName) // Android 8+
+                    context.startActivity(intent, null)
+                }
+            ),
+            BasicPreferenceItem(
+                PreferenceEntry.Basic,
+                title = stringResource(id = R.string.setting_reset_title),
+                summary = stringResource(id = R.string.setting_reset_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.DeleteForever,
+                onClick = {
+                    scope.launch {
+                        dataStoreManager.clearPreferences()
+                    }
+                }
+
+            ),
+        )
+    )
 
     PreferenceScreen(
         modifier = modifier,
         statusBarPadding = true,
         items = listOf(
             submissionGroup,
-            scrobbleGroup
+            scrobbleGroup,
+            miscGroup
         )
     )
 }

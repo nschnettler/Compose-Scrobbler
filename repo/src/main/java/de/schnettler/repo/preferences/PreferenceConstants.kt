@@ -3,6 +3,7 @@ package de.schnettler.repo.preferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import de.schnettler.datastore.manager.PreferenceMetaData
 import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
@@ -49,4 +50,6 @@ sealed class PreferenceEntry<T>(
     object ScrobbleConstraints : PreferenceEntry<Set<String>>(
         SCROBBLE_CONSTRAINTS_KEY, SCROBBLE_CONSTRAINTS_DEFAULT, ::stringSetPreferencesKey
     )
+
+    object Basic : PreferenceEntry<String>("", "", ::stringPreferencesKey)
 }
