@@ -19,13 +19,13 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import de.schnettler.datastore.compose.PreferenceScreen
-import de.schnettler.datastore.compose.model.MultiListPreferenceItem
-import de.schnettler.datastore.compose.model.SeekbarPreferenceItem
-import de.schnettler.datastore.compose.model.SwitchPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceGroup
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SeekBarPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SwitchPreferenceItem
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
 import de.schnettler.repo.preferences.PreferenceEntry
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -49,10 +49,10 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
     scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
-    PreferenceScreen(
-        modifier = modifier,
-        statusBarPadding = true,
-        items = listOf(
+    val submissionGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_submission),
+        enabled = true,
+        preferenceItems = listOf(
             SwitchPreferenceItem(
                 PreferenceEntry.AutoScrobble,
                 title = stringResource(id = R.string.setting_switch_autoscrobble_title),
@@ -67,8 +67,14 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 singleLineTitle = true,
                 icon = Icons.Outlined.MusicNote,
             ),
-            // Group 2
-            MultiListPreferenceItem(
+        )
+    )
+
+    val scrobbleGroup = PreferenceGroup(
+        title = stringResource(id = R.string.settings_group_scrobble),
+        enabled = true,
+        preferenceItems = listOf(
+            CheckBoxListPreferenceItem(
                 PreferenceEntry.ScrobbleSources,
                 title = stringResource(id = R.string.setting_list_scrobblesource_title),
                 summary = stringResource(id = R.string.setting_list_scrobblesource_description),
@@ -76,18 +82,17 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 icon = Icons.Outlined.Speaker,
                 entries = mediaServices
             ),
-            SeekbarPreferenceItem(
+            SeekBarPreferenceItem(
                 PreferenceEntry.ScrobblePoint,
                 title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
                 summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
-                defaultValue = SCROBBLE_POINT_DEFAULT,
                 singleLineTitle = true,
                 icon = Icons.Outlined.Speed,
                 steps = 4,
                 valueRange = 0.5F..1F,
                 valueRepresentation = { "${(it * 100).roundToInt()} %" }
             ),
-            MultiListPreferenceItem(
+            CheckBoxListPreferenceItem(
                 PreferenceEntry.ScrobbleConstraints,
                 title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
                 summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
@@ -96,8 +101,16 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 entries = constraints.mapValues { stringResource(id = it.value) },
                 defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
             ),
+        )
+    )
 
-            // GROUP 3
+
+    PreferenceScreen(
+        modifier = modifier,
+        statusBarPadding = true,
+        items = listOf(
+            submissionGroup,
+            scrobbleGroup
         )
     )
 }

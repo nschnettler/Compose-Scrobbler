@@ -24,8 +24,8 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.database.models.LastFmEntity
+import de.schnettler.datastore.compose.ProvideDataStoreManager
 import de.schnettler.datastore.manager.DataStoreManager
-import de.schnettler.datastorepreferences.ProvideDataStoreManager
 import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
