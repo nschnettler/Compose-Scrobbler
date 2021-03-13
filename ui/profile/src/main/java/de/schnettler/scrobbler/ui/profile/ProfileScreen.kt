@@ -41,13 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
-import de.schnettler.datastore.compose.LocalDataStoreManager
-import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
@@ -71,7 +70,7 @@ import java.time.format.FormatStyle
 
 @Composable
 fun ProfileScreen(
-    viewModel: UserViewModel,
+    viewModel: ProfileViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
@@ -81,6 +80,8 @@ fun ProfileScreen(
     val albumState by viewModel.albumState.collectAsState()
     val trackState by viewModel.trackState.collectAsState()
     val states = listOf(userState, artistState, albumState, trackState)
+
+    val mediaCardSize by viewModel.mediaCardSize.collectAsState(initial = MediaCardSize.MEDIUM.size)
 
     val timePeriod by viewModel.timePeriod.collectAsState()
     val showDialog by viewModel.showFilterDialog.collectAsState()
@@ -117,6 +118,7 @@ fun ProfileScreen(
                     albums = albumState.currentData,
                     tracks = trackState.currentData,
                     timePeriod = timePeriod,
+                    cardSize = mediaCardSize,
                     onFabClicked = { viewModel.showDialog(true) },
                     actioner = actionHandler,
                 )
@@ -132,19 +134,10 @@ private fun ProfileContent(
     albums: List<TopListAlbum>?,
     tracks: List<TopListTrack>?,
     timePeriod: UITimePeriod,
+    cardSize: Dp,
     onFabClicked: () -> Unit,
     actioner: (UIAction) -> Unit,
 ) {
-    // TODO: Move to ViewModel
-    val dataStoreManager = LocalDataStoreManager.current
-    val size by dataStoreManager.getPreferenceFlow(PreferenceEntry.MediaCardSize)
-        .collectAsState(initial = MediaCardSize.MEDIUM.toString())
-    val sizeMapped =
-        try {
-            MediaCardSize.valueOf(size)
-        } catch (e: IllegalArgumentException) {
-            MediaCardSize.MEDIUM
-        }.size
 
     Box {
         LazyColumn(modifier = modifier) {
@@ -155,7 +148,7 @@ private fun ProfileContent(
                     topList = artists,
                     actionHandler = actioner,
                     titleRes = R.string.header_topartists,
-                    itemSize = sizeMapped
+                    itemSize = cardSize
                 )
             }
             item {
@@ -163,7 +156,7 @@ private fun ProfileContent(
                     topList = albums,
                     actionHandler = actioner,
                     titleRes = R.string.header_topalbums,
-                    itemSize = sizeMapped
+                    itemSize = cardSize
                 )
             }
             item {
@@ -271,7 +264,7 @@ private fun UserInfo(user: User) {
 private fun PeriodSelectDialog(
     onSelect: (selected: UITimePeriod) -> Unit,
     onDismiss: () -> Unit,
-    model: UserViewModel
+    model: ProfileViewModel
 ) {
     var selected by mutableStateOf(model.timePeriod.value)
     val radioGroupOptions = UITimePeriod.values().asList()

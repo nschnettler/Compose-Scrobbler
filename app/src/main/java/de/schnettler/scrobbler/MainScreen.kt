@@ -22,7 +22,8 @@ import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
 import de.schnettler.scrobbler.ui.history.HistoryScreen
 import de.schnettler.scrobbler.ui.history.LocalViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileScreen
-import de.schnettler.scrobbler.ui.profile.UserViewModel
+import de.schnettler.scrobbler.ui.profile.ProfileViewModel
+import de.schnettler.scrobbler.ui.profile.ProfileViewModelImpl
 import de.schnettler.scrobbler.ui.search.SearchScreen
 import de.schnettler.scrobbler.ui.search.SearchViewModel
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
@@ -56,7 +57,7 @@ fun MainRouteContent(
             SearchScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.Profile) {
-            val viewModel: UserViewModel = hiltNavGraphViewModel<UserViewModel>()
+            val viewModel: ProfileViewModel = hiltNavGraphViewModel<ProfileViewModelImpl>()
             ProfileScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.Settings) { SettingsScreen(modifier = modifier) }

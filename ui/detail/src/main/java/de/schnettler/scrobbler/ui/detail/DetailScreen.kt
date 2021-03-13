@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
-import de.schnettler.scrobbler.screens.RefreshableScreen
 import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel2
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
