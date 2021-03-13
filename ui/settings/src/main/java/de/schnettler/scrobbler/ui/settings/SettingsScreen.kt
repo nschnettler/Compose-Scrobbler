@@ -1,13 +1,14 @@
 package de.schnettler.scrobbler.ui.settings
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
@@ -16,35 +17,34 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.core.content.ContextCompat.startActivity
-import de.schnettler.composepreferences.AmbientPreference
-import de.schnettler.composepreferences.MultiSelectListPreference
-import de.schnettler.composepreferences.Preference
-import de.schnettler.composepreferences.PreferenceGroup
-import de.schnettler.composepreferences.SeekBarPreference
-import de.schnettler.composepreferences.SwitchPreference
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+import de.schnettler.datastore.compose.LocalDataStoreManager
+import de.schnettler.datastore.compose.PreferenceScreen
+import de.schnettler.datastore.compose.model.BasePreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceGroup
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.BasicPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SeekBarPreferenceItem
+import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SwitchPreferenceItem
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import de.schnettler.repo.preferences.PreferenceEntry
+import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+
+@OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier) {
-    val context = AmbientContext.current
+    val context = LocalContext.current
+    val dataStoreManager = LocalDataStoreManager.current
 
     val mediaServices = mutableStateMapOf<String, String>()
     val constraints: Map<String, Int> = remember {
@@ -57,63 +57,81 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
 
     scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
 
-    ScrollableColumn(modifier = modifier) {
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
-        PreferenceGroup(title = stringResource(id = R.string.setting_group_submission)) {
-            SwitchPreference(
+    val submissionGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_submission),
+        enabled = true,
+        preferenceItems = listOf(
+            SwitchPreferenceItem(
+                PreferenceEntry.AutoScrobble,
                 title = stringResource(id = R.string.setting_switch_autoscrobble_title),
                 summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
-                key = AUTO_SCROBBLE_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.CloudUpload,
-                defaultValue = AUTO_SCROBBLE_DEFAULT
-            )
-
-            SwitchPreference(
+            ),
+            SwitchPreferenceItem(
+                PreferenceEntry.SubmitNowPlaying,
                 title = stringResource(id = R.string.setting_switch_submitnp_title),
                 summary = stringResource(id = R.string.setting_switch_submitnp_description),
-                key = SUBMIT_NOWPLAYING_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.MusicNote,
-                defaultValue = SUBMIT_NOWPLAYING_DEFAULT
-            )
-        }
+            ),
+        )
+    )
 
-        PreferenceGroup(title = stringResource(id = R.string.settings_group_scrobble)) {
-            MultiSelectListPreference(
+    val scrobbleGroup = PreferenceGroup(
+        title = stringResource(id = R.string.settings_group_scrobble),
+        enabled = true,
+        preferenceItems = listOf(
+            CheckBoxListPreferenceItem(
+                PreferenceEntry.ScrobbleSources,
                 title = stringResource(id = R.string.setting_list_scrobblesource_title),
                 summary = stringResource(id = R.string.setting_list_scrobblesource_description),
-                key = SCROBBLE_SOURCES_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.Speaker,
                 entries = mediaServices
-            )
-
-            SeekBarPreference(
+            ),
+            SeekBarPreferenceItem(
+                PreferenceEntry.ScrobblePoint,
                 title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
                 summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
-                key = SCROBBLE_POINT_KEY,
-                defaultValue = SCROBBLE_POINT_DEFAULT,
                 singleLineTitle = true,
                 icon = Icons.Outlined.Speed,
                 steps = 4,
                 valueRange = 0.5F..1F,
                 valueRepresentation = { "${(it * 100).roundToInt()} %" }
-            )
-
-            MultiSelectListPreference(
+            ),
+            CheckBoxListPreferenceItem(
+                PreferenceEntry.ScrobbleConstraints,
                 title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
                 summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
-                key = SCROBBLE_CONSTRAINTS_KEY,
                 singleLineTitle = true,
                 icon = Icons.Outlined.SettingsOverscan,
                 entries = constraints.mapValues { stringResource(id = it.value) },
-                defaultValue = SCROBBLE_CONSTRAINTS_DEFAULT
-            )
-        }
+            ),
+        )
+    )
 
-        PreferenceGroup(title = stringResource(id = R.string.setting_group_misc)) {
-            Preference(
+    val uiGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_ui),
+        enabled = true,
+        preferenceItems = listOf(
+            BasePreferenceItem.PreferenceItem.RadioBoxListPreferenceItem(
+                PreferenceEntry.MediaCardSize,
+                title = stringResource(id = R.string.setting_mediacard_title),
+                summary = stringResource(id = R.string.setting_mediacard_description),
+                singleLineTitle = true,
+                icon = Icons.Outlined.Palette,
+                entries = MediaCardSize.values().associate { it.name to stringResource(id = it.nameRes) },
+            )
+        )
+    )
+
+    val miscGroup = PreferenceGroup(
+        title = stringResource(id = R.string.setting_group_misc),
+        enabled = true,
+        preferenceItems = listOf(
+            BasicPreferenceItem(
+                PreferenceEntry.Basic,
                 title = stringResource(id = R.string.setting_notifications_title),
                 summary = stringResource(id = R.string.setting_notifications_description),
                 singleLineTitle = true,
@@ -123,22 +141,33 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                         .putExtra("app_package", context.packageName) // Android 5-7
                         .putExtra("app_uid", context.applicationInfo.uid)
                         .putExtra("android.provider.extra.APP_PACKAGE", context.packageName) // Android 8+
-                    startActivity(context, intent, null)
+                    context.startActivity(intent, null)
                 }
-            )
-            CustomDivider()
-
-            val prefs = AmbientPreference.current
-            Preference(
+            ),
+            BasicPreferenceItem(
+                PreferenceEntry.Basic,
                 title = stringResource(id = R.string.setting_reset_title),
                 summary = stringResource(id = R.string.setting_reset_description),
                 singleLineTitle = true,
                 icon = Icons.Outlined.DeleteForever,
                 onClick = {
-                    prefs.sharedPreferences.edit().clear().commit()
-                    if (context is Activity) context.recreate()
+                    scope.launch {
+                        dataStoreManager.clearPreferences()
+                    }
                 }
-            )
-        }
-    }
+
+            ),
+        )
+    )
+
+    PreferenceScreen(
+        modifier = modifier,
+        statusBarPadding = true,
+        items = listOf(
+            submissionGroup,
+            scrobbleGroup,
+            uiGroup,
+            miscGroup
+        )
+    )
 }

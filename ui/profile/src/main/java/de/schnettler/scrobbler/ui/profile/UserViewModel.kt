@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.ui.profile
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
@@ -18,8 +19,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserViewModel @ViewModelInject constructor(
+@HiltViewModel
+class UserViewModel @Inject constructor(
     private val topListRepo: TopListRepository,
     private val userRepo: UserRepository
 ) : ViewModel() {

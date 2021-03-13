@@ -12,11 +12,10 @@ android {
 }
 
 dependencies {
+    implementation(project(":ui:common:resources"))
     implementation(AndroidX.core.ktx)
 
     // Testing
     testImplementation(Testing.junit4)
-//    androidTestImplementation(KotlinX.coroutines.test)
-//    androidTestImplementation(AndroidX.test.ext.junit)
     testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

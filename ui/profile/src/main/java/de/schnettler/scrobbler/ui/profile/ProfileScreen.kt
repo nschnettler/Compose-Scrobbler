@@ -1,21 +1,21 @@
 package de.schnettler.scrobbler.ui.profile
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ListItem
@@ -45,13 +45,17 @@ import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
+import de.schnettler.datastore.compose.LocalDataStoreManager
+import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
 import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
+import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
 import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.widget.Spacer
 import de.schnettler.scrobbler.ui.common.compose.widget.StatsRow
 import de.schnettler.scrobbler.ui.common.compose.widget.TopListCarousel
 import de.schnettler.scrobbler.ui.common.util.abbreviate
@@ -130,35 +134,63 @@ private fun ProfileContent(
     onFabClicked: () -> Unit,
     actioner: (UIAction) -> Unit,
 ) {
-    Box {
-        ScrollableColumn(modifier = modifier.fillMaxSize(), content = {
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
-            user?.let { UserInfo(it) }
-            TopListCarousel(topList = artists, actionHandler = actioner, titleRes = R.string.header_topartists)
-            TopListCarousel(topList = albums, actionHandler = actioner, titleRes = R.string.header_topalbums)
+    // TODO: Move to ViewModel
+    val dataStoreManager = LocalDataStoreManager.current
+    val size by dataStoreManager.getPreferenceFlow(PreferenceEntry.MediaCardSize)
+        .collectAsState(initial = MediaCardSize.MEDIUM.toString())
+    val sizeMapped =
+        try {
+            MediaCardSize.valueOf(size)
+        } catch (e: IllegalArgumentException) {
+            MediaCardSize.MEDIUM
+        }.size
 
-            Carousel(
-                items = tracks?.chunked(5),
-                titleRes = R.string.header_toptracks,
-                itemSpacing = 16.dp,
-                contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 8.dp),
-            ) { topTracks, padding ->
-                TopTracksChunkedList(list = topTracks, padding = padding, actioner = actioner)
+    Box {
+        LazyColumn(modifier = modifier) {
+            item { androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight()) }
+            item { user?.let { UserInfo(it) } }
+            item {
+                TopListCarousel(
+                    topList = artists,
+                    actionHandler = actioner,
+                    titleRes = R.string.header_topartists,
+                    itemSize = sizeMapped
+                )
             }
-        })
+            item {
+                TopListCarousel(
+                    topList = albums,
+                    actionHandler = actioner,
+                    titleRes = R.string.header_topalbums,
+                    itemSize = sizeMapped
+                )
+            }
+            item {
+                Carousel(
+                    items = tracks?.chunked(5),
+                    titleRes = R.string.header_toptracks,
+                ) { topTracks ->
+                    TopTracksChunkedList(list = topTracks, actioner = actioner)
+                }
+            }
+            item { Spacer(size = 16.dp + 56.dp + 16.dp) }
+        }
 
         ExtendedFloatingActionButton(
             text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
             onClick = onFabClicked,
             icon = { Icon(Icons.Outlined.Event, null) },
             contentColor = Color.White,
-            modifier = modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+            modifier = modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 16.dp)
         )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValues, actioner: (UIAction) -> Unit) {
+private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) -> Unit) {
     Column {
         list.forEach { (top, track) ->
             ListItem(
@@ -174,16 +206,22 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, padding: PaddingValue
                     }
                 },
                 trailing = { Text(text = top.count.abbreviate()) },
-                modifier = Modifier.padding(padding).preferredWidth(300.dp)
+                modifier = Modifier
+                    .width(300.dp)
                     .clickable(onClick = { actioner(UIAction.ListingSelected(track)) })
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun UserInfo(user: User) {
-    Card(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
         val date = remember {
             Instant.ofEpochSecond(user.registerDate).atZone(ZoneId.systemDefault()).toLocalDateTime()
         }
@@ -207,7 +245,7 @@ private fun UserInfo(user: User) {
                 },
                 icon = {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
-                        Box(Modifier.preferredSize(56.dp)) {
+                        Box(Modifier.size(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
                                 CoilImage(data = user.imageUrl, null, modifier = Modifier.fillMaxSize())
                             }
@@ -221,7 +259,8 @@ private fun UserInfo(user: User) {
                     Icons.Rounded.PlayCircleOutline to user.playcount,
                     Icons.Outlined.Face to user.artistCount,
                     Icons.Rounded.FavoriteBorder to user.lovedTracksCount
-                )
+                ),
+                modifier = Modifier.padding(16.dp)
             )
         }
     }

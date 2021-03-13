@@ -17,18 +17,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
@@ -48,6 +48,8 @@ import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.DELETE
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.EDIT
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.OPEN
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.SUBMIT
+import de.schnettler.scrobbler.ui.history.widet.ErrorItem
+import de.schnettler.scrobbler.ui.history.widet.NowPlayingItem
 import de.schnettler.scrobbler.ui.history.widet.ScrobbleItem
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
@@ -77,11 +79,12 @@ fun Content(
     loggedIn: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    onActive {
+    LaunchedEffect(loggedIn) {
         if (loggedIn) {
             localViewModel.startStream()
         }
     }
+
     val recentTracksState by localViewModel.state.collectAsState()
     val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
@@ -124,7 +127,7 @@ fun Content(
                             }
                         },
                         onNowPlayingSelected = { },
-                        errors = getErrors(AmbientContext.current, loggedIn),
+                        errors = getErrors(LocalContext.current, loggedIn),
                         onErrorClicked = { error -> actionHandler(error.action) }
                     )
                 }

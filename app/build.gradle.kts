@@ -31,7 +31,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha11"
+        kotlinCompilerExtensionVersion = "1.0.0-alpha12"
     }
 
     compileOptions {
@@ -60,6 +60,10 @@ android {
             }
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 hilt {
@@ -83,6 +87,7 @@ dependencies {
     implementation(AndroidX.appCompat)
     implementation(AndroidX.compose.runtime.liveData)
     implementation("androidx.navigation:navigation-compose:_")
+    implementation("androidx.activity:activity-compose:_")
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.work.runtimeKtx)

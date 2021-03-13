@@ -2,10 +2,10 @@ package de.schnettler.scrobbler.ui.detail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayout
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -24,11 +24,10 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
+import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen
-import de.schnettler.scrobbler.ui.detail.widget.ChipRow
-import de.schnettler.scrobbler.ui.detail.widget.ListTitle
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
@@ -52,20 +51,14 @@ fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
     }
 }
 
-@OptIn(ExperimentalLayout::class)
-@Composable
-fun TagCategory(tags: List<String>, actionHandler: (UIAction) -> Unit) {
-    ListTitle(title = stringResource(id = R.string.header_tags))
-    ChipRow(items = tags, onChipClicked = { actionHandler(UIAction.TagSelected(it)) })
-}
-
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AlbumCategory(
     album: LastFmEntity.Album?,
     artistPlaceholder: String,
     actionHandler: (UIAction) -> Unit
 ) {
-    ListTitle(title = stringResource(id = R.string.track_sourcealbum))
+    Header(title = stringResource(id = R.string.track_sourcealbum))
     ListItem(
         text = {
             Text(album?.name ?: stringResource(id = R.string.track_unknownalbum))
@@ -78,7 +71,7 @@ fun AlbumCategory(
                 color = AppColor.BackgroundElevated,
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Box(modifier = Modifier.preferredSize(60.dp)) {
+                Box(modifier = Modifier.size(60.dp)) {
                     album?.imageUrl?.let {
                         CoilImage(
                             data = it,

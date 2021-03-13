@@ -1,17 +1,18 @@
 package de.schnettler.scrobbler.ui.history.widet
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.ListItem
@@ -26,7 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.AmbientHapticFeedback
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -41,11 +42,11 @@ import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
+@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val feedback = AmbientHapticFeedback.current
+    val feedback = LocalHapticFeedback.current
     ListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {
@@ -63,14 +64,14 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                         playPercent = track.playPercent,
                         timestamp = track.timestamp
                     )
-                    else Spacer(modifier = Modifier.preferredHeight(16.dp))
+                    else Spacer(modifier = Modifier.height(16.dp))
                     CustomDivider()
                     QuickActions(track.isCached(), onActionClicked)
                 }
             }
         },
         icon = { NameListIcon(title = track.name) },
-        modifier = Modifier.clickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
+        modifier = Modifier.combinedClickable(onClick = { onActionClicked(ScrobbleAction.OPEN) }, onLongClick = {
             expanded = !expanded
             feedback.performHapticFeedback(HapticFeedbackType.LongPress)
         }),
@@ -82,7 +83,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
                         Surface(
                             color = MaterialTheme.colors.secondary,
                             shape = CircleShape,
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).preferredSize(8.dp).align(
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).size(8.dp).align(
                                 Alignment.End
                             )
                         ) { }
@@ -103,7 +104,7 @@ fun AdditionalInformation(
     playPercent: Int,
     timestamp: Long
 ) {
-    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     InformationItem(category = stringResource(id = R.string.scrobble_source), value = packageNameToAppName(playedBy))
     InformationItem(
         category = stringResource(id = R.string.scrobble_runtime),
@@ -113,14 +114,14 @@ fun AdditionalInformation(
         category = stringResource(id = R.string.scrobble_timestamp),
         value = (timestamp * 1000).milliSecondsToDate()
     )
-    Spacer(modifier = Modifier.preferredHeight(8.dp))
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 @Composable
 private fun InformationItem(category: String, value: String) {
     Row {
         Text(text = "$category:")
-        Spacer(modifier = Modifier.preferredWidth(4.dp))
+        Spacer(modifier = Modifier.width(4.dp))
         Text(text = value)
     }
 }

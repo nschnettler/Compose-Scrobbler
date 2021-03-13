@@ -1,11 +1,10 @@
 package de.schnettler.scrobbler.ui.detail.screen
 
-import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -14,12 +13,17 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.common.whenNotEmpty
 import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.ui.common.compose.itemSpacer
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
-import de.schnettler.scrobbler.ui.detail.TagCategory
+import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -33,27 +37,48 @@ fun TrackDetailScreen(
 ) {
     val (track, stats, info, album) = details
     Box(modifier.fillMaxSize()) {
-        ScrollableColumn(content = {
-            Spacer(modifier = Modifier.statusBarsHeight())
-            AlbumCategory(
-                album = album,
-                artistPlaceholder = track.artist,
-                actionHandler = actioner
-            )
-            ExpandingInfoCard(info = info?.wiki)
-            ListeningStats(item = stats)
-            if (info?.tags?.isNotEmpty() == true) {
-                TagCategory(tags = info.tags, actionHandler = actioner)
+        LazyColumn {
+            item { Spacer(modifier = Modifier.statusBarsHeight()) }
+
+            // Album
+            item {
+                AlbumCategory(
+                    album = album,
+                    artistPlaceholder = track.artist,
+                    actionHandler = actioner
+                )
             }
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
-            Spacer(modifier = Modifier.navigationBarsHeight())
-        })
+
+            itemSpacer(16.dp)
+
+            // Info
+            item { ExpandingInfoCard(info = info?.wiki) }
+
+            itemSpacer(24.dp)
+
+            // Stats
+            item { ListeningStats(item = stats) }
+
+            // Tags
+            info?.tags?.whenNotEmpty { tags ->
+                itemSpacer(16.dp)
+                item { Header(title = stringResource(id = R.string.header_tags)) }
+                item { ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
+            }
+
+            item {
+                Spacer(modifier = Modifier.navigationBarsHeight(16.dp))
+            }
+        }
         info?.let {
             FloatingActionButton(
                 onClick = {
                     actioner(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
                 },
-                Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp).navigationBarsPadding()
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp)
+                    .navigationBarsPadding()
             ) {
                 if (info.loved) {
                     Icon(Icons.Rounded.Favorite, null)

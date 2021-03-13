@@ -5,21 +5,21 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.tfcporciuncula.flow.FlowSharedPreferences
 import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
+import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.api.lastfm.PostService
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
+import de.schnettler.lastfm.models.NowPlayingResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.mapping.response.map
 import de.schnettler.repo.model.SubmissionResult
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
+import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.repo.util.safePost
 import de.schnettler.repo.work.MAX_SCROBBLE_BATCH_SIZE
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
@@ -31,7 +31,7 @@ class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
     private val service: PostService,
     private val workManager: WorkManager,
-    private val prefs: FlowSharedPreferences,
+    private val dataStoreManager: DataStoreManager
 ) {
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
@@ -92,7 +92,7 @@ class ScrobbleRepository @Inject constructor(
         }
     }
 
-    suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<ScrobbleResponse> {
+    suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<NowPlayingResponse> {
         return safePost {
             service.submitNowPlaying(
                 artist = track.artist,
@@ -123,10 +123,9 @@ class ScrobbleRepository @Inject constructor(
 
     suspend fun deleteScrobble(scrobble: Scrobble) = localTrackDao.delete(scrobble)
 
-    fun scheduleScrobble() {
+   suspend fun scheduleScrobble() {
         val constraints = Constraints.Builder().apply {
-            val constraintSet =
-                prefs.getStringSet(SCROBBLE_CONSTRAINTS_KEY, SCROBBLE_CONSTRAINTS_DEFAULT).get()
+            val constraintSet = dataStoreManager.getPreference(PreferenceEntry.ScrobbleConstraints)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_BATTERY)) setRequiresBatteryNotLow(true)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(NetworkType.UNMETERED)
         }.build()
@@ -142,6 +141,3 @@ class ScrobbleRepository @Inject constructor(
         localTrackDao.updateTrackData(scrobble.timestamp, scrobble.name, scrobble.artist, scrobble.album)
     }
 }
-
-private fun listToMap(list: List<String>, key: String) =
-    list.withIndex().associateBy({ "$key[${it.index}]" }, { it.value })

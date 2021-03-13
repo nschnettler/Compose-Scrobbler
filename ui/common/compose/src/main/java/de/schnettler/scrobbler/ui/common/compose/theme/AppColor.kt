@@ -9,9 +9,10 @@ object AppColor {
     val Blue200 = Color(0xFFA4B0D9)
     val Jaguar = Color(0xFF202030)
     val Error = Color(0xFFEC979A)
-    @Composable
     val Divider: Color
+        @Composable
         get() = BackgroundElevated
-    @Composable val BackgroundElevated: Color
+    val BackgroundElevated: Color
+        @Composable
         get() = MaterialTheme.colors.onBackground.copy(0.05F)
 }

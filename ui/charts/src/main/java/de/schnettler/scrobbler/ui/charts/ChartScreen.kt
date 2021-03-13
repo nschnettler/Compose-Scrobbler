@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -135,6 +136,7 @@ private fun ChartTrackListItem(name: String, artist: String, index: Int, onClick
     RankingListItem(title = name, subtitle = artist, index = index, onClicked = onClicked)
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun RankingListItem(title: String, subtitle: String, index: Int, onClicked: () -> Unit) {
     ListItem(

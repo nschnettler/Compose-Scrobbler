@@ -146,11 +146,11 @@ class ScrobbleNotificationManager @Inject constructor(
         )
     }
 
-    fun errorNotification(text: String) {
+    fun errorNotification(text: String?, titleRes: Int = R.string.error_title) {
         sendNotification(
             channelId = R.string.error_notification_channel_id,
-            title = R.string.error_title,
-            description = text,
+            title = titleRes,
+            description = text ?: context.getString(R.string.unknown_error),
             icon = R.drawable.ic_outline_bug_report_24,
             notificationId = ERROR_ID
         )

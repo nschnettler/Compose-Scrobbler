@@ -8,7 +8,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import coil.Coil
@@ -21,7 +21,7 @@ import timber.log.Timber
 
 @Composable
 fun rememberDominantColorCache(
-    context: Context = AmbientContext.current,
+    context: Context = LocalContext.current,
     defaultColor: Color = MaterialTheme.colors.primary,
     defaultOnColor: Color = MaterialTheme.colors.onPrimary,
     cacheSize: Int = 12,

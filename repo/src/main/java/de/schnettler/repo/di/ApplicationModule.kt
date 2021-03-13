@@ -1,25 +1,25 @@
 package de.schnettler.repo.di
 
 import android.app.Application
+import android.content.Context
 import androidx.work.WorkManager
-import com.tfcporciuncula.flow.FlowSharedPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import de.schnettler.repo.util.defaultSharedPrefs
+import de.schnettler.datastore.manager.DataStoreManager
 import javax.inject.Singleton
 
 @Suppress("TooManyFunctions")
 @Module
 @InstallIn(SingletonComponent::class)
 class ApplicationModule {
-    @Provides
-    @Singleton
-    fun provideFlowSharedPrefs(application: Application): FlowSharedPreferences = FlowSharedPreferences(
-        application.defaultSharedPrefs()
-    )
 
     @Provides
     fun provideWorkManager(application: Application) = WorkManager.getInstance(application)
+
+    @Provides
+    @Singleton
+    fun dataStoreManager(@ApplicationContext appContext: Context): DataStoreManager = DataStoreManager(appContext)
 }

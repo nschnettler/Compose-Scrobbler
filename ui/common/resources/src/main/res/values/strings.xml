@@ -82,6 +82,7 @@
     <string name="setting_group_submission">Last.fm Submission</string>
     <string name="settings_group_scrobble">Scrobble Settings</string>
     <string name="setting_group_misc">Miscellaneous</string>
+    <string name="setting_group_ui">User Interface</string>
     <string name="setting_switch_autoscrobble_title">Scrobbles</string>
     <string name="setting_switch_autoscrobble_description">Automatically submit scrobbles</string>
     <string name="setting_switch_submitnp_title">Now Playing</string>
@@ -98,7 +99,13 @@
     <string name="setting_notifications_description">Change notification preferences</string>
     <string name="setting_reset_title">Reset Preferences</string>
     <string name="setting_reset_description">Reset app settings to factory state</string>
+    <string name="setting_mediacard_title">Media Card size</string>
+    <string name="setting_mediacard_description">Size of media cards on profile screen</string>
 
+    <string name="media_card_mini">Mini</string>
+    <string name="media_card_small">Small</string>
+    <string name="media_card_medium">Medium</string>
+    <string name="media_card_large">Large</string>
     <string name="period_overall">Overall</string>
     <string name="period_week">Last week</string>
     <string name="period_month">Last month</string>

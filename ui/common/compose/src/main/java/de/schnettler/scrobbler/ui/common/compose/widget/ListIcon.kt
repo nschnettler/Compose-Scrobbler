@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -34,7 +34,7 @@ fun PlainListIconBackground(
     Surface(
         color = color,
         shape = CircleShape,
-        modifier = Modifier.preferredSize(40.dp)
+        modifier = Modifier.size(40.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             content()

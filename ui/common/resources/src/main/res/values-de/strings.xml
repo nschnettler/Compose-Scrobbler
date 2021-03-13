@@ -86,4 +86,10 @@
     <string name="rejectionTimestampNew">Zeitstempel ist zu neu</string>
     <string name="rejectionLimit">Tägliches Scrobble limit erreicht</string>
     <string name="rejectionUnknown">Unbekannter Ablehnungsgrund</string>
+    <string name="setting_mediacard_title">Medienkartengröße</string>
+    <string name="setting_mediacard_description">Größe der Medienkarten auf dem Profil</string>
+    <string name="media_card_mini">Mini</string>
+    <string name="media_card_small">Klein</string>
+    <string name="media_card_medium">Medium</string>
+    <string name="media_card_large">Groß</string>
 </resources>

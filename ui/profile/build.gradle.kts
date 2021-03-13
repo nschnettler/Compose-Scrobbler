@@ -20,7 +20,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha11"
+        kotlinCompilerExtensionVersion = "1.0.0-beta01"
     }
 }
 
@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:resources"))
     implementation(project(":ui:common:util"))
+    implementation(project(":ui:settings"))
     implementation(project(":repo"))
 
     implementation(AndroidX.lifecycle.viewModelKtx)

@@ -1,10 +1,10 @@
 package de.schnettler.scrobbler.ui.common.compose.widget
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -29,15 +29,12 @@ fun <T> Carousel(
     modifier: Modifier = Modifier,
     loading: Boolean = false,
     @StringRes titleRes: Int? = null,
-    contentPadding: PaddingValues = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     itemSpacing: Dp = 8.dp,
     verticalGravity: Alignment.Vertical = Alignment.Top,
     action: @Composable () -> Unit = { },
-    itemContent: @Composable LazyItemScope.(T, PaddingValues) -> Unit
+    itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
-    val halfSpacing = itemSpacing / 2
-    val spacingContent = PaddingValues(halfSpacing, 0.dp, halfSpacing, 0.dp)
-
     titleRes?.let {
         Header(
             title = stringResource(id = titleRes),
@@ -49,14 +46,12 @@ fun <T> Carousel(
 
     LazyRow(
         modifier = modifier,
-        contentPadding = contentPadding.copy(
-            start = (contentPadding.start - halfSpacing).coerceAtLeast(0.dp),
-            end = (contentPadding.end - halfSpacing).coerceAtLeast(0.dp)
-        ),
+        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+        contentPadding = contentPadding,
         verticalAlignment = verticalGravity
     ) {
         items(items = items ?: emptyList()) { item ->
-            itemContent(item, spacingContent)
+            itemContent(item)
         }
     }
 }
@@ -66,7 +61,7 @@ fun <T : Toplist> TopListCarousel(
     topList: List<T>?,
     @StringRes titleRes: Int? = null,
     spacing: Dp = 8.dp,
-    itemSize: Dp = 200.dp,
+    itemSize: Dp = 160.dp,
     actionHandler: (UIAction) -> Unit,
 ) {
     val colorCache = rememberDominantColorCache()
@@ -83,10 +78,10 @@ fun <T : Toplist> TopListCarousel(
                 Text(text = stringResource(id = R.string.header_more))
             }
         }
-    ) { toplist, padding ->
+    ) { toplist ->
         MediaCard(
             name = toplist.value.name,
-            modifier = Modifier.padding(padding).preferredSize(itemSize),
+            modifier = Modifier.size(itemSize),
             imageUrl = toplist.value.imageUrl,
             plays = toplist.listing.count,
             colorCache = colorCache

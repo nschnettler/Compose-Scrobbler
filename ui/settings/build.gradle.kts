@@ -17,14 +17,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha11"
+        kotlinCompilerExtensionVersion = "1.0.0-beta01"
     }
 }
 
 dependencies {
+    implementation(project(":ui:common:util"))
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:resources"))
     implementation(project(":repo"))
+
+    api("androidx.datastore:datastore-preferences:_")
 }
