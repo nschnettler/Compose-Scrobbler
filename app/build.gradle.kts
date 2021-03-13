@@ -31,7 +31,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-alpha12"
+        kotlinCompilerExtensionVersion = "1.0.0-beta02"
     }
 
     compileOptions {
@@ -40,10 +40,7 @@ android {
     }
 
     kotlinOptions {
-        freeCompilerArgs += listOf(
-            "-Xallow-jvm-ir-dependencies",
-            "-Xskip-prerelease-check"
-        )
+        freeCompilerArgs += listOf("-Xskip-prerelease-check")
     }
 
     signingConfigs {

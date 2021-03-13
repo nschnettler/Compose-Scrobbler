@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha08")
+        classpath("com.android.tools.build:gradle:7.0.0-alpha09")
         classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
@@ -26,7 +26,6 @@ allprojects {
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
         kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        kotlinOptions.freeCompilerArgs += "-Xallow-jvm-ir-dependencies"
         kotlinOptions.freeCompilerArgs += "-Xskip-prerelease-check"
         kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
