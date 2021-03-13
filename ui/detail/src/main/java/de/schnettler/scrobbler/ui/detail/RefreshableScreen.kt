@@ -26,9 +26,9 @@ fun <Data> RefreshableScreen(
         )
     }
 
-    if (state.isLoading) { LoadingScreen() } else {
+    if (state.isInitialLoading) { LoadingScreen() } else {
         SwipeToRefreshLayout(
-            refreshingState = state.isRefreshing,
+            refreshingState = state.isRefreshLoading,
             onRefresh = refresh,
         ) {
             state.currentData?.let { data ->

@@ -17,10 +17,10 @@ sealed class RefreshableUiState<out T> {
         val previousData: T?
     ) : RefreshableUiState<T>()
 
-    val isLoading: Boolean
+    val isInitialLoading: Boolean
         get() = this is Success && this.loading && this.data == null
 
-    val isRefreshing: Boolean
+    val isRefreshLoading: Boolean
         get() = this is Success && this.loading && this.data != null
 
     val isError: Boolean

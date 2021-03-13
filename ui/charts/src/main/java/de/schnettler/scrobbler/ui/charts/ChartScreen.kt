@@ -59,11 +59,11 @@ fun ChartScreen(
         ))
     }
 
-    if (chartState.isLoading) {
+    if (chartState.isInitialLoading) {
         LoadingScreen()
     } else {
         SwipeToRefreshLayout(
-            refreshingState = chartState.isRefreshing,
+            refreshingState = chartState.isRefreshLoading,
             onRefresh = { viewModel.refresh(selectedTab) },
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {

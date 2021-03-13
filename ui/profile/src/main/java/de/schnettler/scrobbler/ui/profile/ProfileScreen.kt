@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -47,13 +48,13 @@ import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.User
 import de.schnettler.datastore.compose.LocalDataStoreManager
 import de.schnettler.repo.preferences.PreferenceEntry
-import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
 import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
+import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
+import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
 import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.widget.Spacer
 import de.schnettler.scrobbler.ui.common.compose.widget.StatsRow
@@ -103,23 +104,23 @@ fun ProfileScreen(
         )
     }
 
-    SwipeToRefreshLayout(
-        refreshingState = states.any { it.isRefreshing },
-        onRefresh = viewModel::refresh,
-        refreshIndicator = { SwipeRefreshProgressIndicator() }
-    ) {
-        userState.currentData?.let {
-            ProfileContent(
-                modifier = modifier,
-                user = userState.currentData,
-                artists = artistState.currentData,
-                albums = albumState.currentData,
-                tracks = trackState.currentData,
-                timePeriod = timePeriod,
-                onFabClicked = { viewModel.showDialog(true) },
-                actioner = actionHandler,
-            )
-        } ?: LoginScreen()
+    LoadingContent(
+        empty = viewModel.userState.value.isInitialLoading,
+        emptyContent = { FullScreenLoading() },
+        loading = states.any { it.isRefreshLoading },
+        onRefresh = viewModel::refresh) {
+            userState.currentData?.let {
+                ProfileContent(
+                    modifier = modifier,
+                    user = userState.currentData,
+                    artists = artistState.currentData,
+                    albums = albumState.currentData,
+                    tracks = trackState.currentData,
+                    timePeriod = timePeriod,
+                    onFabClicked = { viewModel.showDialog(true) },
+                    actioner = actionHandler,
+                )
+            } ?: LoginScreen()
     }
 }
 
@@ -147,7 +148,7 @@ private fun ProfileContent(
 
     Box {
         LazyColumn(modifier = modifier) {
-            item { androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight()) }
+            item { Spacer(modifier = Modifier.statusBarsHeight()) }
             item { user?.let { UserInfo(it) } }
             item {
                 TopListCarousel(

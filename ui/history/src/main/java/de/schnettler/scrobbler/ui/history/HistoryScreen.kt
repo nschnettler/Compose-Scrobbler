@@ -108,9 +108,9 @@ fun Content(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (recentTracksState.isLoading) { LoadingScreen() } else {
+        if (recentTracksState.isInitialLoading) { LoadingScreen() } else {
             SwipeToRefreshLayout(
-                refreshingState = recentTracksState.isRefreshing,
+                refreshingState = recentTracksState.isRefreshLoading,
                 onRefresh = { localViewModel.refresh() },
                 refreshIndicator = { SwipeRefreshProgressIndicator() }
             ) {

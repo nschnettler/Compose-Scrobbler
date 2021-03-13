@@ -88,9 +88,11 @@ class MainActivity : AppCompatActivity() {
                                     BottomNavigationBar(
                                         currentRoute = navBackStackEntry?.route(),
                                         screens = mainScreens,
-                                    ) {
-                                        navController.popBackStack(navController.graph.startDestination, false)
-                                        navController.navigate(it.routeId)
+                                    ) { screen ->
+                                        navController.navigate(screen.routeId) {
+                                            popUpTo = navController.graph.startDestination
+                                            launchSingleTop = true
+                                        }
                                     }
                                 }
                             }
