@@ -94,6 +94,7 @@ dependencies {
 
     // Dagger
     implementation(Google.dagger.hilt.android)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha01")
     kapt(Google.dagger.hilt.android.compiler)
 
     // Other

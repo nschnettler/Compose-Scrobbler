@@ -26,7 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.datastore.compose.ProvideDataStoreManager
 import de.schnettler.datastore.manager.DataStoreManager
-import de.schnettler.scrobbler.ui.charts.ChartsViewModel
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
@@ -34,13 +33,6 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.theme.AppTheme
 import de.schnettler.scrobbler.ui.common.compose.widget.BottomNavigationBar
 import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
-import de.schnettler.scrobbler.ui.detail.DetailViewModel
-import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
-import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
-import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
-import de.schnettler.scrobbler.ui.history.LocalViewModel
-import de.schnettler.scrobbler.ui.profile.UserViewModel
-import de.schnettler.scrobbler.ui.search.SearchViewModel
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
@@ -51,16 +43,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    // ViewModels
     private val model: MainViewModel by viewModels()
-    private val chartsModel: ChartsViewModel by viewModels()
-    private val detailsViewModel: DetailViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
-    private val localViewModel: LocalViewModel by viewModels()
-    private val searchViewModel: SearchViewModel by viewModels()
-    private val artistViewModel: ArtistViewModel by viewModels()
-    private val albumViewModel: AlbumViewModel by viewModels()
-    private val trackViewModel: TrackViewModel by viewModels()
 
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
 
@@ -126,13 +109,6 @@ class MainActivity : AppCompatActivity() {
         MainRouteContent(
             model = model,
             navController = controller,
-            chartsModel = chartsModel,
-            userViewModel = userViewModel,
-            localViewModel = localViewModel,
-            searchViewModel = searchViewModel,
-            artistViewModel = artistViewModel,
-            albumViewModel = albumViewModel,
-            trackViewModel = trackViewModel,
             actioner = ::handleAction,
             errorer = { error ->
                 when (error) {
@@ -148,10 +124,8 @@ class MainActivity : AppCompatActivity() {
         when (action) {
             is UIAction.ListingSelected -> onListingClicked(action.listing)
             is UIAction.TagSelected -> openCustomTab("https://www.last.fm/tag/${action.id}")
-            is UIAction.TrackLiked -> detailsViewModel.onToggleLoveTrackClicked(action.track, action.info)
             is UIAction.NavigateUp -> onBackPressed()
             is UIAction.OpenInBrowser -> openCustomTab(action.url)
-            is UIAction.ShowTimePeriodDialog -> userViewModel.showDialog(true)
             is UIAction.OpenNotificationListenerSettings -> openNotificationListenerSettings()
         }
     }

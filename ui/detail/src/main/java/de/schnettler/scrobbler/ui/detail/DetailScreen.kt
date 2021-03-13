@@ -28,25 +28,27 @@ import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen
+import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
-    model: RefreshableStateViewModel2<Key, StateType, Output>,
+    viewModel: RefreshableStateViewModel2<Key, StateType, Output>,
     actioner: (UIAction) -> Unit,
     errorer: @Composable (UIError) -> Unit,
 ) {
-    val state by model.state.collectAsState()
+    val state by viewModel.state.collectAsState()
     RefreshableScreen(
         state = state,
-        refresh = model::refresh,
+        refresh = viewModel::refresh,
         errorer = errorer,
         errorId = R.string.error_details
     ) { details ->
         when (details) {
             is EntityWithStatsAndInfo.ArtistWithStatsAndInfo -> ArtistDetailScreen(info = details, actioner = actioner)
             is EntityWithStatsAndInfo.AlbumDetails -> AlbumDetailScreen(details = details, actioner = actioner)
-            is EntityWithStatsAndInfo.TrackWithStatsAndInfo -> TrackDetailScreen(details = details, actioner = actioner)
+            is EntityWithStatsAndInfo.TrackWithStatsAndInfo ->
+                TrackDetailScreen(viewModel = viewModel as TrackViewModel, details = details, actioner = actioner)
         }
     }
 }

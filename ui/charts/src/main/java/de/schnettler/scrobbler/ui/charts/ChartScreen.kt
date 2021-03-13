@@ -36,7 +36,7 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun ChartScreen(
-    model: ChartsViewModel,
+    viewModel: ChartViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
@@ -46,8 +46,8 @@ fun ChartScreen(
     }
 
     val chartState by when (selectedTab) {
-        ChartTab.Artist -> model.artistState.collectAsState()
-        ChartTab.Track -> model.trackState.collectAsState()
+        ChartTab.Artist -> viewModel.artistState.collectAsState()
+        ChartTab.Track -> viewModel.trackState.collectAsState()
     }
 
     if (chartState.isError) {
@@ -55,7 +55,7 @@ fun ChartScreen(
             UIError.ShowErrorSnackbar(
             state = chartState,
             fallbackMessage = stringResource(id = R.string.error_charts),
-            onAction = { model.refresh(selectedTab) }
+            onAction = { viewModel.refresh(selectedTab) }
         ))
     }
 
@@ -64,7 +64,7 @@ fun ChartScreen(
     } else {
         SwipeToRefreshLayout(
             refreshingState = chartState.isRefreshing,
-            onRefresh = { model.refresh(selectedTab) },
+            onRefresh = { viewModel.refresh(selectedTab) },
             refreshIndicator = { SwipeRefreshProgressIndicator() }
         ) {
             Column {

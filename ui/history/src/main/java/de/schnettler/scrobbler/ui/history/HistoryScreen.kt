@@ -55,14 +55,14 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HistoryScreen(
-    model: LocalViewModel,
+    viewModel: LocalViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
     loggedIn: Boolean
 ) {
     Content(
-        localViewModel = model,
+        localViewModel = viewModel,
         actionHandler = actionHandler,
         errorHandler = errorHandler,
         modifier = modifier,

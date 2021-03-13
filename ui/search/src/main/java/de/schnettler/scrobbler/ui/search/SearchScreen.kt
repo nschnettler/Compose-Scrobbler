@@ -49,13 +49,13 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
-    model: SearchViewModel,
+    viewModel: SearchViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val searchResult by model.state.collectAsState()
-    val searchQuery by model.searchQuery.collectAsState()
+    val searchResult by viewModel.state.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val searchInputState = remember { mutableStateOf(TextFieldValue(searchQuery.query)) }
     if (searchResult.isError) {
         errorHandler(
@@ -74,7 +74,7 @@ fun SearchScreen(
                 value = searchInputState.value,
                 onValueChange = {
                     searchInputState.value = it
-                    model.updateQuery(it.text)
+                    viewModel.updateQuery(it.text)
                 },
                 label = { Text(text = stringResource(id = R.string.search_hint)) },
                 modifier = Modifier.fillMaxWidth(),
@@ -87,7 +87,7 @@ fun SearchScreen(
             items = stringArrayResource(id = R.array.search_filter),
             selectedIndex = searchQuery.filter
         ) {
-            model.updateFilter(it)
+            viewModel.updateFilter(it)
         }
 
         searchResult.currentData?.let { results ->

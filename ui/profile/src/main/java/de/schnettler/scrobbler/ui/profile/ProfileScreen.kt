@@ -70,27 +70,27 @@ import java.time.format.FormatStyle
 
 @Composable
 fun ProfileScreen(
-    model: UserViewModel,
+    viewModel: UserViewModel,
     actionHandler: (UIAction) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val userState by model.userState.collectAsState()
-    val artistState by model.artistState.collectAsState()
-    val albumState by model.albumState.collectAsState()
-    val trackState by model.trackState.collectAsState()
+    val userState by viewModel.userState.collectAsState()
+    val artistState by viewModel.artistState.collectAsState()
+    val albumState by viewModel.albumState.collectAsState()
+    val trackState by viewModel.trackState.collectAsState()
     val states = listOf(userState, artistState, albumState, trackState)
 
-    val timePeriod by model.timePeriod.collectAsState()
-    val showDialog by model.showFilterDialog.collectAsState()
+    val timePeriod by viewModel.timePeriod.collectAsState()
+    val showDialog by viewModel.showFilterDialog.collectAsState()
 
     if (showDialog) {
         PeriodSelectDialog(onSelect = { newTimePeriod ->
-            model.updatePeriod(newTimePeriod)
-            model.showDialog(false)
+            viewModel.updatePeriod(newTimePeriod)
+            viewModel.showDialog(false)
         }, onDismiss = {
-            model.showDialog(false)
-        }, model = model)
+            viewModel.showDialog(false)
+        }, model = viewModel)
     }
 
     if (states.any { it.isError }) {
@@ -98,14 +98,14 @@ fun ProfileScreen(
             UIError.ShowErrorSnackbar(
                 state = states.firstOrNull { it.isError },
                 fallbackMessage = stringResource(id = R.string.error_profile),
-                onAction = model::refresh
+                onAction = viewModel::refresh
             )
         )
     }
 
     SwipeToRefreshLayout(
         refreshingState = states.any { it.isRefreshing },
-        onRefresh = model::refresh,
+        onRefresh = viewModel::refresh,
         refreshIndicator = { SwipeRefreshProgressIndicator() }
     ) {
         userState.currentData?.let {
@@ -116,7 +116,7 @@ fun ProfileScreen(
                 albums = albumState.currentData,
                 tracks = trackState.currentData,
                 timePeriod = timePeriod,
-                onFabClicked = { model.showDialog(true) },
+                onFabClicked = { viewModel.showDialog(true) },
                 actioner = actionHandler,
             )
         } ?: LoginScreen()

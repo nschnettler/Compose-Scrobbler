@@ -23,6 +23,7 @@ import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
 import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
 import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import dev.chrisbanes.accompanist.insets.navigationBarsHeight
@@ -31,6 +32,7 @@ import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun TrackDetailScreen(
+    viewModel: TrackViewModel,
     details: TrackWithStatsAndInfo,
     actioner: (UIAction) -> Unit,
     modifier: Modifier = Modifier,
@@ -72,9 +74,7 @@ fun TrackDetailScreen(
         }
         info?.let {
             FloatingActionButton(
-                onClick = {
-                    actioner(UIAction.TrackLiked(track, info.copy(loved = !info.loved)))
-                },
+                onClick = { viewModel.onToggleLoveTrackClicked(track, info.copy(loved = !info.loved)) },
                 Modifier
                     .align(Alignment.BottomEnd)
                     .padding(end = 16.dp, bottom = 16.dp)

@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.ui.charts
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.database.models.TopListArtist
@@ -10,34 +9,29 @@ import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.freshFrom
 import de.schnettler.scrobbler.ui.common.compose.streamFrom
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChartsViewModel @Inject constructor(private val repo: ChartRepository) : ViewModel() {
-    private val _artistState: MutableStateFlow<RefreshableUiState<List<TopListArtist>>> =
+class ChartViewModelImpl @Inject constructor(private val repo: ChartRepository) : ChartViewModel() {
+    override val artistState: MutableStateFlow<RefreshableUiState<List<TopListArtist>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val artistState: StateFlow<RefreshableUiState<List<TopListArtist>>>
-        get() = _artistState
 
-    private val _trackState: MutableStateFlow<RefreshableUiState<List<TopListTrack>>> =
+    override val trackState: MutableStateFlow<RefreshableUiState<List<TopListTrack>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-    val trackState: StateFlow<RefreshableUiState<List<TopListTrack>>>
-        get() = _trackState
 
     init {
         viewModelScope.apply {
-            launch { _artistState.streamFrom(repo.chartArtistsStore, "") }
-            launch { _trackState.streamFrom(repo.chartTrackStore, "") }
+            launch { artistState.streamFrom(repo.chartArtistsStore, "") }
+            launch { trackState.streamFrom(repo.chartTrackStore, "") }
         }
     }
 
-    fun refresh(tab: ChartTab) {
+    override fun refresh(tab: ChartTab) {
         viewModelScope.launch {
             when (tab) {
-                ChartTab.Track -> _trackState.freshFrom(repo.chartTrackStore, "")
-                ChartTab.Artist -> _artistState.freshFrom(repo.chartArtistsStore, "")
+                ChartTab.Track -> trackState.freshFrom(repo.chartTrackStore, "")
+                ChartTab.Artist -> artistState.freshFrom(repo.chartArtistsStore, "")
             }
         }
     }
