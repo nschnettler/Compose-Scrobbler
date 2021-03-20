@@ -37,5 +37,4 @@ fun <Data> RefreshableScreen(
             )
         )
     }
-
 }
