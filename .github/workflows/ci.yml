@@ -86,17 +86,19 @@ jobs:
           api-level: 29
           script: ./gradlew database:connectedAndroidTest
 
-      - name: Rename Test Results
+      - name: Copy Test Results
         if: always()
         run: |
-          find . -type f -regex "./build/androidTest-results/.*xml" -exec sh -c 'x="{}"; mv "$x" "${x// /}"' \;
+          mkdir -p instrumented
+          find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec sh -c 'x="{}"; mv "$x" "${x// /}"' \;
+          find . -type f -regex ".*/build/outputs/androidTest-results/.*xml" -exec cp {} instrumented/ \;
           
       - name: Upload Test Results
         if: always()
         uses: actions/upload-artifact@v1
         with:
           name: instrumented-results
-          path: build/androidTest-results
+          path: instrumented
  
   report:
     name: Report test results

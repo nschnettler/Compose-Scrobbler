@@ -9,9 +9,9 @@ import de.schnettler.lastfm.annotation.okhttp.AuthorizedLastfmHttpClient
 import de.schnettler.lastfm.annotation.okhttp.BasicLastfmHttpClient
 import de.schnettler.lastfm.annotation.okhttp.SignedLastfmHttpClient
 import de.schnettler.lastfm.interceptor.LastfmInterceptor
-import de.schnettler.scrobbler.network.common.annotation.okhttp.BaseOkHttpClient
 import de.schnettler.lastfm.interceptor.SessionInterceptor
 import de.schnettler.lastfm.interceptor.SignatureInterceptor
+import de.schnettler.scrobbler.network.common.annotation.okhttp.BaseOkHttpClient
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -34,6 +34,7 @@ class OkHttpClientModule {
         .addInterceptor(chuckerInterceptor)
         .build()
 
+    @Suppress("LongParameterList")
     @SignedLastfmHttpClient
     @Provides
     fun providesSignatureOkHttpClient(
