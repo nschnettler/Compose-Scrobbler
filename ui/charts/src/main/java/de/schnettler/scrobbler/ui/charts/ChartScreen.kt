@@ -41,7 +41,7 @@ fun ChartScreen(
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = remember { PagerState() }
+    val pagerState = viewModel.pagerState
 
     val selectedTab = ChartTab.values()[pagerState.currentPage]
 
