@@ -11,29 +11,24 @@ import org.junit.Test
 class UserDaoTest : DatabaseTest() {
 
     @Test
-    fun getUserReturnsUser() = runBlockingTest {
+    fun getUserReturnsOneUser() = runBlockingTest {
         // GIVEN - a db with Multiple Users
         val users = generateUsers(3)
         db.userDao().insertAll(users)
 
         // WHEN - User requested from db
-        val user1 = db.userDao().getUser(users[0].name)
-        val user2 = db.userDao().getUser(users[1].name)
-        val user3 = db.userDao().getUser(users[2].name)
+        val user1 = db.userDao().getUser()
 
         // THEN - the right user is returned
         user1.collectValue { expect(it).toBe(users[0]) }
-        user2.collectValue { expect(it).toBe(users[1]) }
-        user3.collectValue { expect(it).toBe(users[2]) }
     }
 
     @Test
-    fun getUserReturnsNull() = runBlockingTest {
-        // GIVEN - Database with 3 Artists
-        db.userDao().insertAll(generateUsers(3))
+    fun getUserReturnsNullWhenDatabaseEmpty() = runBlockingTest {
+        // GIVEN - Empty db
 
-        // WHEN - Requested user not in db
-        val user = db.userDao().getUser("TestUser")
+        // WHEN - User Requested
+        val user = db.userDao().getUser()
 
         // THEN - Returns null
         user.collectValue { expect(it).toBe(null) }
@@ -49,7 +44,7 @@ class UserDaoTest : DatabaseTest() {
         val updatedUser = oldUser.copy(artistCount = 10)
         val changedRows =
             db.userDao().updateArtistCount(oldUser.name, updatedUser.artistCount)
-        val loadedUser = db.userDao().getUser(oldUser.name)
+        val loadedUser = db.userDao().getUser()
 
         // THEN - update reflected in data from db
         expect(changedRows).toBe(1)
