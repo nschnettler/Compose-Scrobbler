@@ -14,23 +14,21 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
-import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
+import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.widget.Pager
+import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
@@ -41,53 +39,36 @@ fun ChartScreen(
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var selectedTab by remember {
-        mutableStateOf(ChartTab.Artist)
-    }
+    val pagerState = remember { PagerState() }
 
-    val chartState by when (selectedTab) {
-        ChartTab.Artist -> viewModel.artistState.collectAsState()
-        ChartTab.Track -> viewModel.trackState.collectAsState()
-    }
+    val artistState by viewModel.artistState.collectAsState()
+    val trackState by viewModel.trackState.collectAsState()
 
-    if (chartState.isError) {
-        errorHandler(
-            UIError.ShowErrorSnackbar(
-            state = chartState,
-            fallbackMessage = stringResource(id = R.string.error_charts),
-            onAction = { viewModel.refresh(selectedTab) }
-        ))
-    }
+    val selectedTab = ChartTab.values()[pagerState.currentPage]
 
-    if (chartState.isInitialLoading) {
-        LoadingScreen()
-    } else {
-        SwipeToRefreshLayout(
-            refreshingState = chartState.isRefreshLoading,
-            onRefresh = { viewModel.refresh(selectedTab) },
-            refreshIndicator = { SwipeRefreshProgressIndicator() }
+    Column {
+        Spacer(modifier = Modifier.statusBarsHeight())
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            backgroundColor = MaterialTheme.colors.surface
         ) {
-            Column {
-                Spacer(modifier = Modifier.statusBarsHeight())
-                TabRow(
-                    selectedTabIndex = selectedTab.index,
-                    backgroundColor = MaterialTheme.colors.surface
-                ) {
-                    val onSelect: (ChartTab) -> Unit = { selectedTab = it }
-                    ChartsTab(
-                        tab = ChartTab.Artist,
-                        current = selectedTab,
-                        onSelect = onSelect
-                    )
-                    ChartsTab(
-                        tab = ChartTab.Track,
-                        current = selectedTab,
-                        onSelect = onSelect
-                    )
-                }
-                ChartList(chartState.currentData, actionHandler, modifier)
-            }
+            ChartsTab(
+                tab = ChartTab.Artist,
+                current = selectedTab,
+                onSelect = { pagerState.currentPage = it.index }
+            )
+            ChartsTab(
+                tab = ChartTab.Track,
+                current = selectedTab,
+                onSelect = { pagerState.currentPage = it.index }
+            )
         }
+        ChartPager(
+            items = listOf(artistState, trackState),
+            pagerState = pagerState,
+            actionHandler = actionHandler,
+            modifier = modifier
+        )
     }
 }
 
@@ -113,6 +94,24 @@ private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, mo
                 CustomDivider()
             }
         }
+    }
+}
+
+@Composable
+fun ChartPager(
+    items: List<RefreshableUiState<List<Toplist>>>,
+    modifier: Modifier = Modifier,
+    pagerState: PagerState = remember { PagerState() },
+    actionHandler: (UIAction) -> Unit,
+) {
+    pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
+
+    Pager(
+        state = pagerState,
+        modifier = modifier
+    ) {
+        val chartPage = items[page]
+        ChartList(chartPage.currentData, actionHandler)
     }
 }
 
