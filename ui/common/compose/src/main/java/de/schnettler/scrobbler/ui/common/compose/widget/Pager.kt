@@ -23,6 +23,10 @@ import androidx.compose.ui.unit.Density
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+/**
+ * https://github.com/android/compose-samples/blob/main/Jetcaster/app/src/main/java/com/example/jetcaster/util/Pager.kt
+ */
+@Suppress("LongMethod")
 @Composable
 fun Pager(
     state: PagerState,
