@@ -100,7 +100,7 @@ private fun LazyListScope.detailItems(
 
     // Artists
     item {
-        Carousel(items = artistInfo.similarArtists, titleRes = R.string.artist_similar) { artist->
+        Carousel(items = artistInfo.similarArtists, titleRes = R.string.artist_similar) { artist ->
             MediaCard(
                 name = artist.name,
                 imageUrl = artist.imageUrl,
