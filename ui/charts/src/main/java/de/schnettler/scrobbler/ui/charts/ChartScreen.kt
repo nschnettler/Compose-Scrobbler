@@ -21,12 +21,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
-import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenError
+import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
+import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
 import de.schnettler.scrobbler.ui.common.compose.widget.Pager
 import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import de.schnettler.scrobbler.ui.common.util.abbreviate
@@ -41,9 +43,6 @@ fun ChartScreen(
 ) {
     val pagerState = remember { PagerState() }
 
-    val artistState by viewModel.artistState.collectAsState()
-    val trackState by viewModel.trackState.collectAsState()
-
     val selectedTab = ChartTab.values()[pagerState.currentPage]
 
     Column {
@@ -52,57 +51,58 @@ fun ChartScreen(
             selectedTabIndex = pagerState.currentPage,
             backgroundColor = MaterialTheme.colors.surface
         ) {
-            ChartsTab(
-                tab = ChartTab.Artist,
-                current = selectedTab,
-                onSelect = { pagerState.currentPage = it.index }
-            )
-            ChartsTab(
-                tab = ChartTab.Track,
-                current = selectedTab,
-                onSelect = { pagerState.currentPage = it.index }
-            )
+            ChartTab.values().forEach { tab ->
+                Tab(
+                    selected = selectedTab == tab,
+                    onClick = { pagerState.currentPage = tab.ordinal },
+                    text = { Text(text = stringResource(id = tab.text)) }
+                )
+            }
         }
         ChartPager(
-            items = listOf(artistState, trackState),
+            viewModel = viewModel,
+            items = ChartTab.values(),
             pagerState = pagerState,
             actionHandler = actionHandler,
-            modifier = modifier
+            errorHandler = errorHandler,
+            modifier = modifier,
         )
     }
 }
 
 @Composable
-private fun ChartList(chartData: List<Toplist>?, handler: (UIAction) -> Unit, modifier: Modifier = Modifier) {
-    chartData?.let { charts ->
-        LazyColumn(modifier) {
-            itemsIndexed(items = charts) { index, entry ->
-                when (entry) {
-                    is TopListArtist -> ChartArtistListItem(
-                        name = entry.value.name,
-                        listener = entry.listing.count,
-                        index = index,
-                        onClicked = { handler(ListingSelected(entry.value)) }
-                    )
-                    is TopListTrack -> ChartTrackListItem(
-                        name = entry.value.name,
-                        artist = entry.value.artist,
-                        index = index,
-                        onClicked = { handler(ListingSelected(entry.value)) }
-                    )
-                }
-                CustomDivider()
-            }
+private fun ChartList(
+    chartData: List<Toplist>,
+    handler: (UIAction) -> Unit,
+    modifier: Modifier = Modifier,
+) = LazyColumn(modifier) {
+    itemsIndexed(items = chartData) { index, entry ->
+        when (entry) {
+            is TopListArtist -> ChartArtistListItem(
+                name = entry.value.name,
+                listener = entry.listing.count,
+                index = index,
+                onClicked = { handler(ListingSelected(entry.value)) }
+            )
+            is TopListTrack -> ChartTrackListItem(
+                name = entry.value.name,
+                artist = entry.value.artist,
+                index = index,
+                onClicked = { handler(ListingSelected(entry.value)) }
+            )
         }
+        CustomDivider()
     }
 }
 
 @Composable
 fun ChartPager(
-    items: List<RefreshableUiState<List<Toplist>>>,
+    viewModel: ChartViewModel,
+    items: Array<ChartTab>,
     modifier: Modifier = Modifier,
     pagerState: PagerState = remember { PagerState() },
     actionHandler: (UIAction) -> Unit,
+    errorHandler: @Composable (UIError) -> Unit
 ) {
     pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
 
@@ -110,14 +110,31 @@ fun ChartPager(
         state = pagerState,
         modifier = modifier
     ) {
-        val chartPage = items[page]
-        ChartList(chartPage.currentData, actionHandler)
-    }
-}
+        val currentTab = items[page]
+        val state by when (currentTab) {
+            ChartTab.Artist -> viewModel.artistState.collectAsState()
+            ChartTab.Track -> viewModel.trackState.collectAsState()
+        }
 
-@Composable
-private fun ChartsTab(tab: ChartTab, current: ChartTab, onSelect: (ChartTab) -> Unit) {
-    Tab(selected = tab == current, onClick = { onSelect(tab) }, text = { Text(text = stringResource(id = tab.text)) })
+        if (state.isError) {
+            errorHandler(
+                UIError.ShowErrorSnackbar(
+                    state = state,
+                    fallbackMessage = stringResource(id = R.string.error_charts),
+                    onAction = { viewModel.refresh(currentTab) }
+                ))
+        }
+
+        LoadingContent(
+            empty = state.isInitialLoading,
+            emptyContent = { FullScreenLoading() },
+            loading = state.isRefreshLoading,
+            onRefresh = { viewModel.refresh(currentTab) }) {
+            state.currentData?.let {
+                ChartList(it, actionHandler)
+            } ?: FullScreenError()
+        }
+    }
 }
 
 @Composable
