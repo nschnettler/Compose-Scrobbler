@@ -25,7 +25,7 @@ import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.util.asMinSec
 import de.schnettler.scrobbler.ui.common.util.fromHtmlLastFm
 import de.schnettler.scrobbler.ui.detail.R
-import de.schnettler.scrobbler.ui.detail.widget.ChipRow
+import de.schnettler.scrobbler.ui.common.compose.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.insets.navigationBarsHeight
