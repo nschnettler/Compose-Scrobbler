@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class ChartViewModel : ViewModel() {
@@ -11,4 +12,5 @@ abstract class ChartViewModel : ViewModel() {
     abstract val trackState: StateFlow<RefreshableUiState<List<TopListTrack>>>
 
     abstract fun refresh(tab: ChartTab)
+    abstract val pagerState: PagerState
 }

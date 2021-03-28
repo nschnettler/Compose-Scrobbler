@@ -45,9 +45,9 @@ class Scrobbler @Inject constructor(
             }
     }
 
-    fun submitScrobble(track: Scrobble) = scope.launch {
+    suspend fun submitScrobble(track: Scrobble): Boolean {
         val scrobbleThreshold = dataStoreManager.getPreference(PreferenceEntry.ScrobblePoint)
-        if (track.readyToScrobble(scrobbleThreshold)) {
+        return if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
             if (repo.saveTrack(toBeSaved) == -1L) {
@@ -63,8 +63,10 @@ class Scrobbler @Inject constructor(
             if (dataStoreManager.getPreference(PreferenceEntry.AutoScrobble)) {
                 repo.scheduleScrobble()
             }
+            true
         } else {
             Timber.d("[Cache] Skipped ${track.name}")
+            false
         }
     }
 
