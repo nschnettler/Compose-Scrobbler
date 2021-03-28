@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
@@ -32,7 +33,6 @@ import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
 import de.schnettler.scrobbler.ui.common.compose.widget.Pager
 import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import de.schnettler.scrobbler.ui.common.util.abbreviate
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun ChartScreen(

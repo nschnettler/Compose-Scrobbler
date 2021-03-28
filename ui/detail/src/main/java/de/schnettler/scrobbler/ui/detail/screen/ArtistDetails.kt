@@ -31,7 +31,7 @@ import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
-import dev.chrisbanes.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ArtistDetailScreen(
