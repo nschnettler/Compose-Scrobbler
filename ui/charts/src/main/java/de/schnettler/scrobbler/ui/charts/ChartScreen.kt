@@ -133,5 +133,5 @@ private fun RankingListItem(title: String, subtitle: String, index: Int, onClick
 @Preview
 @Composable
 fun ChartListPreview() = ThemedPreview() {
-    ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { },)
+    ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { })
 }
