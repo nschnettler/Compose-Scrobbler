@@ -2,9 +2,13 @@ package de.schnettler.scrobbler.ui.common.compose.util
 
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import de.schnettler.database.models.EntityInfo
 import de.schnettler.database.models.EntityType
+import de.schnettler.database.models.EntityWithStats
+import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.ListType
+import de.schnettler.database.models.Stats
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListEntry
@@ -74,6 +78,35 @@ object PreviewUtils {
                 10
             ),
             LastFmEntity.Track("Track $index", artist = "Artist $index")
+        )
+    }
+
+    fun generateFakeArtistInto() = EntityWithStatsAndInfo.ArtistWithStatsAndInfo(
+        LastFmEntity.Artist("Artist name"),
+        stats = Stats("", 10, 20, 30),
+        EntityInfo("", listOf("tag 1", "tag 2"), wiki = "Artist description & bio")
+    ).apply {
+        topTracks = generateFakeTracksWithStats(1)
+        topAlbums = generateFakeAlbumsWithStats(3)
+    }
+
+    fun generateFakeTracksWithStats(number: Int) = MutableList(number) { index ->
+        EntityWithStats.TrackWithStats(
+            LastFmEntity.Track(
+                "Track $index",
+                artist = "artist"
+            ),
+            Stats("", 10, 20, 30)
+        )
+    }
+
+    fun generateFakeAlbumsWithStats(number: Int) = MutableList(number) { index ->
+        EntityWithStats.AlbumWithStats(
+            LastFmEntity.Album(
+                "Album $index",
+                artist = "artist"
+            ),
+            Stats("", 10, 20, 30)
         )
     }
 }
