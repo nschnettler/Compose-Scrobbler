@@ -307,9 +307,18 @@ private fun PeriodSelectDialog(
     )
 }
 
+// Preview
+
 @Preview
 @Composable
-private fun ProfileContentPreview() = ThemedPreview {
+private fun ProfileContentPreviewLight() = ThemedPreview { ProfileContentPreviewContent() }
+
+@Preview
+@Composable
+private fun ProfileContentPreviewDark() = ThemedPreview(true) { ProfileContentPreviewContent() }
+
+@Composable
+private fun ProfileContentPreviewContent() {
     ProfileContent(
         modifier = Modifier,
         user = PreviewUtils.generateFakeUser(),
