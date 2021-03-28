@@ -8,7 +8,6 @@ import de.schnettler.repo.ChartRepository
 import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
 import de.schnettler.scrobbler.ui.common.compose.freshFrom
 import de.schnettler.scrobbler.ui.common.compose.streamFrom
-import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,8 +19,6 @@ class ChartViewModelImpl @Inject constructor(private val repo: ChartRepository) 
 
     override val trackState: MutableStateFlow<RefreshableUiState<List<TopListTrack>>> =
         MutableStateFlow(RefreshableUiState.Success(data = null, loading = true))
-
-    override val pagerState: PagerState = PagerState()
 
     init {
         viewModelScope.apply {

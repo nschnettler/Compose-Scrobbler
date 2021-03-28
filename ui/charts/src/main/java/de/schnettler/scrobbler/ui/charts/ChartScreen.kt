@@ -1,24 +1,17 @@
 package de.schnettler.scrobbler.ui.charts
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
@@ -30,8 +23,7 @@ import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenError
 import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
-import de.schnettler.scrobbler.ui.common.compose.widget.Pager
-import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
+import de.schnettler.scrobbler.ui.common.compose.widget.TabbedPager
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 
 @Composable
@@ -41,32 +33,44 @@ fun ChartScreen(
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val pagerState = viewModel.pagerState
+    TabbedPager(
+        pages = ChartTab.values().map { it.text },
+        modifier = modifier,
+    ) { page ->
+        ChartPage(page, viewModel, errorHandler, actionHandler)
+    }
+}
 
-    val selectedTab = ChartTab.values()[pagerState.currentPage]
+@Composable
+private fun ChartPage(
+    pageIndex: Int,
+    viewModel: ChartViewModel,
+    errorHandler: @Composable (UIError) -> Unit,
+    actionHandler: (UIAction) -> Unit
+) {
+    val currentTab = ChartTab.values()[pageIndex]
+    val state by when (currentTab) {
+        ChartTab.Artist -> viewModel.artistState.collectAsState()
+        ChartTab.Track -> viewModel.trackState.collectAsState()
+    }
 
-    Column {
-        Spacer(modifier = Modifier.statusBarsHeight())
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            backgroundColor = MaterialTheme.colors.surface
-        ) {
-            ChartTab.values().forEach { tab ->
-                Tab(
-                    selected = selectedTab == tab,
-                    onClick = { pagerState.currentPage = tab.ordinal },
-                    text = { Text(text = stringResource(id = tab.text)) }
-                )
-            }
-        }
-        ChartPager(
-            viewModel = viewModel,
-            items = ChartTab.values(),
-            pagerState = pagerState,
-            actionHandler = actionHandler,
-            errorHandler = errorHandler,
-            modifier = modifier,
-        )
+    if (state.isError) {
+        errorHandler(
+            UIError.ShowErrorSnackbar(
+                state = state,
+                fallbackMessage = stringResource(id = R.string.error_charts),
+                onAction = { viewModel.refresh(currentTab) }
+            ))
+    }
+
+    LoadingContent(
+        empty = state.isInitialLoading,
+        emptyContent = { FullScreenLoading() },
+        loading = state.isRefreshLoading,
+        onRefresh = { viewModel.refresh(currentTab) }) {
+        state.currentData?.let {
+            ChartList(it, actionHandler)
+        } ?: FullScreenError()
     }
 }
 
@@ -92,48 +96,6 @@ private fun ChartList(
             )
         }
         CustomDivider()
-    }
-}
-
-@Composable
-fun ChartPager(
-    viewModel: ChartViewModel,
-    items: Array<ChartTab>,
-    modifier: Modifier = Modifier,
-    pagerState: PagerState = remember { PagerState() },
-    actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit
-) {
-    pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
-
-    Pager(
-        state = pagerState,
-        modifier = modifier
-    ) {
-        val currentTab = items[page]
-        val state by when (currentTab) {
-            ChartTab.Artist -> viewModel.artistState.collectAsState()
-            ChartTab.Track -> viewModel.trackState.collectAsState()
-        }
-
-        if (state.isError) {
-            errorHandler(
-                UIError.ShowErrorSnackbar(
-                    state = state,
-                    fallbackMessage = stringResource(id = R.string.error_charts),
-                    onAction = { viewModel.refresh(currentTab) }
-                ))
-        }
-
-        LoadingContent(
-            empty = state.isInitialLoading,
-            emptyContent = { FullScreenLoading() },
-            loading = state.isRefreshLoading,
-            onRefresh = { viewModel.refresh(currentTab) }) {
-            state.currentData?.let {
-                ChartList(it, actionHandler)
-            } ?: FullScreenError()
-        }
     }
 }
 

@@ -43,6 +43,7 @@ dependencies {
     api("androidx.compose.ui:ui-tooling:_")
     api("androidx.constraintlayout:constraintlayout-compose:_")
     implementation("androidx.navigation:navigation-compose:_")
+    implementation("com.google.accompanist", "accompanist-pager", "_")
     api(AndroidX.compose.runtime.liveData)
 
     // Other
