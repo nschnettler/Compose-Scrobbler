@@ -30,9 +30,12 @@ dependencies {
     implementation(project(":repo"))
 
     implementation(AndroidX.lifecycle.viewModelKtx)
+    implementation("androidx.paging:paging-compose:1.0.0-alpha08")
 
     implementation(AndroidX.hilt.lifecycleViewModel)
     kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
+
+    implementation(JakeWharton.timber)
 }

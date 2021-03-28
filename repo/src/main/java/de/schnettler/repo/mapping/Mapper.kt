@@ -33,6 +33,10 @@ internal inline fun <F, T> Mapper<F, T>.forLists(): suspend (List<F>) -> List<T>
     return { list -> list.map { item -> map(item) } }
 }
 
+internal inline fun <F, T> IndexedMapper<F, T>.forPagedLists(baseIndex: Int): suspend (List<F>) -> List<T> {
+    return { list -> list.mapIndexed { index, item -> map(baseIndex + index, item) } }
+}
+
 internal inline fun <F, T> IndexedMapper<F, T>.forLists(): suspend (List<F>) -> List<T> {
     return { list -> list.mapIndexed { index, item -> map(index, item) } }
 }

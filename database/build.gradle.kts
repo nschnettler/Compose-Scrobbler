@@ -60,6 +60,9 @@ dependencies {
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
 
+    // Paging
+    implementation(AndroidX.paging.common)
+
     // Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)

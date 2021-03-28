@@ -1,16 +1,14 @@
 package de.schnettler.scrobbler.ui.charts
 
 import androidx.lifecycle.ViewModel
-import de.schnettler.database.models.TopListArtist
-import de.schnettler.database.models.TopListTrack
-import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
+import androidx.paging.PagingData
+import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 
 abstract class ChartViewModel : ViewModel() {
-    abstract val artistState: StateFlow<RefreshableUiState<List<TopListArtist>>>
-    abstract val trackState: StateFlow<RefreshableUiState<List<TopListTrack>>>
-
     abstract fun refresh(tab: ChartTab)
     abstract val pagerState: PagerState
+    abstract val artistCharts: Flow<PagingData<Toplist>>
+    abstract val trackCharts: Flow<PagingData<Toplist>>
 }

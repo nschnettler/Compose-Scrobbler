@@ -54,6 +54,9 @@ dependencies {
     // Retrofit
     implementation(Square.Retrofit2.retrofit)
 
+    // Paging
+    implementation(AndroidX.paging.common)
+
     // Other
     implementation(KotlinX.coroutines.core)
     implementation("androidx.datastore:datastore-preferences:_")

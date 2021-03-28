@@ -1,10 +1,13 @@
 package de.schnettler.scrobbler.ui.charts
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ListItem
 import androidx.compose.material.MaterialTheme
@@ -12,12 +15,16 @@ import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemsIndexed
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
@@ -25,7 +32,6 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenError
 import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.ui.common.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
@@ -33,6 +39,7 @@ import de.schnettler.scrobbler.ui.common.compose.widget.Pager
 import de.schnettler.scrobbler.ui.common.compose.widget.PagerState
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import timber.log.Timber
 
 @Composable
 fun ChartScreen(
@@ -64,7 +71,6 @@ fun ChartScreen(
             items = ChartTab.values(),
             pagerState = pagerState,
             actionHandler = actionHandler,
-            errorHandler = errorHandler,
             modifier = modifier,
         )
     }
@@ -72,11 +78,11 @@ fun ChartScreen(
 
 @Composable
 private fun ChartList(
-    chartData: List<Toplist>,
+    chartData: LazyPagingItems<Toplist>,
     handler: (UIAction) -> Unit,
     modifier: Modifier = Modifier,
 ) = LazyColumn(modifier) {
-    itemsIndexed(items = chartData) { index, entry ->
+    itemsIndexed(chartData) { index, entry ->
         when (entry) {
             is TopListArtist -> ChartArtistListItem(
                 name = entry.value.name,
@@ -93,6 +99,44 @@ private fun ChartList(
         }
         CustomDivider()
     }
+
+    val loadState = chartData.loadState
+    when {
+        loadState.append is LoadState.Loading -> {
+            item { LoadingItem() }
+        }
+        loadState.refresh is LoadState.Error -> {
+//            val e = lazyMovieItems.loadState.refresh as LoadState.Error
+//            item {
+//                ErrorItem(
+//                    message = e.error.localizedMessage!!,
+//                    modifier = Modifier.fillParentMaxSize(),
+//                    onClickRetry = { retry() }
+//                )
+//            }
+        }
+        loadState.append is LoadState.Error -> {
+//            val e = lazyMovieItems.loadState.append as LoadState.Error
+//            item {
+//                ErrorItem(
+//                    message = e.error.localizedMessage!!,
+//                    onClickRetry = { retry() }
+//                )
+//            }
+        }
+    }
+}
+
+@Composable
+fun LoadingItem() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(56.dp)
+            .fillMaxWidth()
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @Composable
@@ -101,8 +145,7 @@ fun ChartPager(
     items: Array<ChartTab>,
     modifier: Modifier = Modifier,
     pagerState: PagerState = remember { PagerState() },
-    actionHandler: (UIAction) -> Unit,
-    errorHandler: @Composable (UIError) -> Unit
+    actionHandler: (UIAction) -> Unit
 ) {
     pagerState.maxPage = (items.size - 1).coerceAtLeast(0)
 
@@ -110,29 +153,23 @@ fun ChartPager(
         state = pagerState,
         modifier = modifier
     ) {
-        val currentTab = items[page]
-        val state by when (currentTab) {
-            ChartTab.Artist -> viewModel.artistState.collectAsState()
-            ChartTab.Track -> viewModel.trackState.collectAsState()
+        val pagingItems = when (items[page]) {
+            ChartTab.Artist -> viewModel.artistCharts.collectAsLazyPagingItems()
+            ChartTab.Track -> viewModel.trackCharts.collectAsLazyPagingItems()
         }
+        val loadStates = pagingItems.loadState
 
-        if (state.isError) {
-            errorHandler(
-                UIError.ShowErrorSnackbar(
-                    state = state,
-                    fallbackMessage = stringResource(id = R.string.error_charts),
-                    onAction = { viewModel.refresh(currentTab) }
-                ))
+        if (loadStates.refresh is LoadState.Error) {
+            val errorState = loadStates.refresh as LoadState.Error
+            Timber.e(errorState.error)
         }
 
         LoadingContent(
-            empty = state.isInitialLoading,
+            empty = false,
             emptyContent = { FullScreenLoading() },
-            loading = state.isRefreshLoading,
-            onRefresh = { viewModel.refresh(currentTab) }) {
-            state.currentData?.let {
-                ChartList(it, actionHandler)
-            } ?: FullScreenError()
+            loading = loadStates.refresh == LoadState.Loading,
+            onRefresh = { pagingItems.refresh() }) {
+            ChartList(chartData = pagingItems, actionHandler)
         }
     }
 }

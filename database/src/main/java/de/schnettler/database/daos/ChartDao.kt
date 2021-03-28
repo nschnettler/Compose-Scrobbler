@@ -1,5 +1,6 @@
 package de.schnettler.database.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
@@ -19,9 +20,15 @@ abstract class ChartDao : BaseDao<TopListEntry> {
     @Query("SELECT * FROM toplist WHERE entityType = :entityType AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopArtists(entityType: EntityType = EntityType.ARTIST, listType: ListType): Flow<List<TopListArtist>>
 
+    @Query("SELECT * FROM toplist WHERE entityType = :entityType AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopArtistsPaging(entityType: EntityType = EntityType.ARTIST, listType: ListType = ListType.CHART): PagingSource<Int, TopListArtist>
+
     @Transaction
     @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
     abstract fun getTopTracks(type: EntityType = EntityType.TRACK, listType: ListType = ListType.USER): Flow<List<TopListTrack>>
+
+    @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
+    abstract fun getTopTracksPaging(type: EntityType = EntityType.TRACK, listType: ListType = ListType.CHART): PagingSource<Int, TopListTrack>
 
     @Transaction
     @Query("SELECT * FROM toplist WHERE entityType = :type AND listType = :listType ORDER BY `index` ASC")
@@ -32,4 +39,7 @@ abstract class ChartDao : BaseDao<TopListEntry> {
 
     @Query("SELECT * FROM tracks INNER JOIN toplist ON tracks.id = toplist.id WHERE listType = 'USER' AND imageUrl is NULL ")
     abstract suspend fun getTracksWithoutImages(): List<LastFmEntity.Track>
+
+    @Query("DELETE FROM toplist WHERE entityType = :entityType AND listType = :listType")
+    abstract suspend fun clearTopList(entityType: EntityType, listType: ListType)
 }
