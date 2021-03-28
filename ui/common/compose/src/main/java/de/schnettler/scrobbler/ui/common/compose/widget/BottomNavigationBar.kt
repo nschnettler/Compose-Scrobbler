@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import com.google.accompanist.insets.navigationBarsPadding
 import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 
 @Composable
 fun BottomNavigationBar(

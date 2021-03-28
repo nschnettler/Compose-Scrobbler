@@ -17,7 +17,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta02"
+        kotlinCompilerExtensionVersion = "1.0.0-beta03"
     }
 }
 
@@ -50,6 +50,6 @@ dependencies {
     implementation(AndroidX.core.ktx)
 
     // Coil & Insets
-    api("dev.chrisbanes.accompanist", "accompanist-coil", "_")
-    api("dev.chrisbanes.accompanist", "accompanist-insets", "_")
+    api("com.google.accompanist", "accompanist-coil", "_")
+    api("com.google.accompanist", "accompanist-insets", "_")
 }

@@ -43,6 +43,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.database.models.TopListAlbum
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
@@ -61,8 +63,6 @@ import de.schnettler.scrobbler.ui.common.compose.widget.TopListCarousel
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.common.util.firstLetter
 import de.schnettler.scrobbler.ui.common.util.toFlagEmoji
-import dev.chrisbanes.accompanist.coil.CoilImage
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

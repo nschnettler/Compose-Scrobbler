@@ -26,12 +26,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import com.google.accompanist.coil.CoilImage
 import de.schnettler.scrobbler.ui.common.compose.DominantColorCache
 import de.schnettler.scrobbler.ui.common.compose.DominantColors
 import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.util.abbreviate
-import dev.chrisbanes.accompanist.coil.CoilImage
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
