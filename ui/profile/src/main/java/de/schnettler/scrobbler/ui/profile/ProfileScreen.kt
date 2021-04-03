@@ -91,14 +91,8 @@ fun ProfileScreen(
         }, initial = timePeriod)
     }
 
-    if (state.hasError) {
-        errorHandler(
-            UIError.Snackbar(
-                state.exception!!,
-                stringResource(id = R.string.error_profile),
-                onAction = viewModel::refresh
-            )
-        )
+    state.exception?.let {
+        errorHandler(UIError.Snackbar(it, stringResource(id = R.string.error_profile), onAction = viewModel::refresh))
     }
 
     LoadingContent(
