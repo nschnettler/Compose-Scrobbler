@@ -12,12 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import de.schnettler.database.models.TopListArtist
 import de.schnettler.database.models.TopListTrack
 import de.schnettler.database.models.Toplist
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
+import de.schnettler.scrobbler.ui.common.compose.util.PreviewUtils
+import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenError
 import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
@@ -123,4 +126,12 @@ private fun RankingListItem(title: String, subtitle: String, index: Int, onClick
         icon = { IndexListIconBackground(index = index) },
         modifier = Modifier.clickable(onClick = { onClicked() }),
     )
+}
+
+// Preview
+
+@Preview
+@Composable
+fun ChartListPreview() = ThemedPreview() {
+    ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { })
 }

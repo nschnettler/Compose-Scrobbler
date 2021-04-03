@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.common.whenNotEmpty
@@ -22,6 +23,8 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
+import de.schnettler.scrobbler.ui.common.compose.util.PreviewUtils
+import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
 import de.schnettler.scrobbler.ui.common.compose.widget.ChipFlowRow
 import de.schnettler.scrobbler.ui.common.compose.widget.CollapsingToolbar
@@ -128,4 +131,23 @@ private fun TrackItem(index: Int, track: TrackWithStats, actionHandler: (UIActio
         icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track.entity)) })
     )
+}
+
+// Preview
+
+@Preview
+@Composable
+fun ArtistDetailScreenPreviewLight() = ThemedPreview {
+    ArtistDetailScreenPreviewContent()
+}
+
+@Preview
+@Composable
+fun ArtistDetailScreenPreviewDark() = ThemedPreview(true) {
+    ArtistDetailScreenPreviewContent()
+}
+
+@Composable
+fun ArtistDetailScreenPreviewContent() {
+    ArtistDetailScreen(PreviewUtils.generateFakeArtistInto(), { })
 }
