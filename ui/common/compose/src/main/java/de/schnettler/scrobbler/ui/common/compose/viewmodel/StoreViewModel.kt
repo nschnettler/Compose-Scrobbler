@@ -15,9 +15,7 @@ abstract class StoreViewModel<S> : ReduxViewModel<UiState<S>>(UiState(true)) {
     private suspend fun <R> Flow<StoreResponse<R>>.collectIntoState(reducer: (S?, R) -> S) {
         collect { response ->
             setState {
-                this.copyWithStoreResponse(response) { s, t ->
-                    reducer(s, t)
-                }
+                this.copyWithStoreResponse(response, reducer)
             }
         }
     }
@@ -27,9 +25,7 @@ abstract class StoreViewModel<S> : ReduxViewModel<UiState<S>>(UiState(true)) {
         reducer: (S?, Output) -> S
     ) {
         viewModelScope.launch {
-            this@streamIntoState.stream(StoreRequest.cached(key, true)).collectIntoState { state, response ->
-                reducer(state, response)
-            }
+            this@streamIntoState.stream(StoreRequest.cached(key, true)).collectIntoState(reducer)
         }
     }
 
