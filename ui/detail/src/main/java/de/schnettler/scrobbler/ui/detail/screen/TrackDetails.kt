@@ -24,11 +24,11 @@ import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
-import de.schnettler.scrobbler.ui.detail.widget.ChipRow
+import de.schnettler.scrobbler.ui.common.compose.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
-import dev.chrisbanes.accompanist.insets.navigationBarsHeight
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import com.google.accompanist.insets.navigationBarsHeight
+import com.google.accompanist.insets.navigationBarsPadding
+import com.google.accompanist.insets.statusBarsHeight
 
 @Composable
 fun TrackDetailScreen(
