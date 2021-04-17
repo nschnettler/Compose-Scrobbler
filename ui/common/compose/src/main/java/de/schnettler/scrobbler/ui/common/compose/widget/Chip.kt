@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
 import de.schnettler.scrobbler.ui.common.compose.theme.CHIP_CORNER_RADIUS
 import de.schnettler.scrobbler.ui.common.compose.theme.COLOR_ACTIVATED_ALPHA
+import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 
 @Composable
 fun Chip(
@@ -50,6 +51,6 @@ fun Chip(
 
 @Preview
 @Composable
-private fun ChipPreview() {
-    Chip(text = "Content", onSelected = { /*TODO*/ })
+private fun ChipPreview() = ThemedPreview {
+    Chip(text = "Content", onSelected = { })
 }

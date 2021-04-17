@@ -7,6 +7,8 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 
 /**
  * Full screen circular progress indicator
@@ -20,4 +22,10 @@ fun FullScreenLoading() {
     ) {
         CircularProgressIndicator()
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun Preview() = ThemedPreview {
+    FullScreenLoading()
 }
