@@ -15,6 +15,7 @@ import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.SessionState
 import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel
+import de.schnettler.scrobbler.search.ui.SearchViewModelImpl
 import de.schnettler.scrobbler.ui.charts.ChartScreen
 import de.schnettler.scrobbler.ui.charts.ChartViewModel
 import de.schnettler.scrobbler.ui.charts.ChartViewModelImpl
@@ -55,7 +56,7 @@ fun MainRouteContent(
             )
         }
         destination(Screen.Search) {
-            val viewModel: SearchViewModel = hiltNavGraphViewModel<SearchViewModel>()
+            val viewModel: SearchViewModel = hiltNavGraphViewModel<SearchViewModelImpl>()
             SearchScreen(viewModel = viewModel, navigator = navigator, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.Profile) {
@@ -75,7 +76,7 @@ fun MainRouteContent(
             val artist = args.firstOrNull()
             val album = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !album.isNullOrEmpty()) {
-                viewModel.updateKey(LastFmEntity.Album(name = album, artist = artist))
+                viewModel.updateKey(de.schnettler.scrobbler.model.LastFmEntity.Album(name = album, artist = artist))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }
@@ -84,7 +85,7 @@ fun MainRouteContent(
             val artist = args.firstOrNull()
             val track = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !track.isNullOrEmpty()) {
-                viewModel.updateKey(LastFmEntity.Track(name = track, artist = artist))
+                viewModel.updateKey(de.schnettler.scrobbler.model.LastFmEntity.Track(name = track, artist = artist))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }

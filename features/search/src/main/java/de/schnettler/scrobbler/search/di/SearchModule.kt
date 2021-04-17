@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.schnettler.lastfm.annotation.retrofit.BasicLastfmRetrofitClient
-import de.schnettler.scrobbler.search.api.SearchService
+import de.schnettler.scrobbler.search.api.SearchApi
 import retrofit2.Retrofit
 
 @Module
@@ -14,5 +14,5 @@ class SearchModule {
     @Provides
     fun providesSearchService(
         @BasicLastfmRetrofitClient retrofit: Retrofit
-    ): SearchService = retrofit.create(SearchService::class.java)
+    ): SearchApi = retrofit.create(SearchApi::class.java)
 }

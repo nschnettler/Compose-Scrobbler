@@ -5,7 +5,7 @@ import de.schnettler.scrobbler.search.model.SearchResultResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface SearchService {
+interface SearchApi {
     @GET("?method=artist.search")
     @Wrapped(path = ["results", "artistmatches", "artist"])
     suspend fun searchArtist(

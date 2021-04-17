@@ -34,20 +34,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsHeight
+import de.schnettler.scrobbler.compose.model.NavigationEvent
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenAlbumDetails
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenArtistDetails
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenTrackDetails
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
-import de.schnettler.scrobbler.core.model.BaseEntity
-import de.schnettler.scrobbler.core.model.EntityWithStats
-import de.schnettler.scrobbler.core.model.LastFmEntity.Album
-import de.schnettler.scrobbler.core.model.LastFmEntity.Track
-import de.schnettler.scrobbler.compose.model.NavigationEvent
-import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenAlbumDetails
-import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenArtistDetails
-import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenTrackDetails
 import de.schnettler.scrobbler.search.R
+import de.schnettler.scrobbler.search.model.SearchResult
 import de.schnettler.scrobbler.search.ui.widget.SelectableChipRow
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -102,15 +99,15 @@ fun SearchScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchResults(results: List<BaseEntity>, navigator: (NavigationEvent) -> Unit) {
+private fun SearchResults(results: List<SearchResult>, navigator: (NavigationEvent) -> Unit) {
     LazyColumn {
         items(items = results) {
             when (it) {
-                is EntityWithStats -> {
+                is SearchResult.ArtistResult -> {
                     ListItem(
-                        text = { Text(it.entity.name) },
+                        text = { Text(it.name) },
                         secondaryText = {
-                            Text("${it.stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
+                            Text("${it.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
                         },
                         icon = {
                             PlainListIconBackground {
@@ -118,15 +115,15 @@ fun SearchResults(results: List<BaseEntity>, navigator: (NavigationEvent) -> Uni
                             }
                         },
                         modifier = Modifier.clickable(onClick = {
-                            navigator.invoke(OpenArtistDetails(it.entity.name))
+                            navigator.invoke(OpenArtistDetails(it.name))
                         })
                     )
                 }
-                is Album -> {
+                is SearchResult.AlbumResult -> {
                     ListItem(
                         text = { Text(it.name) },
                         secondaryText = {
-                            Text(it.artist)
+                            Text(it.artistName)
                         },
                         icon = {
                             PlainListIconBackground {
@@ -134,15 +131,15 @@ fun SearchResults(results: List<BaseEntity>, navigator: (NavigationEvent) -> Uni
                             }
                         },
                         modifier = Modifier.clickable(onClick = {
-                            navigator.invoke(OpenAlbumDetails(it.name, it.artist))
+                            navigator.invoke(OpenAlbumDetails(it.name, it.artistName))
                         })
                     )
                 }
-                is Track -> {
+                is SearchResult.TrackResult -> {
                     ListItem(
                         text = { Text(it.name) },
                         secondaryText = {
-                            Text(it.artist)
+                            Text(it.artistName)
                         },
                         icon = {
                             PlainListIconBackground {
@@ -150,7 +147,7 @@ fun SearchResults(results: List<BaseEntity>, navigator: (NavigationEvent) -> Uni
                             }
                         },
                         modifier = Modifier.clickable(onClick = {
-                            navigator.invoke(OpenTrackDetails(it.name, it.artist))
+                            navigator.invoke(OpenTrackDetails(it.name, it.artistName))
                         })
                     )
                 }
