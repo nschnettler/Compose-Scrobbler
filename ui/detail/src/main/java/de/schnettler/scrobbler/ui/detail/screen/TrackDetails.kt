@@ -15,20 +15,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import de.schnettler.common.whenNotEmpty
-import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.scrobbler.ui.common.compose.itemSpacer
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
-import de.schnettler.scrobbler.ui.common.compose.widget.Header
-import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
-import de.schnettler.scrobbler.ui.detail.AlbumCategory
-import de.schnettler.scrobbler.ui.detail.R
-import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
-import de.schnettler.scrobbler.ui.common.compose.widget.ChipRow
-import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.navigationBarsPadding
 import com.google.accompanist.insets.statusBarsHeight
+import de.schnettler.common.whenNotEmpty
+import de.schnettler.scrobbler.compose.navigation.UIAction
+import de.schnettler.scrobbler.compose.widget.ChipRow
+import de.schnettler.scrobbler.compose.widget.Header
+import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.ui.common.compose.itemSpacer
+import de.schnettler.scrobbler.ui.detail.AlbumCategory
+import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
+import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
+import de.schnettler.scrobbler.ui.detail.widget.ListeningStats
 
 @Composable
 fun TrackDetailScreen(

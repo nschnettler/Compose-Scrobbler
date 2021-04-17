@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.ui.history.mapper
 
 import androidx.annotation.StringRes
-import de.schnettler.repo.mapping.Mapper
+import de.schnettler.scrobbler.core.map.Mapper
 import de.schnettler.scrobbler.ui.history.R
 import javax.inject.Inject
 

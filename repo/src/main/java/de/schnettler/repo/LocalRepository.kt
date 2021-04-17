@@ -7,8 +7,8 @@ import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.api.lastfm.UserService
-import de.schnettler.repo.mapping.forLists
 import de.schnettler.repo.mapping.track.ScrobbleMapper
+import de.schnettler.scrobbler.core.map.forLists
 import javax.inject.Inject
 
 class LocalRepository @Inject constructor(

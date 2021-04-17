@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.ui.profile
 
 import androidx.compose.ui.unit.Dp
-import de.schnettler.scrobbler.ui.common.compose.viewmodel.StoreViewModel
+import de.schnettler.scrobbler.core.ui.viewmodel.StoreViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 

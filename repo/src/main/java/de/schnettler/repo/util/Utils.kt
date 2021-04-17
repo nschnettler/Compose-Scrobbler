@@ -1,8 +1,6 @@
 package de.schnettler.repo.util
 
-import de.schnettler.repo.mapping.response.LastFmResponse
-
-fun Long.toBoolean() = this == 1L
+import de.schnettler.lastfm.models.LastFmResponse
 
 @Suppress("TooGenericExceptionCaught")
 inline fun <T> safePost(post: () -> LastFmResponse<T>): LastFmResponse<T> =

@@ -1,8 +1,11 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
-include(":network:common")
-include(":network:spotify")
-include(":network:lastfm")
+include(":libraries:core")
+include(":libraries:compose")
+include(":features:search")
+include(":libraries:network:common")
+include(":libraries:network:spotify")
+include(":libraries:network:lastfm")
 include(":ui:history")
 include(":ui:search")
 include(":ui:detail")

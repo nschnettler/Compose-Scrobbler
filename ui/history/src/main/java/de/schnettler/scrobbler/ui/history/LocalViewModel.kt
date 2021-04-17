@@ -4,10 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.database.models.Scrobble
+import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.repo.LocalRepository
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.mapping.response.LastFmResponse
-import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel
+import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel
 import de.schnettler.scrobbler.ui.history.mapper.RejectionCodeToReasonMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

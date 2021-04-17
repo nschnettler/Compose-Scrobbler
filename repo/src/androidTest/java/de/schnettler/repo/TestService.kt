@@ -13,7 +13,6 @@ import de.schnettler.lastfm.models.DateDto
 import de.schnettler.lastfm.models.ImageDto
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.ResponseInfo
-import de.schnettler.lastfm.models.SearchResultDto
 import de.schnettler.lastfm.models.SessionDto
 import de.schnettler.lastfm.models.TrackInfoDto
 import de.schnettler.lastfm.models.UserArtistResponse
@@ -100,15 +99,15 @@ class TestService : LastFmService {
         TODO("Not yet implemented")
     }
 
-    override suspend fun searchArtist(query: String, limit: Long): List<SearchResultDto> {
+    override suspend fun searchArtist(query: String, limit: Long): List<de.schnettler.scrobbler.search.model.SearchResultDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun searchAlbum(query: String, limit: Long): List<SearchResultDto> {
+    override suspend fun searchAlbum(query: String, limit: Long): List<de.schnettler.scrobbler.search.model.SearchResultDto> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun searchTrack(query: String, limit: Long): List<SearchResultDto> {
+    override suspend fun searchTrack(query: String, limit: Long): List<de.schnettler.scrobbler.search.model.SearchResultDto> {
         TODO("Not yet implemented")
     }
 }

@@ -2,7 +2,7 @@ package de.schnettler.repo.mapping.auth
 
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.AuthTokenType
-import de.schnettler.repo.mapping.Mapper
+import de.schnettler.scrobbler.core.map.Mapper
 import de.schnettler.scrobbler.network.spotify.models.SpotifyTokenDto
 
 object SpotifyAuthMapper : Mapper<SpotifyTokenDto, AuthToken> {

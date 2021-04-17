@@ -5,7 +5,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.KEY_ROUTE
 import androidx.navigation.compose.composable
-import de.schnettler.scrobbler.ui.common.compose.navigation.Screen
+import de.schnettler.scrobbler.compose.navigation.Screen
 
 fun NavBackStackEntry.route() = arguments?.getString(KEY_ROUTE)
 

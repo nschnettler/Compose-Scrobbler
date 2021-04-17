@@ -4,7 +4,7 @@ import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.database.daos.UserDao
-import de.schnettler.database.models.User
+import de.schnettler.scrobbler.core.model.User
 import de.schnettler.lastfm.api.lastfm.UserService
 import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.repo.mapping.user.UserMapper

@@ -10,9 +10,9 @@ import de.schnettler.database.DataGenerator.generateAlbumWithStatsAndInfo
 import de.schnettler.database.DataGenerator.generateAlbums
 import de.schnettler.database.DataGenerator.generateAlbumsWithStats
 import de.schnettler.database.collectValue
-import de.schnettler.database.models.EntityWithStats
-import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.Stats
+import de.schnettler.scrobbler.core.model.EntityWithStats
+import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.core.model.Stats
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 

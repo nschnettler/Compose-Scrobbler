@@ -4,7 +4,7 @@ import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
-import de.schnettler.database.models.LastFmEntity
+import de.schnettler.scrobbler.core.model.LastFmEntity
 import de.schnettler.scrobbler.network.spotify.api.SpotifySearchService
 import timber.log.Timber
 import javax.inject.Inject

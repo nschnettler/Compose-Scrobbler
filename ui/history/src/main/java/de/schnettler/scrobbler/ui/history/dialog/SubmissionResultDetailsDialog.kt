@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.ui.common.compose.theme.AppColor
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.widget.Orientation
-import de.schnettler.scrobbler.ui.common.compose.widget.Spacer
+import de.schnettler.scrobbler.compose.theme.AppColor
+import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.Orientation
+import de.schnettler.scrobbler.compose.widget.Spacer
 import de.schnettler.scrobbler.ui.history.R
 import de.schnettler.scrobbler.ui.history.widet.SubmissionResultScrobbleItem
 import kotlin.time.ExperimentalTime

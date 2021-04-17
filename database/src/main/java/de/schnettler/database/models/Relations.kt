@@ -3,7 +3,7 @@ package de.schnettler.database.models
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
-import de.schnettler.database.models.LastFmEntity.Artist
+import de.schnettler.scrobbler.core.model.LastFmEntity
 
 @Entity(tableName = "artist_relations", primaryKeys = ["artistId", "orderIndex"])
 data class RelatedArtistEntry(
@@ -15,5 +15,5 @@ data class RelatedArtistEntry(
 data class RelatedArtist(
     @Embedded val relation: RelatedArtistEntry,
     @Relation(parentColumn = "otherArtistId", entityColumn = "id")
-    val artist: Artist
+    val artist: LastFmEntity.Artist
 )

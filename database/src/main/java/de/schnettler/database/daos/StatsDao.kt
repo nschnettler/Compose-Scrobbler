@@ -2,7 +2,7 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.database.models.Stats
+import de.schnettler.scrobbler.core.model.Stats
 
 @Dao
 abstract class StatsDao : BaseDao<Stats> {

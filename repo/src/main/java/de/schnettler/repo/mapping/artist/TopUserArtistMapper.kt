@@ -1,12 +1,12 @@
 package de.schnettler.repo.mapping.artist
 
-import de.schnettler.database.models.EntityType
-import de.schnettler.database.models.ListType
-import de.schnettler.database.models.TopListArtist
+import de.schnettler.scrobbler.core.model.TopListArtist
 import de.schnettler.lastfm.models.UserArtistDto
-import de.schnettler.repo.mapping.ArtistMapper
-import de.schnettler.repo.mapping.IndexedMapper
-import de.schnettler.repo.mapping.createTopListEntry
+import de.schnettler.scrobbler.core.map.ArtistMapper
+import de.schnettler.scrobbler.core.map.IndexedMapper
+import de.schnettler.scrobbler.core.map.createTopListEntry
+import de.schnettler.scrobbler.core.model.EntityType
+import de.schnettler.scrobbler.core.model.ListType
 
 object TopUserArtistMapper : IndexedMapper<UserArtistDto, TopListArtist> {
     override suspend fun map(index: Int, from: UserArtistDto): TopListArtist {

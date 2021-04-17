@@ -1,10 +1,10 @@
 package de.schnettler.repo.mapping.album
 
-import de.schnettler.database.models.EntityWithStats.AlbumWithStats
 import de.schnettler.lastfm.models.AlbumDto
-import de.schnettler.repo.mapping.AlbumMapper
-import de.schnettler.repo.mapping.Mapper
-import de.schnettler.repo.mapping.StatMapper
+import de.schnettler.scrobbler.core.map.AlbumMapper
+import de.schnettler.scrobbler.core.map.Mapper
+import de.schnettler.scrobbler.core.map.StatMapper
+import de.schnettler.scrobbler.core.model.EntityWithStats.AlbumWithStats
 
 object AlbumWithStatsMapper : Mapper<AlbumDto, AlbumWithStats> {
     override suspend fun map(from: AlbumDto): AlbumWithStats {

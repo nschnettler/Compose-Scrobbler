@@ -17,14 +17,14 @@ import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
-import de.schnettler.database.models.EntityInfo
-import de.schnettler.database.models.LastFmEntity
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.Session
-import de.schnettler.database.models.Stats
-import de.schnettler.database.models.TopListEntry
-import de.schnettler.database.models.User
+import de.schnettler.scrobbler.core.model.User
+import de.schnettler.scrobbler.core.model.EntityInfo
+import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.core.model.Stats
+import de.schnettler.scrobbler.core.model.TopListEntry
 import dev.matrix.roomigrant.GenerateRoomMigrations
 
 @Database(

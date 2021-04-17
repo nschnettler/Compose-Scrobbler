@@ -1,15 +1,15 @@
 package de.schnettler.repo.mapping.track
 
-import de.schnettler.database.models.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.TrackInfoDto
-import de.schnettler.repo.mapping.AlbumMapper
-import de.schnettler.repo.mapping.InfoMapper
-import de.schnettler.repo.mapping.Mapper
-import de.schnettler.repo.mapping.StatMapper
-import de.schnettler.repo.mapping.TrackMapper
+import de.schnettler.scrobbler.core.map.AlbumMapper
+import de.schnettler.scrobbler.core.map.InfoMapper
+import de.schnettler.scrobbler.core.map.Mapper
+import de.schnettler.scrobbler.core.map.StatMapper
+import de.schnettler.scrobbler.core.map.TrackMapper
 
 object TrackInfoMapper : Mapper<TrackInfoDto, TrackWithStatsAndInfo> {
     override suspend fun map(from: TrackInfoDto): TrackWithStatsAndInfo {

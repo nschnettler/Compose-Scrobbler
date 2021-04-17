@@ -31,14 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.database.models.Scrobble
+import de.schnettler.scrobbler.compose.navigation.UIAction
+import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
+import de.schnettler.scrobbler.compose.navigation.UIError
+import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.SwipeRefreshProgressIndicator
+import de.schnettler.scrobbler.compose.widget.SwipeToRefreshLayout
 import de.schnettler.scrobbler.ui.common.compose.LoadingScreen
-import de.schnettler.scrobbler.ui.common.compose.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.ui.common.compose.SwipeToRefreshLayout
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.history.dialog.ConfirmDialog
 import de.schnettler.scrobbler.ui.history.dialog.SubmissionResultDetailsDialog
 import de.schnettler.scrobbler.ui.history.dialog.TrackEditDialog
@@ -51,7 +52,6 @@ import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.ui.history.widet.ErrorItem
 import de.schnettler.scrobbler.ui.history.widet.NowPlayingItem
 import de.schnettler.scrobbler.ui.history.widet.ScrobbleItem
-import com.google.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HistoryScreen(

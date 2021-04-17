@@ -2,7 +2,7 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.database.models.User
+import de.schnettler.scrobbler.core.model.User
 import kotlinx.coroutines.flow.Flow
 
 @Dao

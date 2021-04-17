@@ -32,11 +32,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
-import de.schnettler.scrobbler.ui.common.compose.widget.NameListIcon
+import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.NameListIcon
+import de.schnettler.scrobbler.core.ktx.milliSecondsToDate
+import de.schnettler.scrobbler.core.ktx.packageNameToAppName
 import de.schnettler.scrobbler.ui.common.util.asMinSec
-import de.schnettler.scrobbler.ui.common.util.milliSecondsToDate
-import de.schnettler.scrobbler.ui.common.util.packageNameToAppName
 import de.schnettler.scrobbler.ui.history.R
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
 import kotlin.time.Duration

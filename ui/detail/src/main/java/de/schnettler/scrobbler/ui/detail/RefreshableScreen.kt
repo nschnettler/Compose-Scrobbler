@@ -3,11 +3,11 @@ package de.schnettler.scrobbler.ui.detail
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import de.schnettler.scrobbler.ui.common.compose.RefreshableUiState
-import de.schnettler.scrobbler.ui.common.compose.navigation.UIError
-import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenError
-import de.schnettler.scrobbler.ui.common.compose.widget.FullScreenLoading
-import de.schnettler.scrobbler.ui.common.compose.widget.LoadingContent
+import de.schnettler.scrobbler.compose.navigation.UIError
+import de.schnettler.scrobbler.compose.widget.FullScreenError
+import de.schnettler.scrobbler.compose.widget.FullScreenLoading
+import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
 
 @Composable
 fun <Data> RefreshableScreen(

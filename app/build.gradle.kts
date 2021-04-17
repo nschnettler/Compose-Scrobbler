@@ -80,6 +80,8 @@ dependencies {
     implementation(project(":ui:search"))
     implementation(project(":ui:history"))
 
+    implementation(project(":features:search"))
+
     // AndroidX
     implementation(AndroidX.appCompat)
     implementation(AndroidX.compose.runtime.liveData)

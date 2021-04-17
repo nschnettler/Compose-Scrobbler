@@ -33,7 +33,7 @@ import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.S
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.repo.preferences.PreferenceEntry
-import de.schnettler.scrobbler.ui.common.compose.model.MediaCardSize
+import de.schnettler.scrobbler.compose.model.MediaCardSize
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

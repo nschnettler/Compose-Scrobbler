@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import de.schnettler.database.models.Scrobble
-import de.schnettler.scrobbler.ui.common.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.ui.history.model.ScrobbleAction
 
 @OptIn(ExperimentalMaterialApi::class)

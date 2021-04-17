@@ -3,13 +3,13 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import de.schnettler.database.models.EntityType
-import de.schnettler.database.models.LastFmEntity
-import de.schnettler.database.models.ListType
-import de.schnettler.database.models.TopListAlbum
-import de.schnettler.database.models.TopListArtist
-import de.schnettler.database.models.TopListEntry
-import de.schnettler.database.models.TopListTrack
+import de.schnettler.scrobbler.core.model.TopListAlbum
+import de.schnettler.scrobbler.core.model.TopListArtist
+import de.schnettler.scrobbler.core.model.TopListTrack
+import de.schnettler.scrobbler.core.model.EntityType
+import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.core.model.ListType
+import de.schnettler.scrobbler.core.model.TopListEntry
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -9,13 +9,13 @@ import de.schnettler.database.daos.LocalTrackDao
 import de.schnettler.database.models.Scrobble
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.api.lastfm.PostService
+import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
 import de.schnettler.lastfm.models.Errors
+import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.lastfm.models.MutlipleScrobblesResponse
 import de.schnettler.lastfm.models.NowPlayingResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
-import de.schnettler.repo.mapping.response.LastFmResponse
-import de.schnettler.repo.mapping.response.map
 import de.schnettler.repo.model.SubmissionResult
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
@@ -31,7 +31,7 @@ class ScrobbleRepository @Inject constructor(
     private val localTrackDao: LocalTrackDao,
     private val service: PostService,
     private val workManager: WorkManager,
-    private val dataStoreManager: DataStoreManager
+    private val dataStoreManager: DataStoreManager,
 ) {
     suspend fun saveTrack(track: Scrobble) = localTrackDao.forceInsert(track)
 
@@ -82,24 +82,28 @@ class ScrobbleRepository @Inject constructor(
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
         return safePost {
-            service.submitScrobble(
-                artist = track.artist,
-                track = track.name,
-                timestamp = track.timeStampString(),
-                album = track.album,
-                duration = track.durationUnix(),
-            ).map()
+            ResponseToLastFmResponseMapper.map(
+                service.submitScrobble(
+                    artist = track.artist,
+                    track = track.name,
+                    timestamp = track.timeStampString(),
+                    album = track.album,
+                    duration = track.durationUnix(),
+                )
+            )
         }
     }
 
     suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<NowPlayingResponse> {
         return safePost {
-            service.submitNowPlaying(
-                artist = track.artist,
-                track = track.name,
-                album = track.album,
-                duration = track.durationUnix(),
-            ).map()
+            ResponseToLastFmResponseMapper.map(
+                service.submitNowPlaying(
+                    artist = track.artist,
+                    track = track.name,
+                    album = track.album,
+                    duration = track.durationUnix(),
+                )
+            )
         }
     }
 
@@ -114,7 +118,7 @@ class ScrobbleRepository @Inject constructor(
             )
         }.reduce { acc, map -> acc + map }
 
-        return safePost { service.submitMultipleScrobbles(parameters).map() }
+        return safePost { ResponseToLastFmResponseMapper.map(service.submitMultipleScrobbles(parameters)) }
     }
 
     suspend fun markScrobblesAsSubmitted(vararg tracks: Scrobble) {

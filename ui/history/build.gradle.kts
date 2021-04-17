@@ -30,7 +30,7 @@ dependencies {
     implementation(project(":ui:common:resources"))
     implementation(project(":ui:common:util"))
     implementation(project(":repo"))
-    implementation(project(":network:lastfm")) // TODO: This should not be here
+    implementation(project(":libraries:network:lastfm")) // TODO: This should not be here
 
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.browser)

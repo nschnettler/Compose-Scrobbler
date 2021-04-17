@@ -2,9 +2,9 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.database.models.EntityWithStats.AlbumWithStats
-import de.schnettler.database.models.EntityWithStatsAndInfo.AlbumDetails
-import de.schnettler.database.models.LastFmEntity.Album
+import de.schnettler.scrobbler.core.model.EntityWithStats.AlbumWithStats
+import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.AlbumDetails
+import de.schnettler.scrobbler.core.model.LastFmEntity.Album
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("MaxLineLength")

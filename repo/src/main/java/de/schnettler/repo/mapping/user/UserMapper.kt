@@ -1,8 +1,8 @@
 package de.schnettler.repo.mapping.user
 
-import de.schnettler.database.models.User
+import de.schnettler.scrobbler.core.model.User
 import de.schnettler.lastfm.models.UserDto
-import de.schnettler.repo.mapping.Mapper
+import de.schnettler.scrobbler.core.map.Mapper
 
 object UserMapper : Mapper<UserDto, User> {
     override suspend fun map(from: UserDto) = User(

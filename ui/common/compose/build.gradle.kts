@@ -27,7 +27,9 @@ dependencies {
     implementation(project(":repo"))
     implementation(project(":ui:common:util"))
     implementation(project(":ui:common:resources"))
-    implementation(project(":network:lastfm")) // TODO: This should not be here
+    implementation(project(":libraries:network:lastfm")) // TODO: This should not be here
+    api(project(":libraries:compose"))
+    api(project(":libraries:core"))
 
     // Retrofit TODO: This should not be here
     implementation(Square.Retrofit2.retrofit)

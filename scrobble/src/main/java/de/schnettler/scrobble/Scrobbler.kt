@@ -5,8 +5,8 @@ import androidx.work.WorkManager
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.datastore.manager.DataStoreManager
+import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.repo.ScrobbleRepository
-import de.schnettler.repo.mapping.response.LastFmResponse
 import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.repo.work.RESULT_COUNT
 import de.schnettler.repo.work.RESULT_DESCRIPTION

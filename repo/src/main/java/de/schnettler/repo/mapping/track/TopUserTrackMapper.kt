@@ -1,12 +1,12 @@
 package de.schnettler.repo.mapping.track
 
-import de.schnettler.database.models.EntityType
-import de.schnettler.database.models.ListType
-import de.schnettler.database.models.TopListTrack
+import de.schnettler.scrobbler.core.model.TopListTrack
 import de.schnettler.lastfm.models.UserTrackDto
-import de.schnettler.repo.mapping.IndexedMapper
-import de.schnettler.repo.mapping.TrackMapper
-import de.schnettler.repo.mapping.createTopListEntry
+import de.schnettler.scrobbler.core.map.IndexedMapper
+import de.schnettler.scrobbler.core.map.TrackMapper
+import de.schnettler.scrobbler.core.map.createTopListEntry
+import de.schnettler.scrobbler.core.model.EntityType
+import de.schnettler.scrobbler.core.model.ListType
 
 object TopUserTrackMapper : IndexedMapper<UserTrackDto, TopListTrack> {
     override suspend fun map(index: Int, from: UserTrackDto): TopListTrack {
