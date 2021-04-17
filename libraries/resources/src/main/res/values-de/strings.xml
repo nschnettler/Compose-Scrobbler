@@ -39,8 +39,6 @@
     <string name="error_charts">Fehler beim Aktualisieren der Charts</string>
     <string name="error_details">Fehler beim Aktualisieren der Details</string>
     <string name="error_profile">Fehler beim Aktualisieren des Profils</string>
-    <string name="error_search">Fehler beim Laden der Suchergebnisse</string>
-    <string name="search_hint">Suche</string>
     <string name="bio_unavailable">Keine Informationen vorhanden</string>
     <string name="ic_period">Zeitraum</string>
     <string name="ic_open_in">In Browser öffnen</string>

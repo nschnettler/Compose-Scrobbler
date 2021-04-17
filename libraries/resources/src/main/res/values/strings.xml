@@ -62,21 +62,12 @@
     <string name="error_charts">Unable to refresh charts</string>
     <string name="error_details">Unable to refresh details</string>
     <string name="error_profile">Unable to refresh profile</string>
-    <string name="error_search">Unable to load search results</string>
+
 
     <!-- Scrobble Information -->
     <string name="scrobble_source">Source</string>
     <string name="scrobble_runtime">Runtime</string>
     <string name="scrobble_timestamp">Timestamp</string>
-
-    <!-- Search -->
-    <string name="search_hint">Search</string>
-    <string-array name="search_filter">
-        <item>All</item>
-        <item>Artist</item>
-        <item>Album</item>
-        <item>Track</item>
-    </string-array>
 
     <string name="media_card_mini">Mini</string>
     <string name="media_card_small">Small</string>
