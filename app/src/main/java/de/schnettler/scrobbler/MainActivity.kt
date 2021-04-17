@@ -26,6 +26,7 @@ import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.datastore.compose.ProvideDataStoreManager
 import de.schnettler.datastore.manager.DataStoreManager
+import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private val model: MainViewModel by viewModels()
 
     private lateinit var onListingClicked: (LastFmEntity) -> Unit
+    private lateinit var navigate: (String) -> Unit
 
     private val mainScreens = listOf(
         Screen.Charts,
@@ -79,6 +81,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                             )
                         }
+                        navigate = { navController.navigate(it) }
 
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
                         Scaffold(
@@ -121,6 +124,7 @@ class MainActivity : AppCompatActivity() {
                     is UIError.Snackbar -> ErrorSnackbar(host, error)
                 }
             },
+            navigator = ::handleNavigationEvent,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -132,6 +136,14 @@ class MainActivity : AppCompatActivity() {
             is UIAction.NavigateUp -> onBackPressed()
             is UIAction.OpenInBrowser -> openCustomTab(action.url)
             is UIAction.OpenNotificationListenerSettings -> openNotificationListenerSettings()
+        }
+    }
+
+    private fun handleNavigationEvent(event: NavigationEvent) {
+        when (event) {
+            is NavigationEvent.OpenScreen -> navigate(event.navAction)
+            is NavigationEvent.OpenNotificationListenerSettings -> openNotificationListenerSettings()
+            is NavigationEvent.OpenUrlInBrowser -> openCustomTab(event.url)
         }
     }
 

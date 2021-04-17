@@ -11,6 +11,7 @@ import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.model.SessionState
 import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel
@@ -35,6 +36,7 @@ fun MainRouteContent(
     model: MainViewModel,
     navController: NavHostController,
     actioner: (UIAction) -> Unit,
+    navigator: (NavigationEvent) -> Unit,
     errorer: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -54,7 +56,7 @@ fun MainRouteContent(
         }
         destination(Screen.Search) {
             val viewModel: SearchViewModel = hiltNavGraphViewModel<SearchViewModel>()
-            SearchScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
+            SearchScreen(viewModel = viewModel, navigator = navigator, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.Profile) {
             val viewModel: ProfileViewModel = hiltNavGraphViewModel<ProfileViewModelImpl>()

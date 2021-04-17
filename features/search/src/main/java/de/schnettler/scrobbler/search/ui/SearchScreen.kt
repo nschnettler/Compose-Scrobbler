@@ -34,8 +34,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.statusBarsHeight
-import de.schnettler.scrobbler.compose.navigation.UIAction
-import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.CustomDivider
@@ -45,6 +43,10 @@ import de.schnettler.scrobbler.core.model.BaseEntity
 import de.schnettler.scrobbler.core.model.EntityWithStats
 import de.schnettler.scrobbler.core.model.LastFmEntity.Album
 import de.schnettler.scrobbler.core.model.LastFmEntity.Track
+import de.schnettler.scrobbler.compose.model.NavigationEvent
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenAlbumDetails
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenArtistDetails
+import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenTrackDetails
 import de.schnettler.scrobbler.search.R
 import de.schnettler.scrobbler.search.ui.widget.SelectableChipRow
 
@@ -52,7 +54,7 @@ import de.schnettler.scrobbler.search.ui.widget.SelectableChipRow
 @Composable
 fun SearchScreen(
     viewModel: SearchViewModel,
-    actionHandler: (UIAction) -> Unit,
+    navigator: (NavigationEvent) -> Unit,
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -93,14 +95,14 @@ fun SearchScreen(
         }
 
         searchResult.currentData?.let { results ->
-            SearchResults(results = results, actionHandler = actionHandler)
+            SearchResults(results = results, navigator = navigator)
         }
     }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) {
+fun SearchResults(results: List<BaseEntity>, navigator: (NavigationEvent) -> Unit) {
     LazyColumn {
         items(items = results) {
             when (it) {
@@ -115,7 +117,9 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                                 Icon(Icons.Outlined.Face, null)
                             }
                         },
-                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it.entity)) })
+                        modifier = Modifier.clickable(onClick = {
+                            navigator.invoke(OpenArtistDetails(it.entity.name))
+                        })
                     )
                 }
                 is Album -> {
@@ -129,7 +133,9 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                                 Icon(Icons.Outlined.Album, null)
                             }
                         },
-                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
+                        modifier = Modifier.clickable(onClick = {
+                            navigator.invoke(OpenAlbumDetails(it.name, it.artist))
+                        })
                     )
                 }
                 is Track -> {
@@ -143,7 +149,9 @@ fun SearchResults(results: List<BaseEntity>, actionHandler: (UIAction) -> Unit) 
                                 Icon(Icons.Rounded.MusicNote, null)
                             }
                         },
-                        modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(it)) })
+                        modifier = Modifier.clickable(onClick = {
+                            navigator.invoke(OpenTrackDetails(it.name, it.artist))
+                        })
                     )
                 }
             }
