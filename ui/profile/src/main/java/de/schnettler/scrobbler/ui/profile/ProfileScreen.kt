@@ -78,11 +78,7 @@ fun ProfileScreen(
     errorHandler: @Composable (UIError) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val userState by viewModel.userState.collectAsState()
-    val artistState by viewModel.artistState.collectAsState()
-    val albumState by viewModel.albumState.collectAsState()
-    val trackState by viewModel.trackState.collectAsState()
-    val states = listOf(userState, artistState, albumState, trackState)
+    val state by viewModel.state.collectAsState()
 
     val mediaCardSize by viewModel.mediaCardSize.collectAsState(initial = MediaCardSize.MEDIUM.size)
 
@@ -95,37 +91,32 @@ fun ProfileScreen(
             viewModel.showDialog(false)
         }, onDismiss = {
             viewModel.showDialog(false)
-        }, model = viewModel)
+        }, initial = timePeriod)
     }
 
-    if (states.any { it.isError }) {
-        errorHandler(
-            UIError.ShowErrorSnackbar(
-                state = states.firstOrNull { it.isError },
-                fallbackMessage = stringResource(id = R.string.error_profile),
-                onAction = viewModel::refresh
-            )
-        )
+    state.exception?.let {
+        errorHandler(UIError.Snackbar(it, stringResource(id = R.string.error_profile), onAction = viewModel::refresh))
     }
 
     LoadingContent(
-        empty = viewModel.userState.value.isInitialLoading,
+        empty = state.initialLoad,
         emptyContent = { FullScreenLoading() },
-        loading = states.any { it.isRefreshLoading },
-        onRefresh = viewModel::refresh) {
-            userState.currentData?.let {
-                ProfileContent(
-                    modifier = modifier,
-                    user = userState.currentData,
-                    artists = artistState.currentData,
-                    albums = albumState.currentData,
-                    tracks = trackState.currentData,
-                    timePeriod = timePeriod,
-                    cardSize = mediaCardSize,
-                    onFabClicked = { viewModel.showDialog(true) },
-                    actioner = actionHandler,
-                )
-            } ?: LoginScreen()
+        loading = state.loading,
+        onRefresh = viewModel::refresh
+    ) {
+        state.data?.let { profilState ->
+            ProfileContent(
+                modifier = modifier,
+                user = profilState.user,
+                artists = profilState.topArtists,
+                albums = profilState.topAlbums,
+                tracks = profilState.topTracks,
+                timePeriod = timePeriod,
+                cardSize = mediaCardSize,
+                onFabClicked = { viewModel.showDialog(true) },
+                actioner = actionHandler,
+            )
+        } ?: LoginScreen()
     }
 }
 
@@ -267,9 +258,9 @@ private fun UserInfo(user: User) {
 private fun PeriodSelectDialog(
     onSelect: (selected: UITimePeriod) -> Unit,
     onDismiss: () -> Unit,
-    model: ProfileViewModel
+    initial: UITimePeriod,
 ) {
-    var selected by mutableStateOf(model.timePeriod.value)
+    var selected by mutableStateOf(initial)
     val radioGroupOptions = UITimePeriod.values().asList()
     AlertDialog(
         onDismissRequest = { onDismiss() },

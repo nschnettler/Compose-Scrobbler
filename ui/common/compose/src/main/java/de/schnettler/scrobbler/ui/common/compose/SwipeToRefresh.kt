@@ -41,7 +41,7 @@ fun SwipeToRefreshLayout(
     val refreshDistance = with(LocalDensity.current) { RefreshDistance.toPx() }
     val state = rememberSwipeableState(refreshingState) { newValue ->
         // compare both copies of the swipe state before calling onRefresh(). This is a workaround.
-        if (newValue && !refreshingState) onRefresh()
+        if (newValue) onRefresh()
         true
     }
 

@@ -19,6 +19,13 @@ sealed class UIError {
         val onAction: () -> Unit = { },
         val onDismiss: () -> Unit = { }
     ) : UIError()
+    class Snackbar(
+        val error: Throwable,
+        val fallbackMessage: String = "Unable to load data",
+        val actionMessage: String? = "Refresh",
+        val onAction: () -> Unit = { },
+        val onDismiss: () -> Unit = { }
+    ) : UIError()
 
     class ScrobbleSubmissionResult(
         val accepted: Int,

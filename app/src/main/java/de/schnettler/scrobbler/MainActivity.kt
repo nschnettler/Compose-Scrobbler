@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.datastore.compose.ProvideDataStoreManager
@@ -36,7 +37,6 @@ import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route
-import com.google.accompanist.insets.ProvideWindowInsets
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -71,11 +71,13 @@ class MainActivity : AppCompatActivity() {
                         val navController = rememberNavController()
                         val snackHost = remember { SnackbarHostState() }
                         onListingClicked = {
-                            navController.navigate(when (it) {
-                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
-                                is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
-                                is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
-                            })
+                            navController.navigate(
+                                when (it) {
+                                    is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                    is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
+                                    is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
+                                }
+                            )
                         }
 
                         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -116,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                 when (error) {
                     is UIError.ShowErrorSnackbar -> ErrorSnackbar(host = host, error = error)
                     is UIError.ScrobbleSubmissionResult -> InfoSnackbar(host = host, error = error)
+                    is UIError.Snackbar -> ErrorSnackbar(host, error)
                 }
             },
             modifier = Modifier.padding(innerPadding)
@@ -148,6 +151,21 @@ class MainActivity : AppCompatActivity() {
                     SnackbarResult.ActionPerformed -> error.onAction()
                     SnackbarResult.Dismissed -> error.onDismiss()
                 }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    fun ErrorSnackbar(host: SnackbarHostState, event: UIError.Snackbar) {
+        LaunchedEffect(event) {
+            val result = host.showSnackbar(
+                message = event.error.localizedMessage ?: event.fallbackMessage,
+                actionLabel = event.actionMessage
+            )
+            when (result) {
+                SnackbarResult.ActionPerformed -> event.onAction()
+                SnackbarResult.Dismissed -> event.onDismiss()
             }
         }
     }
