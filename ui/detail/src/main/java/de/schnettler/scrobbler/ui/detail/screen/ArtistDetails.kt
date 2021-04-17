@@ -11,9 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.common.whenNotEmpty
 import de.schnettler.database.models.EntityWithStats.TrackWithStats
 import de.schnettler.database.models.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
@@ -23,10 +21,7 @@ import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.ui.common.compose.rememberDominantColorCache
-import de.schnettler.scrobbler.ui.common.compose.util.PreviewUtils
-import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 import de.schnettler.scrobbler.ui.common.compose.widget.Carousel
-import de.schnettler.scrobbler.ui.common.compose.widget.ChipFlowRow
 import de.schnettler.scrobbler.ui.common.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.ui.common.compose.widget.Header
 import de.schnettler.scrobbler.ui.common.compose.widget.ListeningStats
@@ -34,7 +29,9 @@ import de.schnettler.scrobbler.ui.common.compose.widget.MediaCard
 import de.schnettler.scrobbler.ui.common.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.ui.common.util.abbreviate
 import de.schnettler.scrobbler.ui.detail.R
+import de.schnettler.scrobbler.ui.detail.widget.ChipRow
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
+import dev.chrisbanes.accompanist.insets.navigationBarsHeight
 
 @Composable
 fun ArtistDetailScreen(
@@ -72,7 +69,7 @@ private fun LazyListScope.detailItems(
     info?.tags?.whenNotEmpty { tags ->
         itemSpacer(16.dp)
         item { Header(title = stringResource(id = R.string.header_tags)) }
-        item { ChipFlowRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
+        item { ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
     }
 
     // Tracks
@@ -131,23 +128,4 @@ private fun TrackItem(index: Int, track: TrackWithStats, actionHandler: (UIActio
         icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track.entity)) })
     )
-}
-
-// Preview
-
-@Preview
-@Composable
-fun ArtistDetailScreenPreviewLight() = ThemedPreview {
-    ArtistDetailScreenPreviewContent()
-}
-
-@Preview
-@Composable
-fun ArtistDetailScreenPreviewDark() = ThemedPreview(true) {
-    ArtistDetailScreenPreviewContent()
-}
-
-@Composable
-fun ArtistDetailScreenPreviewContent() {
-    ArtistDetailScreen(PreviewUtils.generateFakeArtistInto(), { })
 }

@@ -44,4 +44,4 @@ buildscript {
     dependencies.classpath("de.fayard.refreshVersions:refreshVersions:0.9.7")
 }
 
-bootstrapRefreshVersions(extraArtifactVersionKeyRules = listOf(file("versionRules.txt").readText()))
+bootstrapRefreshVersions()

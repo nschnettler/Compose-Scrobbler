@@ -51,7 +51,7 @@ import de.schnettler.scrobbler.ui.history.model.ScrobbleAction.SUBMIT
 import de.schnettler.scrobbler.ui.history.widet.ErrorItem
 import de.schnettler.scrobbler.ui.history.widet.NowPlayingItem
 import de.schnettler.scrobbler.ui.history.widet.ScrobbleItem
-import com.google.accompanist.insets.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun HistoryScreen(
