@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.schnettler.lastfm.annotation.retrofit.AuthorizedLastfmRetrofitClient
+import de.schnettler.lastfm.annotation.retrofit.SignedLastfmRetrofitClient
 import de.schnettler.scrobbler.submission.api.SubmissionApi
 import retrofit2.Retrofit
 
@@ -13,6 +13,6 @@ import retrofit2.Retrofit
 class SubmissionModule {
     @Provides
     fun providesSubmissionApi(
-        @AuthorizedLastfmRetrofitClient retrofit: Retrofit
+        @SignedLastfmRetrofitClient retrofit: Retrofit
     ): SubmissionApi = retrofit.create(SubmissionApi::class.java)
 }

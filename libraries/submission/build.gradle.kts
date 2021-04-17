@@ -26,6 +26,7 @@ dependencies {
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
+    implementation(Square.moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository
