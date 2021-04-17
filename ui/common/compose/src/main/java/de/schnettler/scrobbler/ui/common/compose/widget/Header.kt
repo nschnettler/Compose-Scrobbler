@@ -17,10 +17,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import de.schnettler.scrobbler.ui.common.compose.util.ThemedPreview
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -77,16 +75,4 @@ fun AutoSizedCircularProgressIndicator(
             color = color
         )
     }
-}
-
-@Preview(group = "header")
-@Composable
-fun HeaderPreview() = ThemedPreview {
-    Header("Header")
-}
-
-@Preview(group = "header")
-@Composable
-fun HeaderWithLoadingPreview() = ThemedPreview {
-    Header("Header", loading = true)
 }

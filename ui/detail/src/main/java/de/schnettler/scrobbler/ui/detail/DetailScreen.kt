@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
 import de.schnettler.database.models.EntityWithStatsAndInfo
 import de.schnettler.database.models.LastFmEntity
 import de.schnettler.scrobbler.ui.common.compose.RefreshableStateViewModel2
@@ -29,6 +28,7 @@ import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.TrackDetailScreen
 import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
+import dev.chrisbanes.accompanist.coil.CoilImage
 
 @Composable
 fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(

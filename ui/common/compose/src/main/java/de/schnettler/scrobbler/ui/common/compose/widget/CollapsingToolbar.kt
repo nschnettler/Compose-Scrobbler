@@ -42,11 +42,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.ui.common.compose.navigation.MenuAction
 import de.schnettler.scrobbler.ui.common.compose.navigation.UIAction
+import dev.chrisbanes.accompanist.coil.CoilImage
+import dev.chrisbanes.accompanist.insets.LocalWindowInsets
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 
 @Composable
 fun CollapsingToolbar(
