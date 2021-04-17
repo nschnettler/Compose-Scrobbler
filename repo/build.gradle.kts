@@ -34,14 +34,14 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-
     // Modules
-    implementation(project(":common"))
     implementation(project(":libraries:core"))
     implementation(project(":libraries:model"))
+    implementation(project(":libraries:persistence"))
     implementation(project(":libraries:network:spotify"))
     implementation(project(":libraries:network:lastfm"))
+
+    implementation(project(":common"))
     api(project(":database"))
 
     // Hilt

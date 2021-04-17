@@ -22,12 +22,17 @@ android {
 }
 
 dependencies {
-    implementation(project(":ui:common:util"))
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
-    implementation(project(":ui:common:compose"))
+    // Modules
+    implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
+    implementation(project(":libraries:persistence"))
     implementation(project(":ui:common:resources"))
-    implementation(project(":repo"))
 
-    api("androidx.datastore:datastore-preferences:_")
+    // Compose
+    implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material.icons.extended)
+
+    // Android X
+    implementation("androidx.datastore", "datastore-preferences", "_")
 }

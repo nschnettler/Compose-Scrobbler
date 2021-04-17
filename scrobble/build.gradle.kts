@@ -21,9 +21,11 @@ android {
 
 dependencies {
     // Modules
+    implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:network:lastfm")) // TODO: This should not be here. Errors need to be mapped
+
     implementation(project(":common"))
     implementation(project(":repo"))
-    implementation(project(":libraries:network:lastfm")) // TODO: This should not be here. Errors need to be mapped
 
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)

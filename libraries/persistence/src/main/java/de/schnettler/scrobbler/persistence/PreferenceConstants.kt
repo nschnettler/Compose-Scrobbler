@@ -1,4 +1,4 @@
-package de.schnettler.repo.preferences
+package de.schnettler.scrobbler.persistence
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -6,16 +6,16 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import de.schnettler.datastore.manager.PreferenceMetaData
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.AUTO_SCROBBLE_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.MEDIA_CARD_SIZE_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_POINT_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_SOURCES_KEY
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
-import de.schnettler.repo.preferences.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.AUTO_SCROBBLE_DEFAULT
+import de.schnettler.scrobbler.persistence.PreferenceConstants.AUTO_SCROBBLE_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.MEDIA_CARD_SIZE_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_DEFAULT
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_POINT_DEFAULT
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_POINT_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_SOURCES_KEY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SUBMIT_NOWPLAYING_DEFAULT
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SUBMIT_NOWPLAYING_KEY
 
 object PreferenceConstants {
     const val AUTO_SCROBBLE_KEY = "scrobble_auto"

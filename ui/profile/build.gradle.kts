@@ -26,11 +26,15 @@ android {
 
 dependencies {
     // Modules
+    implementation(project(":features:settings"))
+
+    implementation(project(":libraries:persistence"))
+
+
     implementation(project(":common"))
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:resources"))
     implementation(project(":ui:common:util"))
-    implementation(project(":ui:settings"))
     implementation(project(":repo"))
 
     implementation(AndroidX.lifecycle.viewModelKtx)

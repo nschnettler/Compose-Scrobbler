@@ -30,10 +30,11 @@ import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.B
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SeekBarPreferenceItem
 import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SwitchPreferenceItem
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.scrobbler.compose.model.MediaCardSize
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
+import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.settings.R
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

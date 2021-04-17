@@ -5,9 +5,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.repo.TopListRepository
 import de.schnettler.repo.UserRepository
-import de.schnettler.repo.preferences.PreferenceEntry
-import de.schnettler.scrobbler.core.ktx.updateValue
 import de.schnettler.scrobbler.compose.model.MediaCardSize
+import de.schnettler.scrobbler.core.ktx.updateValue
+import de.schnettler.scrobbler.persistence.PreferenceEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map

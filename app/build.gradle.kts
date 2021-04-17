@@ -73,13 +73,13 @@ dependencies {
     implementation(project(":scrobble"))
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:util"))
-    implementation(project(":ui:settings"))
     implementation(project(":ui:charts"))
     implementation(project(":ui:profile"))
     implementation(project(":ui:detail"))
     implementation(project(":ui:history"))
 
     implementation(project(":features:search"))
+    implementation(project(":features:settings"))
 
     // AndroidX
     implementation(AndroidX.appCompat)

@@ -17,13 +17,13 @@ import de.schnettler.lastfm.models.NowPlayingResponse
 import de.schnettler.lastfm.models.ScrobbleResponse
 import de.schnettler.lastfm.models.SingleScrobbleResponse
 import de.schnettler.repo.model.SubmissionResult
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.repo.preferences.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.repo.preferences.PreferenceEntry
 import de.schnettler.repo.util.safePost
 import de.schnettler.repo.work.MAX_SCROBBLE_BATCH_SIZE
 import de.schnettler.repo.work.SUBMIT_CACHED_SCROBBLES_WORK
 import de.schnettler.repo.work.ScrobbleWorker
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
+import de.schnettler.scrobbler.persistence.PreferenceEntry
 import timber.log.Timber
 import javax.inject.Inject
 
