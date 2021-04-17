@@ -24,6 +24,7 @@ android {
 dependencies {
     // Modules
     implementation(project(":libraries:core"))
+    implementation(project(":libraries:model"))
     implementation(project(":ui:common:resources"))
 
     // AndroidX

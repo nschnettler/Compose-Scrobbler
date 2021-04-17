@@ -1,10 +1,10 @@
-package de.schnettler.scrobbler.core.model
+package de.schnettler.scrobbler.model
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import de.schnettler.scrobbler.core.model.LastFmEntity.Album
-import de.schnettler.scrobbler.core.model.LastFmEntity.Artist
-import de.schnettler.scrobbler.core.model.LastFmEntity.Track
+import de.schnettler.scrobbler.model.LastFmEntity.Album
+import de.schnettler.scrobbler.model.LastFmEntity.Artist
+import de.schnettler.scrobbler.model.LastFmEntity.Track
 
 data class TopListArtist(
     @Embedded override val listing: TopListEntry,

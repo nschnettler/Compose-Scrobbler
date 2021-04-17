@@ -17,10 +17,10 @@
 package de.schnettler.scrobbler.core.ui.state
 
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.scrobbler.core.model.Result
-import de.schnettler.scrobbler.core.model.Result.Error
-import de.schnettler.scrobbler.core.model.Result.Loading
-import de.schnettler.scrobbler.core.model.Result.Success
+import de.schnettler.scrobbler.model.Result
+import de.schnettler.scrobbler.model.Result.Error
+import de.schnettler.scrobbler.model.Result.Loading
+import de.schnettler.scrobbler.model.Result.Success
 
 /**
  * Immutable data class that allows for loading, data, and exception to be managed independently.

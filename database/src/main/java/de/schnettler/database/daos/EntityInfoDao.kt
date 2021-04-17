@@ -2,7 +2,7 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.scrobbler.core.model.EntityInfo
+import de.schnettler.scrobbler.model.EntityInfo
 
 @Dao
 abstract class EntityInfoDao : BaseDao<EntityInfo> {

@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.LastFmEntity
 import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration

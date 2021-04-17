@@ -1,6 +1,6 @@
 package de.schnettler.repo.mapping.user
 
-import de.schnettler.scrobbler.core.model.User
+import de.schnettler.scrobbler.model.User
 import de.schnettler.lastfm.models.UserDto
 import de.schnettler.scrobbler.core.map.Mapper
 

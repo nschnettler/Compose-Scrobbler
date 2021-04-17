@@ -2,12 +2,12 @@ package de.schnettler.scrobbler.ui.charts
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
 import de.schnettler.repo.ChartRepository
 import de.schnettler.scrobbler.core.ktx.freshFrom
 import de.schnettler.scrobbler.core.ktx.streamFrom
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject

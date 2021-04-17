@@ -9,7 +9,6 @@ import de.schnettler.database.daos.ArtistRelationDao
 import de.schnettler.database.daos.EntityInfoDao
 import de.schnettler.database.daos.StatsDao
 import de.schnettler.database.daos.TrackDao
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.lastfm.api.lastfm.ArtistService
 import de.schnettler.lastfm.api.lastfm.DetailService
@@ -20,10 +19,11 @@ import de.schnettler.repo.mapping.artist.ArtistInfoMapper
 import de.schnettler.repo.mapping.artist.ArtistTrackMapper
 import de.schnettler.repo.mapping.track.TrackInfoMapper
 import de.schnettler.scrobbler.core.map.forLists
-import de.schnettler.scrobbler.core.model.EntityInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity.Album
-import de.schnettler.scrobbler.core.model.LastFmEntity.Artist
-import de.schnettler.scrobbler.core.model.LastFmEntity.Track
+import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.scrobbler.model.LastFmEntity.Album
+import de.schnettler.scrobbler.model.LastFmEntity.Artist
+import de.schnettler.scrobbler.model.LastFmEntity.Track
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.combine

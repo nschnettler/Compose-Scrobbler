@@ -1,7 +1,7 @@
 package de.schnettler.scrobbler.compose.navigation
 
-import de.schnettler.scrobbler.core.model.LastFmEntity
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
+import de.schnettler.scrobbler.model.LastFmEntity
 
 sealed class UIAction {
     class TagSelected(val id: String) : UIAction()

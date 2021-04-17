@@ -5,8 +5,8 @@ import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.fresh
 import de.schnettler.lastfm.extractErrorMessageFromException
-import de.schnettler.scrobbler.core.model.Result
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
+import de.schnettler.scrobbler.model.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber

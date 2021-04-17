@@ -6,12 +6,12 @@ import de.schnettler.lastfm.models.BaseInfoDto
 import de.schnettler.lastfm.models.BaseStatsDto
 import de.schnettler.lastfm.models.BaseTrackDto
 import de.schnettler.scrobbler.core.ktx.toBoolean
-import de.schnettler.scrobbler.core.model.EntityInfo
-import de.schnettler.scrobbler.core.model.EntityType
-import de.schnettler.scrobbler.core.model.LastFmEntity
-import de.schnettler.scrobbler.core.model.ListType
-import de.schnettler.scrobbler.core.model.Stats
-import de.schnettler.scrobbler.core.model.TopListEntry
+import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.model.EntityType
+import de.schnettler.scrobbler.model.LastFmEntity
+import de.schnettler.scrobbler.model.ListType
+import de.schnettler.scrobbler.model.Stats
+import de.schnettler.scrobbler.model.TopListEntry
 
 object AlbumMapper : Mapper<BaseAlbumDto, LastFmEntity.Album> {
     override suspend fun map(from: BaseAlbumDto) = LastFmEntity.Album(

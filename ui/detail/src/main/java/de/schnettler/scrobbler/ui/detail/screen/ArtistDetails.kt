@@ -28,9 +28,9 @@ import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
-import de.schnettler.scrobbler.core.model.EntityWithStats.TrackWithStats
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.scrobbler.core.util.PreviewUtils
+import de.schnettler.scrobbler.model.EntityWithStats.TrackWithStats
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.scrobbler.ui.common.compose.itemSpacer
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard

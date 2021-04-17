@@ -20,11 +20,11 @@ import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.Session
-import de.schnettler.scrobbler.core.model.User
-import de.schnettler.scrobbler.core.model.EntityInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity
-import de.schnettler.scrobbler.core.model.Stats
-import de.schnettler.scrobbler.core.model.TopListEntry
+import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.model.LastFmEntity
+import de.schnettler.scrobbler.model.Stats
+import de.schnettler.scrobbler.model.TopListEntry
+import de.schnettler.scrobbler.model.User
 import dev.matrix.roomigrant.GenerateRoomMigrations
 
 @Database(

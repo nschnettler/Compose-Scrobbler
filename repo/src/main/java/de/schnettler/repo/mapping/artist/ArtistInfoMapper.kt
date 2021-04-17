@@ -1,6 +1,6 @@
 package de.schnettler.repo.mapping.artist
 
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.lastfm.models.ArtistInfoDto
 import de.schnettler.scrobbler.core.map.ArtistMapper
 import de.schnettler.scrobbler.core.map.InfoMapper

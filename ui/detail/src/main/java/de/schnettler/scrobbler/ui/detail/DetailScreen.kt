@@ -22,8 +22,8 @@ import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.Header
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import de.schnettler.scrobbler.ui.detail.screen.AlbumDetailScreen
 import de.schnettler.scrobbler.ui.detail.screen.ArtistDetailScreen

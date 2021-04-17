@@ -4,7 +4,7 @@ import de.schnettler.lastfm.models.ArtistTracksDto
 import de.schnettler.scrobbler.core.map.Mapper
 import de.schnettler.scrobbler.core.map.StatMapper
 import de.schnettler.scrobbler.core.map.TrackMapper
-import de.schnettler.scrobbler.core.model.EntityWithStats.TrackWithStats
+import de.schnettler.scrobbler.model.EntityWithStats.TrackWithStats
 
 object ArtistTrackMapper : Mapper<ArtistTracksDto, TrackWithStats> {
     override suspend fun map(from: ArtistTracksDto): TrackWithStats {

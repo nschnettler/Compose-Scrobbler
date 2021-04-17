@@ -1,5 +1,6 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":libraries:model")
 include(":libraries:core")
 include(":libraries:compose")
 include(":features:search")

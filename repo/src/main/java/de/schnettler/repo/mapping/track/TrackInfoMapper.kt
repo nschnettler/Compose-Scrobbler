@@ -1,6 +1,6 @@
 package de.schnettler.repo.mapping.track
 
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.database.models.Scrobble
 import de.schnettler.database.models.ScrobbleStatus
 import de.schnettler.lastfm.models.RecentTracksDto

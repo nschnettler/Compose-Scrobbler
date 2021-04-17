@@ -3,10 +3,10 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import de.schnettler.scrobbler.core.model.EntityWithInfo
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.scrobbler.core.model.EntityWithStats.TrackWithStats
-import de.schnettler.scrobbler.core.model.LastFmEntity.Track
+import de.schnettler.scrobbler.model.EntityWithInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.model.EntityWithStats.TrackWithStats
+import de.schnettler.scrobbler.model.LastFmEntity.Track
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("MaxLineLength")

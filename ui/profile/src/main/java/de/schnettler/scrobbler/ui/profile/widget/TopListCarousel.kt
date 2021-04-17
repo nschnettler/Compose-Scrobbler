@@ -15,7 +15,7 @@ import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.MediaCard
-import de.schnettler.scrobbler.core.model.Toplist
+import de.schnettler.scrobbler.model.Toplist
 import de.schnettler.scrobbler.ui.profile.R
 
 @Composable

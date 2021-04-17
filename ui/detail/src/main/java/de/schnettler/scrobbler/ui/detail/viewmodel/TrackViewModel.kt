@@ -3,9 +3,9 @@ package de.schnettler.scrobbler.ui.detail.viewmodel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.repo.DetailRepository
-import de.schnettler.scrobbler.core.model.EntityInfo
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

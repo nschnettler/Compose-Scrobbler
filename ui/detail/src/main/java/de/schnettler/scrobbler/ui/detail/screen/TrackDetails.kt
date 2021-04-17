@@ -22,7 +22,7 @@ import de.schnettler.common.whenNotEmpty
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.widget.ChipRow
 import de.schnettler.scrobbler.compose.widget.Header
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.scrobbler.ui.common.compose.itemSpacer
 import de.schnettler.scrobbler.ui.detail.AlbumCategory
 import de.schnettler.scrobbler.ui.detail.R

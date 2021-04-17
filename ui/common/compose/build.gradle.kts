@@ -30,6 +30,7 @@ dependencies {
     implementation(project(":libraries:network:lastfm")) // TODO: This should not be here
     api(project(":libraries:compose"))
     api(project(":libraries:core"))
+    api(project(":libraries:model"))
 
     // Retrofit TODO: This should not be here
     implementation(Square.Retrofit2.retrofit)

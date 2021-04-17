@@ -48,7 +48,7 @@ android {
 dependencies {
     // Modules
     implementation(project(":common"))
-    implementation(project(":libraries:core"))
+    implementation(project(":libraries:model"))
 
     // Room
     implementation(AndroidX.room.ktx)

@@ -3,7 +3,7 @@ package de.schnettler.database.daos
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.DataGenerator.generateStats
-import de.schnettler.scrobbler.core.model.Stats
+import de.schnettler.scrobbler.model.Stats
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 

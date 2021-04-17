@@ -4,7 +4,7 @@ import de.schnettler.lastfm.models.AlbumDto
 import de.schnettler.scrobbler.core.map.AlbumMapper
 import de.schnettler.scrobbler.core.map.Mapper
 import de.schnettler.scrobbler.core.map.StatMapper
-import de.schnettler.scrobbler.core.model.EntityWithStats.AlbumWithStats
+import de.schnettler.scrobbler.model.EntityWithStats.AlbumWithStats
 
 object AlbumWithStatsMapper : Mapper<AlbumDto, AlbumWithStats> {
     override suspend fun map(from: AlbumDto): AlbumWithStats {

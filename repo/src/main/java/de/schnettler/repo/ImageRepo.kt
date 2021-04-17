@@ -4,7 +4,7 @@ import de.schnettler.database.daos.AlbumDao
 import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.network.spotify.api.SpotifySearchService
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,7 +38,7 @@ class ImageRepo @Inject constructor(
     }
 
     suspend fun updateArtistImage(
-        artist: LastFmEntity.Artist,
+        artist: de.schnettler.scrobbler.model.LastFmEntity.Artist,
         maxRes: Long = 1000,
     ) {
         val image = spotifyService.searchArtist(artist.name).maxByOrNull {

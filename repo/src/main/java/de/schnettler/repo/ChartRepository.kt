@@ -10,7 +10,7 @@ import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.artist.ChartTrackMapper
 import de.schnettler.scrobbler.core.map.forLists
-import de.schnettler.scrobbler.core.model.ListType
+import de.schnettler.scrobbler.model.ListType
 import javax.inject.Inject
 
 class ChartRepository @Inject constructor(

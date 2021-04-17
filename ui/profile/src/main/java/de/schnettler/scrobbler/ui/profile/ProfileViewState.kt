@@ -1,9 +1,9 @@
 package de.schnettler.scrobbler.ui.profile
 
-import de.schnettler.scrobbler.core.model.TopListAlbum
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
-import de.schnettler.scrobbler.core.model.User
+import de.schnettler.scrobbler.model.TopListAlbum
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
+import de.schnettler.scrobbler.model.User
 
 data class ProfileViewState(
     val user: User? = null,

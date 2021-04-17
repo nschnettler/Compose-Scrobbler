@@ -24,9 +24,9 @@ import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.compose.widget.TabbedPager
 import de.schnettler.scrobbler.core.ktx.abbreviate
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
-import de.schnettler.scrobbler.core.model.Toplist
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
+import de.schnettler.scrobbler.model.Toplist
 import de.schnettler.scrobbler.core.util.PreviewUtils
 
 @Composable
@@ -79,19 +79,19 @@ private fun ChartPage(
 
 @Composable
 private fun ChartList(
-    chartData: List<Toplist>,
+    chartData: List<de.schnettler.scrobbler.model.Toplist>,
     handler: (UIAction) -> Unit,
     modifier: Modifier = Modifier,
 ) = LazyColumn(modifier) {
     itemsIndexed(items = chartData) { index, entry ->
         when (entry) {
-            is TopListArtist -> ChartArtistListItem(
+            is de.schnettler.scrobbler.model.TopListArtist -> ChartArtistListItem(
                 name = entry.value.name,
                 listener = entry.listing.count,
                 index = index,
                 onClicked = { handler(ListingSelected(entry.value)) }
             )
-            is TopListTrack -> ChartTrackListItem(
+            is de.schnettler.scrobbler.model.TopListTrack -> ChartTrackListItem(
                 name = entry.value.name,
                 artist = entry.value.artist,
                 index = index,

@@ -7,11 +7,11 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
-import de.schnettler.scrobbler.core.model.LastFmEntity
-import de.schnettler.scrobbler.compose.model.NavigationEvent
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.SessionState
 import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel

@@ -2,8 +2,8 @@ package de.schnettler.scrobbler.ui.detail.viewmodel
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.repo.DetailRepository
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.AlbumDetails
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.AlbumDetails
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import javax.inject.Inject
 

@@ -1,9 +1,9 @@
 package de.schnettler.scrobbler.ui.charts
 
 import androidx.lifecycle.ViewModel
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
 import kotlinx.coroutines.flow.StateFlow
 
 abstract class ChartViewModel : ViewModel() {

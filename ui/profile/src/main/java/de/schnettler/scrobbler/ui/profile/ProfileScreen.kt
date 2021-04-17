@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.coil.CoilImage
 import com.google.accompanist.insets.statusBarsHeight
+import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
@@ -59,12 +60,11 @@ import de.schnettler.scrobbler.compose.widget.StatsRow
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.core.ktx.firstLetter
 import de.schnettler.scrobbler.core.ktx.toFlagEmoji
-import de.schnettler.scrobbler.core.model.TopListAlbum
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
-import de.schnettler.scrobbler.core.model.User
 import de.schnettler.scrobbler.core.util.PreviewUtils
-import de.schnettler.scrobbler.compose.model.MediaCardSize
+import de.schnettler.scrobbler.model.TopListAlbum
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
+import de.schnettler.scrobbler.model.User
 import de.schnettler.scrobbler.ui.profile.widget.TopListCarousel
 import java.time.Instant
 import java.time.ZoneId

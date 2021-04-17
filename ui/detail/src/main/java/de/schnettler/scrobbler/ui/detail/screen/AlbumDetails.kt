@@ -22,8 +22,8 @@ import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.fromHtmlLastFm
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.AlbumDetails
-import de.schnettler.scrobbler.core.model.LastFmEntity
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.AlbumDetails
+import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.ui.common.compose.itemSpacer
 import de.schnettler.scrobbler.ui.common.util.asMinSec
 import de.schnettler.scrobbler.ui.detail.R

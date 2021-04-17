@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.widget.StatsRow
-import de.schnettler.scrobbler.core.model.Stats
+import de.schnettler.scrobbler.model.Stats
 
 @Composable
 fun ListeningStats(item: Stats?) {

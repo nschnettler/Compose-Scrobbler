@@ -1,10 +1,11 @@
-package de.schnettler.scrobbler.core.model
+package de.schnettler.scrobbler.model
 
 import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Relation
-import de.schnettler.scrobbler.core.ktx.sumByLong
-import de.schnettler.scrobbler.core.model.EntityWithInfo.TrackWithInfo
+import de.schnettler.scrobbler.ktx.sumByLong
+import de.schnettler.scrobbler.model.EntityWithInfo.TrackWithInfo
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
@@ -23,7 +24,8 @@ sealed class EntityWithStatsAndInfo(
     ) : EntityWithStatsAndInfo(entity, stats, info) {
         @Ignore var tracks: List<TrackWithInfo> = listOf()
         @OptIn(ExperimentalTime::class)
-        val runtime: kotlin.time.Duration
+        // TODO: Should not be here
+        val runtime: Duration
             get() = tracks.sumByLong { it.info.durationInSeconds }.toDuration(DurationUnit.SECONDS)
         val trackNumber: Int
             get() = tracks.size

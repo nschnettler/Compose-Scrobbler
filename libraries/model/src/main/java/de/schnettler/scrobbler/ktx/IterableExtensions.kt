@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.core.ktx
+package de.schnettler.scrobbler.ktx
 
 inline fun <T> Iterable<T>.sumByLong(selector: (T) -> Long): Long {
     var sum: Long = 0

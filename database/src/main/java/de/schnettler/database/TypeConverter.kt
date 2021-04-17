@@ -2,8 +2,8 @@ package de.schnettler.database
 
 import androidx.room.TypeConverter
 import de.schnettler.database.models.ScrobbleStatus
-import de.schnettler.scrobbler.core.model.EntityType
-import de.schnettler.scrobbler.core.model.ListType
+import de.schnettler.scrobbler.model.EntityType
+import de.schnettler.scrobbler.model.ListType
 
 class TypeConverter {
 

@@ -1,4 +1,4 @@
-package de.schnettler.scrobbler.core.model
+package de.schnettler.scrobbler.model
 
 import androidx.room.Entity
 

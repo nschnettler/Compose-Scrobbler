@@ -2,8 +2,8 @@ package de.schnettler.database.daos
 
 import androidx.room.Dao
 import androidx.room.Query
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity.Artist
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
+import de.schnettler.scrobbler.model.LastFmEntity.Artist
 import kotlinx.coroutines.flow.Flow
 
 @Dao

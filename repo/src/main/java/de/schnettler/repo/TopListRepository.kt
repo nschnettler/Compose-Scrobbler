@@ -12,9 +12,9 @@ import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
-import de.schnettler.scrobbler.core.model.TopListAlbum
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListTrack
+import de.schnettler.scrobbler.model.TopListAlbum
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.lastfm.api.lastfm.UserService
 import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.repo.mapping.album.TopUserAlbumMapper
@@ -22,7 +22,7 @@ import de.schnettler.repo.mapping.artist.TopUserArtistMapper
 import de.schnettler.repo.mapping.track.TopUserTrackMapper
 import de.schnettler.repo.work.SpotifyWorker
 import de.schnettler.scrobbler.core.map.forLists
-import de.schnettler.scrobbler.core.model.ListType
+import de.schnettler.scrobbler.model.ListType
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(

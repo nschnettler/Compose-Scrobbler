@@ -39,6 +39,7 @@ dependencies {
     // Modules
     implementation(project(":common"))
     implementation(project(":libraries:core"))
+    implementation(project(":libraries:model"))
     implementation(project(":libraries:network:spotify"))
     implementation(project(":libraries:network:lastfm"))
     api(project(":database"))

@@ -4,7 +4,7 @@ import ch.tutteli.atrium.api.fluent.en_GB.notToBe
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.collectValue
-import de.schnettler.scrobbler.core.model.User
+import de.schnettler.scrobbler.model.User
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 

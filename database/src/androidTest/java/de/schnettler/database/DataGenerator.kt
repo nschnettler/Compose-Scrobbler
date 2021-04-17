@@ -1,16 +1,16 @@
 package de.schnettler.database
 
-import de.schnettler.scrobbler.core.model.EntityInfo
-import de.schnettler.scrobbler.core.model.EntityType
-import de.schnettler.scrobbler.core.model.EntityWithStats
-import de.schnettler.scrobbler.core.model.EntityWithStatsAndInfo
-import de.schnettler.scrobbler.core.model.LastFmEntity
-import de.schnettler.scrobbler.core.model.ListType
-import de.schnettler.scrobbler.core.model.Stats
-import de.schnettler.scrobbler.core.model.TopListAlbum
-import de.schnettler.scrobbler.core.model.TopListArtist
-import de.schnettler.scrobbler.core.model.TopListEntry
-import de.schnettler.scrobbler.core.model.TopListTrack
+import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.model.EntityType
+import de.schnettler.scrobbler.model.EntityWithStats
+import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
+import de.schnettler.scrobbler.model.LastFmEntity
+import de.schnettler.scrobbler.model.ListType
+import de.schnettler.scrobbler.model.Stats
+import de.schnettler.scrobbler.model.TopListAlbum
+import de.schnettler.scrobbler.model.TopListArtist
+import de.schnettler.scrobbler.model.TopListEntry
+import de.schnettler.scrobbler.model.TopListTrack
 
 object DataGenerator {
     fun generateAlbums(number: Int, artistName: String? = null) = List(number) {
