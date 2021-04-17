@@ -25,7 +25,6 @@ dependencies {
     // Modules
     implementation(project(":libraries:core"))
     implementation(project(":libraries:model"))
-    implementation(project(":libraries:resources"))
 
     // AndroidX
     implementation(AndroidX.core.ktx)

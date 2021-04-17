@@ -107,7 +107,7 @@ private fun SearchResults(results: List<SearchResult>, navigator: (NavigationEve
                     ListItem(
                         text = { Text(it.name) },
                         secondaryText = {
-                            Text("${it.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
+                            Text("${it.listeners.abbreviate()} ${stringResource(id = R.string.search_listeners)}")
                         },
                         icon = {
                             PlainListIconBackground {

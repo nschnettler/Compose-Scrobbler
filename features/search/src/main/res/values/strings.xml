@@ -2,6 +2,7 @@
 <resources>
     <string name="error_search">Unable to load search results</string>
     <string name="search_hint">Search</string>
+    <string name="search_listeners">listeners</string>
 
     <string-array name="search_filter">
         <item>All</item>

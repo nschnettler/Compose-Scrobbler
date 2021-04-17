@@ -9,13 +9,6 @@
     <string name="tab_artist">Artist</string>
     <string name="tab_track">Track</string>
 
-    <!-- BottomNav -->
-    <string name="nav_charts">Charts</string>
-    <string name="nav_history">History</string>
-    <string name="nav_profile">Profile</string>
-    <string name="nav_search">Search</string>
-    <string name="nav_settings">Settings</string>
-
     <!-- Album Details -->
     <string name="albumdetails_tracks">tracks</string>
     <string name="albumdetails_minutes">minutes</string>
@@ -69,10 +62,6 @@
     <string name="scrobble_runtime">Runtime</string>
     <string name="scrobble_timestamp">Timestamp</string>
 
-    <string name="media_card_mini">Mini</string>
-    <string name="media_card_small">Small</string>
-    <string name="media_card_medium">Medium</string>
-    <string name="media_card_large">Large</string>
     <string name="period_overall">Overall</string>
     <string name="period_week">Last week</string>
     <string name="period_month">Last month</string>

@@ -2,6 +2,7 @@
 <resources>
     <string name="error_search">Fehler beim Laden der Suchergebnisse</string>
     <string name="search_hint">Suche</string>
+    <string name="search_listeners">Hörer</string>
 
     <string-array name="search_filter">
         <item>Alles</item>
