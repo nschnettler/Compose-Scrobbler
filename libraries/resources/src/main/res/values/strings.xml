@@ -3,8 +3,6 @@
     <string name="ic_period">Period</string>
     <string name="ic_open_in">Open in browser</string>
 
-    <string name="scrobbles" translatable="false">Scrobbles</string>
-
     <!-- Tabs -->
     <string name="tab_artist">Artist</string>
     <string name="tab_track">Track</string>
@@ -34,33 +32,13 @@
     <string name="profile_perioddialog_title">Period</string>
     <string name="profile_perioddialog_select">Select</string>
 
-    <!-- Edit Scrobble Dialog -->
-    <string name="edit_title">Edit Scrobble</string>
-    <string name="edit_track">Track</string>
-    <string name="edit_artist">Artist</string>
-    <string name="edit_album">Album</string>
-    <string name="edit_save">Save</string>
-    <string name="edit_cancel">Discard</string>
-
-    <!-- Confirm Dialog -->
-    <string name="confirmdialog_confirm">Confirm</string>
-    <string name="confirmdialog_cancel">Cancel</string>
-
-    <!-- Delete Dialog -->
-    <string name="deletedialog_title">Delete Scrobble</string>
-    <string name="deletedialog_content">Are you sure you want to delete the selected scrobble?</string>
-
     <!-- Error Messages -->
-    <string name="error_history">Unable to refresh history</string>
     <string name="error_charts">Unable to refresh charts</string>
     <string name="error_details">Unable to refresh details</string>
     <string name="error_profile">Unable to refresh profile</string>
 
 
-    <!-- Scrobble Information -->
-    <string name="scrobble_source">Source</string>
-    <string name="scrobble_runtime">Runtime</string>
-    <string name="scrobble_timestamp">Timestamp</string>
+
 
     <string name="period_overall">Overall</string>
     <string name="period_week">Last week</string>
@@ -75,16 +53,4 @@
     <string name="period_quarter_short">Quarter</string>
     <string name="period_halfyear_short">Half-year</string>
     <string name="period_year_short">Year</string>
-    <string name="error_listener_title">Can\'t access media notification</string>
-    <string name="error_listener_subtitle">Notification access needed for music tracking.</string>
-
-    <string name="error_login_title">Not logged in</string>
-    <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
-
-    <string name="rejectionArtist">Artist was rejected</string>
-    <string name="rejectionTrack">Track was rejected</string>
-    <string name="rejectionTimestampOld">Timestamp was too old</string>
-    <string name="rejectionTimestampNew">Timestamp was too new</string>
-    <string name="rejectionLimit">Daily scrobble limit exceeded</string>
-    <string name="rejectionUnknown">Unknown rejection reason</string>
 </resources>

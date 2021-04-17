@@ -1,5 +1,11 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":libraries:submission")
+
+
+include(":features:history")
+
+
 include(":libraries:persistence")
 
 

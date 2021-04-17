@@ -14,6 +14,13 @@ android {
         targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+                arg("room.incremental", true)
+            }
+        }
     }
 
     buildTypes {
@@ -68,6 +75,7 @@ hilt {
 }
 
 dependencies {
+    implementation(project(":libraries:submission"))
     implementation(project(":repo"))
     implementation(project(":common"))
     implementation(project(":scrobble"))
@@ -80,6 +88,7 @@ dependencies {
 
     implementation(project(":features:search"))
     implementation(project(":features:settings"))
+    implementation(project(":features:history"))
 
     // AndroidX
     implementation(AndroidX.appCompat)
@@ -92,6 +101,12 @@ dependencies {
     implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
     kapt(AndroidX.hilt.compiler)
+
+    implementation(AndroidX.room.ktx)
+    implementation(AndroidX.room.runtime)
+    kapt(AndroidX.room.compiler)
+    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
+    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
 
     // Dagger
     implementation(Google.dagger.hilt.android)

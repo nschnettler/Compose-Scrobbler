@@ -2,13 +2,12 @@ package de.schnettler.lastfm.api.lastfm
 
 import com.serjltt.moshi.adapters.Wrapped
 import de.schnettler.common.TimePeriod
-import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
 import de.schnettler.lastfm.models.AlbumDto
-import de.schnettler.lastfm.models.RecentTracksDto
 import de.schnettler.lastfm.models.ResponseInfo
 import de.schnettler.lastfm.models.UserArtistResponse
 import de.schnettler.lastfm.models.UserDto
 import de.schnettler.lastfm.models.UserTrackDto
+import de.schnettler.scrobbler.network.common.annotation.tag.SessionAuthentication
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -19,7 +18,6 @@ interface UserService {
         const val METHOD_USER_ARTISTS = "user.getTopArtists"
         const val METHOD_USER_ALBUMS = "user.getTopAlbums"
         const val METHOD_USER_TRACKS = "user.getTopTracks"
-        const val METHOD_USER_RECENT = "user.getRecentTracks"
         const val METHOD_USER_LOVED_TRACKS = "user.getLovedTracks"
     }
 
@@ -48,8 +46,4 @@ interface UserService {
     suspend fun getTopTracks(
         @Query("period") timePeriod: TimePeriod,
     ): List<UserTrackDto>
-
-    @GET("?method=$METHOD_USER_RECENT")
-    @Wrapped(path = ["recenttracks", "track"])
-    suspend fun getUserRecentTrack(): List<RecentTracksDto>
 }

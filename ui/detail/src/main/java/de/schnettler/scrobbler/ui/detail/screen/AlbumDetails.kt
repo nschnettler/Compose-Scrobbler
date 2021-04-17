@@ -25,7 +25,7 @@ import de.schnettler.scrobbler.core.ktx.fromHtmlLastFm
 import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.ui.common.compose.itemSpacer
-import de.schnettler.scrobbler.ui.common.util.asMinSec
+import de.schnettler.scrobbler.core.ktx.asMinSec
 import de.schnettler.scrobbler.ui.detail.R
 import de.schnettler.scrobbler.ui.detail.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.ui.detail.widget.ListeningStats

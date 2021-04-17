@@ -5,6 +5,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import de.schnettler.database.models.RelatedArtist
 import de.schnettler.database.models.RelatedArtistEntry
+import de.schnettler.scrobbler.persistence.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao

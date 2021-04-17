@@ -7,8 +7,8 @@ import android.os.Build
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
-import de.schnettler.database.models.Scrobble
 import de.schnettler.scrobble.R
+import de.schnettler.scrobbler.model.Scrobble
 import javax.inject.Inject
 
 const val NOW_PLAYING_ID = 0

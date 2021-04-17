@@ -19,5 +19,6 @@ dependencies {
     api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
 
     // AndroidX
+    implementation(AndroidX.room.common)
     implementation("androidx.datastore", "datastore-preferences", "_")
 }

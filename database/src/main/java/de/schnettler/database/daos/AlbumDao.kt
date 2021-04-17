@@ -5,6 +5,7 @@ import androidx.room.Query
 import de.schnettler.scrobbler.model.EntityWithStats.AlbumWithStats
 import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.scrobbler.model.LastFmEntity.Album
+import de.schnettler.scrobbler.persistence.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("MaxLineLength")

@@ -1,6 +1,5 @@
 package de.schnettler.lastfm.models
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -23,17 +22,6 @@ data class UserTrackDto(
 ) : BaseTrackDto(name, url, artist, null)
 
 @JsonClass(generateAdapter = true)
-data class RecentTracksDto(
-    override val name: String,
-    override val mbid: String?,
-    override val url: String,
-    val artist: TrackRelationDto,
-    val album: TrackRelationDto,
-    val date: TrackDateDto?,
-    @Json(name = "@attr") val attrs: AttributesDto?
-) : ListingDto
-
-@JsonClass(generateAdapter = true)
 data class AlbumTrack(
     override val name: String,
     override val url: String,
@@ -43,16 +31,6 @@ data class AlbumTrack(
 
     val mbid: String?,
 ) : BaseTrackDto(name, url, artist, null), BaseInfoDto
-
-@JsonClass(generateAdapter = true)
-data class AttributesDto(
-    val nowplaying: String
-)
-
-@JsonClass(generateAdapter = true)
-data class TrackDateDto(
-    val uts: Long
-)
 
 @JsonClass(generateAdapter = true)
 data class ArtistTracksDto(
@@ -86,12 +64,6 @@ data class TrackInfoDto(
     override val userloved: Long = 0,
     val toptags: TagsDto,
 ) : BaseTrackDto(name, url, artist, album), BaseStatsDto, BaseInfoDto
-
-@JsonClass(generateAdapter = true)
-data class TrackRelationDto(
-    @Json(name = "#text") val name: String,
-    val mbid: String
-)
 
 @JsonClass(generateAdapter = true)
 data class AlbumTracksDto(

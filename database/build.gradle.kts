@@ -12,13 +12,6 @@ android {
         minSdkVersion(21)
         targetSdkVersion(30)
         testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
-
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-                arg("room.incremental", true)
-            }
-        }
     }
 
     sourceSets {
@@ -49,13 +42,12 @@ dependencies {
     // Modules
     implementation(project(":common"))
     implementation(project(":libraries:model"))
+    implementation(project(":libraries:persistence"))
 
     // Room
     implementation(AndroidX.room.ktx)
     implementation(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
-    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
-    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
 
     // Hilt
     implementation(Google.dagger.hilt.android)

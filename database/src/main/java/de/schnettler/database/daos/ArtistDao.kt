@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 import de.schnettler.scrobbler.model.LastFmEntity.Artist
+import de.schnettler.scrobbler.persistence.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao

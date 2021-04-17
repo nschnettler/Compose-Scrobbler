@@ -3,6 +3,7 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.database.models.AuthToken
+import de.schnettler.scrobbler.persistence.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao

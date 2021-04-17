@@ -34,7 +34,7 @@ import de.schnettler.scrobbler.compose.theme.AppTheme
 import de.schnettler.scrobbler.compose.widget.BottomNavigationBar
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
 import de.schnettler.scrobbler.model.LastFmEntity
-import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
+import de.schnettler.scrobbler.core.util.REDIRECT_URL
 import de.schnettler.scrobbler.util.openCustomTab
 import de.schnettler.scrobbler.util.openNotificationListenerSettings
 import de.schnettler.scrobbler.util.route

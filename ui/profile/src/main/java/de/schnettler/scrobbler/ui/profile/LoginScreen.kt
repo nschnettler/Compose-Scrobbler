@@ -13,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import de.schnettler.common.BuildConfig
-import de.schnettler.scrobbler.ui.common.util.AUTH_ENDPOINT
-import de.schnettler.scrobbler.ui.common.util.REDIRECT_URL
+import de.schnettler.scrobbler.core.util.AUTH_ENDPOINT
+import de.schnettler.scrobbler.core.util.REDIRECT_URL
 import timber.log.Timber
 
 @Composable

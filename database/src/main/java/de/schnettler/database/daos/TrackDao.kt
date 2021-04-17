@@ -7,6 +7,7 @@ import de.schnettler.scrobbler.model.EntityWithInfo
 import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 import de.schnettler.scrobbler.model.EntityWithStats.TrackWithStats
 import de.schnettler.scrobbler.model.LastFmEntity.Track
+import de.schnettler.scrobbler.persistence.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("MaxLineLength")

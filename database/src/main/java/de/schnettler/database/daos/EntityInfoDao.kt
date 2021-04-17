@@ -3,6 +3,7 @@ package de.schnettler.database.daos
 import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.scrobbler.model.EntityInfo
+import de.schnettler.scrobbler.persistence.BaseDao
 
 @Dao
 abstract class EntityInfoDao : BaseDao<EntityInfo> {

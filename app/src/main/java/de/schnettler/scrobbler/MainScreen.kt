@@ -23,8 +23,8 @@ import de.schnettler.scrobbler.ui.detail.DetailScreen
 import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
 import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
-import de.schnettler.scrobbler.ui.history.HistoryScreen
-import de.schnettler.scrobbler.ui.history.LocalViewModel
+import de.schnettler.scrobbler.history.ui.HistoryScreen
+import de.schnettler.scrobbler.history.ui.LocalViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileScreen
 import de.schnettler.scrobbler.ui.profile.ProfileViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileViewModelImpl
@@ -49,8 +49,8 @@ fun MainRouteContent(
             ChartScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.History) {
-            val viewModel: LocalViewModel = hiltNavGraphViewModel<LocalViewModel>()
-            HistoryScreen(
+            val viewModel: de.schnettler.scrobbler.history.ui.LocalViewModel = hiltNavGraphViewModel<de.schnettler.scrobbler.history.ui.LocalViewModel>()
+            de.schnettler.scrobbler.history.ui.HistoryScreen(
                 viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier,
                 loggedIn = sessionStatus is SessionState.LoggedIn
             )

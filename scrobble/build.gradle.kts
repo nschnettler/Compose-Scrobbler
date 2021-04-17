@@ -23,6 +23,8 @@ dependencies {
     // Modules
     implementation(project(":libraries:persistence"))
     implementation(project(":libraries:network:lastfm")) // TODO: This should not be here. Errors need to be mapped
+    implementation(project(":libraries:model"))
+    implementation(project(":libraries:submission"))
 
     implementation(project(":common"))
     implementation(project(":repo"))
