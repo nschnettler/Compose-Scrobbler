@@ -12,7 +12,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":ui:common:resources"))
+    implementation(project(":libraries:resources"))
     implementation(AndroidX.core.ktx)
 
     // Testing

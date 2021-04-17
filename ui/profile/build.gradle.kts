@@ -33,7 +33,7 @@ dependencies {
 
     implementation(project(":common"))
     implementation(project(":ui:common:compose"))
-    implementation(project(":ui:common:resources"))
+    implementation(project(":libraries:resources"))
     implementation(project(":ui:common:util"))
     implementation(project(":repo"))
 

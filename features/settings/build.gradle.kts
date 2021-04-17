@@ -27,7 +27,6 @@ dependencies {
     // Modules
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
     implementation(project(":libraries:persistence"))
-    implementation(project(":ui:common:resources"))
 
     // Compose
     implementation(AndroidX.compose.material)

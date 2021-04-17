@@ -28,7 +28,6 @@ dependencies {
     implementation(project(":libraries:core"))
     implementation(project(":libraries:compose"))
     implementation(project(":libraries:network:lastfm"))
-    implementation(project(":ui:common:resources"))
 
     // Compose
     implementation(AndroidX.compose.material)
