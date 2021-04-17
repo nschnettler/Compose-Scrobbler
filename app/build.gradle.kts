@@ -77,7 +77,6 @@ dependencies {
     implementation(project(":ui:charts"))
     implementation(project(":ui:profile"))
     implementation(project(":ui:detail"))
-    implementation(project(":ui:search"))
     implementation(project(":ui:history"))
 
     implementation(project(":features:search"))
