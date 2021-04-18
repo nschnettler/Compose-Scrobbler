@@ -1,17 +1,12 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
-include(":libraries:submission")
-
-
 include(":features:history")
-
-
-include(":libraries:persistence")
-
-
 include(":features:search")
 include(":features:settings")
+include(":features:scrobble")
 
+include(":libraries:submission")
+include(":libraries:persistence")
 include(":libraries:network:common")
 include(":libraries:network:spotify")
 include(":libraries:network:lastfm")
@@ -29,7 +24,6 @@ include(":ui:common:compose")
 include(":common")
 include(":repo")
 include(":database")
-include(":scrobble")
 include(":app")
 rootProject.name = "Scrobbler"
 

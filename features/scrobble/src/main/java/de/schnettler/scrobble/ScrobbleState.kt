@@ -3,7 +3,7 @@ package de.schnettler.scrobble
 import android.media.MediaMetadata
 import android.media.session.MediaController
 import android.media.session.PlaybackState
-import de.schnettler.scrobble.util.isPlaying
+import de.schnettler.scrobble.ktx.isPlaying
 import de.schnettler.scrobbler.model.Scrobble
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

@@ -1,4 +1,4 @@
-package de.schnettler.scrobble.util
+package de.schnettler.scrobble.ktx
 
 import android.media.session.PlaybackState
 

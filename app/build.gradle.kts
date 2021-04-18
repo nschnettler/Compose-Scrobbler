@@ -75,20 +75,24 @@ hilt {
 }
 
 dependencies {
+
+    // Features
+    implementation(project(":features:scrobble"))
+    implementation(project(":features:search"))
+    implementation(project(":features:settings"))
+    implementation(project(":features:history"))
+
+    // Libraries
     implementation(project(":libraries:submission"))
+
     implementation(project(":repo"))
     implementation(project(":common"))
-    implementation(project(":scrobble"))
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:common:util"))
     implementation(project(":ui:charts"))
     implementation(project(":ui:profile"))
     implementation(project(":ui:detail"))
     implementation(project(":ui:history"))
-
-    implementation(project(":features:search"))
-    implementation(project(":features:settings"))
-    implementation(project(":features:history"))
 
     // AndroidX
     implementation(AndroidX.appCompat)

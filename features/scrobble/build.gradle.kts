@@ -26,14 +26,17 @@ dependencies {
     implementation(project(":libraries:model"))
     implementation(project(":libraries:submission"))
 
-    implementation(project(":common"))
-    implementation(project(":repo"))
-
+    // AndroidX
     implementation(KotlinX.coroutines.core)
     implementation(AndroidX.work.runtimeKtx)
-    implementation(Google.dagger.hilt.android)
     implementation(AndroidX.lifecycle.service)
     implementation(AndroidX.lifecycle.runtimeKtx)
+
+    // Dagger
+    implementation(Google.dagger.hilt.android)
     kapt(AndroidX.hilt.compiler)
     kapt(Google.dagger.hilt.android.compiler)
+
+    // Other
+    implementation(JakeWharton.timber)
 }
