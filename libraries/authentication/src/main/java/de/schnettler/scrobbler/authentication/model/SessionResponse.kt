@@ -1,9 +1,9 @@
-package de.schnettler.lastfm.models
+package de.schnettler.scrobbler.authentication.model
 
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class SessionDto(
+data class SessionResponse(
     val name: String,
     val key: String,
     val subscriber: Long
