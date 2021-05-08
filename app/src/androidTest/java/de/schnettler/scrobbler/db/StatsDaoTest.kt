@@ -1,12 +1,14 @@
 package de.schnettler.scrobbler.db
 
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import de.schnettler.scrobbler.db.DataGenerator.generateStats
 import de.schnettler.scrobbler.model.Stats
+import de.schnettler.scrobbler.util.DataGenerator.generateStats
+import de.schnettler.scrobbler.util.DatabaseTest
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-class StatsDaoTest : de.schnettler.scrobbler.DatabaseTest() {
+class StatsDaoTest : DatabaseTest() {
 
     @Test
     fun insertOrUpdateStats_statNotInDb_insertsStat() = runBlockingTest {

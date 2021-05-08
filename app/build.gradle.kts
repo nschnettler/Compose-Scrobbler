@@ -12,6 +12,7 @@ android {
         applicationId = "de.schnettler.scrobbler"
         minSdkVersion(24)
         targetSdkVersion(30)
+        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
         versionCode = 1
         versionName = "1.0"
 
@@ -20,6 +21,10 @@ android {
                 arg("room.schemaLocation", "$projectDir/schemas")
                 arg("room.incremental", true)
             }
+        }
+
+        sourceSets {
+            getByName("androidTest").assets.srcDirs("$projectDir/schemas")
         }
     }
 

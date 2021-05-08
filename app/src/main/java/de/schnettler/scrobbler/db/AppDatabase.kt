@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import de.schnettler.scrobbler.authentication.db.AuthDao
+import de.schnettler.scrobbler.authentication.db.SessionDao
 import de.schnettler.scrobbler.authentication.model.AuthToken
 import de.schnettler.scrobbler.authentication.model.Session
 import de.schnettler.scrobbler.charts.dao.ChartDao
@@ -59,14 +61,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun trackDetailDao(): TrackDetailDao
     abstract fun artistDetailDao(): ArtistDetailDao
 
-    abstract fun authDao(): de.schnettler.scrobbler.authentication.db.AuthDao
+    abstract fun authDao(): AuthDao
     abstract fun chartDao(): ChartDao
     abstract fun userDao(): UserDao
     abstract fun submissionDao(): SubmissionDao
     abstract fun statDao(): StatsDao
     abstract fun infoDao(): EntityInfoDao
     abstract fun relationDao(): ArtistRelationDao
-    abstract fun sessionDao(): de.schnettler.scrobbler.authentication.db.SessionDao
+    abstract fun sessionDao(): SessionDao
     abstract fun historyDao(): HistoryDao
     abstract fun imageDao(): ImageDao
     abstract fun toplistDao(): ToplistDao

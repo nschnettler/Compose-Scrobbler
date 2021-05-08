@@ -1,17 +1,23 @@
 package de.schnettler.scrobbler.db
 
+import ch.tutteli.atrium.api.fluent.en_GB.containsExactlyElementsOf
+import ch.tutteli.atrium.api.fluent.en_GB.hasSize
+import ch.tutteli.atrium.api.fluent.en_GB.isEmpty
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
 import ch.tutteli.atrium.api.verbs.expect
-import de.schnettler.scrobbler.db.DataGenerator
-import de.schnettler.database.models.RelatedArtistEntry
+import de.schnettler.scrobbler.details.model.RelatedArtistEntry
+import de.schnettler.scrobbler.util.DataGenerator
+import de.schnettler.scrobbler.util.DatabaseTest
+import de.schnettler.scrobbler.util.collectValue
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-class ArtistRelationDaoTest : de.schnettler.scrobbler.DatabaseTest() {
+class ArtistRelationDaoTest : DatabaseTest() {
 
     @Test
     fun getRelatedArtists_relationsPresent_returnsSortedListOfArtists() = runBlockingTest {
         // Given - Artists and relations in db
-        val artists = de.schnettler.scrobbler.db.DataGenerator.generateArtists(10)
+        val artists = DataGenerator.generateArtists(10)
         val testedArtist = artists.first()
         val relations = listOf(
             RelatedArtistEntry(testedArtist.id, artists[7].id, 2),
@@ -36,7 +42,7 @@ class ArtistRelationDaoTest : de.schnettler.scrobbler.DatabaseTest() {
     @Test
     fun getRelatedArtists_unknownArtist_returnsEmptyList() = runBlockingTest {
         // Given - Artists and relations in db
-        val artists = de.schnettler.scrobbler.db.DataGenerator.generateArtists(10)
+        val artists = DataGenerator.generateArtists(10)
         val relations = listOf(
             RelatedArtistEntry(artists.first().id, artists[7].id, 2),
             RelatedArtistEntry(artists.first().id, artists[4].id, 0),

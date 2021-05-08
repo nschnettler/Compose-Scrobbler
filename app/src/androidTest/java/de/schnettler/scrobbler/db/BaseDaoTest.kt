@@ -1,11 +1,17 @@
 package de.schnettler.scrobbler.db
 
+import ch.tutteli.atrium.api.fluent.en_GB.isGreaterThanOrEqual
+import ch.tutteli.atrium.api.fluent.en_GB.notToBe
+import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import de.schnettler.database.models.LastFmEntity.Artist
+import de.schnettler.scrobbler.model.LastFmEntity.Artist
+import de.schnettler.scrobbler.util.DatabaseTest
+import de.schnettler.scrobbler.util.collectValue
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-class BaseDaoTest : de.schnettler.scrobbler.DatabaseTest() {
+class BaseDaoTest : DatabaseTest() {
 
     @Test
     fun forceInsertOverwritesData() = runBlockingTest {

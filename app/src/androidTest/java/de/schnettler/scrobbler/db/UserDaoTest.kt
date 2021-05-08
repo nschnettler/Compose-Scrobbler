@@ -1,11 +1,15 @@
 package de.schnettler.scrobbler.db
 
+import ch.tutteli.atrium.api.fluent.en_GB.notToBe
+import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.scrobbler.model.User
+import de.schnettler.scrobbler.util.DatabaseTest
+import de.schnettler.scrobbler.util.collectValue
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 
-class UserDaoTest : de.schnettler.scrobbler.DatabaseTest() {
+class UserDaoTest : DatabaseTest() {
 
     @Test
     fun getUserReturnsOneUser() = runBlockingTest {
@@ -40,7 +44,7 @@ class UserDaoTest : de.schnettler.scrobbler.DatabaseTest() {
         // WHEN - artistcount is Updated
         val updatedUser = oldUser.copy(artistCount = 10)
         val changedRows =
-            db.userDao().updateArtistCount(oldUser.name, updatedUser.artistCount)
+            db.userDao().updateArtistCount(updatedUser.artistCount)
         val loadedUser = db.userDao().getUser()
 
         // THEN - update reflected in data from db

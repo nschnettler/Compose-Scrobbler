@@ -7,6 +7,9 @@ import de.schnettler.scrobbler.persistence.dao.BaseDao
 
 @Dao
 abstract class StatsDao : BaseDao<Stats> {
+    @Query("SELECT * FROM stats WHERE id = :id")
+    abstract suspend fun getStat(id: String): Stats?
+
     suspend fun insertOrUpdateStats(stats: List<Stats?>) {
         val result = insertAll(stats)
         result.forEachIndexed { index, value ->

@@ -8,7 +8,6 @@ import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.platform.app.InstrumentationRegistry
 import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
-import de.schnettler.scrobbler.AppDatabase_Migrations
 import de.schnettler.scrobbler.model.EntityInfo
 import de.schnettler.scrobbler.persistence.TypeConverter
 import org.junit.Rule
