@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.submission.domain
 
+import androidx.work.NetworkType
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
 import de.schnettler.lastfm.models.Errors
@@ -128,7 +129,7 @@ class SubmissionRepository @Inject constructor(
         val constraints = androidx.work.Constraints.Builder().apply {
             val constraintSet = dataStoreManager.getPreference(PreferenceEntry.ScrobbleConstraints)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_BATTERY)) setRequiresBatteryNotLow(true)
-            if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(androidx.work.NetworkType.UNMETERED)
+            if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(NetworkType.UNMETERED)
         }.build()
         val request = androidx.work.OneTimeWorkRequestBuilder<ScrobbleWorker>().setConstraints(constraints).build()
         workManager.enqueueUniqueWork(
