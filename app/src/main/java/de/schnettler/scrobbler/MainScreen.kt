@@ -7,6 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltNavGraphViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import de.schnettler.scrobbler.charts.ui.ChartScreen
+import de.schnettler.scrobbler.charts.ui.ChartViewModel
+import de.schnettler.scrobbler.charts.ui.ChartViewModelImpl
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -25,9 +28,6 @@ import de.schnettler.scrobbler.profile.ui.ProfileViewModelImpl
 import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel
 import de.schnettler.scrobbler.search.ui.SearchViewModelImpl
-import de.schnettler.scrobbler.ui.charts.ChartScreen
-import de.schnettler.scrobbler.ui.charts.ChartViewModel
-import de.schnettler.scrobbler.ui.charts.ChartViewModelImpl
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
 import de.schnettler.scrobbler.util.destination
 import de.schnettler.scrobbler.util.secondOrNull

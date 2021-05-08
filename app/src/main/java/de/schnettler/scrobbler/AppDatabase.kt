@@ -7,10 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import de.schnettler.database.TypeConverter
 import de.schnettler.database.daos.AuthDao
-import de.schnettler.database.daos.ChartDao
 import de.schnettler.database.daos.SessionDao
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.Session
+import de.schnettler.scrobbler.charts.dao.ChartDao
 import de.schnettler.scrobbler.details.db.AlbumDetailDao
 import de.schnettler.scrobbler.details.db.ArtistDetailDao
 import de.schnettler.scrobbler.details.db.ArtistRelationDao

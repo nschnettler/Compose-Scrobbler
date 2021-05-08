@@ -1,10 +1,5 @@
 package de.schnettler.repo
 
-import app.cash.turbine.test
-import ch.tutteli.atrium.api.fluent.en_GB.hasSize
-import ch.tutteli.atrium.api.fluent.en_GB.isA
-import ch.tutteli.atrium.api.fluent.en_GB.notToBeNull
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
@@ -14,12 +9,13 @@ import org.junit.Before
 import org.junit.Test
 
 class ChartRepositoryTest : DatabaseTest() {
-    private lateinit var repo: ChartRepository
+    private lateinit var repo: de.schnettler.scrobbler.charts.repo.ChartRepository
     private lateinit var service: TestService
     @Before
     fun setupRepo() {
         service = TestService()
-        repo = ChartRepository(db.chartDao(), db.artistDao(), db.trackDao(), service)
+        repo =
+            de.schnettler.scrobbler.charts.repo.ChartRepository(db.chartDao(), db.artistDao(), db.trackDao(), service)
     }
 
     @OptIn(ExperimentalTime::class)

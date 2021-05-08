@@ -88,7 +88,7 @@ private fun LazyListScope.detailItems(
 
     // Albums
     item {
-        Carousel(items = artistInfo.topAlbums, titleRes = R.string.header_topalbums) { (album, stats) ->
+        Carousel(items = artistInfo.topAlbums, titleRes = R.string.artist_album_header) { (album, stats) ->
             MediaCard(
                 name = album.name,
                 plays = stats.plays,
@@ -126,7 +126,7 @@ private fun TrackItem(index: Int, track: TrackWithStats, actionHandler: (UIActio
     ListItem(
         text = { Text(track.entity.name) },
         secondaryText = {
-            Text("${track.stats.listeners.abbreviate()} ${stringResource(id = R.string.stats_listeners)}")
+            Text("${track.stats.listeners.abbreviate()} ${stringResource(id = R.string.track_listeners)}")
         },
         icon = { PlainListIconBackground { Text(text = "${index + 1}") } },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(track.entity)) })

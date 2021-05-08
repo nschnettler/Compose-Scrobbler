@@ -75,21 +75,22 @@ hilt {
 }
 
 dependencies {
-
     // Features
     implementation(project(":features:scrobble"))
     implementation(project(":features:search"))
     implementation(project(":features:settings"))
     implementation(project(":features:history"))
     implementation(project(":features:details"))
+    implementation(project(":features:profile"))
+    implementation(project(":features:charts"))
 
     // Libraries
     implementation(project(":libraries:submission"))
     implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:image"))
+    implementation(project(":libraries:model"))
 
     implementation(project(":repo"))
-    implementation(project(":ui:common:compose"))
-    implementation(project(":ui:charts"))
 
     // AndroidX
     implementation(AndroidX.appCompat)
@@ -101,8 +102,6 @@ dependencies {
     implementation(AndroidX.work.runtimeKtx)
     implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
-    implementation(project(mapOf("path" to ":features:profile")))
-    implementation(project(mapOf("path" to ":libraries:image")))
     kapt(AndroidX.hilt.compiler)
 
     implementation(AndroidX.room.ktx)

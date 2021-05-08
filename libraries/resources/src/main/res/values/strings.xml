@@ -1,33 +1,3 @@
 <resources>
     <string name="app_name">Scrobbler</string>
-    <string name="ic_period">Period</string>
-    <string name="ic_open_in">Open in browser</string>
-
-    <!-- Tabs -->
-    <string name="tab_artist">Artist</string>
-    <string name="tab_track">Track</string>
-
-    <!-- Headers -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!-- Error Messages -->
-    <string name="error_charts">Unable to refresh charts</string>
-
-
-
-
-
-
-
 </resources>

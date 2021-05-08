@@ -11,16 +11,7 @@ open class BaseTrackDto(
     open val album: TrackAlbum?
 )
 
-@JsonClass(generateAdapter = true)
-data class UserTrackDto(
-    override val name: String,
-    override val url: String,
-    override val artist: MinimalArtist,
 
-    val mbid: String?,
-    val duration: Long,
-    val playcount: Long
-) : TrackResponse
 
 @JsonClass(generateAdapter = true)
 data class AlbumTrack(

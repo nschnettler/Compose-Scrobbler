@@ -2,6 +2,7 @@
 <resources>
     <string name="artist_similar">Similar Artists</string>
     <string name="header_tags">Tags</string>
+    <string name="artist_album_header">Top Albums</string>
     <string name="error_details">Unable to refresh details</string>
     <string name="track_sourcealbum">"From The Album</string>
     <string name="track_unknownalbum">We don‘t have an album for this track yet.</string>
@@ -9,4 +10,5 @@
     <string name="albumdetails_tracks">tracks</string>
     <string name="albumdetails_minutes">minutes</string>
     <string name="header_toptracks">Top Tracks</string>
+    <string name="track_listeners">Listeners</string>
 </resources>
