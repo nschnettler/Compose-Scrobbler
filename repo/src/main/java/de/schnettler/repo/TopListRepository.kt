@@ -7,10 +7,8 @@ import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.common.TimePeriod
-import de.schnettler.database.daos.AlbumDao
-import de.schnettler.database.daos.ArtistDao
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.TrackDao
+import de.schnettler.database.daos.ImageDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.lastfm.api.lastfm.UserService
 import de.schnettler.repo.authentication.provider.LastFmAuthProviderImpl
@@ -23,13 +21,15 @@ import de.schnettler.scrobbler.model.ListType
 import de.schnettler.scrobbler.model.TopListAlbum
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
+import de.schnettler.scrobbler.persistence.dao.AlbumDao
+import de.schnettler.scrobbler.persistence.dao.ArtistDao
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
     private val userDao: UserDao,
     private val artistDao: ArtistDao,
     private val albumDao: AlbumDao,
-    private val trackDao: TrackDao,
+    private val trackDao: ImageDao,
     private val chartDao: ChartDao,
     private val userService: UserService,
     private val authProvider: LastFmAuthProviderImpl,

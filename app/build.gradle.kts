@@ -81,18 +81,17 @@ dependencies {
     implementation(project(":features:search"))
     implementation(project(":features:settings"))
     implementation(project(":features:history"))
+    implementation(project(":features:details"))
 
     // Libraries
     implementation(project(":libraries:submission"))
+    implementation(project(":libraries:persistence"))
 
     implementation(project(":repo"))
     implementation(project(":common"))
     implementation(project(":ui:common:compose"))
-    implementation(project(":ui:common:util"))
     implementation(project(":ui:charts"))
     implementation(project(":ui:profile"))
-    implementation(project(":ui:detail"))
-    implementation(project(":ui:history"))
 
     // AndroidX
     implementation(AndroidX.appCompat)

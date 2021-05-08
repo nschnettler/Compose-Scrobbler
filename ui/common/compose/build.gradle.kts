@@ -25,7 +25,6 @@ dependencies {
     // Modules
     implementation(project(":common"))
     implementation(project(":repo"))
-    implementation(project(":ui:common:util"))
     implementation(project(":libraries:resources"))
     implementation(project(":libraries:network:lastfm")) // TODO: This should not be here
     api(project(":libraries:compose"))

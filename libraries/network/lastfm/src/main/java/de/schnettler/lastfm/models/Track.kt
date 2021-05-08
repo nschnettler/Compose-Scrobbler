@@ -1,6 +1,7 @@
 package de.schnettler.lastfm.models
 
 import com.squareup.moshi.JsonClass
+import de.schnettler.scrobbler.model.remote.TrackResponse
 
 @JsonClass(generateAdapter = true)
 open class BaseTrackDto(
@@ -19,7 +20,7 @@ data class UserTrackDto(
     val mbid: String?,
     val duration: Long,
     val playcount: Long
-) : BaseTrackDto(name, url, artist, null)
+) : TrackResponse
 
 @JsonClass(generateAdapter = true)
 data class AlbumTrack(
@@ -27,10 +28,10 @@ data class AlbumTrack(
     override val url: String,
     override val artist: MinimalArtist,
 
-    override val duration: Long,
+    val duration: Long,
 
     val mbid: String?,
-) : BaseTrackDto(name, url, artist, null), BaseInfoDto
+) : TrackResponse
 
 @JsonClass(generateAdapter = true)
 data class ArtistTracksDto(
@@ -44,28 +45,3 @@ data class ArtistTracksDto(
 
     val mbid: String?,
 ) : BaseTrackDto(name, url, artist, null), BaseStatsDto
-
-@JsonClass(generateAdapter = true)
-data class TrackInfoDto(
-    override val name: String,
-    override val url: String,
-    override val artist: MinimalArtist,
-    override val album: TrackAlbum?,
-
-    override val listeners: Long,
-    override val playcount: Long,
-    override val userplaycount: Long = -1,
-
-    // Duration is in ms
-    override val duration: Long,
-    override val wiki: WikiDto?,
-
-    val mbid: String?,
-    override val userloved: Long = 0,
-    val toptags: TagsDto,
-) : BaseTrackDto(name, url, artist, album), BaseStatsDto, BaseInfoDto
-
-@JsonClass(generateAdapter = true)
-data class AlbumTracksDto(
-    val track: List<AlbumTrack>
-)

@@ -6,19 +6,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import de.schnettler.database.TypeConverter
-import de.schnettler.database.daos.AlbumDao
-import de.schnettler.database.daos.ArtistDao
-import de.schnettler.database.daos.ArtistRelationDao
 import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.EntityInfoDao
+import de.schnettler.database.daos.ImageDao
 import de.schnettler.database.daos.SessionDao
-import de.schnettler.database.daos.StatsDao
-import de.schnettler.database.daos.TrackDao
 import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
-import de.schnettler.database.models.RelatedArtistEntry
 import de.schnettler.database.models.Session
+import de.schnettler.scrobbler.details.db.AlbumDetailDao
+import de.schnettler.scrobbler.details.db.ArtistDetailDao
+import de.schnettler.scrobbler.details.db.ArtistRelationDao
+import de.schnettler.scrobbler.details.db.EntityInfoDao
+import de.schnettler.scrobbler.details.db.StatsDao
+import de.schnettler.scrobbler.details.db.TrackDetailDao
+import de.schnettler.scrobbler.details.model.RelatedArtistEntry
 import de.schnettler.scrobbler.history.domain.HistoryDao
 import de.schnettler.scrobbler.model.EntityInfo
 import de.schnettler.scrobbler.model.LastFmEntity
@@ -26,6 +27,9 @@ import de.schnettler.scrobbler.model.Scrobble
 import de.schnettler.scrobbler.model.Stats
 import de.schnettler.scrobbler.model.TopListEntry
 import de.schnettler.scrobbler.model.User
+import de.schnettler.scrobbler.persistence.dao.AlbumDao
+import de.schnettler.scrobbler.persistence.dao.ArtistDao
+import de.schnettler.scrobbler.persistence.dao.TrackDao
 import de.schnettler.scrobbler.submission.domain.SubmissionDao
 import dev.matrix.roomigrant.GenerateRoomMigrations
 
@@ -48,11 +52,16 @@ import dev.matrix.roomigrant.GenerateRoomMigrations
 @TypeConverters(TypeConverter::class)
 @GenerateRoomMigrations
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun authDao(): AuthDao
-    abstract fun chartDao(): ChartDao
-    abstract fun artistDao(): ArtistDao
     abstract fun albumDao(): AlbumDao
     abstract fun trackDao(): TrackDao
+    abstract fun artistDao(): ArtistDao
+
+    abstract fun albumDetailDao(): AlbumDetailDao
+    abstract fun trackDetailDao(): TrackDetailDao
+    abstract fun artistDetailDao(): ArtistDetailDao
+
+    abstract fun authDao(): AuthDao
+    abstract fun chartDao(): ChartDao
     abstract fun userDao(): UserDao
     abstract fun submissionDao(): SubmissionDao
     abstract fun statDao(): StatsDao
@@ -60,6 +69,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun relationDao(): ArtistRelationDao
     abstract fun sessionDao(): SessionDao
     abstract fun historyDao(): HistoryDao
+    abstract fun imageDao(): ImageDao
 }
 
 @Suppress("SpreadOperator")

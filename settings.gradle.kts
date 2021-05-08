@@ -1,5 +1,6 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
+include(":features:details")
 include(":features:history")
 include(":features:search")
 include(":features:settings")
@@ -15,10 +16,7 @@ include(":libraries:core")
 include(":libraries:compose")
 include(":libraries:resources")
 
-include(":ui:history")
-include(":ui:detail")
 include(":ui:profile")
-include(":ui:common:util")
 include(":ui:charts")
 include(":ui:common:compose")
 include(":common")

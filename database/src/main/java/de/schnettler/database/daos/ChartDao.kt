@@ -10,7 +10,7 @@ import de.schnettler.scrobbler.model.TopListAlbum
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListEntry
 import de.schnettler.scrobbler.model.TopListTrack
-import de.schnettler.scrobbler.persistence.BaseDao
+import de.schnettler.scrobbler.persistence.dao.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao

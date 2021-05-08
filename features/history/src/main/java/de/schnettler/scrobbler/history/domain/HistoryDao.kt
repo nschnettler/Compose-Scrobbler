@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import de.schnettler.scrobbler.model.Scrobble
 import de.schnettler.scrobbler.model.ScrobbleStatus
-import de.schnettler.scrobbler.persistence.BaseDao
+import de.schnettler.scrobbler.persistence.dao.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("MaxLineLength", "TooManyFunctions")

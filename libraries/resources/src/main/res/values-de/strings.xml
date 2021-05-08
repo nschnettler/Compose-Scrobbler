@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Scrobbler</string>
-    <string name="albumdetails_tracks">Titel</string>
-    <string name="albumdetails_minutes">Minuten</string>
     <string name="header_toptracks">Top-Titel</string>
-    <string name="header_topalbums">Top-Alben</string>
-    <string name="artist_similar">Ähnliche Künstler</string>
-    <string name="stats_listeners">Hörer</string>
+
     <string name="tab_artist">Künstler</string>
     <string name="tab_track">Titel</string>
-    <string name="track_sourcealbum">Aus dem Album</string>
-    <string name="track_unknownalbum">Wir haben noch kein Album für diesen Titel.</string>
-    <string name="header_tags">Tags</string>
+
     <string name="login_button">Anmelden</string>
     <string name="header_topartists">Top-Künstler</string>
     <string name="profile_perioddialog_title">Zeitraum</string>
     <string name="profile_perioddialog_select">Auswählen</string>
     <string name="profile_scrobblingsince">scrobbelt seit</string>
     <string name="error_charts">Fehler beim Aktualisieren der Charts</string>
-    <string name="error_details">Fehler beim Aktualisieren der Details</string>
+
     <string name="error_profile">Fehler beim Aktualisieren des Profils</string>
-    <string name="bio_unavailable">Keine Informationen vorhanden</string>
+
     <string name="ic_period">Zeitraum</string>
     <string name="ic_open_in">In Browser öffnen</string>
     <string name="header_more">Mehr</string>

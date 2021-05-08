@@ -11,6 +11,12 @@ import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
+import de.schnettler.scrobbler.details.ui.DetailScreen
+import de.schnettler.scrobbler.details.ui.album.AlbumViewModel
+import de.schnettler.scrobbler.details.ui.artist.ArtistViewModel
+import de.schnettler.scrobbler.details.ui.track.TrackViewModel
+import de.schnettler.scrobbler.history.ui.HistoryScreen
+import de.schnettler.scrobbler.history.ui.LocalViewModel
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.SessionState
 import de.schnettler.scrobbler.search.ui.SearchScreen
@@ -19,12 +25,6 @@ import de.schnettler.scrobbler.search.ui.SearchViewModelImpl
 import de.schnettler.scrobbler.ui.charts.ChartScreen
 import de.schnettler.scrobbler.ui.charts.ChartViewModel
 import de.schnettler.scrobbler.ui.charts.ChartViewModelImpl
-import de.schnettler.scrobbler.ui.detail.DetailScreen
-import de.schnettler.scrobbler.ui.detail.viewmodel.AlbumViewModel
-import de.schnettler.scrobbler.ui.detail.viewmodel.ArtistViewModel
-import de.schnettler.scrobbler.ui.detail.viewmodel.TrackViewModel
-import de.schnettler.scrobbler.history.ui.HistoryScreen
-import de.schnettler.scrobbler.history.ui.LocalViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileScreen
 import de.schnettler.scrobbler.ui.profile.ProfileViewModel
 import de.schnettler.scrobbler.ui.profile.ProfileViewModelImpl
@@ -49,8 +49,8 @@ fun MainRouteContent(
             ChartScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.History) {
-            val viewModel: de.schnettler.scrobbler.history.ui.LocalViewModel = hiltNavGraphViewModel<de.schnettler.scrobbler.history.ui.LocalViewModel>()
-            de.schnettler.scrobbler.history.ui.HistoryScreen(
+            val viewModel: LocalViewModel = hiltNavGraphViewModel()
+            HistoryScreen(
                 viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier,
                 loggedIn = sessionStatus is SessionState.LoggedIn
             )
@@ -65,27 +65,27 @@ fun MainRouteContent(
         }
         destination(Screen.Settings) { SettingsScreen(modifier = modifier) }
         destination(Screen.ArtistDetails) { args ->
-            val viewModel: ArtistViewModel = hiltNavGraphViewModel<ArtistViewModel>()
+            val viewModel: ArtistViewModel = hiltNavGraphViewModel()
             args.firstOrNull()?.let {
                 viewModel.updateKey(LastFmEntity.Artist(it))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }
         destination(screen = Screen.AlbumDetails) { args ->
-            val viewModel: AlbumViewModel = hiltNavGraphViewModel<AlbumViewModel>()
+            val viewModel: AlbumViewModel = hiltNavGraphViewModel()
             val artist = args.firstOrNull()
             val album = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !album.isNullOrEmpty()) {
-                viewModel.updateKey(de.schnettler.scrobbler.model.LastFmEntity.Album(name = album, artist = artist))
+                viewModel.updateKey(LastFmEntity.Album(name = album, artist = artist))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }
         destination(screen = Screen.TrackDetails) { args ->
-            val viewModel: TrackViewModel = hiltNavGraphViewModel<TrackViewModel>()
+            val viewModel: TrackViewModel = hiltNavGraphViewModel()
             val artist = args.firstOrNull()
             val track = args.secondOrNull()
             if (!artist.isNullOrEmpty() && !track.isNullOrEmpty()) {
-                viewModel.updateKey(de.schnettler.scrobbler.model.LastFmEntity.Track(name = track, artist = artist))
+                viewModel.updateKey(LastFmEntity.Track(name = track, artist = artist))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }

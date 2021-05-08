@@ -23,6 +23,7 @@ dependencies {
     // Modules
     implementation(project(":common"))
     implementation(project(":libraries:network:common"))
+    implementation(project(":libraries:model")) // temp
 
     // Retrofit
     implementation(Square.Retrofit2.retrofit)
