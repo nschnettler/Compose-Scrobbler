@@ -5,9 +5,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.schnettler.database.daos.AuthDao
-import de.schnettler.database.daos.SessionDao
 import de.schnettler.scrobbler.AppDatabase
+import de.schnettler.scrobbler.authentication.db.AuthDao
+import de.schnettler.scrobbler.authentication.db.SessionDao
 import de.schnettler.scrobbler.charts.dao.ChartDao
 import de.schnettler.scrobbler.details.db.AlbumDetailDao
 import de.schnettler.scrobbler.details.db.ArtistDetailDao

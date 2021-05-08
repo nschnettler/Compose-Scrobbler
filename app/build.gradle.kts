@@ -76,21 +76,29 @@ hilt {
 
 dependencies {
     // Features
-    implementation(project(":features:scrobble"))
     implementation(project(":features:search"))
-    implementation(project(":features:settings"))
+    implementation(project(":features:charts"))
     implementation(project(":features:history"))
     implementation(project(":features:details"))
     implementation(project(":features:profile"))
-    implementation(project(":features:charts"))
+    implementation(project(":features:scrobble"))
+    implementation(project(":features:settings"))
 
     // Libraries
-    implementation(project(":libraries:submission"))
-    implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:core"))
     implementation(project(":libraries:image"))
     implementation(project(":libraries:model"))
+    implementation(project(":libraries:compose"))
+    implementation(project(":libraries:submission"))
+    implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:authentication"))
+    implementation(project(":libraries:network:lastfm"))
 
     implementation(project(":repo"))
+
+    // Compose
+    implementation(AndroidX.compose.material)
+    implementation("com.google.accompanist", "accompanist-insets", "_")
 
     // AndroidX
     implementation(AndroidX.appCompat)
@@ -102,8 +110,8 @@ dependencies {
     implementation(AndroidX.work.runtimeKtx)
     implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
+    implementation(AndroidX.browser)
     kapt(AndroidX.hilt.compiler)
-
     implementation(AndroidX.room.ktx)
     implementation(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
@@ -117,4 +125,5 @@ dependencies {
 
     // Other
     debugImplementation(Square.leakCanary.android)
+    implementation(JakeWharton.timber)
 }

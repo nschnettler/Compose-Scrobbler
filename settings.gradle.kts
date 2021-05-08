@@ -8,6 +8,7 @@ include(":features:search")
 include(":features:settings")
 include(":features:scrobble")
 
+include(":libraries:authentication")
 include(":libraries:image")
 include(":libraries:submission")
 include(":libraries:persistence")

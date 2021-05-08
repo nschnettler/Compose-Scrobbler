@@ -6,9 +6,9 @@ import androidx.room.Room
 import androidx.room.testing.MigrationTestHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
 import androidx.test.platform.app.InstrumentationRegistry
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import de.schnettler.database.models.EntityInfo
+import de.schnettler.scrobbler.persistence.TypeConverter
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException

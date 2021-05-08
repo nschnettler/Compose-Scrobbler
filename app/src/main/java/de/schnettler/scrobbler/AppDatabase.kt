@@ -5,11 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import de.schnettler.database.TypeConverter
-import de.schnettler.database.daos.AuthDao
-import de.schnettler.database.daos.SessionDao
-import de.schnettler.database.models.AuthToken
-import de.schnettler.database.models.Session
+import de.schnettler.scrobbler.authentication.model.AuthToken
+import de.schnettler.scrobbler.authentication.model.Session
 import de.schnettler.scrobbler.charts.dao.ChartDao
 import de.schnettler.scrobbler.details.db.AlbumDetailDao
 import de.schnettler.scrobbler.details.db.ArtistDetailDao
@@ -26,6 +23,7 @@ import de.schnettler.scrobbler.model.Scrobble
 import de.schnettler.scrobbler.model.Stats
 import de.schnettler.scrobbler.model.TopListEntry
 import de.schnettler.scrobbler.model.User
+import de.schnettler.scrobbler.persistence.TypeConverter
 import de.schnettler.scrobbler.persistence.dao.AlbumDao
 import de.schnettler.scrobbler.persistence.dao.ArtistDao
 import de.schnettler.scrobbler.persistence.dao.TrackDao
@@ -61,14 +59,14 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun trackDetailDao(): TrackDetailDao
     abstract fun artistDetailDao(): ArtistDetailDao
 
-    abstract fun authDao(): AuthDao
+    abstract fun authDao(): de.schnettler.scrobbler.authentication.db.AuthDao
     abstract fun chartDao(): ChartDao
     abstract fun userDao(): UserDao
     abstract fun submissionDao(): SubmissionDao
     abstract fun statDao(): StatsDao
     abstract fun infoDao(): EntityInfoDao
     abstract fun relationDao(): ArtistRelationDao
-    abstract fun sessionDao(): SessionDao
+    abstract fun sessionDao(): de.schnettler.scrobbler.authentication.db.SessionDao
     abstract fun historyDao(): HistoryDao
     abstract fun imageDao(): ImageDao
     abstract fun toplistDao(): ToplistDao
