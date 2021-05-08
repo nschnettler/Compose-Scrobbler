@@ -7,7 +7,6 @@ import de.schnettler.scrobbler.model.ScrobbleStatus
 import de.schnettler.scrobbler.persistence.dao.BaseDao
 import kotlinx.coroutines.flow.Flow
 
-@Suppress("MaxLineLength", "TooManyFunctions")
 @Dao
 abstract class HistoryDao : BaseDao<Scrobble> {
     @Query("SELECT * FROM localTracks ORDER BY timestamp DESC LIMIT :limit")

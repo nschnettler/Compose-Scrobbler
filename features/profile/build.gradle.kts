@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":libraries:persistence"))
     implementation(project(":libraries:network:lastfm"))
     implementation(project(":libraries:network:common"))
+    implementation(project(":libraries:authentication"))
 
     // Compose
     implementation(AndroidX.compose.material)

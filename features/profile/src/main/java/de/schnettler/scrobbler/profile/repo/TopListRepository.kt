@@ -18,13 +18,14 @@ import de.schnettler.scrobbler.persistence.dao.ArtistDao
 import de.schnettler.scrobbler.persistence.dao.TrackDao
 import de.schnettler.scrobbler.profile.api.ProfileApi
 import de.schnettler.scrobbler.profile.db.ToplistDao
+import de.schnettler.scrobbler.profile.db.UserDao
 import de.schnettler.scrobbler.profile.map.TopUserAlbumMapper
 import de.schnettler.scrobbler.profile.map.TopUserArtistMapper
 import de.schnettler.scrobbler.profile.map.TopUserTrackMapper
 import javax.inject.Inject
 
 class TopListRepository @Inject constructor(
-    private val userDao: de.schnettler.scrobbler.profile.db.UserDao,
+    private val userDao: UserDao,
     private val artistDao: ArtistDao,
     private val albumDao: AlbumDao,
     private val trackDao: TrackDao,

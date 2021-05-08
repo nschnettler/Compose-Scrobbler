@@ -12,10 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.schnettler.scrobbler.history.model.HistoryError
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ErrorItem(item: de.schnettler.scrobbler.history.model.HistoryError, onSelect: () -> Unit) {
+fun ErrorItem(item: HistoryError, onSelect: () -> Unit) {
     ListItem(
         text = { Text(text = stringResource(id = item.titleRes)) },
         secondaryText = { Text(text = stringResource(id = item.subtitleRes)) },

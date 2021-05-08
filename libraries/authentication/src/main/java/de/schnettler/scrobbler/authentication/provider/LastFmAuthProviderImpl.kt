@@ -10,5 +10,5 @@ class LastFmAuthProviderImpl @Inject constructor(
     val sessionLive = dao.getSession()
 
     override suspend fun getSessionKey() = getSession()?.key.orEmpty()
-    private suspend fun getSession() = dao.getSessionOnce()
+    suspend fun getSession() = dao.getSessionOnce()
 }

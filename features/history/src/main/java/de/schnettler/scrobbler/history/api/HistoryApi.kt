@@ -7,11 +7,8 @@ import retrofit2.http.GET
 
 @SessionAuthentication
 interface HistoryApi {
-    companion object {
-        const val METHOD_USER_RECENT = "user.getRecentTracks"
-    }
 
-    @GET("?method=$METHOD_USER_RECENT")
+    @GET("?method=user.getRecentTracks")
     @Wrapped(path = ["recenttracks", "track"])
     suspend fun getUserRecentTrack(): List<RecentTrackResponse>
 }

@@ -3,6 +3,7 @@ package de.schnettler.scrobbler.profile.repo
 import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
+import de.schnettler.scrobbler.authentication.provider.LastFmAuthProviderImpl
 import de.schnettler.scrobbler.model.User
 import de.schnettler.scrobbler.profile.api.ProfileApi
 import de.schnettler.scrobbler.profile.db.UserDao
@@ -12,7 +13,7 @@ import javax.inject.Inject
 class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val profileApi: ProfileApi,
-//    private val authProvider: LastFmAuthProviderImpl
+    private val authProvider: LastFmAuthProviderImpl
 ) {
     val userStore = StoreBuilder.from(
         fetcher = Fetcher.of {
@@ -36,9 +37,9 @@ class UserRepository @Inject constructor(
     val lovedTracksStore = StoreBuilder.from(
         fetcher = Fetcher.of {
             val result = profileApi.getUserLikedTracksAmount()
-//            authProvider.getSession()?.name?.let { userName ->
-//                userDao.updateLovedTracksCount(userName, result.total)
-//            }
+            authProvider.getSession()?.name?.let { userName ->
+                userDao.updateLovedTracksCount(userName, result.total)
+            }
             result.total
         }).build()
 }
