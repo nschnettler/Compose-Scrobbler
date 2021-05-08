@@ -22,7 +22,7 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
 
     // Modules
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum

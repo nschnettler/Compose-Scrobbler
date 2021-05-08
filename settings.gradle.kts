@@ -20,9 +20,8 @@ include(":libraries:core")
 include(":libraries:compose")
 include(":libraries:resources")
 
-include(":repo")
-include(":database")
 include(":app")
+
 rootProject.name = "Scrobbler"
 
 pluginManagement {

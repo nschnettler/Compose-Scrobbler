@@ -1,6 +1,8 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
+    kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -24,4 +26,9 @@ dependencies {
     // AndroidX
     implementation(AndroidX.room.common)
     implementation("androidx.datastore", "datastore-preferences", "_")
+
+    // Dagger
+    implementation(Google.dagger.hilt.android)
+    kapt(AndroidX.hilt.compiler)
+    kapt(Google.dagger.hilt.android.compiler)
 }

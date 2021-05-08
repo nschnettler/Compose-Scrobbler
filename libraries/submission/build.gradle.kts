@@ -45,4 +45,8 @@ dependencies {
 
     // Other
     implementation(JakeWharton.timber)
+
+    // Test
+    testImplementation(Testing.junit4)
+    testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

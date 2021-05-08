@@ -53,4 +53,12 @@ dependencies {
     kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.android.compiler)
+
+    // Test
+    testImplementation(Testing.junit4)
+    testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
+
+    // Android Test
+    androidTestImplementation("app.cash.turbine", "turbine", "_")
+    androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }

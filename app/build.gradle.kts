@@ -94,8 +94,6 @@ dependencies {
     implementation(project(":libraries:authentication"))
     implementation(project(":libraries:network:lastfm"))
 
-    implementation(project(":repo"))
-
     // Compose
     implementation(AndroidX.compose.material)
     implementation("com.google.accompanist", "accompanist-insets", "_")
@@ -126,4 +124,13 @@ dependencies {
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation(JakeWharton.timber)
+
+    // Andorid Test
+    androidTestImplementation(Testing.junit4)
+    androidTestImplementation(KotlinX.coroutines.test)
+    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.archCore.testing)
+    androidTestImplementation(AndroidX.test.rules)
+    androidTestImplementation(AndroidX.room.testing)
+    androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
 }
