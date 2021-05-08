@@ -26,10 +26,11 @@ android {
 dependencies {
     // Libraries
     implementation(project(":libraries:core"))
-    implementation(project(":libraries:compose"))
-    implementation(project(":libraries:persistence"))
     implementation(project(":libraries:model"))
+    implementation(project(":libraries:image"))
+    implementation(project(":libraries:compose"))
     implementation(project(":libraries:resources"))
+    implementation(project(":libraries:persistence"))
     implementation(project(":libraries:network:common"))
     implementation(project(":libraries:network:lastfm"))
 

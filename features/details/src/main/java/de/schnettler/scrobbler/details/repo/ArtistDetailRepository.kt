@@ -13,6 +13,7 @@ import de.schnettler.scrobbler.details.map.ArtistAlbumResponseMapper
 import de.schnettler.scrobbler.details.map.ArtistInfoMapper
 import de.schnettler.scrobbler.details.map.ArtistTrackMapper
 import de.schnettler.scrobbler.details.model.RelatedArtistEntry
+import de.schnettler.scrobbler.image.repo.ImageRepo
 import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.persistence.dao.AlbumDao
@@ -30,11 +31,12 @@ class ArtistDetailRepository @Inject constructor(
     private val relationDao: ArtistRelationDao,
     private val entityInfoDao: EntityInfoDao,
     private val artistApi: ArtistApi,
+    private val imageRepo: ImageRepo,
 ) {
     val artistStore = StoreBuilder.from(
         fetcher = Fetcher.of { artist: LastFmEntity.Artist ->
             // Refresh Image
-//            imageRepo.updateArtistImage(artist)
+            imageRepo.updateArtistImage(artist)
 
             coroutineScope {
                 val infoResult = async {
