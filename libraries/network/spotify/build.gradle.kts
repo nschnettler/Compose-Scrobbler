@@ -17,11 +17,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    val spotifyAuth: String? by project
+
+    buildTypes {
+        buildTypes.forEach {
+            it.buildConfigField("String", "SPOTIFY_AUTH", spotifyAuth ?: "\"\"")
+        }
+    }
 }
 
 dependencies {
     // Modules
-    implementation(project(":common"))
     implementation(project(":libraries:network:common"))
 
     // Retrofit

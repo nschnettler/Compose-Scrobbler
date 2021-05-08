@@ -88,10 +88,8 @@ dependencies {
     implementation(project(":libraries:persistence"))
 
     implementation(project(":repo"))
-    implementation(project(":common"))
     implementation(project(":ui:common:compose"))
     implementation(project(":ui:charts"))
-    implementation(project(":ui:profile"))
 
     // AndroidX
     implementation(AndroidX.appCompat)
@@ -103,6 +101,8 @@ dependencies {
     implementation(AndroidX.work.runtimeKtx)
     implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
+    implementation(project(mapOf("path" to ":features:profile")))
+    implementation(project(mapOf("path" to ":libraries:image")))
     kapt(AndroidX.hilt.compiler)
 
     implementation(AndroidX.room.ktx)

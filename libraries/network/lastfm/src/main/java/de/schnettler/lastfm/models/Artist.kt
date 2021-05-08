@@ -1,6 +1,5 @@
 package de.schnettler.lastfm.models
 
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import de.schnettler.scrobbler.model.remote.ArtistResponse
 
@@ -24,21 +23,6 @@ data class ChartArtistDto(
     val playcount: Long?,
     val listeners: Long?
 ) : ArtistResponse
-
-@JsonClass(generateAdapter = true)
-data class UserArtistDto(
-    override val name: String,
-    override val url: String,
-
-    val mbid: String?,
-    val playcount: Long?
-) : ArtistResponse
-
-@JsonClass(generateAdapter = true)
-data class UserArtistResponse(
-    val artist: List<UserArtistDto>,
-    @Json(name = "@attr") val info: ResponseInfo
-)
 
 @JsonClass(generateAdapter = true)
 data class SimilarArtistsDto(

@@ -19,15 +19,15 @@ import de.schnettler.scrobbler.history.ui.HistoryScreen
 import de.schnettler.scrobbler.history.ui.LocalViewModel
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.SessionState
+import de.schnettler.scrobbler.profile.ui.ProfileScreen
+import de.schnettler.scrobbler.profile.ui.ProfileViewModel
+import de.schnettler.scrobbler.profile.ui.ProfileViewModelImpl
 import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel
 import de.schnettler.scrobbler.search.ui.SearchViewModelImpl
 import de.schnettler.scrobbler.ui.charts.ChartScreen
 import de.schnettler.scrobbler.ui.charts.ChartViewModel
 import de.schnettler.scrobbler.ui.charts.ChartViewModelImpl
-import de.schnettler.scrobbler.ui.profile.ProfileScreen
-import de.schnettler.scrobbler.ui.profile.ProfileViewModel
-import de.schnettler.scrobbler.ui.profile.ProfileViewModelImpl
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
 import de.schnettler.scrobbler.util.destination
 import de.schnettler.scrobbler.util.secondOrNull
@@ -61,7 +61,12 @@ fun MainRouteContent(
         }
         destination(Screen.Profile) {
             val viewModel: ProfileViewModel = hiltNavGraphViewModel<ProfileViewModelImpl>()
-            ProfileScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
+            ProfileScreen(
+                viewModel = viewModel,
+                actionHandler = actioner,
+                errorHandler = errorer,
+                modifier = modifier
+            )
         }
         destination(Screen.Settings) { SettingsScreen(modifier = modifier) }
         destination(Screen.ArtistDetails) { args ->

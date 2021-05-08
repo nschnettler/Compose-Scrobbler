@@ -1,6 +1,10 @@
 package de.schnettler.scrobbler.model.remote
 
-interface ImageResponse {
-    val size: String
-    val url: String
-}
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class ImageResponse(
+    val size: String,
+    @Json(name = "#text") val url: String
+)

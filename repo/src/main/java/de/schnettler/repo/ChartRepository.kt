@@ -4,19 +4,19 @@ import com.dropbox.android.external.store4.Fetcher
 import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.StoreBuilder
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.ImageDao
 import de.schnettler.lastfm.api.lastfm.ChartService
 import de.schnettler.repo.mapping.artist.ChartArtistMapper
 import de.schnettler.repo.mapping.artist.ChartTrackMapper
 import de.schnettler.scrobbler.core.map.forLists
 import de.schnettler.scrobbler.model.ListType
 import de.schnettler.scrobbler.persistence.dao.ArtistDao
+import de.schnettler.scrobbler.persistence.dao.TrackDao
 import javax.inject.Inject
 
 class ChartRepository @Inject constructor(
     private val chartDao: ChartDao,
     private val artistDao: ArtistDao,
-    private val trackDao: ImageDao,
+    private val trackDao: TrackDao,
     private val service: ChartService
 ) {
     val chartArtistsStore = StoreBuilder.from(

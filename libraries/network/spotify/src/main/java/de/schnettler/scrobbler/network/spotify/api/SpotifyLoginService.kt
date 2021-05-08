@@ -10,5 +10,5 @@ import retrofit2.http.POST
 interface SpotifyLoginService {
     @POST("token")
     @FormUrlEncoded
-    suspend fun login(@Field("grant_type") type: String): SpotifyTokenDto
+    suspend fun login(@Field("grant_type") type: String = "client_credentials"): SpotifyTokenDto
 }

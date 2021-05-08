@@ -7,9 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.ImageDao
 import de.schnettler.database.daos.SessionDao
-import de.schnettler.database.daos.UserDao
 import de.schnettler.scrobbler.AppDatabase
 import de.schnettler.scrobbler.details.db.AlbumDetailDao
 import de.schnettler.scrobbler.details.db.ArtistDetailDao
@@ -19,9 +17,12 @@ import de.schnettler.scrobbler.details.db.StatsDao
 import de.schnettler.scrobbler.details.db.TrackDetailDao
 import de.schnettler.scrobbler.getDatabase
 import de.schnettler.scrobbler.history.domain.HistoryDao
+import de.schnettler.scrobbler.image.db.ImageDao
 import de.schnettler.scrobbler.persistence.dao.AlbumDao
 import de.schnettler.scrobbler.persistence.dao.ArtistDao
 import de.schnettler.scrobbler.persistence.dao.TrackDao
+import de.schnettler.scrobbler.profile.db.ToplistDao
+import de.schnettler.scrobbler.profile.db.UserDao
 import de.schnettler.scrobbler.submission.domain.SubmissionDao
 import javax.inject.Singleton
 
@@ -96,4 +97,8 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideImageDao(database: AppDatabase): ImageDao = database.imageDao()
+
+    @Provides
+    @Singleton
+    fun provideToplistDao(database: AppDatabase): ToplistDao = database.toplistDao()
 }

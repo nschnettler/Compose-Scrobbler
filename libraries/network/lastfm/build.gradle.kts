@@ -21,7 +21,7 @@ android {
 
 dependencies {
     // Modules
-    implementation(project(":common"))
+    implementation(project(":libraries:core"))
     implementation(project(":libraries:network:common"))
     implementation(project(":libraries:model")) // temp
 
@@ -44,4 +44,7 @@ dependencies {
 
     // KotlinX
     implementation(KotlinX.coroutines.core)
+
+    // Other
+    implementation(JakeWharton.timber)
 }

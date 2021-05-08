@@ -23,7 +23,6 @@ android {
 
 dependencies {
     // Modules
-    implementation(project(":common"))
     implementation(project(":repo"))
     implementation(project(":libraries:resources"))
     implementation(project(":libraries:network:lastfm")) // TODO: This should not be here

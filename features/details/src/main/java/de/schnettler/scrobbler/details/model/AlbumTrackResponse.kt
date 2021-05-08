@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.details.model
 
 import com.squareup.moshi.JsonClass
+import de.schnettler.scrobbler.model.remote.MinArtistResponse
 import de.schnettler.scrobbler.model.remote.TrackResponse
 
 @JsonClass(generateAdapter = true)

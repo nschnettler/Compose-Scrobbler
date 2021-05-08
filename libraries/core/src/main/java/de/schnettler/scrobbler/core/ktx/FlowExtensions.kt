@@ -4,7 +4,6 @@ import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
 import com.dropbox.android.external.store4.fresh
-import de.schnettler.lastfm.extractErrorMessageFromException
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
 import de.schnettler.scrobbler.model.Result
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +31,7 @@ suspend inline fun <Key : Any, StateType : Any, Output : StateType> refreshState
     try {
         store.fresh(key)
     } catch (e: Exception) {
+        Timber.e(e)
         flow?.update(Result.Error(e))
     }
 }
@@ -46,8 +46,10 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
             RefreshableUiState.Error(
                 exception = result.exception,
                 previousData = this.value.currentData,
-                errorMessage = extractErrorMessageFromException(result.exception)
-            )
+//                errorMessage = extractErrorMessageFromException(result.exception) // TODO: Find better way
+            ).also {
+                Timber.e(result.exception)
+            }
         }
         is Result.Loading -> RefreshableUiState.Success(
             data = this.value.currentData, loading = true
@@ -71,13 +73,15 @@ fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: StoreResponse<T>)
         is StoreResponse.Error.Exception -> RefreshableUiState.Error(
             exception = result.error,
             previousData = this.value.currentData,
-            errorMessage = extractErrorMessageFromException(result.error)
+//            errorMessage = extractErrorMessageFromException(result.error)
         ).also {
             Timber.e(it.exception)
         }
         is StoreResponse.Error.Message -> RefreshableUiState.Error(
             errorMessage = result.message, previousData = this.value.currentData
-        )
+        ).also {
+            Timber.d(result.message)
+        }
         is StoreResponse.Loading -> RefreshableUiState.Success(
             data = this.value.currentData, loading = true
         )

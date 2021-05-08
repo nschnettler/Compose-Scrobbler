@@ -1,6 +1,6 @@
 package de.schnettler.lastfm.interceptor
 
-import de.schnettler.common.BuildConfig
+import de.schnettler.scrobbler.core.BuildConfig
 import de.schnettler.scrobbler.network.common.annotation.tag.SignatureAuthentication
 import okhttp3.Interceptor
 import okhttp3.Response

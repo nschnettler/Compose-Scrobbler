@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -19,4 +20,8 @@ android {
 dependencies {
     // Android X
     compileOnly(AndroidX.room.runtime)
+
+    // Moshi
+    kapt(Square.Moshi.kotlinCodegen)
+    implementation(Square.Moshi)
 }

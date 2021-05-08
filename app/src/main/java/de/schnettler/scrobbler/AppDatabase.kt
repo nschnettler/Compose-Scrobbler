@@ -8,9 +8,7 @@ import androidx.room.TypeConverters
 import de.schnettler.database.TypeConverter
 import de.schnettler.database.daos.AuthDao
 import de.schnettler.database.daos.ChartDao
-import de.schnettler.database.daos.ImageDao
 import de.schnettler.database.daos.SessionDao
-import de.schnettler.database.daos.UserDao
 import de.schnettler.database.models.AuthToken
 import de.schnettler.database.models.Session
 import de.schnettler.scrobbler.details.db.AlbumDetailDao
@@ -21,6 +19,7 @@ import de.schnettler.scrobbler.details.db.StatsDao
 import de.schnettler.scrobbler.details.db.TrackDetailDao
 import de.schnettler.scrobbler.details.model.RelatedArtistEntry
 import de.schnettler.scrobbler.history.domain.HistoryDao
+import de.schnettler.scrobbler.image.db.ImageDao
 import de.schnettler.scrobbler.model.EntityInfo
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.Scrobble
@@ -30,6 +29,8 @@ import de.schnettler.scrobbler.model.User
 import de.schnettler.scrobbler.persistence.dao.AlbumDao
 import de.schnettler.scrobbler.persistence.dao.ArtistDao
 import de.schnettler.scrobbler.persistence.dao.TrackDao
+import de.schnettler.scrobbler.profile.db.ToplistDao
+import de.schnettler.scrobbler.profile.db.UserDao
 import de.schnettler.scrobbler.submission.domain.SubmissionDao
 import dev.matrix.roomigrant.GenerateRoomMigrations
 
@@ -70,6 +71,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
     abstract fun historyDao(): HistoryDao
     abstract fun imageDao(): ImageDao
+    abstract fun toplistDao(): ToplistDao
 }
 
 @Suppress("SpreadOperator")

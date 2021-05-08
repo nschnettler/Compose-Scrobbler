@@ -21,6 +21,7 @@ import de.schnettler.scrobbler.model.Result
 import de.schnettler.scrobbler.model.Result.Error
 import de.schnettler.scrobbler.model.Result.Loading
 import de.schnettler.scrobbler.model.Result.Success
+import timber.log.Timber
 
 /**
  * Immutable data class that allows for loading, data, and exception to be managed independently.
@@ -65,7 +66,11 @@ fun <S, R> UiState<S>.copyWithStoreResponse(response: StoreResponse<R>, reducer:
         is StoreResponse.Loading -> copy(loading = true)
         is StoreResponse.Data -> copy(loading = false, exception = null, data = reducer(this.data, response.value))
         is StoreResponse.NoNewData -> copy(loading = false)
-        is StoreResponse.Error.Exception -> copy(exception = response.error, loading = false)
-        is StoreResponse.Error.Message -> copy(exception = Exception(response.message), loading = false)
+        is StoreResponse.Error.Exception -> copy(exception = response.error, loading = false).also {
+            Timber.e(response.error)
+        }
+        is StoreResponse.Error.Message -> copy(exception = Exception(response.message), loading = false).also {
+            Timber.d(response.message)
+        }
     }
 }

@@ -16,13 +16,11 @@ android {
 
     val lastfmKey: String? by project
     val lastFmSecret: String? by project
-    val spotifyAuth: String? by project
 
     buildTypes {
         buildTypes.forEach {
             it.buildConfigField("String", "LASTFM_API_KEY", lastfmKey ?: "\"\"")
             it.buildConfigField("String", "LASTFM_SECRET", lastFmSecret ?: "\"\"")
-            it.buildConfigField("String", "SPOTIFY_AUTH", spotifyAuth ?: "\"\"")
         }
     }
 }
@@ -30,7 +28,7 @@ android {
 dependencies {
     // Modules
     implementation(project(":libraries:model"))
-    implementation(project(":libraries:network:lastfm"))
+//    implementation(project(":libraries:network:lastfm"))
 
     // AndroidX
     implementation(AndroidX.core.ktx)

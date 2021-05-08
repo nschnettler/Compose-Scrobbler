@@ -10,6 +10,7 @@ import de.schnettler.scrobbler.core.ui.state.copyWithStoreResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 abstract class StoreViewModel<S> : ReduxViewModel<UiState<S>>(UiState(true)) {
     private suspend fun <R> Flow<StoreResponse<R>>.collectIntoState(reducer: (S?, R) -> S) {
@@ -38,6 +39,7 @@ abstract class StoreViewModel<S> : ReduxViewModel<UiState<S>>(UiState(true)) {
             try {
                 this@refreshIntoState.fresh(key)
             } catch (e: Exception) {
+                Timber.e(e)
                 setState { this.copy(exception = e) }
             }
             setState { this.copy(loading = false) }

@@ -15,11 +15,3 @@ data class MinimalListing(
     override val url: String
 ) : ListingDto
 
-@JsonClass(generateAdapter = true)
-data class ResponseInfo(
-    val page: Long,
-    val perPage: Long,
-    val user: String,
-    val total: Long,
-    val totalPages: Long
-)

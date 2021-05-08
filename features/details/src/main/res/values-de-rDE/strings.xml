@@ -8,4 +8,5 @@
     <string name="bio_unavailable">Keine Informationen vorhanden</string>
     <string name="albumdetails_tracks">Titel</string>
     <string name="albumdetails_minutes">Minuten</string>
+    <string name="header_toptracks">Top-Titel</string>
 </resources>

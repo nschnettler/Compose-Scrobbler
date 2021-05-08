@@ -10,7 +10,6 @@ import de.schnettler.database.models.AuthTokenType
 import de.schnettler.repo.mapping.auth.SpotifyAuthMapper
 import de.schnettler.scrobbler.network.spotify.SpotifyAuthProvider
 import de.schnettler.scrobbler.network.spotify.api.SpotifyLoginService
-import de.schnettler.scrobbler.network.spotify.api.SpotifySearchService
 import javax.inject.Inject
 
 class SpotifyAuthProviderImpl @Inject constructor(
@@ -22,7 +21,7 @@ class SpotifyAuthProviderImpl @Inject constructor(
 
     private val spotifyTokenStore = StoreBuilder.from(
         fetcher = Fetcher.of {
-            SpotifyAuthMapper.map(service.login(SpotifySearchService.TYPE_CLIENT))
+            SpotifyAuthMapper.map(service.login())
         },
         sourceOfTruth = SourceOfTruth.of(
             reader = {

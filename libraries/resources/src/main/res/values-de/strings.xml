@@ -1,33 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Scrobbler</string>
-    <string name="header_toptracks">Top-Titel</string>
+
 
     <string name="tab_artist">Künstler</string>
     <string name="tab_track">Titel</string>
 
-    <string name="login_button">Anmelden</string>
-    <string name="header_topartists">Top-Künstler</string>
-    <string name="profile_perioddialog_title">Zeitraum</string>
-    <string name="profile_perioddialog_select">Auswählen</string>
-    <string name="profile_scrobblingsince">scrobbelt seit</string>
+
+
+
+
     <string name="error_charts">Fehler beim Aktualisieren der Charts</string>
 
-    <string name="error_profile">Fehler beim Aktualisieren des Profils</string>
+
 
     <string name="ic_period">Zeitraum</string>
     <string name="ic_open_in">In Browser öffnen</string>
-    <string name="header_more">Mehr</string>
-    <string name="period_overall">Insgesamt</string>
-    <string name="period_week">Letzte Woche</string>
-    <string name="period_month">Letzter Monat</string>
-    <string name="period_quarter">Letztes Quartal</string>
-    <string name="period_halfyear">Letztes Halbjahr</string>
-    <string name="period_year">Letztes Jahr</string>
-    <string name="period_overall_short">Insgesamt</string>
-    <string name="period_week_short">Woche</string>
-    <string name="period_month_short">Monat</string>
-    <string name="period_quarter_short">Quartal</string>
-    <string name="period_halfyear_short">Halbjahr</string>
-    <string name="period_year_short">Jahr</string>
+
+
 </resources>

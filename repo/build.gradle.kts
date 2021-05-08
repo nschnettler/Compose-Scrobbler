@@ -41,7 +41,6 @@ dependencies {
     implementation(project(":libraries:network:spotify"))
     implementation(project(":libraries:network:lastfm"))
 
-    implementation(project(":common"))
     api(project(":database"))
 
     // Hilt

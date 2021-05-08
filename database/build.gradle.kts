@@ -40,7 +40,6 @@ android {
 
 dependencies {
     // Modules
-    implementation(project(":common"))
     implementation(project(":libraries:model"))
     implementation(project(":libraries:persistence"))
 
