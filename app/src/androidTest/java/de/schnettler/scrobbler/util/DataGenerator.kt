@@ -12,7 +12,7 @@ import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListEntry
 import de.schnettler.scrobbler.model.TopListTrack
 
-@Suppress("TooManyFunctions ")
+@Suppress("TooManyFunctions")
 object DataGenerator {
     fun generateAlbums(number: Int, artistName: String? = null) = List(number) {
         generateAlbum(it, artistName)
