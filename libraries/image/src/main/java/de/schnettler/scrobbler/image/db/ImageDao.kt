@@ -18,4 +18,8 @@ interface ImageDao {
 
     @Query("UPDATE artists SET imageUrl = :url WHERE id = :id")
     suspend fun updateArtistImageUrl(id: String, url: String): Int
+
+    // Testing
+    @Query("SELECT imageUrl FROM artists WHERE id = :id")
+    suspend fun getArtistImageUrl(id: String): String?
 }
