@@ -3,7 +3,6 @@ package de.schnettler.scrobbler.model
 import androidx.room.Embedded
 import androidx.room.Ignore
 import androidx.room.Relation
-import androidx.room.RoomWarnings
 
 sealed class EntityWithStats(
     @Ignore open val entity: LastFmEntity,

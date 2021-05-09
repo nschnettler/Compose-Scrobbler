@@ -74,7 +74,6 @@ class ImageDaoTest : DatabaseTest() {
         expect(imageUrl).toBe(artist.imageUrl)
     }
 
-
     @Test
     fun getTopArtistsWithoutImages_returnsOnlyArtistsWithoutImages() = runBlockingTest {
         // GIVEN - A bunch of artists, some with and some without images. Only some are part of user toplist.

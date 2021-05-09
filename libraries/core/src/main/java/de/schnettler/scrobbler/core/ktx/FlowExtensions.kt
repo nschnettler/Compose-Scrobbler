@@ -36,7 +36,6 @@ suspend inline fun <Key : Any, StateType : Any, Output : StateType> refreshState
     }
 }
 
-
 fun <T> MutableStateFlow<RefreshableUiState<T>>.update(result: Result<T>) {
     value = when (result) {
         is Result.Success -> RefreshableUiState.Success(

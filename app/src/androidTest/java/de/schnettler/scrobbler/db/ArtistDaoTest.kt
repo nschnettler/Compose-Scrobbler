@@ -42,5 +42,4 @@ class ArtistDaoTest : DatabaseTest() {
             expect(it).toBe(null)
         }
     }
-
 }

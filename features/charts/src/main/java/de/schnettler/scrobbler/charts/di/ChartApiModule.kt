@@ -15,5 +15,4 @@ class ChartApiModule {
     fun providesChartService(
         @BasicLastfmRetrofitClient retrofit: Retrofit
     ): ChartApi = retrofit.create(ChartApi::class.java)
-
 }
