@@ -1,22 +1,27 @@
 import de.fayard.refreshVersions.bootstrapRefreshVersions
 
-include(":network:common")
-include(":network:spotify")
-include(":network:lastfm")
-include(":ui:history")
-include(":ui:search")
-include(":ui:detail")
-include(":ui:profile")
-include(":ui:common:util")
-include(":ui:charts")
-include(":ui:common:compose")
-include(":ui:common:resources")
-include(":ui:settings")
-include(":common")
-include(":repo")
-include(":database")
-include(":scrobble")
+include(":features:charts")
+include(":features:profile")
+include(":features:details")
+include(":features:history")
+include(":features:search")
+include(":features:settings")
+include(":features:scrobble")
+
+include(":libraries:authentication")
+include(":libraries:image")
+include(":libraries:submission")
+include(":libraries:persistence")
+include(":libraries:network:common")
+include(":libraries:network:spotify")
+include(":libraries:network:lastfm")
+include(":libraries:model")
+include(":libraries:core")
+include(":libraries:compose")
+include(":libraries:resources")
+
 include(":app")
+
 rootProject.name = "Scrobbler"
 
 pluginManagement {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="setting_group_submission">Last.fm Übermittlung</string>
+    <string name="setting_switch_autoscrobble_title">Scrobbles</string>
+    <string name="setting_switch_autoscrobble_description">Scrobbles automatisch übermitteln</string>
+    <string name="setting_switch_submitnp_title">Aktuelle Wiedergabe</string>
+    <string name="setting_switch_submitnp_description">Aktuelle Wiedergabe übermitteln</string>
+    <string name="settings_group_scrobble">Scrobble Einstellungen</string>
+    <string name="setting_list_scrobblesource_title">Quellen</string>
+    <string name="setting_list_scrobblesource_description">Audio-Anwendungen, die gescrobbelt werden sollen</string>
+    <string name="setting_seek_scrobblepoint_title">Laufzeit</string>
+    <string name="setting_seek_scrobblepoint_description">Benötigte Laufzeit für Scrobble</string>
+    <string name="setting_list_scrobbleconstraints_title">Voraussetzungen</string>
+    <string name="setting_list_scrobbleconstraints_description">Voraussetzungen für Scrobble-Übermittlung</string>
+    <string name="setting_group_misc">Sonstiges</string>
+    <string name="setting_notifications_title">Benachrichtigungen</string>
+    <string name="setting_notifications_description">Benachrichtigungseinstellungen ändern</string>
+    <string name="setting_reset_title">Zurücksetzen</string>
+    <string name="setting_reset_description">Anwendungseinstellungen zurücksetzen</string>
+    <string name="setting_list_scrobbleconstraints_network">Kostenloses Netzwerk</string>
+    <string name="setting_list_scrobbleconstraints_battery">Akku nicht leer</string>
+    <string name="setting_mediacard_title">Medienkartengröße</string>
+    <string name="setting_mediacard_description">Größe der Medienkarten auf dem Profil</string>
+    <string name="setting_group_ui">Benutzeroberfläche</string>
+</resources>
