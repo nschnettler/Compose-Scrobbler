@@ -104,7 +104,6 @@ dependencies {
     implementation("com.google.accompanist", "accompanist-insets", "_")
 
     // AndroidX
-    implementation(AndroidX.appCompat)
     implementation(AndroidX.compose.runtime.liveData)
     implementation("androidx.navigation:navigation-compose:_")
     implementation("androidx.activity:activity-compose:_")

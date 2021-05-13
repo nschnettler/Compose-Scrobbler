@@ -9,3 +9,7 @@ android {
         minSdkVersion(24)
     }
 }
+
+dependencies {
+    implementation(AndroidX.appCompat)
+}
