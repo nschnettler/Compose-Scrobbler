@@ -44,10 +44,6 @@ plugins {
     id("de.fayard.refreshVersions") version "0.10.0"
 }
 
-refreshVersions {
-    extraArtifactVersionKeyRules(file("versionRules.txt"))
-}
-
 buildscript {
     repositories {
         gradlePluginPortal()
