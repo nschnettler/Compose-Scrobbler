@@ -15,7 +15,7 @@ import de.schnettler.scrobbler.model.User
 
 object PreviewUtils {
 
-    fun generateFakeUser() = de.schnettler.scrobbler.model.User(
+    fun generateFakeUser() = User(
         "Nickname",
         10L,
         "",

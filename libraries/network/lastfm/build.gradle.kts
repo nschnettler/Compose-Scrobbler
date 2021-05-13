@@ -20,10 +20,9 @@ android {
 }
 
 dependencies {
-    // Modules
+    // Libraries
     implementation(project(":libraries:core"))
     implementation(project(":libraries:network:common"))
-    implementation(project(":libraries:model")) // temp
 
     // Retrofit
     implementation(Square.Retrofit2.retrofit)
