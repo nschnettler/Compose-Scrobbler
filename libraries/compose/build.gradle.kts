@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -17,7 +19,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
     }
 }
 
@@ -33,13 +35,13 @@ dependencies {
     // Compose
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
-    implementation("androidx.compose.ui", "ui-tooling", "_")
-    implementation("androidx.navigation", "navigation-compose", "_")
-    implementation("androidx.constraintlayout", "constraintlayout-compose", "_")
-    implementation("com.google.accompanist", "accompanist-coil", "_")
-    implementation("com.google.accompanist", "accompanist-insets", "_")
-    implementation("com.google.accompanist", "accompanist-pager", "_")
-    implementation("com.google.accompanist", "accompanist-flowlayout", "_")
+    implementation(AndroidX.compose.ui.tooling)
+    implementation(AndroidX.navigation.compose)
+    implementation(AndroidX.constraintLayoutCompose)
+    implementation(Google.accompanist.insets)
+    implementation(Google.accompanist.coil)
+    implementation(Google.accompanist.pager)
+    implementation(Google.accompanist.flowlayout)
 
     // Other
     implementation(JakeWharton.timber)

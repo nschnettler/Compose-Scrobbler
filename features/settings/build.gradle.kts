@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
     id("com.android.library")
     kotlin("android")
@@ -17,7 +19,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
     }
 }
 
@@ -33,5 +35,5 @@ dependencies {
     implementation(AndroidX.compose.material.icons.extended)
 
     // Android X
-    implementation("androidx.datastore", "datastore-preferences", "_")
+    implementation(AndroidX.dataStore.preferences)
 }

@@ -38,10 +38,8 @@ dependencies {
     implementation(AndroidX.room.common)
 
     // Dagger
-    implementation(AndroidX.hilt.lifecycleViewModel)
-    kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 
     // Other
     implementation(JakeWharton.timber)

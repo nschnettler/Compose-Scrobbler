@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -43,7 +45,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
     }
 
     compileOptions {
@@ -101,16 +103,16 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
-    implementation("com.google.accompanist", "accompanist-insets", "_")
+    implementation(AndroidX.navigation.compose)
+    implementation(AndroidX.activity.compose)
+    implementation(AndroidX.hilt.navigationCompose)
+    implementation(Google.accompanist.insets)
 
     // AndroidX
     implementation(AndroidX.compose.runtime.liveData)
-    implementation("androidx.navigation:navigation-compose:_")
-    implementation("androidx.activity:activity-compose:_")
     implementation(AndroidX.lifecycle.liveDataKtx)
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.work.runtimeKtx)
-    implementation(AndroidX.hilt.lifecycleViewModel)
     implementation(AndroidX.hilt.work)
     implementation(AndroidX.browser)
     kapt(AndroidX.hilt.compiler)
@@ -122,14 +124,13 @@ dependencies {
 
     // Dagger
     implementation(Google.dagger.hilt.android)
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha01")
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation(JakeWharton.timber)
 
-    // Andorid Test
+    // Android Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
     androidTestImplementation(AndroidX.test.ext.junitKtx)

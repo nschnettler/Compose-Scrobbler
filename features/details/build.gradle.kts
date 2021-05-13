@@ -1,3 +1,5 @@
+import de.fayard.refreshVersions.core.versionFor
+
 plugins {
     id("com.android.library")
     id("kotlin-android")
@@ -19,7 +21,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.0.0-beta03"
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
     }
 }
 
@@ -37,9 +39,9 @@ dependencies {
     // Compose
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
-    implementation("androidx.compose.ui", "ui-tooling", "_")
-    implementation("com.google.accompanist", "accompanist-insets", "_")
-    implementation("com.google.accompanist", "accompanist-coil", "_")
+    implementation(AndroidX.compose.ui.tooling)
+    implementation(Google.accompanist.insets)
+    implementation(Google.accompanist.coil)
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
@@ -54,8 +56,6 @@ dependencies {
     implementation("com.dropbox.mobile.store", "store4", "_")
 
     // Dagger
-    implementation(AndroidX.hilt.lifecycleViewModel)
-    kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 }

@@ -1,5 +1,3 @@
-import de.fayard.refreshVersions.bootstrapRefreshVersions
-
 include(":features:charts")
 include(":features:profile")
 include(":features:details")
@@ -42,11 +40,12 @@ pluginManagement {
     }
 }
 
+plugins {
+    id("de.fayard.refreshVersions") version "0.10.0"
+}
+
 buildscript {
     repositories {
         gradlePluginPortal()
     }
-    dependencies.classpath("de.fayard.refreshVersions:refreshVersions:0.9.7")
 }
-
-bootstrapRefreshVersions(extraArtifactVersionKeyRules = listOf(file("versionRules.txt").readText()))
