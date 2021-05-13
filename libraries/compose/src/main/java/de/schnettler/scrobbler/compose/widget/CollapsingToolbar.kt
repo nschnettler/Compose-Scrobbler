@@ -6,6 +6,7 @@ import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.navigation.MenuAction
@@ -141,7 +142,9 @@ private fun OverlaidStatusBarAppBar(
 
             if (showAppBar()) {
                 Box(
-                    modifier = Modifier.fillMaxWidth().background(MaterialTheme.colors.surface),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colors.surface),
                 ) {
                     content()
                 }
@@ -226,12 +229,10 @@ private fun BackdropImage(
 ) {
     Surface(modifier = modifier) {
         if (backdropImage != null) {
-            CoilImage(
-                data = backdropImage,
+            Image(
+                painter = rememberCoilPainter(request = backdropImage, fadeIn = true),
                 contentDescription = null,
-                fadeIn = true,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.Crop
             )
         }
         // TODO show a placeholder if null

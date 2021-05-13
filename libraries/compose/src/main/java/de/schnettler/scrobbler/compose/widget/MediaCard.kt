@@ -1,6 +1,7 @@
 package de.schnettler.scrobbler.compose.widget
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.theme.DominantColorCache
 import de.schnettler.scrobbler.compose.theme.DominantColors
@@ -74,12 +75,11 @@ fun MediaCard(
             }
 
             imageUrl?.let {
-                CoilImage(
-                    data = it,
-                    fadeIn = true,
+                Image(
+                    painter = rememberCoilPainter(request = it, fadeIn = true),
+                    contentDescription = "Picture of $name",
                     contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    modifier = Modifier.matchParentSize()
+                    modifier = Modifier.matchParentSize(),
                 )
                 LaunchedEffect(imageUrl) {
                     colors = colorCache.getColorsFromImageUrl(imageUrl)
