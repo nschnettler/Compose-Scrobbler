@@ -38,6 +38,5 @@ dependencies {
 
     // Dagger
     implementation(Google.dagger.hilt.android)
-    kapt(AndroidX.hilt.compiler)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 }

@@ -34,8 +34,8 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
-    implementation("androidx.compose.ui", "ui-tooling", "_")
-    implementation("com.google.accompanist", "accompanist-insets", "_")
+    implementation(AndroidX.compose.ui.tooling)
+    implementation(Google.accompanist.insets)
 
     // Android X
     implementation(AndroidX.lifecycle.viewModelKtx)
@@ -50,10 +50,8 @@ dependencies {
     implementation("com.dropbox.mobile.store", "store4", "_")
 
     // Dagger
-    implementation(AndroidX.hilt.lifecycleViewModel)
-    kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 
     // Test
     testImplementation(Testing.junit4)

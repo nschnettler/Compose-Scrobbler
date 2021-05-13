@@ -33,5 +33,5 @@ dependencies {
     implementation(AndroidX.compose.material.icons.extended)
 
     // Android X
-    implementation("androidx.datastore", "datastore-preferences", "_")
+    implementation(AndroidX.dataStore.preferences)
 }

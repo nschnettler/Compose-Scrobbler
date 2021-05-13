@@ -37,7 +37,7 @@ dependencies {
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.runtime.liveData)
-    implementation("com.google.accompanist", "accompanist-insets", "_")
+    implementation(Google.accompanist.insets)
 
     // AndroidX
     implementation(AndroidX.room.common)
@@ -52,8 +52,6 @@ dependencies {
     implementation("com.dropbox.mobile.store", "store4", "_")
 
     // Dagger
-    implementation(AndroidX.hilt.lifecycleViewModel)
-    kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 }

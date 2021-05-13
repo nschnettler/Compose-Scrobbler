@@ -39,10 +39,8 @@ dependencies {
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Dagger
-    implementation(AndroidX.hilt.lifecycleViewModel)
-    kapt(AndroidX.hilt.compiler)
     implementation(Google.dagger.hilt.android)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 
     // Other
     implementation(JakeWharton.timber)

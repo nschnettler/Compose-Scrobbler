@@ -28,7 +28,6 @@ android {
 dependencies {
     // Modules
     implementation(project(":libraries:model"))
-//    implementation(project(":libraries:network:lastfm"))
 
     // AndroidX
     implementation(AndroidX.core.ktx)

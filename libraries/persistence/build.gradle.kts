@@ -25,10 +25,9 @@ dependencies {
 
     // AndroidX
     implementation(AndroidX.room.common)
-    implementation("androidx.datastore", "datastore-preferences", "_")
+    implementation(AndroidX.dataStore.preferences)
 
     // Dagger
     implementation(Google.dagger.hilt.android)
-    kapt(AndroidX.hilt.compiler)
-    kapt(Google.dagger.hilt.android.compiler)
+    kapt(Google.dagger.hilt.compiler)
 }
