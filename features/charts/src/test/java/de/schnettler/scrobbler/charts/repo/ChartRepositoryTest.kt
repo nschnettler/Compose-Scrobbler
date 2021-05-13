@@ -8,20 +8,23 @@ import ch.tutteli.atrium.api.fluent.en_GB.toBe
 import ch.tutteli.atrium.api.verbs.expect
 import com.dropbox.android.external.store4.StoreRequest
 import com.dropbox.android.external.store4.StoreResponse
-import de.schnettler.scrobbler.charts.api.TestApi
+import de.schnettler.scrobbler.charts.repo.api.ChartApiFake
+import de.schnettler.scrobbler.charts.repo.db.ArtistDaoFake
+import de.schnettler.scrobbler.charts.repo.db.ChartDaoFake
+import de.schnettler.scrobbler.charts.repo.db.TrackDaoFake
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Test
 import kotlin.time.ExperimentalTime
 
-class ChartRepositoryTest : DatabaseTest() {
-    private lateinit var repo: ChartRepository
-    private lateinit var service: TestApi
-    @Before
-    fun setupRepo() {
-        service = TestApi()
-        repo = ChartRepository(db.chartDao(), db.artistDao(), db.trackDao(), service)
-    }
+class ChartRepositoryTest {
+    val chartApiFake = ChartApiFake()
+
+    private val repositoryUnderTest = ChartRepository(
+        ChartDaoFake(),
+        ArtistDaoFake(),
+        TrackDaoFake(),
+        chartApiFake
+    )
 
     @OptIn(ExperimentalTime::class)
     @Test
@@ -29,10 +32,10 @@ class ChartRepositoryTest : DatabaseTest() {
         // GIVEN - No data in db
 
         // WHEN - artist charts are streamed for the first time
-        val result = repo.chartArtistsStore.stream(StoreRequest.cached("", true))
+        val result = repositoryUnderTest.chartArtistsStore.stream(StoreRequest.cached("", true))
 
         // THEN - States: no data -> loading -> data, Data: Size is equal to size returned from service
-        val expectedSize = service.getTopArtists().size
+        val expectedSize = chartApiFake.getTopArtists().size
         result.test() {
             val first = expectItem()
             expect(first).isA<StoreResponse.Data<Any>>()

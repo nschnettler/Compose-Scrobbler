@@ -10,6 +10,7 @@ android {
 
     defaultConfig {
         minSdkVersion(24)
+        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
     buildFeatures {
         compose = true
@@ -57,8 +58,5 @@ dependencies {
     // Test
     testImplementation(Testing.junit4)
     testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
-
-    // Android Test
-    androidTestImplementation("app.cash.turbine", "turbine", "_")
-    androidTestImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
+    testImplementation("app.cash.turbine", "turbine", "_")
 }
