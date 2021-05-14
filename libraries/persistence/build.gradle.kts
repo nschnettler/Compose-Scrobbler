@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
 
     // Libraries
     implementation(project(":libraries:model"))

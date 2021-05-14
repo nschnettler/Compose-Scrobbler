@@ -36,6 +36,9 @@ dependencies {
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.compiler)
 
+    // DataStore
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
+
     // Other
     implementation(JakeWharton.timber)
 }

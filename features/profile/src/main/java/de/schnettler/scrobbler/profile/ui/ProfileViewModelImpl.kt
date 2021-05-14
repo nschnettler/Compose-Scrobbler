@@ -5,7 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.core.ktx.updateValue
-import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore
 import de.schnettler.scrobbler.profile.repo.TopListRepository
 import de.schnettler.scrobbler.profile.repo.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ class ProfileViewModelImpl @Inject constructor(
 ) : ProfileViewModel() {
     override val timePeriod = MutableStateFlow(UITimePeriod.OVERALL)
     override val showFilterDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    override val mediaCardSize = dataStoreManager.getPreferenceFlow(PreferenceEntry.MediaCardSize).map {
+    override val mediaCardSize = dataStoreManager.getPreferenceFlow(PreferenceRequestStore.mediaCardSize).map {
         try {
             MediaCardSize.valueOf(it)
         } catch (e: IllegalArgumentException) {

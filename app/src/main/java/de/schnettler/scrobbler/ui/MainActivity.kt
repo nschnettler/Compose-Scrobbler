@@ -24,8 +24,6 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
-import de.schnettler.datastore.compose.ProvideDataStoreManager
-import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -57,9 +55,6 @@ class MainActivity : AppCompatActivity() {
         Screen.Settings
     )
 
-    @Inject
-    lateinit var dataStoreManager: DataStoreManager
-
     @OptIn(ExperimentalMaterialApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,43 +62,41 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideDataStoreManager(dataStoreManager = dataStoreManager) {
-                AppTheme {
-                    ProvideWindowInsets {
-                        val navController = rememberNavController()
-                        val snackHost = remember { SnackbarHostState() }
-                        onListingClicked = {
-                            navController.navigate(
-                                when (it) {
-                                    is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
-                                    is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
-                                    is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
-                                }
-                            )
-                        }
-                        navigate = { navController.navigate(it) }
+            AppTheme {
+                ProvideWindowInsets {
+                    val navController = rememberNavController()
+                    val snackHost = remember { SnackbarHostState() }
+                    onListingClicked = {
+                        navController.navigate(
+                            when (it) {
+                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
+                                is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
+                            }
+                        )
+                    }
+                    navigate = { navController.navigate(it) }
 
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        Scaffold(
-                            scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
-                            bottomBar = {
-                                // navBackStackEntry == null is needed because otherwise innerPadding stays zero
-                                if (mainScreens.map { it.routeId }
-                                        .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
-                                    BottomNavigationBar(
-                                        currentRoute = navBackStackEntry?.route(),
-                                        screens = mainScreens,
-                                    ) { screen ->
-                                        navController.navigate(screen.routeId) {
-                                            popUpTo = navController.graph.startDestination
-                                            launchSingleTop = true
-                                        }
+                    val navBackStackEntry by navController.currentBackStackEntryAsState()
+                    Scaffold(
+                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                        bottomBar = {
+                            // navBackStackEntry == null is needed because otherwise innerPadding stays zero
+                            if (mainScreens.map { it.routeId }
+                                    .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
+                                BottomNavigationBar(
+                                    currentRoute = navBackStackEntry?.route(),
+                                    screens = mainScreens,
+                                ) { screen ->
+                                    navController.navigate(screen.routeId) {
+                                        popUpTo = navController.graph.startDestination
+                                        launchSingleTop = true
                                     }
                                 }
                             }
-                        ) {
-                            Content(controller = navController, host = snackHost, innerPadding = it)
                         }
+                    ) {
+                        Content(controller = navController, host = snackHost, innerPadding = it)
                     }
                 }
             }

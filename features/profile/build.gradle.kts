@@ -58,6 +58,9 @@ dependencies {
     // Repository
     implementation("com.dropbox.mobile.store", "store4", "_")
 
+    // DataStore-Manager
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
+
     // Dagger
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.compiler)
