@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.profile.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -190,7 +191,10 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) 
                 icon = {
                     PlainListIconBackground {
                         track.imageUrl?.let {
-                            CoilImage(data = it, null)
+                            Image(
+                                painter = rememberCoilPainter(request = it),
+                                contentDescription = "Album art of track ${track.name} by ${track.artist}",
+                            )
                         } ?: Text(text = track.name.firstLetter())
                     }
                 },
@@ -236,7 +240,11 @@ private fun UserInfo(user: User) {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
                         Box(Modifier.size(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
-                                CoilImage(data = user.imageUrl, null, modifier = Modifier.fillMaxSize())
+                                Image(
+                                    painter = rememberCoilPainter(request = user.imageUrl),
+                                    contentDescription = "Your profile picture",
+                                    modifier = Modifier.fillMaxSize()
+                                )
                             }
                         }
                     }

@@ -10,7 +10,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.datastore.manager.DataStoreManager
-import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,7 +35,7 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
 
         // 1. Listen for allowed Sources Preference
         lifecycleScope.launch {
-            dataStoreManager.getPreferenceFlow(PreferenceEntry.ScrobbleSources).collect { sources ->
+            dataStoreManager.getPreferenceFlow(PreferenceRequestStore.scrobbleSources).collect { sources ->
                 allowedPackages = sources
                 Timber.d("[Allowed Apps] $sources")
                 onActiveSessionsChanged(manager.getActiveSessions(componentName))

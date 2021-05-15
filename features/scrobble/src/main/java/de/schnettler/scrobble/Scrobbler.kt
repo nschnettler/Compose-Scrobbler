@@ -9,7 +9,7 @@ import de.schnettler.scrobble.notification.NOW_PLAYING_ID
 import de.schnettler.scrobble.notification.ScrobbleNotificationManager
 import de.schnettler.scrobbler.model.Scrobble
 import de.schnettler.scrobbler.model.ScrobbleStatus
-import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore
 import de.schnettler.scrobbler.submission.domain.RESULT_COUNT
 import de.schnettler.scrobbler.submission.domain.RESULT_DESCRIPTION
 import de.schnettler.scrobbler.submission.domain.RESULT_TRACKS
@@ -46,7 +46,7 @@ class Scrobbler @Inject constructor(
     }
 
     suspend fun submitScrobble(track: Scrobble): Boolean {
-        val scrobbleThreshold = dataStoreManager.getPreference(PreferenceEntry.ScrobblePoint)
+        val scrobbleThreshold = dataStoreManager.getPreference(PreferenceRequestStore.scrobblePoint)
         return if (track.readyToScrobble(scrobbleThreshold)) {
             // 1. Cache Scrobble
             val toBeSaved = track.copy(status = ScrobbleStatus.LOCAL)
@@ -60,7 +60,7 @@ class Scrobbler @Inject constructor(
             }
 
             // 2. Schedule Workmanager Work
-            if (dataStoreManager.getPreference(PreferenceEntry.AutoScrobble)) {
+            if (dataStoreManager.getPreference(PreferenceRequestStore.autoScrobble)) {
                 repo.scheduleScrobble()
             }
             true
@@ -71,7 +71,7 @@ class Scrobbler @Inject constructor(
     }
 
     fun notifyNowPlaying(track: Scrobble?) = scope.launch {
-        val nowPlayingSubmissionAllowed = dataStoreManager.getPreference(PreferenceEntry.SubmitNowPlaying)
+        val nowPlayingSubmissionAllowed = dataStoreManager.getPreference(PreferenceRequestStore.submitNowPlaying)
         if (nowPlayingSubmissionAllowed && track != null) {
             when (val result = repo.submitNowPlaying(track)) {
                 is LastFmResponse.SUCCESS -> {

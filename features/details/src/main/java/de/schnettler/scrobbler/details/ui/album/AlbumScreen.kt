@@ -1,5 +1,6 @@
 package de.schnettler.scrobbler.details.ui.album
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -10,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.CoilImage
+import com.google.accompanist.coil.rememberCoilPainter
 import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
@@ -107,7 +108,14 @@ private fun ArtistItem(
                         "${albumLength.inMinutes.roundToInt()} ${stringResource(id = R.string.albumdetails_minutes)}"
             )
         },
-        icon = { PlainListIconBackground { CoilImage(data = artist.imageUrl ?: "", contentDescription = null) } },
+        icon = {
+            PlainListIconBackground {
+                Image(
+                    painter = rememberCoilPainter(request = artist.imageUrl, fadeIn = true),
+                    contentDescription = "Artist picture",
+                )
+            }
+        },
         modifier = Modifier.clickable(onClick = { actionHandler(ListingSelected(artist)) })
     )
 }

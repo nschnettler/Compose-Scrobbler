@@ -24,16 +24,13 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
-
     // Libraries
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
     implementation(project(":libraries:persistence"))
 
+    implementation("com.github.Sh4dowSoul.ComposePreferences:compose-preferences:develop-SNAPSHOT")
+
     // Compose
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
-
-    // Android X
-    implementation(AndroidX.dataStore.preferences)
 }

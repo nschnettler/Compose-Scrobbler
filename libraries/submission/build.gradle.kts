@@ -31,6 +31,7 @@ dependencies {
 
     // Repository
     implementation("com.dropbox.mobile.store", "store4", "_")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
 
     // AndroidX
     implementation(AndroidX.work.runtimeKtx)

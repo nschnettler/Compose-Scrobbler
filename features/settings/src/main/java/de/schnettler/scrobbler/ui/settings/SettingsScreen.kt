@@ -22,18 +22,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import de.schnettler.datastore.compose.LocalDataStoreManager
-import de.schnettler.datastore.compose.PreferenceScreen
-import de.schnettler.datastore.compose.model.BasePreferenceItem
-import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceGroup
-import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.BasicPreferenceItem
-import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.CheckBoxListPreferenceItem
-import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SeekBarPreferenceItem
-import de.schnettler.datastore.compose.model.BasePreferenceItem.PreferenceItem.SwitchPreferenceItem
+import de.schnettler.datastore.compose.model.Preference.PreferenceGroup
+import de.schnettler.datastore.compose.model.Preference.PreferenceItem.ListPreference
+import de.schnettler.datastore.compose.model.Preference.PreferenceItem.MultiSelectListPreference
+import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SeekBarPreference
+import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SwitchPreference
+import de.schnettler.datastore.compose.model.Preference.PreferenceItem.TextPreference
+import de.schnettler.datastore.compose.ui.PreferenceScreen
+import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.compose.model.MediaCardSize
-import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.scrobbler.settings.R
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -43,9 +43,11 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod")
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    dataStoreManager: DataStoreManager,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
-    val dataStoreManager = LocalDataStoreManager.current
 
     val mediaServices = mutableStateMapOf<String, String>()
     val constraints: Map<String, Int> = remember {
@@ -62,15 +64,15 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         title = stringResource(id = R.string.setting_group_submission),
         enabled = true,
         preferenceItems = listOf(
-            SwitchPreferenceItem(
-                PreferenceEntry.AutoScrobble,
+            SwitchPreference(
+                PreferenceRequestStore.autoScrobble,
                 title = stringResource(id = R.string.setting_switch_autoscrobble_title),
                 summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
                 singleLineTitle = true,
                 icon = Icons.Outlined.CloudUpload,
             ),
-            SwitchPreferenceItem(
-                PreferenceEntry.SubmitNowPlaying,
+            SwitchPreference(
+                PreferenceRequestStore.submitNowPlaying,
                 title = stringResource(id = R.string.setting_switch_submitnp_title),
                 summary = stringResource(id = R.string.setting_switch_submitnp_description),
                 singleLineTitle = true,
@@ -83,16 +85,16 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         title = stringResource(id = R.string.settings_group_scrobble),
         enabled = true,
         preferenceItems = listOf(
-            CheckBoxListPreferenceItem(
-                PreferenceEntry.ScrobbleSources,
+            MultiSelectListPreference(
+                PreferenceRequestStore.scrobbleSources,
                 title = stringResource(id = R.string.setting_list_scrobblesource_title),
                 summary = stringResource(id = R.string.setting_list_scrobblesource_description),
                 singleLineTitle = true,
                 icon = Icons.Outlined.Speaker,
                 entries = mediaServices
             ),
-            SeekBarPreferenceItem(
-                PreferenceEntry.ScrobblePoint,
+            SeekBarPreference(
+                PreferenceRequestStore.scrobblePoint,
                 title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
                 summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
                 singleLineTitle = true,
@@ -101,8 +103,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 valueRange = 0.5F..1F,
                 valueRepresentation = { "${(it * 100).roundToInt()} %" }
             ),
-            CheckBoxListPreferenceItem(
-                PreferenceEntry.ScrobbleConstraints,
+            MultiSelectListPreference(
+                PreferenceRequestStore.scrobbleConstraints,
                 title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
                 summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
                 singleLineTitle = true,
@@ -116,8 +118,8 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         title = stringResource(id = R.string.setting_group_ui),
         enabled = true,
         preferenceItems = listOf(
-            BasePreferenceItem.PreferenceItem.RadioBoxListPreferenceItem(
-                PreferenceEntry.MediaCardSize,
+            ListPreference(
+                PreferenceRequestStore.mediaCardSize,
                 title = stringResource(id = R.string.setting_mediacard_title),
                 summary = stringResource(id = R.string.setting_mediacard_description),
                 singleLineTitle = true,
@@ -131,8 +133,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
         title = stringResource(id = R.string.setting_group_misc),
         enabled = true,
         preferenceItems = listOf(
-            BasicPreferenceItem(
-                PreferenceEntry.Basic,
+            TextPreference(
                 title = stringResource(id = R.string.setting_notifications_title),
                 summary = stringResource(id = R.string.setting_notifications_description),
                 singleLineTitle = true,
@@ -145,8 +146,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                     context.startActivity(intent, null)
                 }
             ),
-            BasicPreferenceItem(
-                PreferenceEntry.Basic,
+            TextPreference(
                 title = stringResource(id = R.string.setting_reset_title),
                 summary = stringResource(id = R.string.setting_reset_description),
                 singleLineTitle = true,
@@ -164,6 +164,7 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
     PreferenceScreen(
         modifier = modifier,
         statusBarPadding = true,
+        dataStoreManager = dataStoreManager,
         items = listOf(
             submissionGroup,
             scrobbleGroup,

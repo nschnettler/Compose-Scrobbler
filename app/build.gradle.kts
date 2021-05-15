@@ -102,6 +102,7 @@ dependencies {
     implementation(project(":libraries:network:lastfm"))
 
     // Compose
+    implementation(AndroidX.appCompat)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.navigation.compose)
     implementation(AndroidX.activity.compose)

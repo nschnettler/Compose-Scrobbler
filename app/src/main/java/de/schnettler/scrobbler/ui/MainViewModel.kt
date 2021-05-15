@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.authentication.api.LastfmSessionApi
 import de.schnettler.scrobbler.authentication.db.SessionDao
 import de.schnettler.scrobbler.authentication.map.SessionMapper
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val authProvider: LastFmAuthProviderImpl,
     private val sessionService: LastfmSessionApi,
-    private val sessionDao: SessionDao
+    private val sessionDao: SessionDao,
+    val dataStoreManager: DataStoreManager,
 ) : ViewModel() {
 
     private val sessionResponse by lazy {
