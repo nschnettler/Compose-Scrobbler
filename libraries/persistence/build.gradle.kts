@@ -25,7 +25,6 @@ dependencies {
 
     // AndroidX
     implementation(AndroidX.room.common)
-    implementation(AndroidX.dataStore.preferences)
 
     // Dagger
     implementation(Google.dagger.hilt.android)
