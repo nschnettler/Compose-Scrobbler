@@ -37,7 +37,6 @@ import de.schnettler.scrobbler.ktx.openNotificationListenerSettings
 import de.schnettler.scrobbler.ktx.route
 import de.schnettler.scrobbler.model.LastFmEntity
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
