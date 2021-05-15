@@ -19,7 +19,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.material)
     }
 }
 
