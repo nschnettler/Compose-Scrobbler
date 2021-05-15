@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdk = 24
     }
     buildFeatures {
         compose = true
@@ -24,11 +24,11 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
-
     // Libraries
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
     implementation(project(":libraries:persistence"))
+
+    implementation("com.github.Sh4dowSoul.ComposePreferences:compose-preferences:develop-SNAPSHOT")
 
     // Compose
     implementation(AndroidX.compose.material)

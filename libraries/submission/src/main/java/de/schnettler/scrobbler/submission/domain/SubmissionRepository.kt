@@ -6,9 +6,9 @@ import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.scrobbler.model.Scrobble
-import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_BATTERY
-import de.schnettler.scrobbler.persistence.PreferenceConstants.SCROBBLE_CONSTRAINTS_NETWORK
-import de.schnettler.scrobbler.persistence.PreferenceEntry
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_BATTERY
+import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.scrobbler.submission.api.SubmissionApi
 import de.schnettler.scrobbler.submission.model.MutlipleScrobblesResponse
 import de.schnettler.scrobbler.submission.model.NowPlayingResponse
@@ -127,7 +127,7 @@ class SubmissionRepository @Inject constructor(
 
     suspend fun scheduleScrobble() {
         val constraints = androidx.work.Constraints.Builder().apply {
-            val constraintSet = dataStoreManager.getPreference(PreferenceEntry.ScrobbleConstraints)
+            val constraintSet = dataStoreManager.getPreference(PreferenceRequestStore.scrobbleConstraints)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_BATTERY)) setRequiresBatteryNotLow(true)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(NetworkType.UNMETERED)
         }.build()

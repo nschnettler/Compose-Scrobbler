@@ -8,13 +8,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
         applicationId = "de.schnettler.scrobbler"
-        minSdkVersion(24)
-        targetSdkVersion(30)
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
+        minSdk = 24
+        targetSdk = 30
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
 
@@ -102,6 +102,7 @@ dependencies {
     implementation(project(":libraries:network:lastfm"))
 
     // Compose
+    implementation(AndroidX.appCompat)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.navigation.compose)
     implementation(AndroidX.activity.compose)

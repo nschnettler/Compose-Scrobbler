@@ -6,11 +6,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
-        minSdkVersion(24)
-        targetSdkVersion(30)
+        minSdk = 24
     }
 
     compileOptions {
@@ -35,6 +34,9 @@ dependencies {
     // Dagger
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.compiler)
+
+    // DataStore
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
 
     // Other
     implementation(JakeWharton.timber)

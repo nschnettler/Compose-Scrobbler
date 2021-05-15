@@ -20,6 +20,8 @@ import de.schnettler.scrobbler.details.ui.artist.ArtistViewModel
 import de.schnettler.scrobbler.details.ui.track.TrackViewModel
 import de.schnettler.scrobbler.history.ui.HistoryScreen
 import de.schnettler.scrobbler.history.ui.LocalViewModel
+import de.schnettler.scrobbler.ktx.destination
+import de.schnettler.scrobbler.ktx.secondOrNull
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.SessionState
 import de.schnettler.scrobbler.profile.ui.ProfileScreen
@@ -29,8 +31,6 @@ import de.schnettler.scrobbler.search.ui.SearchScreen
 import de.schnettler.scrobbler.search.ui.SearchViewModel
 import de.schnettler.scrobbler.search.ui.SearchViewModelImpl
 import de.schnettler.scrobbler.ui.settings.SettingsScreen
-import de.schnettler.scrobbler.ktx.destination
-import de.schnettler.scrobbler.ktx.secondOrNull
 
 @Composable
 fun MainRouteContent(
@@ -68,7 +68,7 @@ fun MainRouteContent(
                 modifier = modifier
             )
         }
-        destination(Screen.Settings) { SettingsScreen(modifier = modifier) }
+        destination(Screen.Settings) { SettingsScreen(dataStoreManager = model.dataStoreManager, modifier = modifier) }
         destination(Screen.ArtistDetails) { args ->
             val viewModel: ArtistViewModel = hiltNavGraphViewModel()
             args.firstOrNull()?.let {

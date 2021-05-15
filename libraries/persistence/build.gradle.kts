@@ -6,10 +6,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdk = 24
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar")))) // TODO: Should be impl
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
 
     // Libraries
     implementation(project(":libraries:model"))

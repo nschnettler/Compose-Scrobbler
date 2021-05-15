@@ -8,10 +8,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion(30)
+    compileSdk = 30
 
     defaultConfig {
-        minSdkVersion(24)
+        minSdk = 24
     }
     buildFeatures {
         compose = true
@@ -57,6 +57,9 @@ dependencies {
 
     // Repository
     implementation("com.dropbox.mobile.store", "store4", "_")
+
+    // DataStore-Manager
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
 
     // Dagger
     implementation(Google.dagger.hilt.android)
