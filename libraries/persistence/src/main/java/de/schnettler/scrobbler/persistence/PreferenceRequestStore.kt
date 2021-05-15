@@ -34,8 +34,4 @@ object PreferenceRequestStore {
         stringPreferencesKey("media_card_size"),
         "MEDIUM",
     )
-    val basic = PreferenceRequest(
-        stringPreferencesKey("basic"),
-        ""
-    )
 }
