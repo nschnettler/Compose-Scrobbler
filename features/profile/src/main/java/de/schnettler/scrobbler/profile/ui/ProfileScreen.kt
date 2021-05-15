@@ -102,9 +102,9 @@ fun ProfileScreen(
 
     LoadingContent(
         empty = state.initialLoad,
-        emptyContent = { FullScreenLoading() },
         loading = state.loading,
-        onRefresh = viewModel::refresh
+        onRefresh = viewModel::refresh,
+        addStatusBarOffset = true,
     ) {
         state.data?.let { profilState ->
             ProfileContent(

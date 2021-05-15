@@ -13,23 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import de.schnettler.scrobbler.charts.model.ChartTab
 import de.schnettler.scrobbler.charts.R
+import de.schnettler.scrobbler.charts.model.ChartTab
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.FullScreenError
-import de.schnettler.scrobbler.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.compose.widget.TabbedPager
 import de.schnettler.scrobbler.core.ktx.abbreviate
+import de.schnettler.scrobbler.core.util.PreviewUtils
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.Toplist
-import de.schnettler.scrobbler.core.util.PreviewUtils
 
 @Composable
 fun ChartScreen(
@@ -70,7 +69,6 @@ private fun ChartPage(
 
     LoadingContent(
         empty = state.isInitialLoading,
-        emptyContent = { FullScreenLoading() },
         loading = state.isRefreshLoading,
         onRefresh = { viewModel.refresh(currentTab) }) {
         state.currentData?.let {
