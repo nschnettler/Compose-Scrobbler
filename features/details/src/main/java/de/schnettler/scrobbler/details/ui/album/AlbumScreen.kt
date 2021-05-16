@@ -26,9 +26,9 @@ import de.schnettler.scrobbler.core.ktx.asMinSec
 import de.schnettler.scrobbler.core.ktx.fromHtmlLastFm
 import de.schnettler.scrobbler.core.ktx.whenNotEmpty
 import de.schnettler.scrobbler.details.R
+import de.schnettler.scrobbler.details.model.AlbumDetailEntity
 import de.schnettler.scrobbler.details.ui.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.details.ui.widget.ListeningStats
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.AlbumDetails
 import de.schnettler.scrobbler.model.LastFmEntity
 import kotlin.math.roundToInt
 import kotlin.time.Duration
@@ -37,7 +37,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun AlbumDetailScreen(
-    details: AlbumDetails,
+    details: AlbumDetailEntity,
     actioner: (UIAction) -> Unit,
 ) {
     val (album, stats, info, artist) = details

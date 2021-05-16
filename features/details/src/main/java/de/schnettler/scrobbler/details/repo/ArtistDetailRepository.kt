@@ -12,9 +12,9 @@ import de.schnettler.scrobbler.details.db.StatsDao
 import de.schnettler.scrobbler.details.map.ArtistAlbumResponseMapper
 import de.schnettler.scrobbler.details.map.ArtistInfoMapper
 import de.schnettler.scrobbler.details.map.ArtistTrackMapper
+import de.schnettler.scrobbler.details.model.ArtistDetailEntity
 import de.schnettler.scrobbler.details.model.RelatedArtistEntry
 import de.schnettler.scrobbler.image.repo.ImageRepo
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.persistence.dao.AlbumDao
 import de.schnettler.scrobbler.persistence.dao.TrackDao
@@ -71,8 +71,8 @@ class ArtistDetailRepository @Inject constructor(
                     }
                 }
             },
-            writer = { _: LastFmEntity.Artist, details: EntityWithStatsAndInfo.ArtistWithStatsAndInfo ->
-                detailDao.insert(details.entity)
+            writer = { _: LastFmEntity.Artist, details: ArtistDetailEntity ->
+                detailDao.insert(details.artist)
                 entityInfoDao.insert(details.info)
                 statsDao.insertOrUpdateStats(listOf(details.stats))
 

@@ -24,15 +24,15 @@ import de.schnettler.scrobbler.compose.widget.ChipRow
 import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.core.ktx.whenNotEmpty
 import de.schnettler.scrobbler.details.R
+import de.schnettler.scrobbler.details.model.TrackDetailEntity
 import de.schnettler.scrobbler.details.ui.AlbumCategory
 import de.schnettler.scrobbler.details.ui.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.details.ui.widget.ListeningStats
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.TrackWithStatsAndInfo
 
 @Composable
 fun TrackDetailScreen(
     viewModel: TrackViewModel,
-    details: TrackWithStatsAndInfo,
+    details: TrackDetailEntity,
     actioner: (UIAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {

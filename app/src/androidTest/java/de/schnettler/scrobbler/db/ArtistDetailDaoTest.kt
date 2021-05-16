@@ -105,12 +105,12 @@ class ArtistDetailDaoTest : DatabaseTest() {
     fun getArtistDetails_artistInfoStatsInDb_returnsArtistWithStatsAndInfo() = runBlockingTest {
         // GIVEN - Artist, Stats and Info in DB
         val artist = generateArtistWithStatsAndInfo(1).first()
-        db.artistDao().insert(artist.entity)
+        db.artistDao().insert(artist.artist)
         db.statDao().insert(artist.stats)
         db.infoDao().insert(artist.info)
 
         // WHEN - Requesting the artist details
-        val returned = db.artistDetailDao().getArtistDetails(artist.entity.id)
+        val returned = db.artistDetailDao().getArtistDetails(artist.artist.id)
 
         // THEN - Returned album should match inserted album
         returned.collectValue {
@@ -122,15 +122,15 @@ class ArtistDetailDaoTest : DatabaseTest() {
     fun getArtistDetails_onlyArtistInDb_returnsAlbumWithStatsAndInfo() = runBlockingTest {
         // GIVEN - Only artist in DB, info and stats are missing
         val artist = generateArtistWithStatsAndInfo(1).first()
-        db.artistDao().insert(artist.entity)
+        db.artistDao().insert(artist.artist)
 
         // WHEN - Requesting artist details
-        val returned = db.artistDetailDao().getArtistDetails(artist.entity.id)
+        val returned = db.artistDetailDao().getArtistDetails(artist.artist.id)
 
         // THEN - Should return ArtistWithStatsAndInfo (where stats and info are null)
         returned.collectValue {
             expect(it).notToBeNull()
-            expect(it?.entity).toBe(artist.entity)
+            expect(it?.artist).toBe(artist.artist)
             expect(it?.stats).toBe(null)
             expect(it?.info).toBe(null)
         }
