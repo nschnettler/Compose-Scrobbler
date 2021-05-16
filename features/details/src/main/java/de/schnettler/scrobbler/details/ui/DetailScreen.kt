@@ -31,6 +31,7 @@ import de.schnettler.scrobbler.details.ui.album.AlbumDetailScreen
 import de.schnettler.scrobbler.details.ui.artist.ArtistDetailScreen
 import de.schnettler.scrobbler.details.ui.track.TrackDetailScreen
 import de.schnettler.scrobbler.details.ui.track.TrackViewModel
+import de.schnettler.scrobbler.details.ui.widget.RefreshableScreen
 import de.schnettler.scrobbler.model.LastFmEntity
 
 @Composable
