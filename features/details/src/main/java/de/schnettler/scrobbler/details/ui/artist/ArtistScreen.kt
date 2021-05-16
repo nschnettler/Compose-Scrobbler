@@ -29,31 +29,31 @@ import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.core.ktx.whenNotEmpty
-import de.schnettler.scrobbler.core.util.PreviewUtils
 import de.schnettler.scrobbler.details.R
+import de.schnettler.scrobbler.details.model.ArtistDetailEntity
+import de.schnettler.scrobbler.details.preview.PreviewUtils
 import de.schnettler.scrobbler.details.ui.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.details.ui.widget.ListeningStats
 import de.schnettler.scrobbler.model.EntityWithStats.TrackWithStats
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo.ArtistWithStatsAndInfo
 
 @Composable
 fun ArtistDetailScreen(
-    info: ArtistWithStatsAndInfo,
+    info: ArtistDetailEntity,
     actioner: (UIAction) -> Unit
 ) {
     val colorCache = rememberDominantColorCache()
     CollapsingToolbar(
-        imageUrl = info.entity.imageUrl,
-        title = info.entity.name,
+        imageUrl = info.artist.imageUrl,
+        title = info.artist.name,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(info.entity.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url))
     ) {
         detailItems(artistInfo = info, dominantColorCache = colorCache, actioner = actioner)
     }
 }
 
 private fun LazyListScope.detailItems(
-    artistInfo: ArtistWithStatsAndInfo,
+    artistInfo: ArtistDetailEntity,
     dominantColorCache: DominantColorCache,
     actioner: (UIAction) -> Unit
 ) {

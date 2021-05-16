@@ -1,11 +1,10 @@
-package de.schnettler.scrobbler.details.ui
+package de.schnettler.scrobbler.details.ui.widget
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.widget.FullScreenError
-import de.schnettler.scrobbler.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
 
@@ -19,9 +18,9 @@ fun <Data> RefreshableScreen(
 ) {
     LoadingContent(
         empty = state.isInitialLoading,
-        emptyContent = { FullScreenLoading() },
         loading = state.isRefreshLoading,
-        onRefresh = refresh
+        onRefresh = refresh,
+        addStatusBarOffset = true,
     ) {
         state.currentData?.let { data ->
             content(data)

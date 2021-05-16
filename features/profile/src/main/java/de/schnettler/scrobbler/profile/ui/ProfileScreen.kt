@@ -53,7 +53,6 @@ import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.Carousel
-import de.schnettler.scrobbler.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.compose.widget.Spacer
@@ -61,12 +60,12 @@ import de.schnettler.scrobbler.compose.widget.StatsRow
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.core.ktx.firstLetter
 import de.schnettler.scrobbler.core.ktx.toFlagEmoji
-import de.schnettler.scrobbler.core.util.PreviewUtils
 import de.schnettler.scrobbler.model.TopListAlbum
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.User
 import de.schnettler.scrobbler.profile.R
+import de.schnettler.scrobbler.profile.preview.PreviewUtils
 import de.schnettler.scrobbler.profile.ui.widget.TopListCarousel
 import java.time.Instant
 import java.time.ZoneId
@@ -102,9 +101,9 @@ fun ProfileScreen(
 
     LoadingContent(
         empty = state.initialLoad,
-        emptyContent = { FullScreenLoading() },
         loading = state.loading,
-        onRefresh = viewModel::refresh
+        onRefresh = viewModel::refresh,
+        addStatusBarOffset = true,
     ) {
         state.data?.let { profilState ->
             ProfileContent(

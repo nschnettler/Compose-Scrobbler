@@ -24,11 +24,14 @@ import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import de.schnettler.scrobbler.details.R
+import de.schnettler.scrobbler.details.model.AlbumDetailEntity
+import de.schnettler.scrobbler.details.model.ArtistDetailEntity
+import de.schnettler.scrobbler.details.model.TrackDetailEntity
 import de.schnettler.scrobbler.details.ui.album.AlbumDetailScreen
 import de.schnettler.scrobbler.details.ui.artist.ArtistDetailScreen
 import de.schnettler.scrobbler.details.ui.track.TrackDetailScreen
 import de.schnettler.scrobbler.details.ui.track.TrackViewModel
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
+import de.schnettler.scrobbler.details.ui.widget.RefreshableScreen
 import de.schnettler.scrobbler.model.LastFmEntity
 
 @Composable
@@ -45,9 +48,9 @@ fun <Key : Any, StateType : Any, Output : StateType> DetailScreen(
         errorId = R.string.error_details
     ) { details ->
         when (details) {
-            is EntityWithStatsAndInfo.ArtistWithStatsAndInfo -> ArtistDetailScreen(info = details, actioner = actioner)
-            is EntityWithStatsAndInfo.AlbumDetails -> AlbumDetailScreen(details = details, actioner = actioner)
-            is EntityWithStatsAndInfo.TrackWithStatsAndInfo ->
+            is ArtistDetailEntity -> ArtistDetailScreen(info = details, actioner = actioner)
+            is AlbumDetailEntity -> AlbumDetailScreen(details = details, actioner = actioner)
+            is TrackDetailEntity ->
                 TrackDetailScreen(viewModel = viewModel as TrackViewModel, details = details, actioner = actioner)
         }
     }

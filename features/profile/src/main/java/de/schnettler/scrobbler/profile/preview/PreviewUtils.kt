@@ -1,12 +1,8 @@
-package de.schnettler.scrobbler.core.util
+package de.schnettler.scrobbler.profile.preview
 
-import de.schnettler.scrobbler.model.EntityInfo
 import de.schnettler.scrobbler.model.EntityType
-import de.schnettler.scrobbler.model.EntityWithStats
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.ListType
-import de.schnettler.scrobbler.model.Stats
 import de.schnettler.scrobbler.model.TopListAlbum
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListEntry
@@ -14,7 +10,6 @@ import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.User
 
 object PreviewUtils {
-
     fun generateFakeUser() = User(
         "Nickname",
         10L,
@@ -32,7 +27,7 @@ object PreviewUtils {
             TopListEntry(
                 "",
                 EntityType.ARTIST,
-                ListType.CHART,
+                ListType.USER,
                 index,
                 10
             ),
@@ -63,35 +58,6 @@ object PreviewUtils {
                 10
             ),
             LastFmEntity.Track("Track $index", artist = "Artist $index")
-        )
-    }
-
-    fun generateFakeArtistInto() = EntityWithStatsAndInfo.ArtistWithStatsAndInfo(
-        LastFmEntity.Artist("Artist name"),
-        stats = Stats("", 10, 20, 30),
-        EntityInfo("", listOf("tag 1", "tag 2"), wiki = "Artist description & bio")
-    ).apply {
-        topTracks = generateFakeTracksWithStats(1)
-        topAlbums = generateFakeAlbumsWithStats(3)
-    }
-
-    fun generateFakeTracksWithStats(number: Int) = MutableList(number) { index ->
-        EntityWithStats.TrackWithStats(
-            LastFmEntity.Track(
-                "Track $index",
-                artist = "artist"
-            ),
-            Stats("", 10, 20, 30)
-        )
-    }
-
-    fun generateFakeAlbumsWithStats(number: Int) = MutableList(number) { index ->
-        EntityWithStats.AlbumWithStats(
-            LastFmEntity.Album(
-                "Album $index",
-                artist = "artist"
-            ),
-            Stats("", 10, 20, 30)
         )
     }
 }

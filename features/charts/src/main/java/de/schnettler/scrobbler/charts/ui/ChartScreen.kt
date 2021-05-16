@@ -16,11 +16,14 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import de.schnettler.scrobbler.charts.R
 import de.schnettler.scrobbler.charts.model.ChartTab
+import de.schnettler.scrobbler.charts.preview.PreviewUtils
+import de.schnettler.scrobbler.charts.model.ChartTab
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.FullScreenError
 import de.schnettler.scrobbler.compose.widget.FullScreenLoading
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.compose.widget.LoadingContent
@@ -73,7 +76,6 @@ private fun ChartPage(
 
     LoadingContent(
         empty = false,
-        emptyContent = { FullScreenLoading() },
         loading = loadStates.refresh == LoadState.Loading,
         onRefresh = { pagingItems.refresh() }
     ) {
@@ -137,6 +139,6 @@ private fun RankingListItem(title: String, subtitle: String, index: Int, onClick
 
 @Preview
 @Composable
-fun ChartListPreview() = ThemedPreview() {
+fun ChartListPreview() = ThemedPreview {
 //    ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { })
 }

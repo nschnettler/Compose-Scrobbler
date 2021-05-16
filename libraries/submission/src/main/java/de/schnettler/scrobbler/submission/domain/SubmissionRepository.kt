@@ -1,6 +1,10 @@
 package de.schnettler.scrobbler.submission.domain
 
+import androidx.work.Constraints.Builder
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
 import de.schnettler.lastfm.models.Errors
@@ -22,7 +26,7 @@ import javax.inject.Inject
 class SubmissionRepository @Inject constructor(
     private val submissionDao: SubmissionDao,
     private val submissionApi: SubmissionApi,
-    private val workManager: androidx.work.WorkManager,
+    private val workManager: WorkManager,
     private val dataStoreManager: DataStoreManager,
 ) {
     suspend fun saveTrack(track: Scrobble) = submissionDao.forceInsert(track)
@@ -126,15 +130,15 @@ class SubmissionRepository @Inject constructor(
     suspend fun deleteScrobble(scrobble: Scrobble) = submissionDao.delete(scrobble)
 
     suspend fun scheduleScrobble() {
-        val constraints = androidx.work.Constraints.Builder().apply {
+        val constraints = Builder().apply {
             val constraintSet = dataStoreManager.getPreference(PreferenceRequestStore.scrobbleConstraints)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_BATTERY)) setRequiresBatteryNotLow(true)
             if (constraintSet.contains(SCROBBLE_CONSTRAINTS_NETWORK)) setRequiredNetworkType(NetworkType.UNMETERED)
         }.build()
-        val request = androidx.work.OneTimeWorkRequestBuilder<ScrobbleWorker>().setConstraints(constraints).build()
+        val request = OneTimeWorkRequestBuilder<ScrobbleWorker>().setConstraints(constraints).build()
         workManager.enqueueUniqueWork(
             SUBMIT_CACHED_SCROBBLES_WORK,
-            androidx.work.ExistingWorkPolicy.REPLACE,
+            ExistingWorkPolicy.REPLACE,
             request
         )
     }

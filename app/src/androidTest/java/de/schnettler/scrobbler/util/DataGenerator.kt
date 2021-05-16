@@ -1,9 +1,10 @@
 package de.schnettler.scrobbler.util
 
+import de.schnettler.scrobbler.details.model.AlbumDetailEntity
+import de.schnettler.scrobbler.details.model.ArtistDetailEntity
 import de.schnettler.scrobbler.model.EntityInfo
 import de.schnettler.scrobbler.model.EntityType
 import de.schnettler.scrobbler.model.EntityWithStats
-import de.schnettler.scrobbler.model.EntityWithStatsAndInfo
 import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.ListType
 import de.schnettler.scrobbler.model.Stats
@@ -31,7 +32,7 @@ object DataGenerator {
 
     fun generateAlbumWithStatsAndInfo(count: Int, artist: String) = List(count) {
         val album = generateAlbum(it, artist)
-        EntityWithStatsAndInfo.AlbumDetails(
+        AlbumDetailEntity(
             album,
             generateStat(album.id, it),
             generateInfo(album.id),
@@ -41,7 +42,7 @@ object DataGenerator {
 
     fun generateArtistWithStatsAndInfo(count: Int) = List(count) {
         val artist = generateArtist(it)
-        EntityWithStatsAndInfo.ArtistWithStatsAndInfo(
+        ArtistDetailEntity(
             artist,
             generateStat(artist.id, it),
             generateInfo(artist.id)
