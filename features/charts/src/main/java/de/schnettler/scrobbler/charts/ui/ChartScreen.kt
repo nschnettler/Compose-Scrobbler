@@ -13,8 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import de.schnettler.scrobbler.charts.model.ChartTab
 import de.schnettler.scrobbler.charts.R
+import de.schnettler.scrobbler.charts.model.ChartTab
+import de.schnettler.scrobbler.charts.preview.PreviewUtils
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -29,7 +30,6 @@ import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.Toplist
-import de.schnettler.scrobbler.core.util.PreviewUtils
 
 @Composable
 fun ChartScreen(
@@ -134,6 +134,6 @@ private fun RankingListItem(title: String, subtitle: String, index: Int, onClick
 
 @Preview
 @Composable
-fun ChartListPreview() = ThemedPreview() {
+fun ChartListPreview() = ThemedPreview {
     ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { })
 }
