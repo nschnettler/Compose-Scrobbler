@@ -9,7 +9,7 @@ import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.Stats
 
 data class ArtistDetailEntity(
-    @Embedded val entity: LastFmEntity.Artist,
+    @Embedded val artist: LastFmEntity.Artist,
     @Relation(parentColumn = "id", entityColumn = "id") val stats: Stats?,
     @Relation(parentColumn = "id", entityColumn = "id") val info: EntityInfo?
 ) {

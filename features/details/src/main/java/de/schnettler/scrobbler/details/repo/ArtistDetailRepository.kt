@@ -72,7 +72,7 @@ class ArtistDetailRepository @Inject constructor(
                 }
             },
             writer = { _: LastFmEntity.Artist, details: ArtistDetailEntity ->
-                detailDao.insert(details.entity)
+                detailDao.insert(details.artist)
                 entityInfoDao.insert(details.info)
                 statsDao.insertOrUpdateStats(listOf(details.stats))
 

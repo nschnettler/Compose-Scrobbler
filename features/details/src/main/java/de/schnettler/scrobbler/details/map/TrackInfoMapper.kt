@@ -14,6 +14,6 @@ object TrackInfoMapper : Mapper<TrackInfoResponse, TrackDetailEntity> {
         val stats = StatsMapper.map(from, track.id)
         // Duration is in ms here.
         val info = InfoMapper.map(from.copy(duration = from.duration / 1000), track.id)
-        return TrackDetailEntity(entity = track, stats = stats, info = info, album = album)
+        return TrackDetailEntity(track = track, stats = stats, info = info, album = album)
     }
 }

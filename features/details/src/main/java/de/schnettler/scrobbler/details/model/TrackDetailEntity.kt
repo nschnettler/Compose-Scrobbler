@@ -7,7 +7,7 @@ import de.schnettler.scrobbler.model.LastFmEntity
 import de.schnettler.scrobbler.model.Stats
 
 data class TrackDetailEntity(
-    @Embedded val entity: LastFmEntity.Track,
+    @Embedded val track: LastFmEntity.Track,
     @Relation(parentColumn = "id", entityColumn = "id") val stats: Stats?,
     @Relation(parentColumn = "id", entityColumn = "id") val info: EntityInfo?,
     @Relation(parentColumn = "albumId", entityColumn = "id") val album: LastFmEntity.Album?

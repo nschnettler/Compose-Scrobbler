@@ -43,10 +43,10 @@ fun ArtistDetailScreen(
 ) {
     val colorCache = rememberDominantColorCache()
     CollapsingToolbar(
-        imageUrl = info.entity.imageUrl,
-        title = info.entity.name,
+        imageUrl = info.artist.imageUrl,
+        title = info.artist.name,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(info.entity.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url))
     ) {
         detailItems(artistInfo = info, dominantColorCache = colorCache, actioner = actioner)
     }
