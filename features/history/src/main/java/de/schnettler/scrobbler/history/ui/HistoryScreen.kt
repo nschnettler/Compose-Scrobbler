@@ -36,9 +36,8 @@ import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.widget.CustomDivider
-import de.schnettler.scrobbler.compose.widget.FullScreenLoading
-import de.schnettler.scrobbler.compose.widget.SwipeRefreshProgressIndicator
-import de.schnettler.scrobbler.compose.widget.SwipeToRefreshLayout
+import de.schnettler.scrobbler.compose.widget.FullScreenError
+import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.history.R
 import de.schnettler.scrobbler.history.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.model.HistoryError
@@ -111,30 +110,29 @@ fun Content(
     }
 
     Box(modifier = modifier.fillMaxSize()) {
-        if (recentTracksState.isInitialLoading) { FullScreenLoading() } else {
-            SwipeToRefreshLayout(
-                refreshingState = recentTracksState.isRefreshLoading,
-                onRefresh = { localViewModel.refresh() },
-                refreshIndicator = { SwipeRefreshProgressIndicator() }
-            ) {
-                recentTracksState.currentData?.let { list ->
-                    HistoryTrackList(
-                        tracks = list,
-                        onActionClicked = { track, actionType ->
-                            selectedTrack.value = track
-                            when (actionType) {
-                                EDIT -> showEditDialog = true
-                                DELETE -> showConfirmDialog = true
-                                OPEN -> actionHandler(ListingSelected(track.asLastFmTrack()))
-                                SUBMIT -> localViewModel.submitScrobble(track)
-                            }
-                        },
-                        onNowPlayingSelected = { },
-                        errors = getErrors(LocalContext.current, loggedIn),
-                        onErrorClicked = { error -> actionHandler(error.action) }
-                    )
-                }
-            }
+        LoadingContent(
+            empty = recentTracksState.isInitialLoading,
+            loading = recentTracksState.isRefreshLoading,
+            onRefresh = localViewModel::refresh,
+            addStatusBarOffset = true,
+        ) {
+            recentTracksState.currentData?.let { list ->
+                HistoryTrackList(
+                    tracks = list,
+                    onActionClicked = { track, actionType ->
+                        selectedTrack.value = track
+                        when (actionType) {
+                            EDIT -> showEditDialog = true
+                            DELETE -> showConfirmDialog = true
+                            OPEN -> actionHandler(ListingSelected(track.asLastFmTrack()))
+                            SUBMIT -> localViewModel.submitScrobble(track)
+                        }
+                    },
+                    onNowPlayingSelected = { },
+                    errors = getErrors(LocalContext.current, loggedIn),
+                    onErrorClicked = { error -> actionHandler(error.action) }
+                )
+            } ?: FullScreenError()
         }
         if (cachedNumber > 0) {
             SubmissionFab(
@@ -209,7 +207,8 @@ private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: ()
             }
         },
         contentColor = Color.White,
-        modifier = Modifier.align(Alignment.BottomEnd)
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
             .padding(end = 16.dp, bottom = 16.dp)
     )
 }

@@ -42,6 +42,7 @@ dependencies {
     implementation(Google.accompanist.coil)
     implementation(Google.accompanist.pager)
     implementation(Google.accompanist.flowlayout)
+    implementation(Google.accompanist.swiperefresh)
 
     // Other
     implementation(JakeWharton.timber)
