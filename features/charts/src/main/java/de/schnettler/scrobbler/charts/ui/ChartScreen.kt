@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import de.schnettler.scrobbler.charts.R
 import de.schnettler.scrobbler.charts.model.ChartTab
+import de.schnettler.scrobbler.charts.preview.PreviewUtils
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -25,7 +26,6 @@ import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
 import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.compose.widget.TabbedPager
 import de.schnettler.scrobbler.core.ktx.abbreviate
-import de.schnettler.scrobbler.core.util.PreviewUtils
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.Toplist
