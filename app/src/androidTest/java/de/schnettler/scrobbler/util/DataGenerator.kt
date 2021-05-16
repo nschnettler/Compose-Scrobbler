@@ -12,7 +12,6 @@ import de.schnettler.scrobbler.model.TopListAlbum
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListEntry
 import de.schnettler.scrobbler.model.TopListTrack
-import de.schnettler.scrobbler.model.User
 
 @Suppress("TooManyFunctions")
 object DataGenerator {
