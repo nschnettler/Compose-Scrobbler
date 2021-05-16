@@ -41,6 +41,7 @@ dependencies {
     // Dagger
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.compiler)
+    kapt(AndroidX.hilt.compiler)
 
     // Other
     implementation(JakeWharton.timber)
