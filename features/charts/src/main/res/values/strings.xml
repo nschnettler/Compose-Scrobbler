@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="tab_artist">Artist</string>
-    <string name="tab_track">Track</string>
-    <string name="charts_listeners">Listeners</string>
-    <string name="error_charts">Unable to refresh charts</string>
-</resources>

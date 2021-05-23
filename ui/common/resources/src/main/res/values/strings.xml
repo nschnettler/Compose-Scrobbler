@@ -1,0 +1,134 @@
+<resources>
+    <string name="app_name">Scrobbler</string>
+    <string name="ic_period">Period</string>
+    <string name="ic_open_in">Open in browser</string>
+
+    <string name="scrobbles" translatable="false">Scrobbles</string>
+
+    <!-- Tabs -->
+    <string name="tab_artist">Artist</string>
+    <string name="tab_track">Track</string>
+
+    <!-- BottomNav -->
+    <string name="nav_charts">Charts</string>
+    <string name="nav_history">History</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Album Details -->
+    <string name="albumdetails_tracks">tracks</string>
+    <string name="albumdetails_minutes">minutes</string>
+
+    <!-- Artist Details -->
+    <string name="artist_similar">Similar Artists</string>
+
+    <!-- Track Details -->
+    <string name="track_sourcealbum">"From The Album</string>
+    <string name="track_unknownalbum">We don‘t have an album for this track yet.</string>
+
+    <!-- Headers -->
+    <string name="header_more">More</string>
+    <string name="header_toptracks">Top Tracks</string>
+    <string name="header_topalbums">Top Albums</string>
+    <string name="header_topartists">Top Artists</string>
+    <string name="header_tags">Tags</string>
+
+    <string name="stats_listeners">Listeners</string>
+    <string name="bio_unavailable">No Bio available</string>
+    <string name="login_button">Login</string>
+    <string name="profile_scrobblingsince">scrobbling since</string>
+    <string name="profile_perioddialog_title">Period</string>
+    <string name="profile_perioddialog_select">Select</string>
+
+    <!-- Edit Scrobble Dialog -->
+    <string name="edit_title">Edit Scrobble</string>
+    <string name="edit_track">Track</string>
+    <string name="edit_artist">Artist</string>
+    <string name="edit_album">Album</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_cancel">Discard</string>
+
+    <!-- Confirm Dialog -->
+    <string name="confirmdialog_confirm">Confirm</string>
+    <string name="confirmdialog_cancel">Cancel</string>
+
+    <!-- Delete Dialog -->
+    <string name="deletedialog_title">Delete Scrobble</string>
+    <string name="deletedialog_content">Are you sure you want to delete the selected scrobble?</string>
+
+    <!-- Error Messages -->
+    <string name="error_history">Unable to refresh history</string>
+    <string name="error_charts">Unable to refresh charts</string>
+    <string name="error_details">Unable to refresh details</string>
+    <string name="error_profile">Unable to refresh profile</string>
+    <string name="error_search">Unable to load search results</string>
+
+    <!-- Scrobble Information -->
+    <string name="scrobble_source">Source</string>
+    <string name="scrobble_runtime">Runtime</string>
+    <string name="scrobble_timestamp">Timestamp</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search</string>
+    <string-array name="search_filter">
+        <item>All</item>
+        <item>Artist</item>
+        <item>Album</item>
+        <item>Track</item>
+    </string-array>
+
+    <!-- Settings -->
+    <string name="setting_group_submission">Last.fm Submission</string>
+    <string name="settings_group_scrobble">Scrobble Settings</string>
+    <string name="setting_group_misc">Miscellaneous</string>
+    <string name="setting_group_ui">User Interface</string>
+    <string name="setting_switch_autoscrobble_title">Scrobbles</string>
+    <string name="setting_switch_autoscrobble_description">Automatically submit scrobbles</string>
+    <string name="setting_switch_submitnp_title">Now Playing</string>
+    <string name="setting_switch_submitnp_description">Submit nowplaying</string>
+    <string name="setting_list_scrobblesource_title">Sources</string>
+    <string name="setting_list_scrobblesource_description">Audio-Apps which should be scrobbled</string>
+    <string name="setting_seek_scrobblepoint_title">Runtime</string>
+    <string name="setting_seek_scrobblepoint_description">Required Runtime for Scrobble</string>
+    <string name="setting_list_scrobbleconstraints_title">Requirements</string>
+    <string name="setting_list_scrobbleconstraints_description">Requirements for Scrobble submission</string>
+    <string name="setting_list_scrobbleconstraints_network">Unmetered Network</string>
+    <string name="setting_list_scrobbleconstraints_battery">Battery not low</string>
+    <string name="setting_notifications_title">Notifications</string>
+    <string name="setting_notifications_description">Change notification preferences</string>
+    <string name="setting_reset_title">Reset Preferences</string>
+    <string name="setting_reset_description">Reset app settings to factory state</string>
+    <string name="setting_mediacard_title">Media Card size</string>
+    <string name="setting_mediacard_description">Size of media cards on profile screen</string>
+
+    <string name="media_card_mini">Mini</string>
+    <string name="media_card_small">Small</string>
+    <string name="media_card_medium">Medium</string>
+    <string name="media_card_large">Large</string>
+    <string name="period_overall">Overall</string>
+    <string name="period_week">Last week</string>
+    <string name="period_month">Last month</string>
+    <string name="period_quarter">Last quarter</string>
+    <string name="period_halfyear">Last half-year</string>
+    <string name="period_year">Last year</string>
+
+    <string name="period_overall_short">Overall</string>
+    <string name="period_week_short">Week</string>
+    <string name="period_month_short">Month</string>
+    <string name="period_quarter_short">Quarter</string>
+    <string name="period_halfyear_short">Half-year</string>
+    <string name="period_year_short">Year</string>
+    <string name="error_listener_title">Can\'t access media notification</string>
+    <string name="error_listener_subtitle">Notification access needed for music tracking.</string>
+
+    <string name="error_login_title">Not logged in</string>
+    <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
+
+    <string name="rejectionArtist">Artist was rejected</string>
+    <string name="rejectionTrack">Track was rejected</string>
+    <string name="rejectionTimestampOld">Timestamp was too old</string>
+    <string name="rejectionTimestampNew">Timestamp was too new</string>
+    <string name="rejectionLimit">Daily scrobble limit exceeded</string>
+    <string name="rejectionUnknown">Unknown rejection reason</string>
+</resources>
