@@ -34,9 +34,8 @@ class ChartRemoteMediator<Input, Output : Toplist>(
                     return MediatorResult.Success(endOfPaginationReached = true)
                 }
                 LoadType.APPEND -> {
-                    val lastItem =
-                        state.lastItemOrNull() ?: return MediatorResult.Success(endOfPaginationReached = true)
-                    lastItem.listing.index.div(pageSize) + 2
+                    val lastItem = state.lastItemOrNull()
+                    lastItem?.listing?.index?.div(pageSize)?.plus(2) ?: 1
                 }
             }
 
