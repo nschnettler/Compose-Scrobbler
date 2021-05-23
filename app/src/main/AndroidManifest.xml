@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme"
         android:name=".ScrobblerApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop">
             <intent-filter>
