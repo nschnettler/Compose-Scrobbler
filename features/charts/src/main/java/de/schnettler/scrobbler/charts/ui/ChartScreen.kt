@@ -16,6 +16,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
 import de.schnettler.scrobbler.charts.R
 import de.schnettler.scrobbler.charts.model.ChartTab
+import de.schnettler.scrobbler.charts.preview.PreviewUtils
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -136,5 +137,5 @@ private fun RankingListItem(title: String, subtitle: String, index: Int, onClick
 @Preview
 @Composable
 fun ChartListPreview() = ThemedPreview {
-//    ChartList(chartData = PreviewUtils.generateFakeArtistCharts(5), { })
+    ChartList(chartData = PreviewUtils.generateFakeArtistChartsFlow(5).collectAsLazyPagingItems(), {})
 }
