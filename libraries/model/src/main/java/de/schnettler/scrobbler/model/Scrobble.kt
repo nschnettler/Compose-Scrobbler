@@ -107,6 +107,7 @@ enum class ScrobbleStatus {
     PLAYING,
     PAUSED,
     SCROBBLED,
+    SUBMISSION_FAILED,
     VOLATILE,
     EXTERNAL
 }

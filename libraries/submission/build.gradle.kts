@@ -40,6 +40,7 @@ dependencies {
 
     // Dagger
     implementation(Google.dagger.hilt.android)
+    implementation(project(mapOf("path" to ":libraries:core")))
     kapt(Google.dagger.hilt.compiler)
     kapt(AndroidX.hilt.compiler)
 

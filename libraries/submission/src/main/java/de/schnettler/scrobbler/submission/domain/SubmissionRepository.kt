@@ -9,11 +9,15 @@ import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
 import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.LastFmResponse
+import de.schnettler.scrobbler.core.map.forLists
 import de.schnettler.scrobbler.model.Scrobble
+import de.schnettler.scrobbler.model.ScrobbleStatus
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.scrobbler.submission.api.SubmissionApi
+import de.schnettler.scrobbler.submission.db.SubmissionFailureDao
+import de.schnettler.scrobbler.submission.map.ScrobbleResponseToSubmissionFailureEntityMapper
 import de.schnettler.scrobbler.submission.model.MutlipleScrobblesResponse
 import de.schnettler.scrobbler.submission.model.NowPlayingResponse
 import de.schnettler.scrobbler.submission.model.ScrobbleResponse
@@ -28,6 +32,8 @@ class SubmissionRepository @Inject constructor(
     private val submissionApi: SubmissionApi,
     private val workManager: WorkManager,
     private val dataStoreManager: DataStoreManager,
+    private val failureMapper: ScrobbleResponseToSubmissionFailureEntityMapper,
+    private val submissionFailureDao: SubmissionFailureDao,
 ) {
     suspend fun saveTrack(track: Scrobble) = submissionDao.forceInsert(track)
 
@@ -63,7 +69,8 @@ class SubmissionRepository @Inject constructor(
                     is LastFmResponse.SUCCESS -> {
                         submissionResponse.data?.also { response ->
                             val (accepted, ignored) = response.scrobble.partition { it.ignoredMessage.code == 0L }
-                            submissionDao.updateScrobbleStatus(accepted.map { it.timestamp })
+                            submissionDao.updateScrobbleStatus(accepted.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
+                            handleFailedScrobbles(ignored)
                             acceptedResult.addAll(accepted)
                             ignoredResult.addAll(ignored)
                         }
@@ -74,6 +81,15 @@ class SubmissionRepository @Inject constructor(
             }
         }
         return SubmissionResult(acceptedResult, ignoredResult, errors, exceptions)
+    }
+
+    private suspend fun handleFailedScrobbles(ignoredScrobbles: List<ScrobbleResponse>) {
+        // Update ScrobbleStatus
+        submissionDao.updateScrobbleStatus(ignoredScrobbles.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
+
+        // Add to failureDb
+        val mapped =failureMapper.forLists().invoke(ignoredScrobbles)
+        submissionFailureDao.insertAll(mapped)
     }
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
