@@ -37,7 +37,7 @@ class ChartRepository @Inject constructor(
             apiCall = chartApi::getTopArtists
         )
     ) {
-        chartDao.getTopArtists() /*as PagingSource<Int, Toplist>*/
+        chartDao.getTopArtists()
     }.flow
 
     val chartTrackPager: Flow<PagingData<TopListTrack>> = Pager(
@@ -53,32 +53,6 @@ class ChartRepository @Inject constructor(
             apiCall = chartApi::getTopTracks
         )
     ) {
-        chartDao.getTopTracks() /*as PagingSource<Int, Toplist>*/
+        chartDao.getTopTracks()
     }.flow
-
-//    val chartArtistsStore = StoreBuilder.from(
-//        fetcher = Fetcher.of {
-//            ChartArtistMapper.forLists()(chartApi.getTopArtists())
-//        },
-//        sourceOfTruth = SourceOfTruth.of(
-//            reader = { chartDao.getTopArtists() },
-//            writer = { _: String, entries ->
-//                artistDao.insertAll(entries.map { it.value })
-//                chartDao.forceInsertAll(entries.map { it.listing })
-//            }
-//        )
-//    ).build()
-
-//    val chartTrackStore = StoreBuilder.from(
-//        fetcher = Fetcher.of {
-//            ChartTrackMapper.forLists()(chartApi.getTopTracks())
-//        },
-//        sourceOfTruth = SourceOfTruth.of(
-//            reader = { chartDao.getTopTracks() },
-//            writer = { _: String, entries ->
-//                trackDao.insertAll(entries.map { it.value })
-//                chartDao.forceInsertAll(entries.map { it.listing })
-//            }
-//        )
-//    ).build()
 }
