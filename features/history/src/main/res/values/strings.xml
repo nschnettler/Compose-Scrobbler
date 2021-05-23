@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scrobbles" translatable="false">Scrobbles</string>
+
+    <!-- Confirm Dialog -->
+    <string name="confirmdialog_confirm">Confirm</string>
+    <string name="confirmdialog_cancel">Cancel</string>
+
+    <!-- Edit Scrobble Dialog -->
+    <string name="edit_title">Edit Scrobble</string>
+    <string name="edit_track">Track</string>
+    <string name="edit_artist">Artist</string>
+    <string name="edit_album">Album</string>
+    <string name="edit_save">Save</string>
+    <string name="edit_cancel">Discard</string>
+
+    <!-- Delete Dialog -->
+    <string name="deletedialog_title">Delete Scrobble</string>
+    <string name="deletedialog_content">Are you sure you want to delete the selected scrobble?</string>
+
+    <!-- Rejection -->
+    <string name="rejectionArtist">Artist was rejected</string>
+    <string name="rejectionTrack">Track was rejected</string>
+    <string name="rejectionTimestampOld">Timestamp was too old</string>
+    <string name="rejectionTimestampNew">Timestamp was too new</string>
+    <string name="rejectionLimit">Daily scrobble limit exceeded</string>
+    <string name="rejectionUnknown">Unknown rejection reason</string>
+
+    <!-- Errors -->
+    <string name="error_listener_title">Can\'t access media notification</string>
+    <string name="error_listener_subtitle">Notification access needed for music tracking.</string>
+    <string name="error_login_title">Not logged in</string>
+    <string name="error_login_subtitle">Log in with your last.fm account to sync your scrobbles.</string>
+    <string name="error_history">Unable to refresh history</string>
+
+    <!-- Scrobble Information -->
+    <string name="scrobble_source">Source</string>
+    <string name="scrobble_runtime">Runtime</string>
+    <string name="scrobble_timestamp">Timestamp</string>
+</resources>
