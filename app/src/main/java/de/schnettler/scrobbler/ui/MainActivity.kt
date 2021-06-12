@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,6 +34,7 @@ import de.schnettler.scrobbler.core.ui.state.RefreshableUiState
 import de.schnettler.scrobbler.core.util.REDIRECT_URL
 import de.schnettler.scrobbler.ktx.openCustomTab
 import de.schnettler.scrobbler.ktx.openNotificationListenerSettings
+import de.schnettler.scrobbler.ktx.route
 import de.schnettler.scrobbler.model.LastFmEntity
 import timber.log.Timber
 
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                         bottomBar = {
                             // navBackStackEntry == null is needed because otherwise innerPadding stays zero
                             if (mainScreens.map { it.routeId }
-                                    .contains(navBackStackEntry?.destination?.hierarchy?.firstOrNull()?.route) || navBackStackEntry == null) {
+                                    .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
                                 BottomNavigationBar(
                                     currentDestination = navBackStackEntry?.destination,
                                     screens = mainScreens,

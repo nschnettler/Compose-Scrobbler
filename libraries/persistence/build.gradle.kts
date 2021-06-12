@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    implementation ("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // Libraries
     implementation(project(":libraries:model"))
