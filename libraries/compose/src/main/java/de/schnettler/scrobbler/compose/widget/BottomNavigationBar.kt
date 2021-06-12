@@ -39,5 +39,5 @@ fun BottomNavigationBar(
     }
 }
 
-private fun destinationIsCurrentScreen(destination: NavDestination?, screen: Screen)  =
+private fun destinationIsCurrentScreen(destination: NavDestination?, screen: Screen) =
     destination?.hierarchy?.first()?.route == screen.routeId
