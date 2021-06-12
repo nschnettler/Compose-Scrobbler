@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
@@ -23,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.ui.Scaffold
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
@@ -98,8 +98,8 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                    ) {
-                        Content(controller = navController, host = snackHost, innerPadding = it)
+                    ) { contentPadding ->
+                        Content(controller = navController, host = snackHost, innerPadding = contentPadding)
                     }
                 }
             }
