@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOf
 
 internal object PreviewUtils {
     fun generateFakeArtistChartsFlow(number: Int): Flow<PagingData<TopListArtist>> {
-        val data =  List(number) { index ->
+        val data = List(number) { index ->
             TopListArtist(
                 TopListEntry(
                     "",
