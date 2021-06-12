@@ -1,6 +1,10 @@
 package de.schnettler.scrobbler.history.ui
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -223,7 +227,7 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
     if (!loggedIn) HistoryError.LoggedOut else null
 )
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
@@ -254,8 +258,14 @@ fun HistoryTrackList(
             }
         }
 
-        if (ignoredCount > 0) {
-            item { RejectedScrobblesItem(ignoredCount) }
+        item {
+            AnimatedVisibility(
+                visible = ignoredCount > 0,
+                enter = expandVertically(),
+                exit = shrinkVertically(shrinkTowards = Alignment.Top)
+            ) {
+                RejectedScrobblesItem(ignoredCount)
+            }
         }
 
         items(tracks) { track ->

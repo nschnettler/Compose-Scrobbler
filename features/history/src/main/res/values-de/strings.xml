@@ -38,5 +38,5 @@
 
     <!-- Rejected -->
     <string name="scrobbles_rejected_title">Scrobbles abgelehnt</string>
-    <string name="scrobbles_rejected_description">Scrobbles wurden von last.fm abgelehnt</string>
+    <string name="scrobbles_rejected_description">Scrobbles von last.fm abgelehnt</string>
 </resources>
