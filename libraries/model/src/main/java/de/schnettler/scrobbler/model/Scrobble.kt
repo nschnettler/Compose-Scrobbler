@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -28,8 +28,10 @@ data class Scrobble(
     var status: ScrobbleStatus = ScrobbleStatus.VOLATILE,
     var trackingStart: Long = timestamp
 ) {
-    @Ignore val id: String = name.toLowerCase(Locale.US)
-    @Ignore val url: String = "https://www.last.fm/music/$artist/_/$name"
+    @Ignore
+    val id: String = name.toLowerCase(Locale.US)
+    @Ignore
+    val url: String = "https://www.last.fm/music/$artist/_/$name"
 
     val playDuration: Duration
         get() = amountPlayed.toDuration(DurationUnit.MILLISECONDS)
@@ -45,7 +47,6 @@ data class Scrobble(
     fun isPlaying() = status == ScrobbleStatus.PLAYING
     fun isLocal() = isCached() || status == ScrobbleStatus.SCROBBLED
     fun isCached() = status == ScrobbleStatus.LOCAL
-    fun isEditable() = isCached() || status == ScrobbleStatus.SUBMISSION_FAILED
     fun timestampToRelativeTime() =
         if (timestamp > 0) {
             DateUtils.getRelativeTimeSpanString(
@@ -53,6 +54,7 @@ data class Scrobble(
                     .MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_ALL
             ).toString()
         } else null
+
     fun isTheSameAs(track: Scrobble?) = name == track?.name && artist == track.artist
     private fun canBeScrobbled() = duration > 30000
 

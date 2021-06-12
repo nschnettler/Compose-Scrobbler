@@ -28,5 +28,5 @@ data class ScrobbleResponse(
     val track: CorrectionResponse,
     val ignoredMessage: IgnoredResponse
 ) {
-    fun accepted() = ignoredMessage.code  == 0L
+    fun accepted() = ignoredMessage.code == 0L
 }

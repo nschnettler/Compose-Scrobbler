@@ -147,7 +147,7 @@ private fun InformationItem(category: String, value: String) {
 @Composable
 fun QuickActions(status: ScrobbleStatus, onActionClicked: (ScrobbleAction) -> Unit) {
     val actions = mutableListOf<ScrobbleAction>()
-    when(status) {
+    when (status) {
         ScrobbleStatus.LOCAL -> {
             actions.addAll(listOf(ScrobbleAction.EDIT, ScrobbleAction.DELETE, ScrobbleAction.SUBMIT))
         }
