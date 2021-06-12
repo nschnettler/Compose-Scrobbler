@@ -19,6 +19,7 @@ import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -38,9 +39,11 @@ import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
+import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.FullScreenError
 import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.history.R
 import de.schnettler.scrobbler.history.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.model.HistoryError
@@ -258,7 +261,21 @@ fun HistoryTrackList(
             item {
                 ListItem(
                     text = {
-                        Text(text = "Ignored $ignoredCount")
+                        Text(text = "Scrobbles rejected")
+                    },
+                    secondaryText = {
+                        Text(text = "$ignoredCount scrobbles were rejected by last.fm")
+                    },
+                    icon = {
+                        PlainListIconBackground(
+                            color = AppColor.Error.copy(0.4f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Warning,
+                                contentDescription = null,
+                                tint = AppColor.Error,
+                                modifier = Modifier.size(16.dp))
+                        }
                     }
                 )
             }

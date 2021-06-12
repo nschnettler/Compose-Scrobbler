@@ -19,9 +19,7 @@ import de.schnettler.scrobbler.submission.db.SubmissionFailureDao
 import de.schnettler.scrobbler.submission.map.MultiSubmissionResponseMapper
 import de.schnettler.scrobbler.submission.map.ScrobbleResponseToSubmissionFailureEntityMapper
 import de.schnettler.scrobbler.submission.map.SingleSubmissionResponseMapper
-import de.schnettler.scrobbler.submission.model.MultiScrobbleResponse
 import de.schnettler.scrobbler.submission.model.NowPlayingResponse
-import de.schnettler.scrobbler.submission.model.SingleScrobbleResponse
 import de.schnettler.scrobbler.submission.model.SubmissionResult
 import de.schnettler.scrobbler.submission.model.SubmissionResults
 import de.schnettler.scrobbler.submission.safePost
@@ -37,6 +35,7 @@ class SubmissionRepository @Inject constructor(
     private val submissionFailureDao: SubmissionFailureDao,
     private val multiSubmissionResponseMapper: MultiSubmissionResponseMapper,
     private val singleSubmissionResponseMapper: SingleSubmissionResponseMapper,
+    private val submissionRemoteDataSource: SubmissionRemoteDataSource,
 ) {
     suspend fun saveTrack(track: Scrobble) = submissionDao.forceInsert(track)
 
@@ -47,18 +46,10 @@ class SubmissionRepository @Inject constructor(
 
         val results = if (cachedTracks.size == 1) {
             // 1. Submit single scrobble
-            val response = submitScrobble(cachedTracks.first())
-            val result = singleSubmissionResponseMapper.map(response)
-            handleSubmissionResult(result)
-            listOf(result)
+            submitScrobble(cachedTracks.first())
         } else {
             // 2. Submit multiple scrobbles
-            cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { scrobbles ->
-                val response = submitScrobbles(scrobbles)
-                val result = multiSubmissionResponseMapper.map(response)
-                handleSubmissionResult(result)
-                return@map result
-            }
+            submitScrobbles(cachedTracks)
         }
 
         val successes = results.filterIsInstance<SubmissionResult.Success>()
@@ -67,6 +58,22 @@ class SubmissionRepository @Inject constructor(
             ignored = successes.flatMap { it.ignored },
             errors = results.filterIsInstance<SubmissionResult.Error>(),
         )
+    }
+
+    private suspend fun submitScrobbles(scrobbles: List<Scrobble>): List<SubmissionResult> {
+        return scrobbles.chunked(MAX_SCROBBLE_BATCH_SIZE).map { chunk ->
+            val response = submissionRemoteDataSource.submitScrobbleChunk(chunk)
+            val result = multiSubmissionResponseMapper.map(response)
+            handleSubmissionResult(result)
+            return@map result
+        }
+    }
+
+    suspend fun submitScrobble(scrobble: Scrobble): List<SubmissionResult> {
+        val response = submissionRemoteDataSource.submitScrobble(scrobble)
+        val result = singleSubmissionResponseMapper.map(response)
+        handleSubmissionResult(result)
+        return listOf(result)
     }
 
     private suspend fun handleSubmissionResult(submissionResult: SubmissionResult) {
@@ -94,20 +101,6 @@ class SubmissionRepository @Inject constructor(
         }
     }
 
-    suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
-        return safePost {
-            ResponseToLastFmResponseMapper.map(
-                submissionApi.submitScrobble(
-                    artist = track.artist,
-                    track = track.name,
-                    timestamp = track.timeStampString(),
-                    album = track.album,
-                    duration = track.durationUnix(),
-                )
-            )
-        }
-    }
-
     suspend fun submitNowPlaying(track: Scrobble): LastFmResponse<NowPlayingResponse> {
         return safePost {
             ResponseToLastFmResponseMapper.map(
@@ -121,31 +114,10 @@ class SubmissionRepository @Inject constructor(
         }
     }
 
-    private suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MultiScrobbleResponse> {
-        val parameters = tracks.mapIndexed { index: Int, scrobble: Scrobble ->
-            mapOf(
-                "artist[$index]" to scrobble.artist,
-                "track[$index]" to scrobble.name,
-                "album[$index]" to scrobble.album,
-                "duration[$index]" to scrobble.durationUnix(),
-                "timestamp[$index]" to scrobble.timeStampString(),
-            )
-        }.reduce { acc, map -> acc + map }
-
-        return safePost {
-            ResponseToLastFmResponseMapper.map(
-                submissionApi.submitMultipleScrobbles(
-                    parameters
-                )
-            )
-        }
+    suspend fun deleteScrobble(scrobble: Scrobble) {
+        submissionDao.delete(scrobble)
+        submissionFailureDao.deleteEntries(listOf(scrobble.timestamp))
     }
-
-    suspend fun markScrobblesAsSubmitted(vararg tracks: Scrobble) {
-        submissionDao.updateScrobbleStatus(tracks.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
-    }
-
-    suspend fun deleteScrobble(scrobble: Scrobble) = submissionDao.delete(scrobble)
 
     suspend fun scheduleScrobble() {
         val constraints = Builder().apply {
@@ -162,6 +134,6 @@ class SubmissionRepository @Inject constructor(
     }
 
     suspend fun submitScrobbleEdit(scrobble: Scrobble) {
-        submissionDao.updateTrackData(scrobble.timestamp, scrobble.name, scrobble.artist, scrobble.album)
+        submissionDao.updateScrobbleData(scrobble)
     }
 }

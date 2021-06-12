@@ -5,7 +5,7 @@ import android.text.format.DateUtils
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import java.util.Locale
+import java.util.*
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -45,6 +45,7 @@ data class Scrobble(
     fun isPlaying() = status == ScrobbleStatus.PLAYING
     fun isLocal() = isCached() || status == ScrobbleStatus.SCROBBLED
     fun isCached() = status == ScrobbleStatus.LOCAL
+    fun isEditable() = isCached() || status == ScrobbleStatus.SUBMISSION_FAILED
     fun timestampToRelativeTime() =
         if (timestamp > 0) {
             DateUtils.getRelativeTimeSpanString(

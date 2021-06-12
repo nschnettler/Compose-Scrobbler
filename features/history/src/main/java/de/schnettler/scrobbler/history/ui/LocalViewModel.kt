@@ -3,7 +3,6 @@ package de.schnettler.scrobbler.history.ui
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel
 import de.schnettler.scrobbler.history.domain.LocalRepository
 import de.schnettler.scrobbler.history.domain.RejectionCodeToReasonMapper
@@ -75,22 +74,19 @@ class LocalViewModel @Inject constructor(
     }
 
     fun submitScrobble(track: Scrobble) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = submissionRepo.submitScrobble(track)
-            if (response is LastFmResponse.SUCCESS) {
-                submissionRepo.markScrobblesAsSubmitted(track)
-            }
+        viewModelScope.launch {
+            submissionRepo.submitScrobble(track)
         }
     }
 
     fun deleteScrobble(scrobble: Scrobble) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             submissionRepo.deleteScrobble(scrobble)
         }
     }
 
     fun editCachedScrobble(scrobble: Scrobble) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             submissionRepo.submitScrobbleEdit(scrobble)
         }
     }
