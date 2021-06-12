@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":libraries:network:common"))
     implementation(project(":libraries:network:lastfm"))
     implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:core"))
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
