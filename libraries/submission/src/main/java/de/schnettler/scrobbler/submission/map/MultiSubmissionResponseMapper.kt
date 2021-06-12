@@ -6,7 +6,8 @@ import de.schnettler.scrobbler.submission.model.MultiScrobbleResponse
 import de.schnettler.scrobbler.submission.model.SubmissionResult
 import javax.inject.Inject
 
-class MultiSubmissionResponseMapper @Inject constructor() : Mapper<LastFmResponse<MultiScrobbleResponse>, SubmissionResult> {
+class MultiSubmissionResponseMapper @Inject constructor() :
+    Mapper<LastFmResponse<MultiScrobbleResponse>, SubmissionResult> {
     override suspend fun map(from: LastFmResponse<MultiScrobbleResponse>): SubmissionResult {
         return when (from) {
             is LastFmResponse.ERROR -> SubmissionResult.Error(
