@@ -15,11 +15,9 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
-import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -39,11 +37,9 @@ import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
-import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.FullScreenError
 import de.schnettler.scrobbler.compose.widget.LoadingContent
-import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.history.R
 import de.schnettler.scrobbler.history.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.model.HistoryError
@@ -58,6 +54,7 @@ import de.schnettler.scrobbler.history.ui.dialog.SubmissionResultDetailsDialog
 import de.schnettler.scrobbler.history.ui.dialog.TrackEditDialog
 import de.schnettler.scrobbler.history.ui.widget.ErrorItem
 import de.schnettler.scrobbler.history.ui.widget.NowPlayingItem
+import de.schnettler.scrobbler.history.ui.widget.RejectedScrobblesItem
 import de.schnettler.scrobbler.history.ui.widget.ScrobbleItem
 import de.schnettler.scrobbler.model.Scrobble
 
@@ -258,27 +255,7 @@ fun HistoryTrackList(
         }
 
         if (ignoredCount > 0) {
-            item {
-                ListItem(
-                    text = {
-                        Text(text = "Scrobbles rejected")
-                    },
-                    secondaryText = {
-                        Text(text = "$ignoredCount scrobbles were rejected by last.fm")
-                    },
-                    icon = {
-                        PlainListIconBackground(
-                            color = AppColor.Error.copy(0.4f)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Warning,
-                                contentDescription = null,
-                                tint = AppColor.Error,
-                                modifier = Modifier.size(16.dp))
-                        }
-                    }
-                )
-            }
+            item { RejectedScrobblesItem(ignoredCount) }
         }
 
         items(tracks) { track ->
