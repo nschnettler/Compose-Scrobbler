@@ -23,6 +23,7 @@ dependencies {
     implementation(project(":libraries:network:common"))
     implementation(project(":libraries:network:lastfm"))
     implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:core"))
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
@@ -40,7 +41,6 @@ dependencies {
 
     // Dagger
     implementation(Google.dagger.hilt.android)
-    implementation(project(mapOf("path" to ":libraries:core")))
     kapt(Google.dagger.hilt.compiler)
     kapt(AndroidX.hilt.compiler)
 

@@ -29,19 +29,23 @@ class LocalViewModel @Inject constructor(
 
     val events = MutableLiveData<Event<SubmissionEvent>>()
 
-    val cachedScrobblesCOunt by lazy {
+    val cachedScrobblesCount by lazy {
         repo.getNumberOfCachedScrobbles()
+    }
+
+    val ignoredScrobblesCount by lazy {
+        repo.getNumberOfIgnoredScrobbles()
     }
 
     fun scheduleScrobbleSubmission() {
         isSubmitting.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            val result = submissionRepo.submitCachedScrobbles()
+            val results = submissionRepo.submitCachedScrobbles()
 
-            val errorMessage = result.errors.firstOrNull()?.description ?: result.exceptions.firstOrNull()?.message
+            val errorMessage = results.errors.firstOrNull()?.message
             val mappedResult = SubmissionResult(
-                accepted = result.accepted.map { it.timestamp },
-                ignored = result.ignored.associateBy({ it.timestamp }, { it.ignoredMessage.code }),
+                accepted = results.accepted.map { it.timestamp },
+                ignored = results.ignored.associateBy({ it.timestamp }, { it.ignoredMessage.code }),
                 error = errorMessage
             )
             events.postValue(Event(SubmissionEvent.Success(mappedResult)))

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -11,8 +12,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.ListItem
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
@@ -88,7 +91,8 @@ fun Content(
     }
 
     val recentTracksState by localViewModel.state.collectAsState()
-    val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
+    val cachedNumber by localViewModel.cachedScrobblesCount.collectAsState(initial = 0)
+    val ignoredNumber by localViewModel.ignoredScrobblesCount.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
@@ -119,6 +123,7 @@ fun Content(
             recentTracksState.currentData?.let { list ->
                 HistoryTrackList(
                     tracks = list,
+                    ignoredCount = ignoredNumber,
                     onActionClicked = { track, actionType ->
                         selectedTrack.value = track
                         when (actionType) {
@@ -218,9 +223,11 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
     if (!loggedIn) HistoryError.LoggedOut else null
 )
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
+    ignoredCount: Int,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
     onNowPlayingSelected: (Scrobble) -> Unit,
     onErrorClicked: (HistoryError) -> Unit,
@@ -228,7 +235,7 @@ fun HistoryTrackList(
 ) {
     LazyColumn {
         item {
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
+            Spacer(modifier = Modifier.statusBarsHeight())
         }
 
         item {
@@ -244,6 +251,16 @@ fun HistoryTrackList(
                         }
                     }
                 }
+            }
+        }
+
+        if (ignoredCount > 0) {
+            item {
+                ListItem(
+                    text = {
+                        Text(text = "Ignored $ignoredCount")
+                    }
+                )
             }
         }
 

@@ -7,7 +7,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.lastfm.map.ResponseToLastFmResponseMapper
-import de.schnettler.lastfm.models.Errors
 import de.schnettler.lastfm.models.LastFmResponse
 import de.schnettler.scrobbler.core.map.forLists
 import de.schnettler.scrobbler.model.Scrobble
@@ -17,12 +16,14 @@ import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONST
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.scrobbler.submission.api.SubmissionApi
 import de.schnettler.scrobbler.submission.db.SubmissionFailureDao
+import de.schnettler.scrobbler.submission.map.MultiSubmissionResponseMapper
 import de.schnettler.scrobbler.submission.map.ScrobbleResponseToSubmissionFailureEntityMapper
-import de.schnettler.scrobbler.submission.model.MutlipleScrobblesResponse
+import de.schnettler.scrobbler.submission.map.SingleSubmissionResponseMapper
+import de.schnettler.scrobbler.submission.model.MultiScrobbleResponse
 import de.schnettler.scrobbler.submission.model.NowPlayingResponse
-import de.schnettler.scrobbler.submission.model.ScrobbleResponse
 import de.schnettler.scrobbler.submission.model.SingleScrobbleResponse
 import de.schnettler.scrobbler.submission.model.SubmissionResult
+import de.schnettler.scrobbler.submission.model.SubmissionResults
 import de.schnettler.scrobbler.submission.safePost
 import timber.log.Timber
 import javax.inject.Inject
@@ -34,62 +35,63 @@ class SubmissionRepository @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     private val failureMapper: ScrobbleResponseToSubmissionFailureEntityMapper,
     private val submissionFailureDao: SubmissionFailureDao,
+    private val multiSubmissionResponseMapper: MultiSubmissionResponseMapper,
+    private val singleSubmissionResponseMapper: SingleSubmissionResponseMapper,
 ) {
     suspend fun saveTrack(track: Scrobble) = submissionDao.forceInsert(track)
 
-    suspend fun submitCachedScrobbles(): SubmissionResult {
+    suspend fun submitCachedScrobbles(): SubmissionResults {
         Timber.d("[Scrobble] Started cached scrobble submission")
         val cachedTracks = submissionDao.getCachedTracks()
         Timber.d("[Scrobble] Found ${cachedTracks.size} cached scrobbles")
 
-        val acceptedResult = mutableListOf<ScrobbleResponse>()
-        val ignoredResult = mutableListOf<ScrobbleResponse>()
-        val errors = mutableListOf<Errors>()
-        val exceptions = mutableListOf<Throwable>()
-
-        if (cachedTracks.size == 1) {
-            when (val submissionResponse = submitScrobble(cachedTracks.first())) {
-                is LastFmResponse.SUCCESS -> {
-                    submissionResponse.data?.also { response ->
-                        val scrobbleResponse = response.scrobble
-                        submissionDao.updateScrobbleStatus(listOf(response.scrobble.timestamp))
-                        if (scrobbleResponse.ignoredMessage.code == 0L) {
-                            acceptedResult.add(scrobbleResponse)
-                        } else {
-                            ignoredResult.add(scrobbleResponse)
-                        }
-                    }
-                }
-                is LastFmResponse.ERROR -> submissionResponse.error?.let { errors.add(it) }
-                is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
-            }
+        val results = if (cachedTracks.size == 1) {
+            // 1. Submit single scrobble
+            val response = submitScrobble(cachedTracks.first())
+            val result = singleSubmissionResponseMapper.map(response)
+            handleSubmissionResult(result)
+            listOf(result)
         } else {
-            cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { input ->
-                when (val submissionResponse = submitScrobbles(input)) {
-                    is LastFmResponse.SUCCESS -> {
-                        submissionResponse.data?.also { response ->
-                            val (accepted, ignored) = response.scrobble.partition { it.ignoredMessage.code == 0L }
-                            submissionDao.updateScrobbleStatus(accepted.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
-                            handleFailedScrobbles(ignored)
-                            acceptedResult.addAll(accepted)
-                            ignoredResult.addAll(ignored)
-                        }
-                    }
-                    is LastFmResponse.ERROR -> submissionResponse.error?.let { errors.add(it) }
-                    is LastFmResponse.EXCEPTION -> exceptions.add(submissionResponse.exception)
-                }
+            // 2. Submit multiple scrobbles
+            cachedTracks.chunked(MAX_SCROBBLE_BATCH_SIZE).map { scrobbles ->
+                val response = submitScrobbles(scrobbles)
+                val result = multiSubmissionResponseMapper.map(response)
+                handleSubmissionResult(result)
+                return@map result
             }
         }
-        return SubmissionResult(acceptedResult, ignoredResult, errors, exceptions)
+
+        val successes = results.filterIsInstance<SubmissionResult.Success>()
+        return SubmissionResults(
+            accepted = successes.flatMap { it.accepted },
+            ignored = successes.flatMap { it.ignored },
+            errors = results.filterIsInstance<SubmissionResult.Error>(),
+        )
     }
 
-    private suspend fun handleFailedScrobbles(ignoredScrobbles: List<ScrobbleResponse>) {
-        // Update ScrobbleStatus
-        submissionDao.updateScrobbleStatus(ignoredScrobbles.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
+    private suspend fun handleSubmissionResult(submissionResult: SubmissionResult) {
+        if (submissionResult is SubmissionResult.Success) {
+            // 1. Handle accepted Scrobbles
+            submissionResult.accepted.let { accepted ->
+                val acceptedTimestamps = accepted.map { it.timestamp }
 
-        // Add to failureDb
-        val mapped =failureMapper.forLists().invoke(ignoredScrobbles)
-        submissionFailureDao.insertAll(mapped)
+                // Mark scrobble as submitted
+                submissionDao.updateScrobbleStatus(acceptedTimestamps, ScrobbleStatus.SCROBBLED)
+
+                // Remove scrobble from failed_scrobbles table
+                submissionFailureDao.deleteEntries(acceptedTimestamps)
+            }
+
+            // 2. Handle ignored Scrobbles
+            submissionResult.ignored.let { ignored ->
+                // Update ScrobbleStatus
+                submissionDao.updateScrobbleStatus(ignored.map { it.timestamp }, ScrobbleStatus.SUBMISSION_FAILED)
+
+                // Add to failureDb
+                val mapped = failureMapper.forLists().invoke(ignored)
+                submissionFailureDao.insertAll(mapped)
+            }
+        }
     }
 
     suspend fun submitScrobble(track: Scrobble): LastFmResponse<SingleScrobbleResponse> {
@@ -119,7 +121,7 @@ class SubmissionRepository @Inject constructor(
         }
     }
 
-    private suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MutlipleScrobblesResponse> {
+    private suspend fun submitScrobbles(tracks: List<Scrobble>): LastFmResponse<MultiScrobbleResponse> {
         val parameters = tracks.mapIndexed { index: Int, scrobble: Scrobble ->
             mapOf(
                 "artist[$index]" to scrobble.artist,
@@ -140,7 +142,7 @@ class SubmissionRepository @Inject constructor(
     }
 
     suspend fun markScrobblesAsSubmitted(vararg tracks: Scrobble) {
-        submissionDao.updateScrobbleStatus(tracks.map { it.timestamp })
+        submissionDao.updateScrobbleStatus(tracks.map { it.timestamp }, ScrobbleStatus.SCROBBLED)
     }
 
     suspend fun deleteScrobble(scrobble: Scrobble) = submissionDao.delete(scrobble)
