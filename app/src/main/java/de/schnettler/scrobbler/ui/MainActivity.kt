@@ -18,9 +18,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
@@ -84,12 +84,16 @@ class MainActivity : AppCompatActivity() {
                             if (mainScreens.map { it.routeId }
                                     .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
                                 BottomNavigationBar(
-                                    currentRoute = navBackStackEntry?.route(),
+                                    currentDestination = navBackStackEntry?.destination,
                                     screens = mainScreens,
                                 ) { screen ->
                                     navController.navigate(screen.routeId) {
-                                        popUpTo = navController.graph.startDestination
+                                        restoreState = true
                                         launchSingleTop = true
+
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
                                     }
                                 }
                             }
