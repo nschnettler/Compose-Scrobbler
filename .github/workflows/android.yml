@@ -60,7 +60,7 @@ jobs:
 
   test:
     name: Unit Test
-    needs: assemble
+    #needs: assemble
     runs-on: ubuntu-latest
     
     steps:
@@ -85,7 +85,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Run unit tests
-      run: ./gradlew testDebugUnitTest --stacktrace --scan
+      run: ./gradlew testDebugUnitTest --stacktrace
       
     - name: Test Report
       uses: asadmansr/android-test-report-action@v1.2.0
@@ -93,7 +93,7 @@ jobs:
 
   instrumented-test:
     name: Instrumented Test
-    needs: assemble
+    #needs: assemble
     runs-on: macos-latest
     
     steps:
@@ -123,8 +123,8 @@ jobs:
           api-level: 29
           arch: x86
           profile: Nexus 6
-          script: ./gradlew connectedCheck --stacktrace --scan
-      
+          script: ./gradlew connectedCheck --stacktrace
+    
     - name: Copy Test Results
       if: always()
       run: |
