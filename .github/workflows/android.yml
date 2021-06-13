@@ -56,7 +56,7 @@ jobs:
       run: chmod +x gradlew
 
     - name: Assemble with Gradle
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleDebug --scan
 
   test:
     name: Unit Test
@@ -85,7 +85,7 @@ jobs:
       run: chmod +x gradlew
       
     - name: Run unit tests
-      run: ./gradlew testDebugUnitTest --stacktrace
+      run: ./gradlew testDebugUnitTest --stacktrace --scan
       
     - name: Test Report
       uses: asadmansr/android-test-report-action@v1.2.0
@@ -123,7 +123,7 @@ jobs:
           api-level: 29
           arch: x86
           profile: Nexus 6
-          script: ./gradlew connectedCheck --stacktrace
+          script: ./gradlew connectedCheck --stacktrace --scan
       
     - name: Copy Test Results
       if: always()
