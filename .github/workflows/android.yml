@@ -44,6 +44,14 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
+    - name: Gradle Cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
