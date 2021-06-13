@@ -7,7 +7,31 @@ on:
       - dev
 
 jobs:
-  build:
+  check:
+    name: Check Project
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Setup JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+        
+    - name: Wrapper Validation
+      uses: gradle/wrapper-validation-action@v1
+      
+    - name: Detekt
+      uses: natiginfo/action-detekt-all@1.17.1
+      with:
+          args: --fail-fast --config detekt-config.yml
+
+      
+  assemble:
+    name: Assemble Project
     runs-on: ubuntu-latest
 
     steps:
