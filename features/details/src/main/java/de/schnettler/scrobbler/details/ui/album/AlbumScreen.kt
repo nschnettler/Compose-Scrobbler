@@ -30,7 +30,6 @@ import de.schnettler.scrobbler.details.model.AlbumDetailEntity
 import de.schnettler.scrobbler.details.ui.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.details.ui.widget.ListeningStats
 import de.schnettler.scrobbler.model.LastFmEntity
-import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -105,7 +104,7 @@ private fun ArtistItem(
         secondaryText = {
             Text(
                 text = "$trackNumber ${stringResource(id = R.string.albumdetails_tracks)} ⦁ " +
-                        "${albumLength.inMinutes.roundToInt()} ${stringResource(id = R.string.albumdetails_minutes)}"
+                        "${albumLength.inWholeMinutes} ${stringResource(id = R.string.albumdetails_minutes)}"
             )
         },
         icon = {

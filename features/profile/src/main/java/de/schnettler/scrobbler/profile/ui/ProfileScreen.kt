@@ -268,7 +268,7 @@ private fun PeriodSelectDialog(
     onDismiss: () -> Unit,
     initial: UITimePeriod,
 ) {
-    var selected by mutableStateOf(initial)
+    var selected by remember { mutableStateOf(initial) }
     val radioGroupOptions = UITimePeriod.values().asList()
     AlertDialog(
         onDismissRequest = { onDismiss() },

@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.ui.settings
 
-import android.content.Context
 import android.content.Intent
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -13,15 +12,13 @@ import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import de.schnettler.datastore.compose.model.Preference.PreferenceGroup
 import de.schnettler.datastore.compose.model.Preference.PreferenceItem.ListPreference
 import de.schnettler.datastore.compose.model.Preference.PreferenceItem.MultiSelectListPreference
@@ -35,10 +32,9 @@ import de.schnettler.scrobbler.persistence.PreferenceRequestStore
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_BATTERY
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore.SCROBBLE_CONSTRAINTS_NETWORK
 import de.schnettler.scrobbler.settings.R
+import de.schnettler.scrobbler.ui.settings.ktx.getMediaBrowserServices
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 @OptIn(ExperimentalMaterialApi::class)
 @Suppress("LongMethod")
@@ -49,7 +45,7 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
 
-    val mediaServices = mutableStateMapOf<String, String>()
+    val mediaServices = remember { mutableStateMapOf<String, String>() }
     val constraints: Map<String, Int> = remember {
         mapOf(
             SCROBBLE_CONSTRAINTS_NETWORK to R.string.setting_list_scrobbleconstraints_network,
@@ -58,7 +54,9 @@ fun SettingsScreen(
     }
     val scope = rememberCoroutineScope()
 
-    scope.launch { mediaServices.putAll(context.getMediaBrowserServices()) }
+    LaunchedEffect(dataStoreManager) {
+        launch { mediaServices.putAll(context.getMediaBrowserServices()) }
+    }
 
     val submissionGroup = PreferenceGroup(
         title = stringResource(id = R.string.setting_group_submission),
