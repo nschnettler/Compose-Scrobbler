@@ -9,7 +9,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import de.schnettler.scrobbler.charts.ui.ChartScreen
 import de.schnettler.scrobbler.charts.ui.ChartViewModel
-import de.schnettler.scrobbler.charts.ui.ChartViewModelImpl
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -45,7 +44,7 @@ fun MainRouteContent(
 
     NavHost(navController = navController, startDestination = Screen.History.routeId) {
         destination(Screen.Charts) {
-            val viewModel: ChartViewModel = hiltViewModel<ChartViewModelImpl>()
+            val viewModel: ChartViewModel = hiltViewModel()
             ChartScreen(viewModel = viewModel, actionHandler = actioner, errorHandler = errorer, modifier = modifier)
         }
         destination(Screen.History) {
