@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,6 +26,7 @@ import de.schnettler.datastore.compose.model.Preference.PreferenceItem.MultiSele
 import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SeekBarPreference
 import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SwitchPreference
 import de.schnettler.datastore.compose.model.Preference.PreferenceItem.TextPreference
+import de.schnettler.datastore.compose.model.PreferenceIcon
 import de.schnettler.datastore.compose.ui.PreferenceScreen
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.compose.model.MediaCardSize
@@ -36,7 +38,7 @@ import de.schnettler.scrobbler.ui.settings.ktx.getMediaBrowserServices
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(
@@ -67,14 +69,14 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_switch_autoscrobble_title),
                 summary = stringResource(id = R.string.setting_switch_autoscrobble_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.CloudUpload,
+                icon = { PreferenceIcon(icon = Icons.Outlined.CloudUpload) },
             ),
             SwitchPreference(
                 PreferenceRequestStore.submitNowPlaying,
                 title = stringResource(id = R.string.setting_switch_submitnp_title),
                 summary = stringResource(id = R.string.setting_switch_submitnp_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.MusicNote,
+                icon = { PreferenceIcon(icon = Icons.Outlined.MusicNote) },
             ),
         )
     )
@@ -88,7 +90,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_list_scrobblesource_title),
                 summary = stringResource(id = R.string.setting_list_scrobblesource_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.Speaker,
+                icon = { PreferenceIcon(icon = Icons.Outlined.Speaker) },
                 entries = mediaServices
             ),
             SeekBarPreference(
@@ -96,7 +98,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_seek_scrobblepoint_title),
                 summary = stringResource(id = R.string.setting_seek_scrobblepoint_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.Speed,
+                icon = { PreferenceIcon(icon = Icons.Outlined.Speed) },
                 steps = 4,
                 valueRange = 0.5F..1F,
                 valueRepresentation = { "${(it * 100).roundToInt()} %" }
@@ -106,7 +108,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_list_scrobbleconstraints_title),
                 summary = stringResource(id = R.string.setting_list_scrobbleconstraints_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.SettingsOverscan,
+                icon = { PreferenceIcon(icon = Icons.Outlined.SettingsOverscan) },
                 entries = constraints.mapValues { stringResource(id = it.value) },
             ),
         )
@@ -121,7 +123,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_mediacard_title),
                 summary = stringResource(id = R.string.setting_mediacard_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.Palette,
+                icon = { PreferenceIcon(icon = Icons.Outlined.Palette) },
                 entries = MediaCardSize.values().associate { it.name to stringResource(id = it.nameRes) },
             )
         )
@@ -135,7 +137,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_notifications_title),
                 summary = stringResource(id = R.string.setting_notifications_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.Notifications,
+                icon = { PreferenceIcon(icon = Icons.Outlined.Notifications) },
                 onClick = {
                     val intent = Intent("android.settings.APP_NOTIFICATION_SETTINGS")
                         .putExtra("app_package", context.packageName) // Android 5-7
@@ -148,7 +150,7 @@ fun SettingsScreen(
                 title = stringResource(id = R.string.setting_reset_title),
                 summary = stringResource(id = R.string.setting_reset_description),
                 singleLineTitle = true,
-                icon = Icons.Outlined.DeleteForever,
+                icon = { PreferenceIcon(icon = Icons.Outlined.DeleteForever) },
                 onClick = {
                     scope.launch {
                         dataStoreManager.clearPreferences()
