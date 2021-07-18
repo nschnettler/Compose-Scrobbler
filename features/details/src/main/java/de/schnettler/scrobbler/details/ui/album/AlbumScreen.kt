@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.rememberImagePainter
 import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
@@ -111,7 +111,7 @@ private fun ArtistItem(
         icon = {
             PlainListIconBackground {
                 Image(
-                    painter = rememberCoilPainter(request = artist.imageUrl, fadeIn = true),
+                    painter = rememberImagePainter(data = artist.imageUrl, builder = { crossfade(true) }),
                     contentDescription = "Artist picture",
                 )
             }
