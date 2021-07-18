@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-beta02")
+        classpath("com.android.tools.build:gradle:7.0.0-beta05")
         classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
