@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemsIndexed
@@ -23,13 +22,11 @@ import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
-import de.schnettler.scrobbler.compose.widget.LoadingContent
 import de.schnettler.scrobbler.compose.widget.TabbedPager
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.model.TopListArtist
 import de.schnettler.scrobbler.model.TopListTrack
 import de.schnettler.scrobbler.model.Toplist
-import timber.log.Timber
 
 @Composable
 fun ChartScreen(
@@ -54,30 +51,30 @@ private fun ChartPage(
     actionHandler: (UIAction) -> Unit
 ) {
     val currentTab = ChartTab.values()[pageIndex]
-    val pagingItems = when (currentTab) {
-        ChartTab.Artist -> viewModel.artistState.collectAsLazyPagingItems()
-        ChartTab.Track -> viewModel.trackState.collectAsLazyPagingItems()
-    }
+//    val pagingItems = when (currentTab) {
+//        ChartTab.Artist -> viewModel.artistState.collectAsLazyPagingItems()
+//        ChartTab.Track -> viewModel.trackState.collectAsLazyPagingItems()
+//    }
 
-    val loadStates = pagingItems.loadState
-
-    if (loadStates.refresh is LoadState.Error) {
-        val errorState = loadStates.refresh as LoadState.Error
-        errorHandler(UIError.Snackbar(
-            errorState.error,
-            stringResource(id = R.string.error_charts),
-            onAction = { pagingItems.refresh() },
-        ))
-        Timber.e(errorState.error)
-    }
-
-    LoadingContent(
-        empty = false,
-        loading = loadStates.refresh == LoadState.Loading,
-        onRefresh = { pagingItems.refresh() }
-    ) {
-        ChartList(pagingItems, actionHandler)
-    }
+//    val loadStates = pagingItems.loadState
+//
+//    if (loadStates.refresh is LoadState.Error) {
+//        val errorState = loadStates.refresh as LoadState.Error
+//        errorHandler(UIError.Snackbar(
+//            errorState.error,
+//            stringResource(id = R.string.error_charts),
+//            onAction = { pagingItems.refresh() },
+//        ))
+//        Timber.e(errorState.error)
+//    }
+//
+//    LoadingContent(
+//        empty = false,
+//        loading = loadStates.refresh == LoadState.Loading,
+//        onRefresh = { pagingItems.refresh() }
+//    ) {
+//        ChartList(pagingItems, actionHandler)
+//    }
 }
 
 @Composable
