@@ -11,15 +11,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.rounded.MusicNote
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,7 +39,9 @@ import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenArti
 import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenTrackDetails
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
+import de.schnettler.scrobbler.compose.theme.LegacyAppTheme
 import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.search.R
@@ -71,18 +72,20 @@ fun SearchScreen(
         Spacer(modifier = Modifier.statusBarsHeight())
         val softKeyboard = LocalSoftwareKeyboardController.current
         Box(modifier = Modifier.padding(16.dp)) {
-            TextField(
-                value = searchInputState.value,
-                onValueChange = {
-                    searchInputState.value = it
-                    viewModel.updateQuery(it.text)
-                },
-                label = { Text(text = stringResource(id = R.string.search_hint)) },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = AppColor.BackgroundElevated),
-                keyboardActions = KeyboardActions { softKeyboard?.hide() }
-            )
+            LegacyAppTheme {
+                TextField(
+                    value = searchInputState.value,
+                    onValueChange = {
+                        searchInputState.value = it
+                        viewModel.updateQuery(it.text)
+                    },
+                    label = { Text(text = stringResource(id = R.string.search_hint)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = AppColor.BackgroundElevated),
+                    keyboardActions = KeyboardActions { softKeyboard?.hide() }
+                )
+            }
         }
         SelectableChipRow(
             items = stringArrayResource(id = R.array.search_filter),
@@ -104,7 +107,7 @@ private fun SearchResults(results: List<SearchResult>, navigator: (NavigationEve
         items(items = results) {
             when (it) {
                 is SearchResult.ArtistResult -> {
-                    ListItem(
+                    MaterialListItem(
                         text = { Text(it.name) },
                         secondaryText = {
                             Text("${it.listeners.abbreviate()} ${stringResource(id = R.string.search_listeners)}")
@@ -120,7 +123,7 @@ private fun SearchResults(results: List<SearchResult>, navigator: (NavigationEve
                     )
                 }
                 is SearchResult.AlbumResult -> {
-                    ListItem(
+                    MaterialListItem(
                         text = { Text(it.name) },
                         secondaryText = {
                             Text(it.artistName)
@@ -136,7 +139,7 @@ private fun SearchResults(results: List<SearchResult>, navigator: (NavigationEve
                     )
                 }
                 is SearchResult.TrackResult -> {
-                    ListItem(
+                    MaterialListItem(
                         text = { Text(it.name) },
                         secondaryText = {
                             Text(it.artistName)

@@ -17,13 +17,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -124,7 +124,7 @@ private fun OverlaidStatusBarAppBar(
 
     Surface(
         color = Color.Transparent,
-        elevation = transition.elevation,
+        shadowElevation = transition.elevation,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(modifier) {
@@ -136,7 +136,7 @@ private fun OverlaidStatusBarAppBar(
                         alpha = transition.alpha
                         translationY = transition.offset
                     }
-                    .background(MaterialTheme.colors.surface),
+                    .background(MaterialTheme.colorScheme.surface),
                 content = {}
             )
 
@@ -144,7 +144,7 @@ private fun OverlaidStatusBarAppBar(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colors.surface),
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     content()
                 }

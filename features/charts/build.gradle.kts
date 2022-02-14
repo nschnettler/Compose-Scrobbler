@@ -36,6 +36,7 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.ui.tooling)
     implementation(Google.accompanist.insets)
 

@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.Face
@@ -56,6 +55,7 @@ import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.compose.widget.Spacer
 import de.schnettler.scrobbler.compose.widget.StatsRow
@@ -182,7 +182,7 @@ private fun ProfileContent(
 private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) -> Unit) {
     Column {
         list.forEach { (top, track) ->
-            ListItem(
+            MaterialListItem(
                 text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 secondaryText = {
                     Text(track.artist)
@@ -219,7 +219,7 @@ private fun UserInfo(user: User) {
         }
 
         Column {
-            ListItem(
+            MaterialListItem(
                 text = {
                     Text(text = "${user.name} ${user.countryCode.toFlagEmoji()}")
                 },

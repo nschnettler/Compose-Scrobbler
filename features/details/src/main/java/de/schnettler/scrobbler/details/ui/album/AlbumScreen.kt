@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,6 +20,7 @@ import de.schnettler.scrobbler.compose.widget.ChipRow
 import de.schnettler.scrobbler.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.asMinSec
 import de.schnettler.scrobbler.core.ktx.fromHtmlLastFm
@@ -78,7 +78,7 @@ fun AlbumDetailScreen(
             itemSpacer(16.dp)
             item { Header(title = "Tracks") }
             itemsIndexed(tracks) { index, (track, info) ->
-                ListItem(
+                MaterialListItem(
                     text = { Text(track.name) },
                     secondaryText = { Text(text = info.duration.asMinSec()) },
                     icon = { IndexListIconBackground(index = index) },
@@ -99,7 +99,7 @@ private fun ArtistItem(
     albumLength: Duration,
     actionHandler: (UIAction) -> Unit
 ) {
-    ListItem(
+    MaterialListItem(
         text = { Text(text = artist.name) },
         secondaryText = {
             Text(

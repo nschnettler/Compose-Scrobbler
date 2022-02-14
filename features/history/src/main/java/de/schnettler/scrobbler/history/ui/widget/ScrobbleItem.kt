@@ -14,11 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.CustomDivider
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.NameListIcon
 import de.schnettler.scrobbler.core.ktx.asMinSec
 import de.schnettler.scrobbler.core.ktx.milliSecondsToDate
@@ -50,7 +50,7 @@ import kotlin.time.ExperimentalTime
 fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
     val feedback = LocalHapticFeedback.current
-    ListItem(
+    MaterialListItem(
         text = { Text(text = track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = {
             Column {
@@ -85,7 +85,7 @@ fun ScrobbleItem(track: Scrobble, onActionClicked: (ScrobbleAction) -> Unit) {
 
                     when (track.status) {
                         ScrobbleStatus.LOCAL -> {
-                            StatusIndicator(color = MaterialTheme.colors.secondary)
+                            StatusIndicator(color = MaterialTheme.colorScheme.secondary)
                         }
                         ScrobbleStatus.SUBMISSION_FAILED -> {
                             StatusIndicator(color = AppColor.Error)

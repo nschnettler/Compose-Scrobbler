@@ -37,6 +37,7 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.runtime.liveData)
     implementation(Google.accompanist.insets)

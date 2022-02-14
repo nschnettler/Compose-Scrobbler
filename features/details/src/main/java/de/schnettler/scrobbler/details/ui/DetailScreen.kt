@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.Header
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import de.schnettler.scrobbler.details.R
 import de.schnettler.scrobbler.details.model.AlbumDetailEntity
@@ -64,7 +64,7 @@ fun AlbumCategory(
     actionHandler: (UIAction) -> Unit
 ) {
     Header(title = stringResource(id = R.string.track_sourcealbum))
-    ListItem(
+    MaterialListItem(
         text = {
             Text(album?.name ?: stringResource(id = R.string.track_unknownalbum))
         },

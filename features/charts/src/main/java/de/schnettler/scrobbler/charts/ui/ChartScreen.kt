@@ -3,8 +3,7 @@ package de.schnettler.scrobbler.charts.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -22,6 +21,7 @@ import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.TabbedPager
 import de.schnettler.scrobbler.core.ktx.abbreviate
 import de.schnettler.scrobbler.model.TopListArtist
@@ -121,7 +121,7 @@ private fun ChartTrackListItem(name: String, artist: String, index: Int, onClick
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun RankingListItem(title: String, subtitle: String, index: Int, onClicked: () -> Unit) {
-    ListItem(
+    MaterialListItem(
         text = { Text(text = title, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         secondaryText = { Text(text = subtitle, maxLines = 1, overflow = TextOverflow.Ellipsis) },
         icon = { IndexListIconBackground(index = index) },

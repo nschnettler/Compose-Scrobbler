@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +24,7 @@ import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.ChipFlowRow
 import de.schnettler.scrobbler.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.compose.widget.Header
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
@@ -123,7 +123,7 @@ private fun LazyListScope.detailItems(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TrackItem(index: Int, track: TrackWithStats, actionHandler: (UIAction) -> Unit) {
-    ListItem(
+    MaterialListItem(
         text = { Text(track.entity.name) },
         secondaryText = {
             Text("${track.stats.listeners.abbreviate()} ${stringResource(id = R.string.track_listeners)}")

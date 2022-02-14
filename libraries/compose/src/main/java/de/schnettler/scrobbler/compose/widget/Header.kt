@@ -7,13 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -30,11 +31,14 @@ fun Header(
     loading: Boolean = false,
     action: (@Composable () -> Unit)? = null
 ) {
-    Row(modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.subtitle1,
+                style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(vertical = 8.dp)
             )
         }
@@ -43,8 +47,10 @@ fun Header(
 
         AnimatedVisibility(visible = loading) {
             AutoSizedCircularProgressIndicator(
-                color = MaterialTheme.colors.secondary,
-                modifier = Modifier.padding(8.dp).size(16.dp)
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .padding(8.dp)
+                    .size(16.dp)
             )
         }
 
@@ -54,8 +60,10 @@ fun Header(
 
 // Default stroke size
 private val DefaultStrokeWidth = 4.dp
+
 // Preferred diameter for CircularProgressIndicator
 private val DefaultDiameter = 40.dp
+
 // Internal padding added by CircularProgressIndicator
 private val InternalPadding = 4.dp
 
@@ -64,7 +72,7 @@ private val StrokeDiameterFraction = DefaultStrokeWidth / DefaultDiameter
 @Composable
 fun AutoSizedCircularProgressIndicator(
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.primary
+    color: Color = MaterialTheme.colorScheme.primary
 ) {
     BoxWithConstraints(modifier) {
         val diameter = with(LocalDensity.current) {

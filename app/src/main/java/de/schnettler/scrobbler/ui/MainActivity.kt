@@ -8,9 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -22,7 +23,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.ui.Scaffold
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.navigation.Screen
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         Screen.Settings
     )
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
                     navigate = { navController.navigate(it) }
 
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    Scaffold(
-                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                    androidx.compose.material3.Scaffold(
+                        snackbarHost = { SnackbarHost(hostState = snackHost) },
                         bottomBar = {
                             // navBackStackEntry == null is needed because otherwise innerPadding stays zero
                             if (mainScreens.map { it.routeId }
