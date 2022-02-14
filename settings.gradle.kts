@@ -26,7 +26,6 @@ pluginManagement {
     repositories {
         maven(url = "https://dl.bintray.com/kotlin/kotlin-eap/")
         gradlePluginPortal()
-        jcenter()
         google()
     }
 
@@ -34,7 +33,7 @@ pluginManagement {
         eachPlugin {
             when (requested.id.id) {
                 "dagger.hilt.android.plugin" ->
-                    useModule("com.google.dagger:hilt-android-gradle-plugin:2.28-alpha:${requested.version}")
+                    useModule("com.google.dagger:hilt-android-gradle-plugin:${requested.version}")
             }
         }
     }
