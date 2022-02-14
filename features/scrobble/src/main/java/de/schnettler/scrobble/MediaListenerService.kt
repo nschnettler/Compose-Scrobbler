@@ -2,16 +2,17 @@ package de.schnettler.scrobble
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.media.session.MediaController
 import android.media.session.MediaSession
 import android.media.session.MediaSessionManager
 import android.media.session.MediaSessionManager.OnActiveSessionsChangedListener
+import android.os.IBinder
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,7 +34,12 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
     override fun onCreate() {
         super.onCreate()
 
-        // 1. Listen for allowed Sources Preference
+        // 1. Register ActiveSessionChanged Listener
+        manager = application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
+        componentName = ComponentName(this, this.javaClass)
+        manager.addOnActiveSessionsChangedListener(this, componentName)
+
+        // 2. Listen for allowed Sources Preference
         lifecycleScope.launch {
             dataStoreManager.getPreferenceFlow(PreferenceRequestStore.scrobbleSources).collect { sources ->
                 allowedPackages = sources
@@ -41,11 +47,6 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
                 onActiveSessionsChanged(manager.getActiveSessions(componentName))
             }
         }
-
-        // 2. Register ActiveSessionChanged Listener
-        manager = application.getSystemService(Context.MEDIA_SESSION_SERVICE) as MediaSessionManager
-        componentName = ComponentName(this, this.javaClass)
-        manager.addOnActiveSessionsChangedListener(this, componentName)
 
         // 3. Start with currently active Sessions
         onActiveSessionsChanged(manager.getActiveSessions(componentName))
@@ -84,5 +85,9 @@ class MediaListenerService : LifecycleNotificationListenerService(), OnActiveSes
                 onPlaybackStateChanged(controller.playbackState)
             }
         }
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return super.onBind(intent)
     }
 }
