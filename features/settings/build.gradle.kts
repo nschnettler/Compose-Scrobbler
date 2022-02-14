@@ -28,9 +28,10 @@ dependencies {
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
     implementation(project(":libraries:persistence"))
 
-    implementation("com.github.Sh4dowSoul.ComposePreferences:compose-preferences:_")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:preferences-material3:_")
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material.icons.extended)
 }

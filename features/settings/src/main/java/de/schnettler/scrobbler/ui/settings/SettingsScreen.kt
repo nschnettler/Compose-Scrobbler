@@ -11,6 +11,7 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.SettingsOverscan
 import androidx.compose.material.icons.outlined.Speaker
 import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateMapOf
@@ -20,14 +21,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import de.schnettler.datastore.compose.model.Preference.PreferenceGroup
-import de.schnettler.datastore.compose.model.Preference.PreferenceItem.ListPreference
-import de.schnettler.datastore.compose.model.Preference.PreferenceItem.MultiSelectListPreference
-import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SeekBarPreference
-import de.schnettler.datastore.compose.model.Preference.PreferenceItem.SwitchPreference
-import de.schnettler.datastore.compose.model.Preference.PreferenceItem.TextPreference
-import de.schnettler.datastore.compose.model.PreferenceIcon
-import de.schnettler.datastore.compose.ui.PreferenceScreen
+import de.schnettler.datastore.compose.material3.PreferenceScreen
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceGroup
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceItem.ListPreference
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceItem.MultiSelectListPreference
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceItem.SeekBarPreference
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceItem.SwitchPreference
+import de.schnettler.datastore.compose.material3.model.Preference.PreferenceItem.TextPreference
+import de.schnettler.datastore.compose.material3.widget.PreferenceIcon
 import de.schnettler.datastore.manager.DataStoreManager
 import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.persistence.PreferenceRequestStore
@@ -38,7 +39,7 @@ import de.schnettler.scrobbler.ui.settings.ktx.getMediaBrowserServices
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Suppress("LongMethod")
 @Composable
 fun SettingsScreen(

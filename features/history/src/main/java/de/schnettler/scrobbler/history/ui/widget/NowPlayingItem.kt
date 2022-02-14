@@ -22,7 +22,7 @@ import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 fun NowPlayingItem(name: String, artist: String, onClick: () -> Unit) {
     Card(modifier = Modifier.padding(16.dp)) {
         MaterialListItem(
-            text = { Text(name) },
+            text = { Text(name, maxLines = 1) },
             secondaryText = { Text(artist) },
             icon = {
                 PlainListIconBackground {
