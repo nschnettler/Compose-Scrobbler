@@ -87,9 +87,9 @@ fun MaterialListItem(
 ) {
     val typography = MaterialTheme.typography
 
-    val styledText = applyTextStyle(typography.titleSmall, ContentAlpha.high, text)!!
+    val styledText = applyTextStyle(typography.titleMedium, ContentAlpha.high, text)!!
     val styledSecondaryText = applyTextStyle(typography.bodyMedium, ContentAlpha.medium, secondaryText)
-    val styledOverlineText = applyTextStyle(typography.bodySmall, ContentAlpha.high, overlineText)
+    val styledOverlineText = applyTextStyle(typography.labelSmall, ContentAlpha.high, overlineText)
     val styledTrailing = applyTextStyle(typography.bodySmall, ContentAlpha.high, trailing)
 
     val semanticsModifier = modifier.semantics(mergeDescendants = true) {}

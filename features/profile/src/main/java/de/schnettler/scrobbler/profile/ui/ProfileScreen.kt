@@ -277,10 +277,11 @@ private fun PeriodSelectDialog(
             Column {
                 radioGroupOptions.forEach { current ->
                     Row(
-                        Modifier
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier= Modifier
                             .fillMaxWidth()
                             .selectable(selected = (current == selected), onClick = { selected = current })
-                            .padding(16.dp)
+                            .padding(4.dp)
                     ) {
                         RadioButton(
                             selected = (current == selected),

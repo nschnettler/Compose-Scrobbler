@@ -1,18 +1,16 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
 package de.schnettler.scrobbler.details.ui.widget
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -25,18 +23,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.details.R
 
 @Composable
 fun ExpandingInfoCard(info: String?) {
     if (!info.isNullOrBlank()) {
-        Card(
+        OutlinedCard(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxSize(),
-            elevation = CardDefaults.outlinedCardElevation(),
-            border = BorderStroke(1.dp, AppColor.Divider)
         ) {
             ExpandingSummary(info, modifier = Modifier.padding(16.dp))
         }
