@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         minSdk = 24
@@ -42,7 +42,7 @@ dependencies {
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.ui.tooling)
     implementation(Google.Accompanist.insets)
-   implementation("io.coil-kt:coil-compose:_")
+    implementation(COIL.compose)
 
     // AndroidX
     implementation(AndroidX.room.common)
@@ -52,7 +52,7 @@ dependencies {
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.Moshi.kotlinCodegen)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository
@@ -67,5 +67,5 @@ dependencies {
 
     // Other
     implementation(JakeWharton.timber)
-    coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
+    coreLibraryDesugaring(Android.tools.desugarJdkLibs)
 }

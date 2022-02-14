@@ -1,11 +1,10 @@
 package de.schnettler.scrobbler.history.domain
 
-import androidx.annotation.StringRes
 import de.schnettler.scrobbler.core.map.Mapper
 import de.schnettler.scrobbler.history.R
 import javax.inject.Inject
 
-class RejectionCodeToReasonMapper @Inject constructor() : Mapper<Long, @StringRes Int> {
+class RejectionCodeToReasonMapper @Inject constructor() : Mapper<Long, Int> {
     override suspend fun map(from: Long) = when (from) {
         1L -> R.string.rejectionArtist
         2L -> R.string.rejectionTrack

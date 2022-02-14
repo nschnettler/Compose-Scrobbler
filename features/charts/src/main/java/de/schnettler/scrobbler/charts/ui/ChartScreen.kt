@@ -87,7 +87,7 @@ private fun ChartList(
     modifier: Modifier = Modifier,
 ) = LazyColumn(modifier) {
 
-    itemsIndexed(lazyPagingItems = chartData) { index, entry ->
+    itemsIndexed(items = chartData) { index, entry ->
         when (entry) {
             is TopListArtist -> ChartArtistListItem(
                 name = entry.value.name,

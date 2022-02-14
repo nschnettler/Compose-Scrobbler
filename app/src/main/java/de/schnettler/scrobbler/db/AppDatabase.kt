@@ -34,7 +34,7 @@ import de.schnettler.scrobbler.profile.db.UserDao
 import de.schnettler.scrobbler.submission.db.SubmissionFailureDao
 import de.schnettler.scrobbler.submission.domain.SubmissionDao
 import de.schnettler.scrobbler.submission.model.SubmissionFailureEntity
-import dev.matrix.roomigrant.GenerateRoomMigrations
+//import dev.matrix.roomigrant.GenerateRoomMigrations
 
 @Database(
     entities = [
@@ -54,7 +54,7 @@ import dev.matrix.roomigrant.GenerateRoomMigrations
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)
-@GenerateRoomMigrations
+//@GenerateRoomMigrations
 abstract class AppDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
     abstract fun trackDao(): TrackDao
@@ -81,5 +81,5 @@ abstract class AppDatabase : RoomDatabase() {
 @Suppress("SpreadOperator")
 fun getDatabase(context: Context) = Room
     .databaseBuilder(context, AppDatabase::class.java, "lastfm")
-    .addMigrations(*AppDatabase_Migrations.build())
+//    .addMigrations(*AppDatabase_Migrations.build())
     .build()

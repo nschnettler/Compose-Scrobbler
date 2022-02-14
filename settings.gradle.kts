@@ -24,7 +24,7 @@ rootProject.name = "Scrobbler"
 
 pluginManagement {
     repositories {
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap/")
+        mavenCentral()
         gradlePluginPortal()
         google()
     }
@@ -40,7 +40,7 @@ pluginManagement {
 }
 
 plugins {
-    id("de.fayard.refreshVersions") version "0.10.1"
+    id("de.fayard.refreshVersions") version "0.40.1"
 }
 
 buildscript {

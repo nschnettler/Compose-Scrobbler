@@ -1,5 +1,5 @@
 plugins {
-    kotlin("android") version "1.4.30" apply false
+    kotlin("android") version "1.6.10" apply false
 }
 
 buildscript {
@@ -17,7 +17,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }

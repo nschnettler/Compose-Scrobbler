@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "de.schnettler.scrobbler"
@@ -121,8 +121,8 @@ dependencies {
     implementation(AndroidX.room.ktx)
     implementation(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
-    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
-    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
+//    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.3.4")
+//    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.3.4")
 
     // Dagger
     implementation(Google.dagger.hilt.android)
@@ -131,6 +131,7 @@ dependencies {
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation(JakeWharton.timber)
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // Android Test
     androidTestImplementation(Testing.junit4)

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 31
 
     defaultConfig {
         minSdk = 24
@@ -30,22 +30,22 @@ dependencies {
 
     // AndroidX
     implementation(AndroidX.core.ktx)
-    implementation(AndroidX.paletteKtx)
+    implementation(AndroidX.palette.ktx)
 
     // Compose
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.ui.tooling)
     implementation(AndroidX.navigation.compose)
-    implementation(AndroidX.constraintLayoutCompose)
+    implementation(AndroidX.constraintLayout.compose)
     implementation(Google.accompanist.insets)
     implementation(Google.accompanist.pager)
     implementation(Google.accompanist.flowlayout)
     implementation(Google.accompanist.swiperefresh)
     implementation(Google.accompanist.insets.ui)
-    implementation("com.google.accompanist", "accompanist-pager-indicators", "_")
+    implementation(Google.accompanist.pager.indicators)
 
     // Other
     implementation(JakeWharton.timber)
-    implementation("io.coil-kt", "coil-compose", "_")
+    implementation(COIL.compose)
 }
