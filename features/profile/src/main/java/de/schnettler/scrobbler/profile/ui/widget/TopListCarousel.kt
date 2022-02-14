@@ -2,10 +2,10 @@ package de.schnettler.scrobbler.profile.ui.widget
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -35,7 +35,7 @@ fun <T : Toplist> TopListCarousel(
         action = {
             TextButton(
                 onClick = { },
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
             ) {
                 Text(text = stringResource(id = R.string.header_more))
             }

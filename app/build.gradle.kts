@@ -103,7 +103,7 @@ dependencies {
 
     // Compose
     implementation(AndroidX.appCompat)
-    implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.navigation.compose)
     implementation(AndroidX.activity.compose)
     implementation(AndroidX.hilt.navigationCompose)

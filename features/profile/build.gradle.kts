@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":libraries:authentication"))
 
     // Compose
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.ui.tooling)

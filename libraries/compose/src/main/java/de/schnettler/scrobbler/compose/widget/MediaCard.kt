@@ -1,18 +1,22 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package de.schnettler.scrobbler.compose.widget
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -49,16 +53,16 @@ fun MediaCard(
 ) {
     Card(modifier = modifier) {
         Box(
-            modifier = Modifier.clickable(onClick = onSelect),
+            modifier = Modifier.clickable(onClick = onSelect).fillMaxSize(),
             contentAlignment = Alignment.BottomEnd
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = name,
                     style = when (name.length) {
-                        in 10..20 -> MaterialTheme.typography.h5
-                        in 20..Int.MAX_VALUE -> MaterialTheme.typography.h6
-                        else -> MaterialTheme.typography.h4
+                        in 10..20 -> MaterialTheme.typography.headlineMedium
+                        in 20..Int.MAX_VALUE -> MaterialTheme.typography.headlineSmall
+                        else -> MaterialTheme.typography.headlineLarge
                     },
                     modifier = Modifier
                         .padding(16.dp)
@@ -69,7 +73,7 @@ fun MediaCard(
             }
 
             val defaultBackground = AppColor.BackgroundElevated
-            val defaultOn = MaterialTheme.colors.onBackground
+            val defaultOn = MaterialTheme.colorScheme.onBackground
             var colors by remember {
                 mutableStateOf(DominantColors(defaultBackground, defaultOn))
             }
@@ -114,7 +118,7 @@ private fun InfoChip(
                 val (name, stat, spacer) = createRefs()
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.constrainAs(name) {
@@ -125,7 +129,7 @@ private fun InfoChip(
                 )
 
                 Text(text = " • ",
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.constrainAs(spacer) {
                         width = Dimension.wrapContent
                         end.linkTo(stat.start)
@@ -134,7 +138,7 @@ private fun InfoChip(
 
                 Text(
                     text = plays.abbreviate(),
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.constrainAs(stat) {
                         width = Dimension.wrapContent
                         end.linkTo(parent.end)
