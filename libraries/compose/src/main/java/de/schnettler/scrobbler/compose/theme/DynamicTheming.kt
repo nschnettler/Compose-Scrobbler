@@ -11,23 +11,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
-import coil.Coil
+import coil.imageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import coil.size.Scale.FILL
+import coil.size.Scale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @Composable
-fun rememberDominantColorCache(
+fun rememberDominantColorState(
     context: Context = LocalContext.current,
-    defaultColor: Color = MaterialTheme.colors.primary,
-    defaultOnColor: Color = MaterialTheme.colors.onPrimary,
+    defaultColor: Color = AppColor.BackgroundElevated,
+    defaultOnColor: Color = MaterialTheme.colors.onBackground,
     cacheSize: Int = 12,
     isColorValid: (Color) -> Boolean = { true }
-): DominantColorCache = remember {
-    DominantColorCache(context, defaultColor, defaultOnColor, cacheSize, isColorValid)
+): DominantColorState = remember {
+    DominantColorState(context, defaultColor, defaultOnColor, cacheSize, isColorValid)
 }
 
 @Immutable
@@ -46,7 +45,7 @@ data class DominantColors(val color: Color, val onColor: Color)
  * @param isColorValid A lambda which allows filtering of the calculated image colors.
  */
 @Stable
-class DominantColorCache(
+class DominantColorState(
     private val context: Context,
     private val defaultColor: Color,
     private val defaultOnColor: Color,
@@ -65,11 +64,8 @@ class DominantColorCache(
         val cached = cache?.get(url)
         if (cached != null) {
             // If we already have the result cached, return early now...
-            Timber.d("DominantColor - Used cache")
             return cached
         }
-
-        Timber.d("DominantColor - Calculated")
 
         // Otherwise we calculate the swatches in the image, and return the first valid color
         return calculateSwatchesInImage(context, url)
@@ -90,21 +86,23 @@ class DominantColorCache(
 }
 
 /**
- * Fetches the given [imageUrl] with [Coil], then uses [Palette] to calculate the dominant color.
+ * Fetches the given [imageUrl] with Coil, then uses [Palette] to calculate the dominant color.
  */
 private suspend fun calculateSwatchesInImage(
     context: Context,
     imageUrl: String
 ): List<Palette.Swatch> {
-    val r = ImageRequest.Builder(context)
+    val request = ImageRequest.Builder(context)
         .data(imageUrl)
         // We scale the image to cover 128px x 128px (i.e. min dimension == 128px)
-        .size(128).scale(FILL)
+        .size(128).scale(Scale.FILL)
         // Disable hardware bitmaps, since Palette uses Bitmap.getPixels()
         .allowHardware(false)
+        // Set a custom memory cache key to avoid overwriting the displayed image in the cache
+        .memoryCacheKey("$imageUrl.palette")
         .build()
 
-    val bitmap = when (val result = Coil.execute(r)) {
+    val bitmap = when (val result = context.imageLoader.execute(request)) {
         is SuccessResult -> result.drawable.toBitmap()
         else -> null
     }

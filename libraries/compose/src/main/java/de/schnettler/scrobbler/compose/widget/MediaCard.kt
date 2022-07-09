@@ -2,7 +2,6 @@
 
 package de.schnettler.scrobbler.compose.widget
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,20 +34,19 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.rememberImagePainter
 import de.schnettler.scrobbler.compose.theme.AppColor
-import de.schnettler.scrobbler.compose.theme.DominantColorCache
+import de.schnettler.scrobbler.compose.theme.DominantColorState
 import de.schnettler.scrobbler.compose.theme.DominantColors
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.core.ktx.abbreviate
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaCard(
     name: String,
     modifier: Modifier = Modifier,
     plays: Long = -1,
     imageUrl: String? = null,
-    colorCache: DominantColorCache = rememberDominantColorCache(),
+    colorState: DominantColorState = rememberDominantColorState(),
     onSelect: () -> Unit,
 ) {
     Card(modifier = modifier) {
@@ -86,7 +84,7 @@ fun MediaCard(
                     modifier = Modifier.matchParentSize(),
                 )
                 LaunchedEffect(imageUrl) {
-                    colors = colorCache.getColorsFromImageUrl(imageUrl)
+                    colors = colorState.getColorsFromImageUrl(imageUrl)
                 }
             }
 

@@ -17,9 +17,9 @@ import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
-import de.schnettler.scrobbler.compose.theme.DominantColorCache
+import de.schnettler.scrobbler.compose.theme.DominantColorState
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.ChipFlowRow
 import de.schnettler.scrobbler.compose.widget.CollapsingToolbar
@@ -41,20 +41,20 @@ fun ArtistDetailScreen(
     info: ArtistDetailEntity,
     actioner: (UIAction) -> Unit
 ) {
-    val colorCache = rememberDominantColorCache()
+    val colorState = rememberDominantColorState()
     CollapsingToolbar(
         imageUrl = info.artist.imageUrl,
         title = info.artist.name,
         actioner = actioner,
         menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url))
     ) {
-        detailItems(artistInfo = info, dominantColorCache = colorCache, actioner = actioner)
+        detailItems(artistInfo = info, dominantColorState = colorState, actioner = actioner)
     }
 }
 
 private fun LazyListScope.detailItems(
     artistInfo: ArtistDetailEntity,
-    dominantColorCache: DominantColorCache,
+    dominantColorState: DominantColorState,
     actioner: (UIAction) -> Unit
 ) {
     val (_, stats, info) = artistInfo
@@ -94,7 +94,7 @@ private fun LazyListScope.detailItems(
                 plays = stats.plays,
                 imageUrl = album.imageUrl,
                 modifier = Modifier.size(256.dp),
-                colorCache = dominantColorCache
+                colorState = dominantColorState
             ) { actioner(ListingSelected(album)) }
         }
     }
@@ -108,7 +108,7 @@ private fun LazyListScope.detailItems(
                 name = artist.name,
                 imageUrl = artist.imageUrl,
                 modifier = Modifier.size(180.dp),
-                colorCache = dominantColorCache
+                colorState = dominantColorState
             ) {
                 actioner(ListingSelected(artist))
             }

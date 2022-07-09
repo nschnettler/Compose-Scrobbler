@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.navigation.UIAction
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.model.Toplist
@@ -26,7 +26,7 @@ fun <T : Toplist> TopListCarousel(
     itemSize: Dp = 160.dp,
     actionHandler: (UIAction) -> Unit,
 ) {
-    val colorCache = rememberDominantColorCache()
+    val colorState = rememberDominantColorState()
 
     Carousel(
         items = topList,
@@ -46,7 +46,7 @@ fun <T : Toplist> TopListCarousel(
             modifier = Modifier.size(itemSize),
             imageUrl = toplist.value.imageUrl,
             plays = toplist.listing.count,
-            colorCache = colorCache
+            colorState = colorState
         ) { actionHandler(UIAction.ListingSelected(toplist.value)) }
     }
 }
