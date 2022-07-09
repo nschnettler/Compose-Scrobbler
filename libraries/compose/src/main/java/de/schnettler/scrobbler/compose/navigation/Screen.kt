@@ -38,7 +38,7 @@ sealed class Screen(
     object ArtistDetails :
         Screen(
             routeId = "artist",
-            args = listOf(NavArgument("artistName")),
+            args = listOf(NavArgument("artistName"), NavArgument("spotifyId")),
             titleId = R.string.nav_history,
             icon = Outlined.AccountCircle
         )

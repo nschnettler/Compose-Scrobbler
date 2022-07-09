@@ -71,7 +71,7 @@ fun MainRouteContent(
         destination(Screen.ArtistDetails) { args ->
             val viewModel: ArtistViewModel = hiltViewModel()
             args.firstOrNull()?.let {
-                viewModel.updateKey(LastFmEntity.Artist(it))
+                viewModel.updateKey(LastFmEntity.Artist(it, spotifyId = args.secondOrNull()))
                 DetailScreen(viewModel = viewModel, actioner = actioner, errorer = errorer)
             }
         }

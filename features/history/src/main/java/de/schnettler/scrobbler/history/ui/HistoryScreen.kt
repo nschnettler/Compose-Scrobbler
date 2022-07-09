@@ -47,8 +47,8 @@ import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.FullScreenError
 import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.core.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.R
-import de.schnettler.scrobbler.history.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.model.HistoryError
 import de.schnettler.scrobbler.history.model.ScrobbleAction
 import de.schnettler.scrobbler.history.model.ScrobbleAction.DELETE

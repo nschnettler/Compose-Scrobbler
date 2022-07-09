@@ -50,7 +50,8 @@ sealed class LastFmEntity(
         override val name: String,
         override val url: String = "",
         @PrimaryKey override val id: String = generateId(name),
-        override val imageUrl: String? = null
+        override val imageUrl: String? = null,
+        val spotifyId: String? = null
     ) : LastFmEntity(id, name, url, imageUrl) {
         companion object {
             fun generateId(name: String) = "artist_${name.lowercase()}"

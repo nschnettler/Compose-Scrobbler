@@ -50,7 +50,7 @@ import de.schnettler.scrobbler.submission.model.SubmissionFailureEntity
         Stats::class,
         EntityInfo::class,
         SubmissionFailureEntity::class
-    ], version = 55
+    ], version = 56
 )
 @Suppress("TooManyFunctions")
 @TypeConverters(TypeConverter::class)

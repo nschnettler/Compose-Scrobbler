@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                     onListingClicked = {
                         navController.navigate(
                             when (it) {
-                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArgs(listOf(it.name, it.spotifyId.orEmpty()))
                                 is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
                                 is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
                             }

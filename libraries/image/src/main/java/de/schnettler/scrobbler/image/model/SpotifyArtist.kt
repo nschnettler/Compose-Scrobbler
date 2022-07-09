@@ -4,7 +4,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class SpotifyArtist(
-    val images: List<SpotifyImageDto>,
-    val popularity: Long,
+    val id: String,
     val name: String,
+    val popularity: Long,
+    val images: List<SpotifyImageDto>,
 )
