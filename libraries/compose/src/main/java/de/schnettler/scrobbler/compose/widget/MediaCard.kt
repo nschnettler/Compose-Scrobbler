@@ -1,18 +1,20 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package de.schnettler.scrobbler.compose.widget
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -24,41 +26,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.theme.AppColor
-import de.schnettler.scrobbler.compose.theme.DominantColorCache
+import de.schnettler.scrobbler.compose.theme.DominantColorState
 import de.schnettler.scrobbler.compose.theme.DominantColors
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.core.ktx.abbreviate
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaCard(
     name: String,
     modifier: Modifier = Modifier,
     plays: Long = -1,
     imageUrl: String? = null,
-    colorCache: DominantColorCache = rememberDominantColorCache(),
+    colorState: DominantColorState = rememberDominantColorState(),
     onSelect: () -> Unit,
 ) {
     Card(modifier = modifier) {
         Box(
-            modifier = Modifier.clickable(onClick = onSelect),
+            modifier = Modifier.clickable(onClick = onSelect).fillMaxSize(),
             contentAlignment = Alignment.BottomEnd
         ) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
                 Text(
                     text = name,
                     style = when (name.length) {
-                        in 10..20 -> MaterialTheme.typography.h5
-                        in 20..Int.MAX_VALUE -> MaterialTheme.typography.h6
-                        else -> MaterialTheme.typography.h4
+                        in 10..20 -> MaterialTheme.typography.headlineMedium
+                        in 20..Int.MAX_VALUE -> MaterialTheme.typography.headlineSmall
+                        else -> MaterialTheme.typography.headlineLarge
                     },
                     modifier = Modifier
                         .padding(16.dp)
@@ -69,20 +72,20 @@ fun MediaCard(
             }
 
             val defaultBackground = AppColor.BackgroundElevated
-            val defaultOn = MaterialTheme.colors.onBackground
+            val defaultOn = MaterialTheme.colorScheme.onBackground
             var colors by remember {
                 mutableStateOf(DominantColors(defaultBackground, defaultOn))
             }
 
             imageUrl?.let {
-                Image(
-                    painter = rememberCoilPainter(request = it, fadeIn = true),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(it).crossfade(true).build(),
                     contentDescription = "Picture of $name",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize(),
                 )
                 LaunchedEffect(imageUrl) {
-                    colors = colorCache.getColorsFromImageUrl(imageUrl)
+                    colors = colorState.getColorsFromImageUrl(imageUrl)
                 }
             }
 
@@ -114,7 +117,7 @@ private fun InfoChip(
                 val (name, stat, spacer) = createRefs()
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.constrainAs(name) {
@@ -125,7 +128,7 @@ private fun InfoChip(
                 )
 
                 Text(text = " • ",
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.constrainAs(spacer) {
                         width = Dimension.wrapContent
                         end.linkTo(stat.start)
@@ -134,7 +137,7 @@ private fun InfoChip(
 
                 Text(
                     text = plays.abbreviate(),
-                    style = MaterialTheme.typography.caption,
+                    style = MaterialTheme.typography.labelMedium,
                     modifier = Modifier.constrainAs(stat) {
                         width = Dimension.wrapContent
                         end.linkTo(parent.end)

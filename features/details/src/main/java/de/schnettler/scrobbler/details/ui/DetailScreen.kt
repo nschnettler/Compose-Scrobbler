@@ -1,27 +1,28 @@
 package de.schnettler.scrobbler.details.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.widget.Header
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.core.ui.viewmodel.RefreshableStateViewModel2
 import de.schnettler.scrobbler.details.R
 import de.schnettler.scrobbler.details.model.AlbumDetailEntity
@@ -64,7 +65,7 @@ fun AlbumCategory(
     actionHandler: (UIAction) -> Unit
 ) {
     Header(title = stringResource(id = R.string.track_sourcealbum))
-    ListItem(
+    MaterialListItem(
         text = {
             Text(album?.name ?: stringResource(id = R.string.track_unknownalbum))
         },
@@ -77,8 +78,11 @@ fun AlbumCategory(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Box(modifier = Modifier.size(60.dp)) {
-                    Image(
-                        painter = rememberCoilPainter(request = album?.imageUrl, fadeIn = true),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(album?.imageUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )

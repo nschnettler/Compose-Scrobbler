@@ -21,27 +21,28 @@ include(":libraries:resources")
 include(":app")
 
 rootProject.name = "Scrobbler"
+enableFeaturePreview("VERSION_CATALOGS")
 
 pluginManagement {
     repositories {
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap/")
+        mavenCentral()
         gradlePluginPortal()
-        jcenter()
         google()
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
 
     resolutionStrategy {
         eachPlugin {
             when (requested.id.id) {
                 "dagger.hilt.android.plugin" ->
-                    useModule("com.google.dagger:hilt-android-gradle-plugin:2.28-alpha:${requested.version}")
+                    useModule("com.google.dagger:hilt-android-gradle-plugin:${requested.version}")
             }
         }
     }
 }
 
 plugins {
-    id("de.fayard.refreshVersions") version "0.10.0"
+    id("de.fayard.refreshVersions") version "0.41.0-SNAPSHOT"
 }
 
 buildscript {

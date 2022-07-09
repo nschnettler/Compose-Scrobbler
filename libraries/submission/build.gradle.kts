@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -23,15 +23,16 @@ dependencies {
     implementation(project(":libraries:network:common"))
     implementation(project(":libraries:network:lastfm"))
     implementation(project(":libraries:persistence"))
+    implementation(project(":libraries:core"))
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.moshi.kotlinCodegen)
+    kapt(Square.moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository
     implementation("com.dropbox.mobile.store", "store4", "_")
-    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // AndroidX
     implementation(AndroidX.work.runtimeKtx)

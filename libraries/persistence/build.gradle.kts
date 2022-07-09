@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -18,7 +18,7 @@ android {
 }
 
 dependencies {
-    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // Libraries
     implementation(project(":libraries:model"))

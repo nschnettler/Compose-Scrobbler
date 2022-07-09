@@ -1,18 +1,19 @@
 package de.schnettler.scrobbler.details.ui.album
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.insets.navigationBarsHeight
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -21,6 +22,7 @@ import de.schnettler.scrobbler.compose.widget.ChipRow
 import de.schnettler.scrobbler.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.compose.widget.Header
 import de.schnettler.scrobbler.compose.widget.IndexListIconBackground
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.asMinSec
 import de.schnettler.scrobbler.core.ktx.fromHtmlLastFm
@@ -30,7 +32,6 @@ import de.schnettler.scrobbler.details.model.AlbumDetailEntity
 import de.schnettler.scrobbler.details.ui.widget.ExpandingInfoCard
 import de.schnettler.scrobbler.details.ui.widget.ListeningStats
 import de.schnettler.scrobbler.model.LastFmEntity
-import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -45,7 +46,8 @@ fun AlbumDetailScreen(
         title = album.name,
         imageUrl = album.imageUrl,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(album.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(album.url)),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
         // Album Info
         item {
@@ -79,7 +81,7 @@ fun AlbumDetailScreen(
             itemSpacer(16.dp)
             item { Header(title = "Tracks") }
             itemsIndexed(tracks) { index, (track, info) ->
-                ListItem(
+                MaterialListItem(
                     text = { Text(track.name) },
                     secondaryText = { Text(text = info.duration.asMinSec()) },
                     icon = { IndexListIconBackground(index = index) },
@@ -87,8 +89,6 @@ fun AlbumDetailScreen(
                 )
             }
         }
-
-        item { Spacer(modifier = Modifier.navigationBarsHeight(16.dp)) }
     }
 }
 
@@ -100,18 +100,18 @@ private fun ArtistItem(
     albumLength: Duration,
     actionHandler: (UIAction) -> Unit
 ) {
-    ListItem(
+    MaterialListItem(
         text = { Text(text = artist.name) },
         secondaryText = {
             Text(
                 text = "$trackNumber ${stringResource(id = R.string.albumdetails_tracks)} ⦁ " +
-                        "${albumLength.inMinutes.roundToInt()} ${stringResource(id = R.string.albumdetails_minutes)}"
+                        "${albumLength.inWholeMinutes} ${stringResource(id = R.string.albumdetails_minutes)}"
             )
         },
         icon = {
             PlainListIconBackground {
-                Image(
-                    painter = rememberCoilPainter(request = artist.imageUrl, fadeIn = true),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(artist.imageUrl).crossfade(true).build(),
                     contentDescription = "Artist picture",
                 )
             }

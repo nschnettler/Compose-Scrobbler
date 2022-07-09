@@ -1,5 +1,5 @@
 plugins {
-    kotlin("android") version "1.4.30" apply false
+    kotlin("android") apply false
 }
 
 buildscript {
@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha15")
+        classpath(libs.com.android.tools.build.gradle)
         classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
@@ -17,7 +17,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots") }
     }

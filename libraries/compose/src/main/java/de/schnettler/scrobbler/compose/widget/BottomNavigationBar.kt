@@ -1,38 +1,42 @@
 package de.schnettler.scrobbler.compose.widget
 
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.google.accompanist.insets.navigationBarsPadding
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import de.schnettler.scrobbler.compose.navigation.Screen
 
 @Composable
 fun BottomNavigationBar(
     screens: List<Screen>,
-    currentRoute: String?,
+    currentDestination: NavDestination?,
     onClicked: (Screen) -> Unit
 ) {
-    CustomBottomNavigation(
-        backgroundColor = MaterialTheme.colors.surface, modifier = Modifier
-            .navigationBarsPadding()
+    NavigationBar(
+        contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
         screens.forEach { screen ->
-            BottomNavigationItem(
+            NavigationBarItem(
                 icon = { Icon(screen.icon, null) },
                 label = {
                     Text(text = stringResource(id = screen.titleId), maxLines = 1, overflow = TextOverflow.Ellipsis)
                 },
-                selected = currentRoute == screen.routeId,
+                selected = currentDestination?.hierarchy?.any { it.route == screen.routeId } == true,
                 onClick = {
-                    if (currentRoute == screen.routeId) return@BottomNavigationItem
+                    if (destinationIsCurrentScreen(currentDestination, screen)) return@NavigationBarItem
                     onClicked(screen)
                 }
             )
         }
     }
 }
+
+private fun destinationIsCurrentScreen(destination: NavDestination?, screen: Screen) =
+    destination?.hierarchy?.first()?.route == screen.routeId

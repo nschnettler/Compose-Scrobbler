@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -19,7 +19,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 }
 
@@ -28,9 +28,10 @@ dependencies {
     implementation(project(":libraries:compose")) // Only needed for MediaCardSize enum
     implementation(project(":libraries:persistence"))
 
-    implementation("com.github.Sh4dowSoul.ComposePreferences:compose-preferences:develop-SNAPSHOT")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:preferences-material3:_")
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material.icons.extended)
 }

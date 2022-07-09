@@ -20,7 +20,7 @@ class ProfileViewModelImpl @Inject constructor(
     private val userRepo: UserRepository,
     dataStoreManager: DataStoreManager
 ) : ProfileViewModel() {
-    override val timePeriod = MutableStateFlow(UITimePeriod.OVERALL)
+    override val timePeriod = MutableStateFlow(UITimePeriod.WEEK)
     override val showFilterDialog: MutableStateFlow<Boolean> = MutableStateFlow(false)
     override val mediaCardSize = dataStoreManager.getPreferenceFlow(PreferenceRequestStore.mediaCardSize).map {
         try {

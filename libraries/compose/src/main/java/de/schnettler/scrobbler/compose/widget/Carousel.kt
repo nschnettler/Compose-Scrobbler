@@ -24,6 +24,7 @@ fun <T> Carousel(
     itemSpacing: Dp = 8.dp,
     verticalGravity: Alignment.Vertical = Alignment.Top,
     action: @Composable () -> Unit = { },
+    itemKeyFactory: ((T) -> String)? = null,
     itemContent: @Composable LazyItemScope.(T) -> Unit
 ) {
     titleRes?.let {
@@ -41,7 +42,7 @@ fun <T> Carousel(
         contentPadding = contentPadding,
         verticalAlignment = verticalGravity
     ) {
-        items(items = items ?: emptyList()) { item ->
+        items(items = items ?: emptyList(), key = itemKeyFactory) { item ->
             itemContent(item)
         }
     }

@@ -1,30 +1,31 @@
 package de.schnettler.scrobbler.details.ui.artist
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ListItem
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
-import de.schnettler.scrobbler.compose.theme.DominantColorCache
+import de.schnettler.scrobbler.compose.theme.DominantColorState
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.ChipFlowRow
 import de.schnettler.scrobbler.compose.widget.CollapsingToolbar
 import de.schnettler.scrobbler.compose.widget.Header
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.core.ktx.abbreviate
@@ -41,20 +42,21 @@ fun ArtistDetailScreen(
     info: ArtistDetailEntity,
     actioner: (UIAction) -> Unit
 ) {
-    val colorCache = rememberDominantColorCache()
+    val colorState = rememberDominantColorState()
     CollapsingToolbar(
         imageUrl = info.artist.imageUrl,
         title = info.artist.name,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url)),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
-        detailItems(artistInfo = info, dominantColorCache = colorCache, actioner = actioner)
+        detailItems(artistInfo = info, dominantColorState = colorState, actioner = actioner)
     }
 }
 
 private fun LazyListScope.detailItems(
     artistInfo: ArtistDetailEntity,
-    dominantColorCache: DominantColorCache,
+    dominantColorState: DominantColorState,
     actioner: (UIAction) -> Unit
 ) {
     val (_, stats, info) = artistInfo
@@ -94,7 +96,7 @@ private fun LazyListScope.detailItems(
                 plays = stats.plays,
                 imageUrl = album.imageUrl,
                 modifier = Modifier.size(256.dp),
-                colorCache = dominantColorCache
+                colorState = dominantColorState
             ) { actioner(ListingSelected(album)) }
         }
     }
@@ -108,22 +110,20 @@ private fun LazyListScope.detailItems(
                 name = artist.name,
                 imageUrl = artist.imageUrl,
                 modifier = Modifier.size(180.dp),
-                colorCache = dominantColorCache
+                colorState = dominantColorState
             ) {
                 actioner(ListingSelected(artist))
             }
         }
     }
 
-    item {
-        Spacer(modifier = Modifier.navigationBarsHeight(16.dp))
-    }
+    itemSpacer(16.dp)
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TrackItem(index: Int, track: TrackWithStats, actionHandler: (UIAction) -> Unit) {
-    ListItem(
+    MaterialListItem(
         text = { Text(track.entity.name) },
         secondaryText = {
             Text("${track.stats.listeners.abbreviate()} ${stringResource(id = R.string.track_listeners)}")

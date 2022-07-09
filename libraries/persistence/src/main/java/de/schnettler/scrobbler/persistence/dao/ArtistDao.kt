@@ -9,4 +9,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class ArtistDao : BaseDao<Artist> {
     @Query("SELECT * FROM artists WHERE id = :id")
     abstract fun getArtist(id: String): Flow<Artist?>
+
+    @Query("UPDATE artists SET spotifyId = :spotifyId WHERE id = :id")
+    abstract suspend fun setSpotifyId(id: String, spotifyId: String): Int
 }

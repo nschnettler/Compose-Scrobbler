@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -34,14 +34,15 @@ dependencies {
     implementation(Square.Retrofit2.retrofit)
 
     // Moshi
-    implementation(Square.Moshi.kotlinCodegen)
+    implementation(Square.moshi)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation(Square.Retrofit2.converter.moshi)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Interceptor
     implementation(Square.OkHttp3.loggingInterceptor)
-    debugImplementation("com.github.chuckerteam.chucker", "library", "_")
-    releaseImplementation("com.github.chuckerteam.chucker", "library-no-op", "_")
+    debugImplementation(Chucker.library)
+    releaseImplementation(Chucker.libraryNoOp)
 
     // Hilt
     implementation(Google.dagger.hilt.android)

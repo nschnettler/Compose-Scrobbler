@@ -1,36 +1,39 @@
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+
 package de.schnettler.scrobbler.profile.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.PlayCircleOutline
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -39,14 +42,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.insets.statusBarsHeight
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -54,6 +57,7 @@ import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.theme.ThemedPreview
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.compose.widget.Spacer
 import de.schnettler.scrobbler.compose.widget.StatsRow
@@ -135,8 +139,10 @@ private fun ProfileContent(
 ) {
 
     Box {
-        LazyColumn(modifier = modifier) {
-            item { Spacer(modifier = Modifier.statusBarsHeight()) }
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = WindowInsets.statusBars.asPaddingValues()
+        ) {
             item { user?.let { UserInfo(it) } }
             item {
                 TopListCarousel(
@@ -169,7 +175,6 @@ private fun ProfileContent(
             text = { Text(text = stringResource(id = timePeriod.shortTitleRes)) },
             onClick = onFabClicked,
             icon = { Icon(Icons.Outlined.Event, null) },
-            contentColor = Color.White,
             modifier = modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 16.dp, bottom = 16.dp)
@@ -177,12 +182,11 @@ private fun ProfileContent(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) -> Unit) {
     Column {
         list.forEach { (top, track) ->
-            ListItem(
+            MaterialListItem(
                 text = { Text(track.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 secondaryText = {
                     Text(track.artist)
@@ -190,8 +194,8 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) 
                 icon = {
                     PlainListIconBackground {
                         track.imageUrl?.let {
-                            Image(
-                                painter = rememberCoilPainter(request = it),
+                            AsyncImage(
+                                model = it,
                                 contentDescription = "Album art of track ${track.name} by ${track.artist}",
                             )
                         } ?: Text(text = track.name.firstLetter())
@@ -206,7 +210,7 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) 
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 private fun UserInfo(user: User) {
     Card(
@@ -219,7 +223,7 @@ private fun UserInfo(user: User) {
         }
 
         Column {
-            ListItem(
+            MaterialListItem(
                 text = {
                     Text(text = "${user.name} ${user.countryCode.toFlagEmoji()}")
                 },
@@ -239,8 +243,8 @@ private fun UserInfo(user: User) {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
                         Box(Modifier.size(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
-                                Image(
-                                    painter = rememberCoilPainter(request = user.imageUrl),
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current).data(user.imageUrl).build(),
                                     contentDescription = "Your profile picture",
                                     modifier = Modifier.fillMaxSize()
                                 )
@@ -268,7 +272,7 @@ private fun PeriodSelectDialog(
     onDismiss: () -> Unit,
     initial: UITimePeriod,
 ) {
-    var selected by mutableStateOf(initial)
+    var selected by remember { mutableStateOf(initial) }
     val radioGroupOptions = UITimePeriod.values().asList()
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -277,10 +281,11 @@ private fun PeriodSelectDialog(
             Column {
                 radioGroupOptions.forEach { current ->
                     Row(
-                        Modifier
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier= Modifier
                             .fillMaxWidth()
                             .selectable(selected = (current == selected), onClick = { selected = current })
-                            .padding(16.dp)
+                            .padding(4.dp)
                     ) {
                         RadioButton(
                             selected = (current == selected),
@@ -288,7 +293,7 @@ private fun PeriodSelectDialog(
                         )
                         Text(
                             text = stringResource(id = current.titleRes),
-                            style = MaterialTheme.typography.body1.merge(),
+                            style = MaterialTheme.typography.bodyMedium.merge(),
                             modifier = Modifier.padding(start = 16.dp)
                         )
                     }
@@ -298,7 +303,7 @@ private fun PeriodSelectDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSelect(selected) },
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
             ) {
                 Text(text = stringResource(id = R.string.profile_perioddialog_select))
             }

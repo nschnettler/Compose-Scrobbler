@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -30,7 +30,7 @@ dependencies {
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.Moshi.kotlinCodegen)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository

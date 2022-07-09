@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "de.schnettler.scrobbler"
         minSdk = 24
-        targetSdk = 30
+        targetSdk = 32
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = 1
         versionName = "1.0"
@@ -45,7 +45,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 
     compileOptions {
@@ -103,11 +103,12 @@ dependencies {
 
     // Compose
     implementation(AndroidX.appCompat)
-    implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.navigation.compose)
     implementation(AndroidX.activity.compose)
     implementation(AndroidX.hilt.navigationCompose)
     implementation(Google.accompanist.insets)
+    implementation(Google.accompanist.insets.ui)
 
     // AndroidX
     implementation(AndroidX.compose.runtime.liveData)
@@ -120,8 +121,8 @@ dependencies {
     implementation(AndroidX.room.ktx)
     implementation(AndroidX.room.runtime)
     kapt(AndroidX.room.compiler)
-    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.2.0")
-    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.2.0")
+//    implementation("com.github.MatrixDev.Roomigrant:RoomigrantLib:0.3.4")
+//    kapt("com.github.MatrixDev.Roomigrant:RoomigrantCompiler:0.3.4")
 
     // Dagger
     implementation(Google.dagger.hilt.android)
@@ -130,11 +131,12 @@ dependencies {
     // Other
     debugImplementation(Square.leakCanary.android)
     implementation(JakeWharton.timber)
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // Android Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
-    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.test.ext.junit.ktx)
     androidTestImplementation(AndroidX.archCore.testing)
     androidTestImplementation(AndroidX.test.rules)
     androidTestImplementation(AndroidX.room.testing)

@@ -2,17 +2,17 @@ package de.schnettler.scrobbler.profile.ui.widget
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.navigation.UIAction
-import de.schnettler.scrobbler.compose.theme.rememberDominantColorCache
+import de.schnettler.scrobbler.compose.theme.rememberDominantColorState
 import de.schnettler.scrobbler.compose.widget.Carousel
 import de.schnettler.scrobbler.compose.widget.MediaCard
 import de.schnettler.scrobbler.model.Toplist
@@ -26,7 +26,7 @@ fun <T : Toplist> TopListCarousel(
     itemSize: Dp = 160.dp,
     actionHandler: (UIAction) -> Unit,
 ) {
-    val colorCache = rememberDominantColorCache()
+    val colorState = rememberDominantColorState()
 
     Carousel(
         items = topList,
@@ -35,18 +35,19 @@ fun <T : Toplist> TopListCarousel(
         action = {
             TextButton(
                 onClick = { },
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.secondary),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.secondary),
             ) {
                 Text(text = stringResource(id = R.string.header_more))
             }
-        }
+        },
+        itemKeyFactory = { item -> item.value.id }
     ) { toplist ->
         MediaCard(
             name = toplist.value.name,
             modifier = Modifier.size(itemSize),
             imageUrl = toplist.value.imageUrl,
             plays = toplist.listing.count,
-            colorCache = colorCache
+            colorState = colorState
         ) { actionHandler(UIAction.ListingSelected(toplist.value)) }
     }
 }

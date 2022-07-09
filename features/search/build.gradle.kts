@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -21,7 +21,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 }
 
@@ -33,6 +33,7 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(Google.Accompanist.insets)
 
@@ -44,7 +45,7 @@ dependencies {
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.Moshi.kotlinCodegen)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository

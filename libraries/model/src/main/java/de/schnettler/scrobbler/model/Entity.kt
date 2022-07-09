@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
-import java.util.Locale
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -40,8 +39,8 @@ sealed class LastFmEntity(
         override val url: String = "",
         val artist: String,
         @PrimaryKey
-        override val id: String = "album_${name.toLowerCase(Locale.US)}:artist_${artist.toLowerCase(Locale.US)}",
-        val artistId: String = "artist_${artist.toLowerCase(Locale.US)}",
+        override val id: String = "album_${name.lowercase()}:artist_${artist.lowercase()}",
+        val artistId: String = "artist_${artist.lowercase()}",
         override val imageUrl: String? = null
     ) : LastFmEntity(id, name, url, imageUrl)
 
@@ -51,10 +50,12 @@ sealed class LastFmEntity(
         override val name: String,
         override val url: String = "",
         @PrimaryKey override val id: String = generateId(name),
-        override val imageUrl: String? = null
+        override val imageUrl: String? = null,
+        val imageTimestamp: Long = 0,
+        val spotifyId: String? = null
     ) : LastFmEntity(id, name, url, imageUrl) {
         companion object {
-            fun generateId(name: String) = "artist_${name.toLowerCase(Locale.US)}"
+            fun generateId(name: String) = "artist_${name.lowercase()}"
         }
     }
 
@@ -67,7 +68,7 @@ sealed class LastFmEntity(
         val album: String? = null,
         val albumId: String? = null,
         @PrimaryKey
-        override val id: String = "track_${name.toLowerCase(Locale.US)}:artist_${artist.toLowerCase(Locale.US)}",
+        override val id: String = "track_${name.lowercase()}:artist_${artist.lowercase()}",
         override val imageUrl: String? = null,
     ) : LastFmEntity(id, name, url, imageUrl)
 }

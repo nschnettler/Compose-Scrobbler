@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -22,7 +22,7 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 }
 
@@ -38,11 +38,12 @@ dependencies {
     implementation(project(":libraries:authentication"))
 
     // Compose
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.material)
     implementation(AndroidX.compose.material.icons.extended)
     implementation(AndroidX.compose.ui.tooling)
     implementation(Google.Accompanist.insets)
-    implementation(Google.Accompanist.coil)
+    implementation(COIL.compose)
 
     // AndroidX
     implementation(AndroidX.room.common)
@@ -52,14 +53,14 @@ dependencies {
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.Moshi.kotlinCodegen)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
 
     // Repository
     implementation("com.dropbox.mobile.store", "store4", "_")
 
     // DataStore-Manager
-    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:develop-SNAPSHOT")
+    implementation("com.github.Sh4dowSoul.ComposePreferences:datastore-manager:_")
 
     // Dagger
     implementation(Google.dagger.hilt.android)
@@ -67,5 +68,5 @@ dependencies {
 
     // Other
     implementation(JakeWharton.timber)
-    coreLibraryDesugaring("com.android.tools", "desugar_jdk_libs", "_")
+    coreLibraryDesugaring(Android.tools.desugarJdkLibs)
 }

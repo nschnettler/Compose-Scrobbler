@@ -23,7 +23,7 @@ class ImageDaoTest : DatabaseTest() {
 
         // WHEN - ImageUrl inserted
         val imageURl = "ImageUrl"
-        val changedRows = db.imageDao().updateArtistImageUrl(url = imageURl, id = artist.id)
+        val changedRows = db.imageDao().updateArtistImage(url = imageURl, id = artist.id)
         val loadedImageUrl = db.imageDao().getArtistImageUrl(id = artist.id)
 
         // THEN - ImageUrl was saved in db
@@ -39,7 +39,7 @@ class ImageDaoTest : DatabaseTest() {
 
         // WHEN - ImageUrl inserted
         val imageURl = "NewImageUrl"
-        val changedRows = db.imageDao().updateArtistImageUrl(url = imageURl, id = artist.id)
+        val changedRows = db.imageDao().updateArtistImage(url = imageURl, id = artist.id)
         val loadedImageUrl = db.imageDao().getArtistImageUrl(id = artist.id)
 
         // THEN - ImageUrl was saved in db
@@ -55,7 +55,7 @@ class ImageDaoTest : DatabaseTest() {
 
         // WHEN - ImageUrl of wrong artist updated
         val imageURl = "ImageUrl"
-        val changedRows = db.imageDao().updateArtistImageUrl(url = imageURl, id = "WrongArtist")
+        val changedRows = db.imageDao().updateArtistImage(url = imageURl, id = "WrongArtist")
 
         // THEN - No rows changed
         expect(changedRows).toBe(0)
@@ -87,7 +87,7 @@ class ImageDaoTest : DatabaseTest() {
         db.chartDao().insertAll(topArtists.map { it.listing })
 
         // WHEN - Artists without images are requested
-        val result = db.imageDao().getTopArtistsWithoutImages()
+        val result = db.imageDao().getOutdatedTopArtists()
 
         // THEN - Return only artists which are a) in User Toplist b) have no image yet
         expect(result.isNotEmpty()).toBe(true)

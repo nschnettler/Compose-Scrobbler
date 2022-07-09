@@ -1,21 +1,31 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package de.schnettler.scrobbler.history.ui
 
 import android.content.Context
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExtendedFloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -31,15 +41,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.FullScreenError
 import de.schnettler.scrobbler.compose.widget.LoadingContent
+import de.schnettler.scrobbler.core.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.R
-import de.schnettler.scrobbler.history.ktx.notificationListenerEnabled
 import de.schnettler.scrobbler.history.model.HistoryError
 import de.schnettler.scrobbler.history.model.ScrobbleAction
 import de.schnettler.scrobbler.history.model.ScrobbleAction.DELETE
@@ -52,6 +61,7 @@ import de.schnettler.scrobbler.history.ui.dialog.SubmissionResultDetailsDialog
 import de.schnettler.scrobbler.history.ui.dialog.TrackEditDialog
 import de.schnettler.scrobbler.history.ui.widget.ErrorItem
 import de.schnettler.scrobbler.history.ui.widget.NowPlayingItem
+import de.schnettler.scrobbler.history.ui.widget.RejectedScrobblesItem
 import de.schnettler.scrobbler.history.ui.widget.ScrobbleItem
 import de.schnettler.scrobbler.model.Scrobble
 
@@ -88,7 +98,8 @@ fun Content(
     }
 
     val recentTracksState by localViewModel.state.collectAsState()
-    val cachedNumber by localViewModel.cachedScrobblesCOunt.collectAsState(initial = 0)
+    val cachedNumber by localViewModel.cachedScrobblesCount.collectAsState(initial = 0)
+    val ignoredNumber by localViewModel.ignoredScrobblesCount.collectAsState(initial = 0)
     var showEditDialog by remember { mutableStateOf(false) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     val selectedTrack: MutableState<Scrobble?> = remember { mutableStateOf(null) }
@@ -119,6 +130,7 @@ fun Content(
             recentTracksState.currentData?.let { list ->
                 HistoryTrackList(
                     tracks = list,
+                    ignoredCount = ignoredNumber,
                     onActionClicked = { track, actionType ->
                         selectedTrack.value = track
                         when (actionType) {
@@ -188,11 +200,12 @@ private fun handleEvent(
 private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         text = {
-            if (submitting) {
-                Text(text = "Submitting")
+            val text = if (submitting) {
+                "Submitting"
             } else {
-                Text(text = "$number ${stringResource(id = R.string.scrobbles)}")
+                "$number ${stringResource(id = R.string.scrobbles)}"
             }
+            Text(text = text)
         },
         onClick = onClick,
         icon = {
@@ -203,10 +216,9 @@ private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: ()
                     strokeWidth = 2.5.dp
                 )
             } else {
-                Icon(Icons.Outlined.CloudUpload, null)
+                Icon(Icons.Outlined.CloudUpload, null, tint = MaterialTheme.colorScheme.onBackground)
             }
         },
-        contentColor = Color.White,
         modifier = Modifier
             .align(Alignment.BottomEnd)
             .padding(end = 16.dp, bottom = 16.dp)
@@ -221,37 +233,54 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
+    ignoredCount: Int,
     onActionClicked: (Scrobble, ScrobbleAction) -> Unit,
     onNowPlayingSelected: (Scrobble) -> Unit,
     onErrorClicked: (HistoryError) -> Unit,
     errors: List<HistoryError>
 ) {
-    LazyColumn {
-        item {
-            androidx.compose.foundation.layout.Spacer(modifier = Modifier.statusBarsHeight())
-        }
-
-        item {
-            if (errors.isNotEmpty()) {
-                Card(modifier = Modifier.padding(16.dp)) {
-                    Column {
-                        errors.forEachIndexed { index, error ->
-                            ErrorItem(item = error) { onErrorClicked(error) }
-
-                            if (index != errors.size - 1) {
-                                CustomDivider(startIndent = 72.dp)
-                            }
-                        }
-                    }
-                }
+    LazyColumn(
+        contentPadding = WindowInsets.statusBars.asPaddingValues()
+    ) {
+        if (errors.isNotEmpty()) {
+            item {
+                ErrorItem(errors, onErrorClicked)
             }
         }
 
-        items(tracks) { track ->
+        item {
+            AnimatedVisibility(
+                visible = ignoredCount > 0,
+                enter = expandVertically(),
+                exit = shrinkVertically(shrinkTowards = Alignment.Top)
+            ) {
+                RejectedScrobblesItem(ignoredCount)
+            }
+        }
+
+        items(tracks, key = { track -> "${track.name}_${track.timestamp}" }) { track ->
             if (track.isPlaying()) {
                 NowPlayingItem(name = track.name, artist = track.artist, onClick = { onNowPlayingSelected(track) })
             } else {
                 ScrobbleItem(track = track, onActionClicked = { onActionClicked(track, it) })
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorItem(
+    errors: List<HistoryError>,
+    onErrorClicked: (HistoryError) -> Unit
+) {
+    Card(modifier = Modifier.padding(16.dp)) {
+        Column {
+            errors.forEachIndexed { index, error ->
+                ErrorItem(item = error) { onErrorClicked(error) }
+
+                if (index != errors.size - 1) {
+                    CustomDivider(startIndent = 72.dp)
+                }
             }
         }
     }

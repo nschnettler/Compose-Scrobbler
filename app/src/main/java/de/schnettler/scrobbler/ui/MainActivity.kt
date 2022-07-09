@@ -8,19 +8,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         Screen.Settings
     )
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                     onListingClicked = {
                         navController.navigate(
                             when (it) {
-                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArg(it.name)
+                                is LastFmEntity.Artist -> Screen.ArtistDetails.withArgs(listOf(it.name, it.spotifyId.orEmpty()))
                                 is LastFmEntity.Album -> Screen.AlbumDetails.withArgs(listOf(it.artist, it.name))
                                 is LastFmEntity.Track -> Screen.TrackDetails.withArgs(listOf(it.artist, it.name))
                             }
@@ -77,25 +77,29 @@ class MainActivity : AppCompatActivity() {
                     navigate = { navController.navigate(it) }
 
                     val navBackStackEntry by navController.currentBackStackEntryAsState()
-                    Scaffold(
-                        scaffoldState = rememberScaffoldState(snackbarHostState = snackHost),
+                    androidx.compose.material3.Scaffold(
+                        snackbarHost = { SnackbarHost(hostState = snackHost) },
                         bottomBar = {
                             // navBackStackEntry == null is needed because otherwise innerPadding stays zero
                             if (mainScreens.map { it.routeId }
                                     .contains(navBackStackEntry?.route()) || navBackStackEntry == null) {
                                 BottomNavigationBar(
-                                    currentRoute = navBackStackEntry?.route(),
+                                    currentDestination = navBackStackEntry?.destination,
                                     screens = mainScreens,
                                 ) { screen ->
                                     navController.navigate(screen.routeId) {
-                                        popUpTo = navController.graph.startDestination
+                                        restoreState = true
                                         launchSingleTop = true
+
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
                                     }
                                 }
                             }
                         }
-                    ) {
-                        Content(controller = navController, host = snackHost, innerPadding = it)
+                    ) { contentPadding ->
+                        Content(controller = navController, host = snackHost, innerPadding = contentPadding)
                     }
                 }
             }

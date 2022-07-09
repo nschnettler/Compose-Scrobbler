@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk = 30
+    compileSdk = 32
 
     defaultConfig {
         minSdk = 24
@@ -22,7 +22,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.ui)
+        kotlinCompilerExtensionVersion = versionFor(AndroidX.compose.compiler)
     }
 }
 
@@ -36,27 +36,31 @@ dependencies {
 
     // Compose
     implementation(AndroidX.compose.material)
+    implementation(AndroidX.compose.material3)
     implementation(AndroidX.compose.ui.tooling)
     implementation(Google.accompanist.insets)
 
     // Android X
     implementation(AndroidX.lifecycle.viewModelKtx)
     implementation(AndroidX.room.ktx)
+    kapt(AndroidX.room.compiler)
+    implementation(AndroidX.paging.compose)
 
     // Network & Serialization
     implementation(Square.Retrofit2.retrofit)
-    implementation(Square.Moshi.kotlinCodegen)
+    kapt(Square.Moshi.kotlinCodegen)
     implementation("com.serjltt.moshi", "moshi-lazy-adapters", "_")
-
-    // Repository
-    implementation("com.dropbox.mobile.store", "store4", "_")
 
     // Dagger
     implementation(Google.dagger.hilt.android)
     kapt(Google.dagger.hilt.compiler)
 
+    // Other
+    implementation("com.dropbox.mobile.store", "store4", "_")
+    implementation(JakeWharton.timber)
+
     // Test
     testImplementation(Testing.junit4)
+    testImplementation(CashApp.turbine)
     testImplementation("ch.tutteli.atrium", "atrium-fluent-en_GB", "_")
-    testImplementation("app.cash.turbine", "turbine", "_")
 }

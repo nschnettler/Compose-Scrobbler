@@ -6,25 +6,27 @@ import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
@@ -39,13 +41,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.coil.rememberCoilPainter
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.statusBarsHeight
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.google.accompanist.insets.ui.TopAppBar
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
 
@@ -53,6 +57,7 @@ import de.schnettler.scrobbler.compose.navigation.UIAction
 fun CollapsingToolbar(
     title: String,
     imageUrl: String?,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
     menuActions: List<MenuAction> = emptyList(),
     actioner: (UIAction) -> Unit = {},
     content: LazyListScope.() -> Unit,
@@ -61,7 +66,10 @@ fun CollapsingToolbar(
     var backdropHeight by remember { mutableStateOf(0) }
 
     Surface(Modifier.fillMaxSize()) {
-        LazyColumn(state = listState) {
+        LazyColumn(
+            state = listState,
+            contentPadding = contentPadding,
+        ) {
             // Backdrop
             item {
                 BackdropImage(
@@ -97,7 +105,7 @@ fun CollapsingToolbar(
         }
     }
 
-    val trigger = backdropHeight - LocalWindowInsets.current.statusBars.top
+    val trigger = backdropHeight - WindowInsets.statusBars.getTop(LocalDensity.current)
 
     OverlaidStatusBarAppBar(
         showAppBar = { listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset >= trigger },
@@ -124,19 +132,19 @@ private fun OverlaidStatusBarAppBar(
 
     Surface(
         color = Color.Transparent,
-        elevation = transition.elevation,
+        shadowElevation = transition.elevation,
         modifier = modifier.fillMaxWidth()
     ) {
         Column(modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsHeight()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
                     .graphicsLayer {
                         alpha = transition.alpha
                         translationY = transition.offset
                     }
-                    .background(MaterialTheme.colors.surface),
+                    .background(MaterialTheme.colorScheme.surface),
                 content = {}
             )
 
@@ -144,7 +152,7 @@ private fun OverlaidStatusBarAppBar(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colors.surface),
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     content()
                 }
@@ -188,9 +196,9 @@ private fun AppBarWithoutElevation(
 private fun updateOverlaidStatusBarAppBarTransition(
     showAppBar: Boolean
 ): OverlaidStatusBarAppBarTransition {
-    val transition = updateTransition(showAppBar)
+    val transition = updateTransition(showAppBar, label = "root")
 
-    val elevation = transition.animateDp { show -> if (show) 2.dp else 0.dp }
+    val elevation = transition.animateDp(label = "elevation") { show -> if (show) 2.dp else 0.dp }
 
     val alpha = transition.animateFloat(
         transitionSpec = {
@@ -198,7 +206,7 @@ private fun updateOverlaidStatusBarAppBarTransition(
                 false isTransitioningTo true -> snap()
                 else -> tween(durationMillis = 300)
             }
-        }
+        }, label = "alpha"
     ) { show ->
         if (show) 1f else 0f
     }
@@ -212,9 +220,9 @@ private fun updateOverlaidStatusBarAppBarTransition(
                 // has finished (with some buffer)
                 else -> snap(delayMillis = 320)
             }
-        }
+        }, label = "offset"
     ) { show ->
-        if (show) 0f else LocalWindowInsets.current.statusBars.top.toFloat()
+        if (show) 0f else WindowInsets.statusBars.getTop(LocalDensity.current).toFloat()
     }
 
     return remember(transition) {
@@ -229,10 +237,10 @@ private fun BackdropImage(
 ) {
     Surface(modifier = modifier) {
         if (backdropImage != null) {
-            Image(
-                painter = rememberCoilPainter(request = backdropImage, fadeIn = true),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current).data(backdropImage).crossfade(true).build(),
+                contentScale = ContentScale.Crop,
                 contentDescription = null,
-                contentScale = ContentScale.Crop
             )
         }
         // TODO show a placeholder if null
