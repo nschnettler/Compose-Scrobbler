@@ -4,20 +4,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Album
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,14 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.model.NavigationEvent
 import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenAlbumDetails
 import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenArtistDetails
 import de.schnettler.scrobbler.compose.model.NavigationEvent.OpenScreen.OpenTrackDetails
 import de.schnettler.scrobbler.compose.navigation.UIError
-import de.schnettler.scrobbler.compose.theme.AppColor
-import de.schnettler.scrobbler.compose.theme.LegacyAppTheme
 import de.schnettler.scrobbler.compose.widget.CustomDivider
 import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
@@ -69,11 +68,10 @@ fun SearchScreen(
     }
 
     Column(modifier = modifier) {
-        Spacer(modifier = Modifier.statusBarsHeight())
+        Spacer(modifier = Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         val softKeyboard = LocalSoftwareKeyboardController.current
         Box(modifier = Modifier.padding(16.dp)) {
-            LegacyAppTheme {
-                TextField(
+                OutlinedTextField(
                     value = searchInputState.value,
                     onValueChange = {
                         searchInputState.value = it
@@ -82,10 +80,8 @@ fun SearchScreen(
                     label = { Text(text = stringResource(id = R.string.search_hint)) },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = AppColor.BackgroundElevated),
                     keyboardActions = KeyboardActions { softKeyboard?.hide() }
                 )
-            }
         }
         SelectableChipRow(
             items = stringArrayResource(id = R.array.search_filter),

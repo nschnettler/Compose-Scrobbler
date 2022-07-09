@@ -1,15 +1,16 @@
 package de.schnettler.scrobbler.compose.widget
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.google.accompanist.insets.LocalWindowInsets
-import com.google.accompanist.insets.rememberInsetsPaddingValues
 import de.schnettler.scrobbler.compose.navigation.Screen
 
 @Composable
@@ -18,8 +19,8 @@ fun BottomNavigationBar(
     currentDestination: NavDestination?,
     onClicked: (Screen) -> Unit
 ) {
-    InsetAwareNavigationBar(
-        contentPadding = rememberInsetsPaddingValues(insets = LocalWindowInsets.current.navigationBars)
+    NavigationBar(
+        contentPadding = WindowInsets.navigationBars.asPaddingValues()
     ) {
         screens.forEach { screen ->
             NavigationBarItem(

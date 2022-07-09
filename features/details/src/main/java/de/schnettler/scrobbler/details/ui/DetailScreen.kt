@@ -1,6 +1,5 @@
 package de.schnettler.scrobbler.details.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -13,9 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -77,8 +78,11 @@ fun AlbumCategory(
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Box(modifier = Modifier.size(60.dp)) {
-                    Image(
-                        painter = rememberImagePainter(data = album?.imageUrl, builder = { crossfade(true) }),
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(album?.imageUrl)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )

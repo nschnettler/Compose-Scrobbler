@@ -1,9 +1,11 @@
 package de.schnettler.scrobbler.details.ui.track
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
@@ -15,9 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsHeight
 import com.google.accompanist.insets.navigationBarsPadding
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.widget.ChipRow
@@ -38,9 +38,9 @@ fun TrackDetailScreen(
 ) {
     val (track, stats, info, album) = details
     Box(modifier.fillMaxSize()) {
-        LazyColumn {
-            item { Spacer(modifier = Modifier.statusBarsHeight()) }
-
+        LazyColumn(
+            contentPadding = WindowInsets.systemBars.asPaddingValues()
+        ) {
             // Album
             item {
                 AlbumCategory(
@@ -67,9 +67,7 @@ fun TrackDetailScreen(
                 item { ChipRow(items = tags, onChipClicked = { actioner(UIAction.TagSelected(it)) }) }
             }
 
-            item {
-                Spacer(modifier = Modifier.navigationBarsHeight(16.dp))
-            }
+            itemSpacer(24.dp)
         }
         info?.let {
             FloatingActionButton(

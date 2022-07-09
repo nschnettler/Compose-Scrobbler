@@ -1,7 +1,9 @@
 package de.schnettler.scrobbler.details.ui.artist
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -12,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.navigationBarsHeight
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -46,7 +47,8 @@ fun ArtistDetailScreen(
         imageUrl = info.artist.imageUrl,
         title = info.artist.name,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(info.artist.url)),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
         detailItems(artistInfo = info, dominantColorState = colorState, actioner = actioner)
     }
@@ -115,9 +117,7 @@ private fun LazyListScope.detailItems(
         }
     }
 
-    item {
-        Spacer(modifier = Modifier.navigationBarsHeight(16.dp))
-    }
+    itemSpacer(16.dp)
 }
 
 @OptIn(ExperimentalMaterialApi::class)

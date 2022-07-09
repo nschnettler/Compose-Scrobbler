@@ -2,7 +2,6 @@
 
 package de.schnettler.scrobbler.compose.widget
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.compose.rememberImagePainter
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.theme.AppColor
 import de.schnettler.scrobbler.compose.theme.DominantColorState
 import de.schnettler.scrobbler.compose.theme.DominantColors
@@ -77,8 +78,8 @@ fun MediaCard(
             }
 
             imageUrl?.let {
-                Image(
-                    painter = rememberImagePainter(data = it, builder = { crossfade(true) }),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(it).crossfade(true).build(),
                     contentDescription = "Picture of $name",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize(),

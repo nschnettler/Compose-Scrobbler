@@ -9,14 +9,15 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material3.Card
@@ -25,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -40,7 +42,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.statusBarsHeight
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIAction.ListingSelected
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -219,7 +220,9 @@ private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: ()
                 Icon(Icons.Outlined.CloudUpload, null, tint = MaterialTheme.colorScheme.onBackground)
             }
         },
-        modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(end = 16.dp, bottom = 16.dp)
     )
 }
 
@@ -238,24 +241,12 @@ fun HistoryTrackList(
     onErrorClicked: (HistoryError) -> Unit,
     errors: List<HistoryError>
 ) {
-    LazyColumn {
-        item {
-            Spacer(modifier = Modifier.statusBarsHeight())
-        }
-
-        item {
-            if (errors.isNotEmpty()) {
-                Card(modifier = Modifier.padding(16.dp)) {
-                    Column {
-                        errors.forEachIndexed { index, error ->
-                            ErrorItem(item = error) { onErrorClicked(error) }
-
-                            if (index != errors.size - 1) {
-                                CustomDivider(startIndent = 72.dp)
-                            }
-                        }
-                    }
-                }
+    LazyColumn(
+        contentPadding = WindowInsets.statusBars.asPaddingValues()
+    ) {
+        if (errors.isNotEmpty()) {
+            item {
+                ErrorItem(errors, onErrorClicked)
             }
         }
 
@@ -274,6 +265,24 @@ fun HistoryTrackList(
                 NowPlayingItem(name = track.name, artist = track.artist, onClick = { onNowPlayingSelected(track) })
             } else {
                 ScrobbleItem(track = track, onActionClicked = { onActionClicked(track, it) })
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorItem(
+    errors: List<HistoryError>,
+    onErrorClicked: (HistoryError) -> Unit
+) {
+    Card(modifier = Modifier.padding(16.dp)) {
+        Column {
+            errors.forEachIndexed { index, error ->
+                ErrorItem(item = error) { onErrorClicked(error) }
+
+                if (index != errors.size - 1) {
+                    CustomDivider(startIndent = 72.dp)
+                }
             }
         }
     }

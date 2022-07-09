@@ -1,9 +1,10 @@
 package de.schnettler.scrobbler.compose.widget
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -21,8 +22,7 @@ fun LoadingContent(
         emptyContent()
     } else {
         val additionalRefreshingOffset = if (addStatusBarOffset) {
-            val insets = LocalWindowInsets.current
-            with(LocalDensity.current) { insets.statusBars.top.toDp() }
+            with(LocalDensity.current) { WindowInsets.statusBars.getTop(this).toDp() }
         } else {
             0.dp
         }

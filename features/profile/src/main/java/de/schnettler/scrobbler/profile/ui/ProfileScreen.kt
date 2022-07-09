@@ -2,16 +2,17 @@
 
 package de.schnettler.scrobbler.profile.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
@@ -41,13 +42,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
-import com.google.accompanist.insets.statusBarsHeight
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.model.MediaCardSize
 import de.schnettler.scrobbler.compose.navigation.UIAction
 import de.schnettler.scrobbler.compose.navigation.UIError
@@ -137,8 +139,10 @@ private fun ProfileContent(
 ) {
 
     Box {
-        LazyColumn(modifier = modifier) {
-            item { Spacer(modifier = Modifier.statusBarsHeight()) }
+        LazyColumn(
+            modifier = modifier,
+            contentPadding = WindowInsets.statusBars.asPaddingValues()
+        ) {
             item { user?.let { UserInfo(it) } }
             item {
                 TopListCarousel(
@@ -190,8 +194,8 @@ private fun TopTracksChunkedList(list: List<TopListTrack>, actioner: (UIAction) 
                 icon = {
                     PlainListIconBackground {
                         track.imageUrl?.let {
-                            Image(
-                                painter = rememberImagePainter(it),
+                            AsyncImage(
+                                model = it,
                                 contentDescription = "Album art of track ${track.name} by ${track.artist}",
                             )
                         } ?: Text(text = track.name.firstLetter())
@@ -239,8 +243,8 @@ private fun UserInfo(user: User) {
                     Surface(color = AppColor.BackgroundElevated, shape = CircleShape) {
                         Box(Modifier.size(56.dp)) {
                             if (user.imageUrl.isNotEmpty()) {
-                                Image(
-                                    painter = rememberImagePainter(user.imageUrl),
+                                AsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current).data(user.imageUrl).build(),
                                     contentDescription = "Your profile picture",
                                     modifier = Modifier.fillMaxSize()
                                 )

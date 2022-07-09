@@ -1,17 +1,19 @@
 package de.schnettler.scrobbler.details.ui.album
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
-import com.google.accompanist.insets.navigationBarsHeight
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import de.schnettler.scrobbler.compose.ktx.itemSpacer
 import de.schnettler.scrobbler.compose.navigation.MenuAction
 import de.schnettler.scrobbler.compose.navigation.UIAction
@@ -44,7 +46,8 @@ fun AlbumDetailScreen(
         title = album.name,
         imageUrl = album.imageUrl,
         actioner = actioner,
-        menuActions = listOf(MenuAction.OpenInBrowser(album.url))
+        menuActions = listOf(MenuAction.OpenInBrowser(album.url)),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
         // Album Info
         item {
@@ -86,8 +89,6 @@ fun AlbumDetailScreen(
                 )
             }
         }
-
-        item { Spacer(modifier = Modifier.navigationBarsHeight(16.dp)) }
     }
 }
 
@@ -109,8 +110,8 @@ private fun ArtistItem(
         },
         icon = {
             PlainListIconBackground {
-                Image(
-                    painter = rememberImagePainter(data = artist.imageUrl, builder = { crossfade(true) }),
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current).data(artist.imageUrl).crossfade(true).build(),
                     contentDescription = "Artist picture",
                 )
             }
