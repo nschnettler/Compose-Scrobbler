@@ -21,12 +21,14 @@ include(":libraries:resources")
 include(":app")
 
 rootProject.name = "Scrobbler"
+enableFeaturePreview("VERSION_CATALOGS")
 
 pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
         google()
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots")
     }
 
     resolutionStrategy {
@@ -40,8 +42,7 @@ pluginManagement {
 }
 
 plugins {
-    id("de.fayard.refreshVersions") version "0.40.1"
-////                            # available:"0.40.2"
+    id("de.fayard.refreshVersions") version "0.41.0-SNAPSHOT"
 }
 
 buildscript {

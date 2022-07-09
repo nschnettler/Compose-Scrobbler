@@ -136,7 +136,7 @@ dependencies {
     // Android Test
     androidTestImplementation(Testing.junit4)
     androidTestImplementation(KotlinX.coroutines.test)
-    androidTestImplementation(AndroidX.test.ext.junitKtx)
+    androidTestImplementation(AndroidX.test.ext.junit.ktx)
     androidTestImplementation(AndroidX.archCore.testing)
     androidTestImplementation(AndroidX.test.rules)
     androidTestImplementation(AndroidX.room.testing)

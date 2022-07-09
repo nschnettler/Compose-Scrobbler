@@ -1,5 +1,5 @@
 plugins {
-    kotlin("android") version "1.6.10" apply false
+    kotlin("android") apply false
 }
 
 buildscript {
@@ -8,7 +8,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:_")
+        classpath(libs.com.android.tools.build.gradle)
         classpath(Google.Dagger.hilt.android.gradlePlugin)
     }
 }
