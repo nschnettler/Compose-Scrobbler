@@ -3,7 +3,6 @@ package de.schnettler.scrobbler.history.ui.widget
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.history.model.HistoryError
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ErrorItem(item: HistoryError, onSelect: () -> Unit) {
     MaterialListItem(

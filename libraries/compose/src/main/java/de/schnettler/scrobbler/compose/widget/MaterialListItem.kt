@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -75,7 +74,6 @@ import kotlin.math.max
  * @param text The primary text of the list item
  */
 @Composable
-@ExperimentalMaterialApi
 fun MaterialListItem(
     modifier: Modifier = Modifier,
     icon: @Composable (() -> Unit)? = null,

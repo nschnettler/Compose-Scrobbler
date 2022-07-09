@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material3.Card
@@ -231,7 +230,6 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
     if (!loggedIn) HistoryError.LoggedOut else null
 )
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,

@@ -4,7 +4,6 @@ package de.schnettler.scrobbler.history.ui.widget
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.MusicNote
 import androidx.compose.material3.Card
@@ -17,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NowPlayingItem(name: String, artist: String, onClick: () -> Unit) {
     Card(modifier = Modifier.padding(16.dp)) {

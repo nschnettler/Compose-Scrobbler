@@ -6,11 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,7 +26,6 @@ import de.schnettler.scrobbler.compose.widget.Spacer
 import de.schnettler.scrobbler.history.R
 import de.schnettler.scrobbler.history.ui.widget.SubmissionResultScrobbleItem
 import de.schnettler.scrobbler.model.Scrobble
-import kotlin.time.ExperimentalTime
 
 @Composable
 fun SubmissionResultDetailsDialog(
@@ -68,7 +66,7 @@ fun SubmissionResultDetailsDialog(
     }
 }
 
-@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
+
 @Composable
 fun AcceptedCategory(accepted: List<Scrobble>) {
     var expanded by remember { mutableStateOf(false) }
@@ -102,13 +100,12 @@ fun ErrorCategory(errorMessage: String) {
     ) {
         Text(
             text = errorMessage,
-            color = MaterialTheme.colors.onBackground,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)
         )
     }
 }
 
-@OptIn(ExperimentalTime::class, ExperimentalMaterialApi::class)
 @Composable
 fun IgnoredCategory(rejected: Map<Scrobble, Int>) {
     var expanded by remember { mutableStateOf(false) }

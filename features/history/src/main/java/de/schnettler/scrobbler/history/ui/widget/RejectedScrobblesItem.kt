@@ -4,7 +4,6 @@ package de.schnettler.scrobbler.history.ui.widget
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Card
@@ -20,7 +19,6 @@ import de.schnettler.scrobbler.compose.widget.MaterialListItem
 import de.schnettler.scrobbler.compose.widget.PlainListIconBackground
 import de.schnettler.scrobbler.history.R
 
-@ExperimentalMaterialApi
 @Composable
 internal fun RejectedScrobblesItem(ignoredCount: Int) {
     Card(modifier = Modifier.padding(16.dp)) {
