@@ -162,12 +162,11 @@ fun QuickActions(status: ScrobbleStatus, onActionClicked: (ScrobbleAction) -> Un
 
 @Composable
 private fun QuickActionsRow(items: List<ScrobbleAction>, onSelect: (ScrobbleAction) -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         items.forEach {
             IconButton(onClick = { onSelect(it) }) {
                 Icon(it.asset, null)
             }
-            Spacer(modifier = Modifier.width(24.dp))
         }
     }
 }

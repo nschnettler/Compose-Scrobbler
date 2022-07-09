@@ -4,7 +4,6 @@ package de.schnettler.scrobbler.history.ui
 
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Box
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material3.Card
@@ -24,7 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -200,11 +200,12 @@ private fun handleEvent(
 private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: () -> Unit) {
     ExtendedFloatingActionButton(
         text = {
-            if (submitting) {
-                Text(text = "Submitting")
+            val text = if (submitting) {
+                "Submitting"
             } else {
-                Text(text = "$number ${stringResource(id = R.string.scrobbles)}")
+                "$number ${stringResource(id = R.string.scrobbles)}"
             }
+            Text(text = text)
         },
         onClick = onClick,
         icon = {
@@ -215,13 +216,10 @@ private fun BoxScope.SubmissionFab(submitting: Boolean, number: Int, onClick: ()
                     strokeWidth = 2.5.dp
                 )
             } else {
-                Icon(Icons.Outlined.CloudUpload, null)
+                Icon(Icons.Outlined.CloudUpload, null, tint = MaterialTheme.colorScheme.onBackground)
             }
         },
-        contentColor = Color.White,
-        modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(end = 16.dp, bottom = 16.dp)
+        modifier = Modifier.align(Alignment.BottomEnd).padding(end = 16.dp, bottom = 16.dp)
     )
 }
 
@@ -230,7 +228,7 @@ private fun getErrors(context: Context, loggedIn: Boolean) = listOfNotNull(
     if (!loggedIn) HistoryError.LoggedOut else null
 )
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HistoryTrackList(
     tracks: List<Scrobble>,
