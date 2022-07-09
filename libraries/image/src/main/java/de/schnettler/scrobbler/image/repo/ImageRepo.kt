@@ -37,12 +37,19 @@ class ImageRepo @Inject constructor(
         artist: LastFmEntity.Artist,
         maxRes: Long = 1000,
     ) {
-        val image = spotifyApi.searchArtist(artist.name).maxByOrNull {
-            it.popularity
-        }?.images?.firstOrNull {
-            it.height < maxRes
-        }
+        val result = spotifyApi.searchArtist(artist.name)
+
+        val matchingArtists = result.filter { it.name.equals(artist.name, true) }
+
+        Timber.d("[Work] Found ${matchingArtists.size} matching artists for ${artist.name}")
+
+        val matchingArtistWithImages =
+            matchingArtists.sortedByDescending { it.popularity }.firstOrNull { it.images.isNotEmpty() }
+
+        val image = matchingArtistWithImages?.images?.firstOrNull { it.height < maxRes }
+
         Timber.d("[Work] Selected for ${artist.name}: $image")
+
         image?.url?.let { imageDao.updateArtistImageUrl(artist.id, it) }
     }
 }
