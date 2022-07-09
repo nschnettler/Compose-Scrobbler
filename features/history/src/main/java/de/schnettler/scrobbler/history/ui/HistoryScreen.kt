@@ -258,7 +258,7 @@ fun HistoryTrackList(
             }
         }
 
-        items(tracks) { track ->
+        items(tracks, key = { track -> "${track.name}_${track.timestamp}" }) { track ->
             if (track.isPlaying()) {
                 NowPlayingItem(name = track.name, artist = track.artist, onClick = { onNowPlayingSelected(track) })
             } else {

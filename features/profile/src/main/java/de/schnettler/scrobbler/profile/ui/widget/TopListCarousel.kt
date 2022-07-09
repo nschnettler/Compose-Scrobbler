@@ -39,7 +39,8 @@ fun <T : Toplist> TopListCarousel(
             ) {
                 Text(text = stringResource(id = R.string.header_more))
             }
-        }
+        },
+        itemKeyFactory = { item -> item.value.id }
     ) { toplist ->
         MediaCard(
             name = toplist.value.name,
