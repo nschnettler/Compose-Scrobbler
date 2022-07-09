@@ -51,6 +51,7 @@ sealed class LastFmEntity(
         override val url: String = "",
         @PrimaryKey override val id: String = generateId(name),
         override val imageUrl: String? = null,
+        val imageTimestamp: Long = 0,
         val spotifyId: String? = null
     ) : LastFmEntity(id, name, url, imageUrl) {
         companion object {
